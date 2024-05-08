@@ -1,8 +1,8 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
+	name: "The Modding Tree 2: Need for Speed",
+	id: "7h27uZrOwr6jeGtBZ31X6jr1gG1LzSWr",
 	author: "nobody",
-	pointsName: "points",
+	pointsName: "time",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -13,14 +13,14 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
-	name: "Literally nothing",
+	num: "15.9 Pro Max Air",
+	name: "Reality Transformation ~everything is but what it is not~",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+	<h3>v15.9</h3><br>
+		- Added advertisements.<br>
+		- Added microtransactions.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 

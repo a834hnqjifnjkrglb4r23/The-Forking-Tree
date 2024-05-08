@@ -11,16 +11,27 @@ addLayer("p", {
     resource: "prestige points", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
-    type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.5, // Prestige currency exponent
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        mult = new Decimal(1)
-        return mult
+        multp = new Decimal(1)
+        return multp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        return new Decimal(1)
+        expp = new Decimal(1)
+        return expp
     },
-    row: 0, // Row the layer is in on the tree (0 is the first row)
+    getResetGain() {
+        resetbasep = new Decimal(10)
+        return Decimal.log(player.points.max(1), resetbasep).times(multp).pow(expp).floor().sub(player.p.total)
+    },
+    getNextAt() {
+        nextp = player.p.total.add(getResetGain('p')).add(1)
+        return Decimal.pow(resetbasep, nextp.root(expp).div(multp))
+    },
+    canReset() {return true},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('p'))+" prestige points. Next at "+format(getNextAt('p'))+" points" },
+    row: 1, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
