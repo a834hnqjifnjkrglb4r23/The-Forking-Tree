@@ -7,7 +7,7 @@ let modInfo = {
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
@@ -34,7 +34,14 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return true
+	totalRealTime = new Decimal(10)  
+	if (hasUpgrade('p', 13)){totalRealTime = totalRealTime.add(upgradeEffect('p', 13))}
+	if (hasUpgrade('p', 23)){totalRealTime = totalRealTime.add(upgradeEffect('p', 23))}
+	if (hasUpgrade('p', 33)){totalRealTime = totalRealTime.add(upgradeEffect('p', 33))}
+	if (hasUpgrade('p', 43)){totalRealTime = totalRealTime.add(upgradeEffect('p', 43))}
+
+	totalGameTime = totalRealTime.times(player.devSpeed)
+	return totalGameTime.gte(player.p.resetTime)
 }
 
 // Calculate points/sec!
@@ -42,12 +49,13 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
-	return gain
+
+	return new Decimal(1)
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	devSpeed: 1
 }}
 
 // Display extra things at the top of the page
@@ -76,4 +84,24 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+}
+
+function factorial(x) {
+	if(x == 0) {
+		return 1;
+	}
+	if(x < 0 ) {
+		return undefined;
+	}
+	for(var i = x; --i; ) {
+		x *= i;
+	}
+	return x;
+}
+
+function choose(n, k) {
+	if(n<0||k<0) {
+		return undefined;
+	}
+	return factorial(n)/factorial(k)/factorial(n-k)
 }
