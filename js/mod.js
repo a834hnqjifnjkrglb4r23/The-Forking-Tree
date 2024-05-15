@@ -8,7 +8,7 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	offlineLimit: 0,  // In hours
 }
 
 // Set your version in num and name
@@ -43,7 +43,7 @@ function canGenPoints(){
 	if (hasUpgrade('p', 63)){totalRealTime = totalRealTime.add(upgradeEffect('p', 63))}
 
 	totalGameTime = totalRealTime.times(player.gamespeed())
-	return totalGameTime.gte(player.p.resetTime)
+	return totalGameTime.gte(player.points)
 }
 
 // Calculate points/sec!
