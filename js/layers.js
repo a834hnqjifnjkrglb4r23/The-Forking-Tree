@@ -16,6 +16,7 @@ addLayer("ik", {
         multik = new Decimal(1)
 
         if (hasUpgrade('p', 51)){multik = multik.add(upgradeEffect('p', 51))}
+        if (hasUpgrade('p', 81)){multik = multik.add(upgradeEffect('p', 81))}
 
         ilnum = toNumber(player.il.points.add(0.1).trunc())
         return multik
@@ -141,7 +142,7 @@ addLayer("ik", {
             cost: new Decimal(1000),
             effect() {
                 eff = player.points.times(3.14159265358979323846).cos().times(-10).pow10()
-
+                //eff = Decimal.dTen.pow10()
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -190,6 +191,7 @@ addLayer("e", {
         multe = new Decimal(1)
         if (hasUpgrade('e', 13)){multe = multe.add(upgradeEffect('e', 13))}
         if (hasUpgrade('p', 52)){multe = multe.add(upgradeEffect('p', 52))}
+        if (hasUpgrade('p', 82)){multe = multe.add(upgradeEffect('p', 82))}
         return multe
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -325,7 +327,7 @@ addLayer("f", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         multf = new Decimal(1)
         if (hasUpgrade('p', 64)){multf = multf.add(upgradeEffect('p', 64))} 
-
+        if (hasUpgrade('p', 74)){multf = multf.add(upgradeEffect('p', 74))} 
         return multf
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -346,8 +348,9 @@ addLayer("f", {
             title: "General Information",
             body() {
                 textf = "you have "+format(player.f.points)+" fire <br>"
-                textf = "you have "+format(player.f.total)+" total fire <br>"
-                textf += "you gain "+format(player.f.points.times(multf.sub(1)))+" fire per second <br>"
+                textf += "you gain "+format(player.f.points.times(multf.sub(1)))+" fire per second, which is "
+                if (multf.gte(10)) {textf += "+"+format(multf.log(10))+"OoM "} else {textf += format(multf.sub(1))+"x of your fire"}
+                textf += "<br> you have "+format(player.f.total)+" total fire <br>"
                 return textf
             }
         },
@@ -355,8 +358,8 @@ addLayer("f", {
     upgrades: {
         11: {
             title: "fire upgrade 11",
-            description: "multiply prestige upgrade 51 by 2",
-            cost: new Decimal(2),
+            description: "multiply the effects of prestige upgrade 51, 53, 54 by 2",
+            cost: new Decimal(1),
             effect() {
                 eff = new Decimal(2)
                 return eff
@@ -366,10 +369,45 @@ addLayer("f", {
         },
         12: {
             title: "fire upgrade 12",
-            description: "multiply prestige upgrade 52 by 2",
+            description: "multiply the effects of prestige upgrades 41, 42 by 1.2",
+            cost: new Decimal(2),
+            effect() {
+                eff = new Decimal(1.2)
+                if (hasUpgrade('f', 21)) {eff = eff.times(upgradeEffect('f', 21))}
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        13: {
+            title: "fire upgrade 13",
+            description: "multiply the effects of prestige upgrade 13 by 2",
             cost: new Decimal(2),
             effect() {
                 eff = new Decimal(2)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        14: {
+            title: "fire upgrade 14",
+            description: "raise the effects of prestige upgrade 22 by 13.33",
+            cost: new Decimal(4),
+            effect() {
+                eff = new Decimal(40/3)
+                if (hasUpgrade('f', 21)) {eff = eff.times(upgradeEffect('f', 21))}
+                return eff
+            },
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        21: {
+            title: "fire upgrade 21",
+            description: "multiply fire upgrade 12 and 14 by 1.25",
+            cost: new Decimal(20),
+            effect() {
+                eff = new Decimal(1.25)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -411,12 +449,17 @@ addLayer("p", {
         if (hasUpgrade('p', 22)){multp = multp.times(upgradeEffect('p', 22))}
         if (hasUpgrade('p', 61)){multp = multp.times(upgradeEffect('p', 61))}
         if (hasUpgrade('p', 62)){multp = multp.times(upgradeEffect('p', 62))}
+
+        if (hasMilestone('p', 0)){multp = multp.times(1000)}
+        if (hasMilestone('p', 1)){multp = multp.times(10)}
         multp = multp.times(buyableEffect('p', 11))
         
         return multp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         expp = new Decimal(1)
+        if (hasUpgrade('p', 71)){expp = expp.times(upgradeEffect('p', 71))}
+        if (hasUpgrade('p', 72)){expp = expp.times(upgradeEffect('p', 72))}
         return expp
     },
     getResetGain() {
@@ -434,6 +477,7 @@ addLayer("p", {
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
+
     infoboxes: {
         A: {
             title: "General Information",
@@ -456,6 +500,7 @@ addLayer("p", {
                 if (logcostp11.gte(10)) logcostp11 = logcostp11.div(10).pow(4/3).times(10)
                 if (logcostp11.gte(26.8)) logcostp11 = logcostp11.div(26.8).pow(3/2).times(26.8)
                 if (logcostp11.gte(58.7)) logcostp11 = logcostp11.div(58.7).pow(2).times(58.7)
+                if (logcostp11.gte(179.62324239111106)) logcostp11 = logcostp11.div(179.62324239111106).pow(2.1628692342683022).times(179.62324239111106)
 
                 return Decimal.pow(costbasep11, logcostp11).trunc()
             },
@@ -487,7 +532,6 @@ addLayer("p", {
             cost: Decimal.dOne,
             effect() {
                 eff = player.p.total.add(20).log10().pow(4)
-                eff = eff.sub(275000).div(20000).min(0).max(1).add(1).times(eff)
                 if (hasUpgrade('ik', 32)){eff = eff.pow(upgradeEffect('ik', 32))}    
                 if (hasUpgrade('ik', 33)){eff = eff.pow(upgradeEffect('ik', 33))}    
 
@@ -508,7 +552,6 @@ addLayer("p", {
             cost: Decimal.dTwo,
             effect() {
                 eff = player.p.total.add(12).log10().pow(3)
-                eff = eff.sub(2450000).div(300000).min(0).max(1).add(1).times(eff)
                 if (eff.gte(10)&&!(hasUpgrade('e', 12))) eff = eff.div(10).root(1.2).times(10)
                 if (hasUpgrade('p', 42)){eff = eff.pow(upgradeEffect('p', 42))}  
                 return eff
@@ -521,6 +564,7 @@ addLayer("p", {
             cost: new Decimal(4),
             effect() {
                 eff = Decimal.dTwo
+                if (hasUpgrade('f', 13)) {eff = eff.times(upgradeEffect('f', 13))}
                 return eff
             },
             effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))}
@@ -556,6 +600,7 @@ addLayer("p", {
             cost: new Decimal(3000),
             effect() {
                 eff = player.p.total.add(11).log10().pow(0.75)
+                if (hasUpgrade('f', 14)) {eff = eff.pow(upgradeEffect('f', 14))}
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))}
@@ -630,6 +675,7 @@ addLayer("p", {
             cost: new Decimal('2e9'),
             effect() {
                 eff = new Decimal(1.25)
+                if (hasUpgrade('f', 12)) {eff = eff.times(upgradeEffect('f', 12))}
                 return eff
             },
             unlocked() {return hasUpgrade('p', 24)},
@@ -641,6 +687,7 @@ addLayer("p", {
             cost: new Decimal('5e10'),
             effect() {
                 eff = new Decimal(5/3)
+                if (hasUpgrade('f', 12)) {eff = eff.times(upgradeEffect('f', 12))}
                 return eff
             },
             unlocked() {return hasUpgrade('p', 24)},
@@ -686,7 +733,7 @@ addLayer("p", {
             cost: new Decimal('1e25'),
             effect() {
                 eff = new Decimal(0.1)
-                if (hasUpgrade('f', 12)) {eff = eff.times(upgradeEffect('f', 12))}
+                if (hasUpgrade('f', 11)) {eff = eff.times(upgradeEffect('f', 11))}
                 return eff
             },
             unlocked() {return hasUpgrade('p', 44)},
@@ -709,6 +756,7 @@ addLayer("p", {
             cost: new Decimal('1e35'),
             effect() {
                 eff = new Decimal(0.1)
+                if (hasUpgrade('f', 11)) {eff = eff.times(upgradeEffect('f', 11))}
                 return eff
             },
             unlocked() {return hasUpgrade('p', 44)},
@@ -760,6 +808,94 @@ addLayer("p", {
                 return eff
             },
             unlocked() {return hasUpgrade('p', 44)},
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        71: {
+            title: "prestige upgrade 71",
+            description: "raise prestige point gain to 1.05",
+            cost: new Decimal('1e160'),
+            effect() {
+                eff = new Decimal(1.05)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+        },
+        72: {
+            title: "prestige upgrade 72",
+            description: "raise prestige point gain to 1.08",
+            cost: new Decimal('1e180'),
+            effect() {
+                eff = new Decimal(1.08675309) //eight six seven five three o nine oooo~
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+        },
+        73: {
+            title: "prestige upgrade 73",
+            description: "adds total time by 8",
+            cost: new Decimal('1e200'),
+            effect() {
+                eff = new Decimal(8)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        74: {
+            title: "prestige upgrade 74",
+            description: "adds fire gain by 0.05",
+            cost: new Decimal('1e230'),
+            effect() {
+                eff = new Decimal(0.05)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        81: {
+            title: "prestige upgrade 81",
+            description: "adds integral point gain by 0.1",
+            cost: new Decimal('1e250'),
+            effect() {
+                eff = new Decimal(0.1)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        82: {
+            title: "prestige upgrade 82",
+            description: "adds power effect by 0.1",
+            cost: new Decimal('1e270'),
+            effect() {
+                eff = new Decimal(0.1)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        83: {
+            title: "prestige upgrade 83",
+            description: "adds total time by 8",
+            cost: new Decimal('1e290'),
+            effect() {
+                eff = new Decimal(8)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        84: {
+            title: "prestige upgrade 84",
+            description: "unlocks infinity, and 8 prestige upgrades",
+            cost: new Decimal('1e308'),
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            unlocked() {return hasUpgrade('p', 64)},
             effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
         },
     },
