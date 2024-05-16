@@ -62,7 +62,7 @@ function addedPlayerData() { return {
 	gamespeed() {
 		gamespeed = new Decimal(1)
 		return gamespeed
-	}
+	},
 }}
 
 // Display extra things at the top of the page

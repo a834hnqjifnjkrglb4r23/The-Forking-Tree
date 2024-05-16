@@ -451,7 +451,6 @@ addLayer("p", {
         if (hasUpgrade('p', 62)){multp = multp.times(upgradeEffect('p', 62))}
 
         if (hasMilestone('p', 0)){multp = multp.times(1000)}
-        if (hasMilestone('p', 1)){multp = multp.times(10)}
         multp = multp.times(buyableEffect('p', 11))
         
         return multp
@@ -489,6 +488,14 @@ addLayer("p", {
                 return text
             }
         },
+    },
+    milestones:{
+        0: {
+            requirementDescription: "prestige milestone 0",
+            effectDescription: "1e100 prestige points, x1000 prestige point gain",
+            done() { return player[this.layer].point.gte(1e100) }
+        }
+    
     },
     buyables: {
         11: {
@@ -959,7 +966,7 @@ addLayer("pw", {
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "power", // Name of prestige currency
     baseResource: "prestige points", // Name of resource prestige is based on
-    baseAmount() {return player.points}, // Get the current amount of baseResource
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addpw = new Decimal(-1)
@@ -985,6 +992,49 @@ addLayer("pw", {
     prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('pw'))+" power. Next at "+format(getNextAt('pw'))+" prestige points" },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return hasUpgrade('p', 44)||player.pw.total.gte(1)},
+    infoboxes: {
+    },
+    upgrades: {
+    },
+})
+
+addLayer("i", {
+    name: "infinity", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "I", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#1A53FF",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "power", // Name of prestige currency
+    baseResource: "prestige points", // Name of resource prestige is based on
+    baseAmount() {return player.p.points}, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+
+        multi = new Decimal(1)
+
+
+        return multi
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        expi = new Decimal(1)
+        return expi
+    },
+    getResetGain() {
+        return player.p.points.log10().div(308.25).sub(1).pow10().times(multi).pow(expi).sub(player.i.total)
+    },
+    getNextAt() {
+        nexti = player.i.total.add(getResetGain('i')).add(1)
+        return nexti.root(expi).div(multi).log10().add(1).times(308.25).pow10()
+    },
+    canReset() {return getResetGain('pw').gte(0)},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('pw'))+" power. Next at "+format(getNextAt('pw'))+" prestige points" },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return hasUpgrade('p', 84)||player.i.total.gte(1)},
     infoboxes: {
     },
     upgrades: {
