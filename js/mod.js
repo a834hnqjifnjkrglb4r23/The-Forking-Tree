@@ -43,6 +43,8 @@ function canGenPoints(){
 	if (hasUpgrade('p', 63)){totalRealTime = totalRealTime.add(upgradeEffect('p', 63))}
 	if (hasUpgrade('p', 73)){totalRealTime = totalRealTime.add(upgradeEffect('p', 73))}
 	if (hasUpgrade('p', 83)){totalRealTime = totalRealTime.add(upgradeEffect('p', 83))}
+
+	if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))}
 	
 	totalGameTime = totalRealTime.times(player.gamespeed())
 	return totalGameTime.gte(player.points)
