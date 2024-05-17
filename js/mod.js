@@ -102,6 +102,9 @@ function factorial(x) {
 	if(x < 0 ) {
 		return undefined;
 	}
+	if (x > 10000) {
+		return asdfhlasdfljhkl
+	}
 	for(var i = x; --i; ) {
 		x *= i;
 	}
