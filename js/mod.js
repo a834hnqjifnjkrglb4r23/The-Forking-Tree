@@ -1,7 +1,7 @@
 let modInfo = {
-	name: "The Modding Tree 2: Need for Speed",
+	name: "The Modding Tree 866: Need for Speed",
 	id: "7h27uZrOwr6jeGtBZ31X6jr1gG1LzSWr",
-	author: "nobody",
+	author: "nameunavailable866 aka 7h27uZrOwr",
 	pointsName: "time",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -45,7 +45,8 @@ function canGenPoints(){
 	if (hasUpgrade('p', 83)){totalRealTime = totalRealTime.add(upgradeEffect('p', 83))}
 
 	if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))}
-	
+	if (hasUpgrade('i', 53)){totalRealTime = totalRealTime.add(upgradeEffect('i', 53))}
+	if (hasUpgrade('i', 63)){totalRealTime = totalRealTime.add(upgradeEffect('i', 63))}	
 	totalGameTime = totalRealTime.times(player.gamespeed())
 	return totalGameTime.gte(player.points)
 }
@@ -65,6 +66,7 @@ function addedPlayerData() { return {
 		gamespeed = new Decimal(1)
 		return gamespeed
 	},
+
 }}
 
 // Display extra things at the top of the page
