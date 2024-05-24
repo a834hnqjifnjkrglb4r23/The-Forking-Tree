@@ -380,6 +380,15 @@ addLayer("f", {
         multf = new Decimal(1)
         if (hasUpgrade('p', 64)){multf = multf.add(upgradeEffect('p', 64))} 
         if (hasUpgrade('p', 74)){multf = multf.add(upgradeEffect('p', 74))} 
+        multf = multf.add(buyableEffect('i', 12))
+        multf = multf.times(buyableEffect('i', 13))
+
+        if (multf.ln().gte(710)) {
+            firepenalty = multf.ln().sub(710).div(3840)
+            multf = multf.div(firepenalty.exp())
+        }
+
+        multf = multf.max(1)
         return multf
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -407,6 +416,7 @@ addLayer("f", {
             }
         },
     },
+
     upgrades: {
         11: {
             title: "fire upgrade 11",
@@ -476,6 +486,17 @@ addLayer("f", {
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
+        },
+        23: {
+            title: "fire upgrade 23",
+            description: "multiply infinity dimensions by ln(fire)^2",
+            cost: new Decimal(1),
+            effect() {
+                eff = player.f.points.max(2.8).ln().pow(2)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasUpgrade('i', 84)}
         },
     },
 })
@@ -1309,7 +1330,11 @@ addLayer("i", {
                 if (expi.gt(1)){text += "your infinity point gain exponent is "+format(expi)+"<br>"}
 
                 logip = player.i.points.max(1).log10().div(10)
-                gametime = player.points.times(player.gamespeed())
+
+                idmult = new Decimal(1)
+                if (hasUpgrade('f', 23)) idmult = idmult.times(upgradeEffect('f', 23))
+
+                idtime = player.points.times(player.gamespeed()).times(idmult)
 
                 if (logip.lt(1)) {infd1 = Decimal.dZero} else {infd1 = logip.div(1)}
                 if (logip.lt(4)) {infd2 = Decimal.dZero} else {infd2 = logip.div(4)}
@@ -1317,12 +1342,12 @@ addLayer("i", {
                 if (logip.lt(256)) {infd4 = Decimal.dZero} else {infd4 = logip.div(256)}
 
                 infpow = Decimal.dZero
-                infpow = infpow.add(gametime.pow(1).div(1).times(infd1))
-                infpow = infpow.add(gametime.pow(2).div(2).times(infd2))
-                infpow = infpow.add(gametime.pow(3).div(6).times(infd3))
-                infpow = infpow.add(gametime.pow(4).div(24).times(infd4))
+                infpow = infpow.add(idtime.pow(1).div(1).times(infd1))
+                infpow = infpow.add(idtime.pow(2).div(2).times(infd2))
+                infpow = infpow.add(idtime.pow(3).div(6).times(infd3))
+                infpow = infpow.add(idtime.pow(4).div(24).times(infd4))
 
-                infpowcv = new Decimal(56)
+                infpowcv = new Decimal(112)
                 infmult = infpow.pow(infpowcv)
 
 
@@ -1356,6 +1381,58 @@ addLayer("i", {
             },
             title() { return "infinity buyable 11"},
             display() { return "multiplies your infinity point gain by "+format(effbasei11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect()) },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        12: {
+            cost(x) {   
+                costbasei12 = Decimal.dTen
+
+                logcosti12 = Decimal.add(x*10, 140)
+
+                return Decimal.pow(costbasei12, logcosti12).trunc()
+            },
+            effect(x) {
+                effbasei12 = new Decimal(0.05)
+
+                diveffi12 = new Decimal(x)
+
+                return Decimal.times(effbasei12, diveffi12)
+            },
+            title() { return "infinity buyable 12"},
+            display() { 
+                text = "adds your fire gain "
+                text += "+"+format(effbasei12)+"<br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect()) 
+                return text},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        13: {
+            cost(x) {   
+                costbasei13 = Decimal.dTen
+
+                logcosti13 = Decimal.add(x, 1/2).pow(2).times(25/2).add(1175/8)
+
+                return Decimal.pow(costbasei13, logcosti13).trunc()
+            },
+            effect(x) {
+                effbasei13 = new Decimal(1.01)
+
+                logeffi13 = new Decimal(x)
+
+                return Decimal.pow(effbasei13, logeffi13)
+            },
+            title() { return "infinity buyable 13"},
+            display() { 
+                text = "multiplies your fire gain "
+                text += "x"+format(effbasei13)+"<br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect()) 
+                return text},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1707,6 +1784,17 @@ addLayer("i", {
             cost: new Decimal(1e80),
             effect() {
                 eff = new Decimal(2)
+                return eff
+            },
+            unlocked() {return hasUpgrade('i', 64)},
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+        },
+        84: {
+            title: "infinity upgrade 84",
+            description: "unlock a fire upgrade, and 8 infinity upgrades",
+            cost: new Decimal(1e140),
+            effect() {
+                eff = new Decimal(1)
                 return eff
             },
             unlocked() {return hasUpgrade('i', 64)},
