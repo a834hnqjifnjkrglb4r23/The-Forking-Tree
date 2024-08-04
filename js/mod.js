@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "The Modding Tree 866: Need for Speed",
-	id: "7h27uZrOwr6jeGtBZ31X6jr1gG1LzSWr",
-	author: "nameunavailable866 aka 7h27uZrOwr",
+	id: "7h27uZrOwr6jeGtBZ31X6jr1gG1LzSWs",
+	author: "nameunavailable866",
 	pointsName: "time",
 	modFiles: ["layers.js", "tree.js"],
 
@@ -34,21 +34,8 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	totalRealTime = new Decimal(10)  
-	if (hasUpgrade('p', 13)){totalRealTime = totalRealTime.add(upgradeEffect('p', 13))}
-	if (hasUpgrade('p', 23)){totalRealTime = totalRealTime.add(upgradeEffect('p', 23))}
-	if (hasUpgrade('p', 33)){totalRealTime = totalRealTime.add(upgradeEffect('p', 33))}
-	if (hasUpgrade('p', 43)){totalRealTime = totalRealTime.add(upgradeEffect('p', 43))}
-	if (hasUpgrade('p', 53)){totalRealTime = totalRealTime.add(upgradeEffect('p', 53))}
-	if (hasUpgrade('p', 63)){totalRealTime = totalRealTime.add(upgradeEffect('p', 63))}
-	if (hasUpgrade('p', 73)){totalRealTime = totalRealTime.add(upgradeEffect('p', 73))}
-	if (hasUpgrade('p', 83)){totalRealTime = totalRealTime.add(upgradeEffect('p', 83))}
-
-	if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))}
-	if (hasUpgrade('i', 53)){totalRealTime = totalRealTime.add(upgradeEffect('i', 53))}
-	if (hasUpgrade('i', 63)){totalRealTime = totalRealTime.add(upgradeEffect('i', 63))}	
-	totalGameTime = totalRealTime.times(player.gamespeed())
-	return totalGameTime.gte(player.points)
+	
+	return player.totalGameTime().gte(player.points.sub(0.05))
 }
 
 // Calculate points/sec!
@@ -57,7 +44,7 @@ function getPointGen() {
 		return new Decimal(0)
 
 
-	return new Decimal(1)
+	return player.gamespeed()
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
@@ -66,6 +53,23 @@ function addedPlayerData() { return {
 		gamespeed = new Decimal(1)
 		return gamespeed
 	},
+	totalGameTime() {
+		totalRealTime = new Decimal(10)  
+		if (hasUpgrade('p', 13)){totalRealTime = totalRealTime.add(upgradeEffect('p', 13))}
+		if (hasUpgrade('p', 23)){totalRealTime = totalRealTime.add(upgradeEffect('p', 23))}
+		if (hasUpgrade('p', 33)){totalRealTime = totalRealTime.add(upgradeEffect('p', 33))}
+		if (hasUpgrade('p', 43)){totalRealTime = totalRealTime.add(upgradeEffect('p', 43))}
+		if (hasUpgrade('p', 53)){totalRealTime = totalRealTime.add(upgradeEffect('p', 53))}
+		if (hasUpgrade('p', 63)){totalRealTime = totalRealTime.add(upgradeEffect('p', 63))}
+		if (hasUpgrade('p', 73)){totalRealTime = totalRealTime.add(upgradeEffect('p', 73))}
+		if (hasUpgrade('p', 83)){totalRealTime = totalRealTime.add(upgradeEffect('p', 83))}
+	
+		if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))}
+		if (hasUpgrade('i', 53)){totalRealTime = totalRealTime.add(upgradeEffect('i', 53))}
+
+		totalGameTime = totalRealTime.times(player.gamespeed())
+		return totalGameTime
+	}
 
 }}
 
