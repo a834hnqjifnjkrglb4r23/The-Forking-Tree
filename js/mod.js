@@ -63,9 +63,10 @@ function addedPlayerData() { return {
 		if (hasUpgrade('p', 63)){totalRealTime = totalRealTime.add(upgradeEffect('p', 63))}
 		if (hasUpgrade('p', 73)){totalRealTime = totalRealTime.add(upgradeEffect('p', 73))}
 		if (hasUpgrade('p', 83)){totalRealTime = totalRealTime.add(upgradeEffect('p', 83))}
+
+		if (hasUpgrade('p', 113)){totalRealTime = totalRealTime.add(upgradeEffect('p', 113))}
 	
 		if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))}
-		if (hasUpgrade('i', 53)){totalRealTime = totalRealTime.add(upgradeEffect('i', 53))}
 
 		totalGameTime = totalRealTime.times(player.gamespeed())
 		return totalGameTime
@@ -79,7 +80,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("e280000000")) //i think we wont reach this in a while, actually
 }
 
 
