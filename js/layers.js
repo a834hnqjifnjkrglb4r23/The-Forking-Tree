@@ -24,7 +24,7 @@ addLayer("ik", {
 
         if (hasUpgrade('cg', 12)){multik = multik.times(upgradeEffect('cg', 12))}
 
-        if (hasUpgrade('et', 14)){multik = multik.times(upgradeEffect('et', 14))}
+        if (hasUpgrade('et', 21)){multik = multik.times(upgradeEffect('et', 21))}
 
         ilnum = toNumber(player.il.points.add(0.1).trunc()) //floating point asf
         return multik
@@ -302,7 +302,7 @@ addLayer("e", {
 
         if (hasUpgrade('cg', 13)){multe = multe.times(upgradeEffect('cg', 13))}
 
-        if (hasUpgrade('et', 14)){multe = multe.times(upgradeEffect('et', 14))}
+        if (hasUpgrade('et', 21)){multe = multe.times(upgradeEffect('et', 21))}
         return multe
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -537,20 +537,20 @@ addLayer("f", {
 
         if (hasUpgrade('cg', 14)){multf = multf.times(upgradeEffect('cg', 14))}
 
-        if (hasUpgrade('et', 14)){multf = multf.times(upgradeEffect('et', 14))}
+        if (hasUpgrade('et', 21)){multf = multf.times(upgradeEffect('et', 21))}
 
 
         firstFireSoftcapStart = new Decimal(1e10).times(buyableEffect('f', 13)) //** */
 
         firstFireSoftcapStrength = new Decimal(0.1) 
-        firstFirePenalty = player.f.points.div(firstFireSoftcapStart).pow(firstFireSoftcapStrength)
+        firstFirePenalty = player.f.points.div(firstFireSoftcapStart).pow(firstFireSoftcapStrength).max(1)
 
 
-        totalFirePenalty = firstFirePenalty.times(1).max(1) //times(1) replace with later softcaps
+        totalFirePenalty = firstFirePenalty.times(1) //times(1) replace with later softcaps
 
         multfAfterPenalty = multf.root(totalFirePenalty)
 
-        multfAfterPenalty = multfAfterPenalty.max(1)
+
         return multf
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -564,15 +564,17 @@ addLayer("f", {
     layerShown(){return hasUpgrade('p', 64)||player.f.total.gt(1)||player.cg.total.gte(1)},
     update(diff) {
         if (canGenPoints()) {
-            if (totalFirePenalty.eq(1)) {
-                currentFireTime = player.f.points.max(0.0001).ln().div(multf) //unsoftcapped: dx/xdt = mx
-                nextTickFireTime = currentFireTime.add(player.gamespeed().times(diff))
-                addPoints('f', nextTickFireTime.times(multf).exp().sub(player.f.points))
-            }
-            else {
-                currentFireTime = player.f.points.div(firstFireSoftcapStart).pow(firstFireSoftcapStrength).div(multf).div(firstFireSoftcapStrength) // softcapped: dx/dt = m * s^(-p) * x^(1+p) where m = multiplier, s = start (not logten), p = strength logten per oom, x = fire amount, t = real time
-                nextTickFireTime = currentFireTime.add(player.gamespeed().times(diff))      
-                addPoints('f', multf.times(firstFireSoftcapStrength).times(nextTickFireTime).pow(firstFireSoftcapStrength.pow(-1)).times(firstFireSoftcapStart).sub(player.f.points))
+            if (multf.eq(0)) {return;} else {
+                if (totalFirePenalty.eq(1)) {
+                    currentFireTime = player.f.points.max(0.0001).ln().div(multf) //unsoftcapped: dx/xdt = mx
+                    nextTickFireTime = currentFireTime.add(player.gamespeed().times(diff))
+                    addPoints('f', nextTickFireTime.times(multf).exp().sub(player.f.points))
+                }
+                else {
+                    currentFireTime = player.f.points.div(firstFireSoftcapStart).pow(firstFireSoftcapStrength).div(multf).div(firstFireSoftcapStrength) // softcapped: dx/dt = m * s^(-p) * x^(1+p) where m = multiplier, s = start (not logten), p = strength logten per oom, x = fire amount, t = real time
+                    nextTickFireTime = currentFireTime.add(player.gamespeed().times(diff))      
+                    addPoints('f', multf.times(firstFireSoftcapStrength).times(nextTickFireTime).pow(firstFireSoftcapStrength.pow(-1)).times(firstFireSoftcapStart).sub(player.f.points))
+                }
             }
         }
     },
@@ -585,7 +587,7 @@ addLayer("f", {
                 if (multfAfterPenalty.gte(10)) {textf += "+"+format(multfAfterPenalty.log(10))+" OoM of your fire <br>"} else {textf += format(multfAfterPenalty)+"x of your fire <br>"}
                 if (player.f.points.gte(firstFireSoftcapStart)) {textf += "first fire softcap: after "+format(firstFireSoftcapStart)+" fire, slow down time for this layer by "+format(firstFirePenalty)+"x"}
                 textf += "<br> you have "+format(player.f.total)+" total fire <br>"
-                if (hasUpgrade('i', 74)) {textf += "<br> no matter the actual fire gain, an infinite frequency of ticks is simulated. therefore changing your update rate is unnessesary"}
+                
                 if (hasUpgrade('i', 74)) {textf += "<br> <br> this mechanic is from Replicanti Incremental from MrRedShark77"}
                 return textf
             }
@@ -669,6 +671,7 @@ addLayer("f", {
             cost: new Decimal(1),
             effect() {
                 eff = player.f.points.max(10).log10().pow(2)
+                if (hasUpgrade('et', 11)) {eff = eff.pow(upgradeEffect('et', 11))}
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -682,11 +685,14 @@ addLayer("f", {
                 costbasef11 = Decimal.dTen
 
                 logcostf11 = new Decimal(x).pow(1.1)
+                if (logcostf11.gte(50)) {logcostf11 = logcostf11.div(50).pow(1.5).times(50)}
 
 
-                ownedf11 = player.f.points.times(buyableEffect('i', 13)).max(1).log10()
+                effectiveFireForBuyables = player.f.points.times(buyableEffect('i', 13)).max(1).log10()
+                if (effectiveFireForBuyables.gte(30)) {effectiveFireForBuyables = effectiveFireForBuyables.div(30).root(1.2).times(30)}
+                if (effectiveFireForBuyables.gte(308.2547155599167438)) {effectiveFireForBuyables = effectiveFireForBuyables.div(308.2547155599167438).root(1.5).times(308.2547155599167438)} //308.2 = 1024*log2/log10
 
-                ownedf11 = ownedf11.root(1.1).max(0)
+                ownedf11 = effectiveFireForBuyables.root(1.1).max(0)
 
                 return Decimal.pow(costbasef11, logcostf11).div(buyableEffect('i', 13))
             },
@@ -711,10 +717,11 @@ addLayer("f", {
                 costbasef12 = Decimal.dTen
 
                 logcostf12 = new Decimal(x).times(2).pow(1.2)
+                if (logcostf12.gte(50)) {logcostf12 = logcostf12.div(50).pow(1.5).times(50)}
 
 
-                ownedf12 = player.f.points.times(buyableEffect('i', 13)).max(1).log10()
-                ownedf12 = ownedf12.root(1.2).div(2).max(0)
+
+                ownedf12 = effectiveFireForBuyables.root(1.2).div(2).max(0)
 
                 return Decimal.pow(costbasef12, logcostf12).div(buyableEffect('i', 13))
             },
@@ -738,11 +745,14 @@ addLayer("f", {
             cost(x) {
                 costbasef13 = Decimal.dTen
 
-                logcostf13 = new Decimal(x).times(5).pow(1.4) 
+                logcostf13 = new Decimal(x).times(5).pow(1.4)
+                if (logcostf13.gte(50)) {logcostf13 = logcostf13.div(50).pow(1.5).times(50)}
 
 
-                ownedf13 = player.f.points.times(buyableEffect('i', 13)).max(1).log10()
-                ownedf13 = ownedf13.root(1.4).div(5).max(0)
+
+
+                ownedf13 = effectiveFireForBuyables.root(1.4).div(5).max(0)
+
 
                 return Decimal.pow(costbasef13, logcostf13).div(buyableEffect('i', 13))
             },
@@ -1003,7 +1013,7 @@ addLayer("p", {
             cost: Decimal.dOne,
             effect() {
                 eff = player.p.total.add(20).log10().pow(4)
-                if (eff.gte(384160000)) eff = eff.div(384160000).root(2).times(384160000)
+                if (eff.gte(384160000)&&!(hasUpgrade('et', 12))) eff = eff.div(384160000).root(2).times(384160000)
                 
                 if (hasUpgrade('ik', 32)){eff = eff.pow(upgradeEffect('ik', 32))}    
                 if (hasUpgrade('ik', 33)){eff = eff.pow(upgradeEffect('ik', 33))}    
@@ -1814,6 +1824,7 @@ addLayer("i", {
 
                 idmult = new Decimal(1)
                 if (hasUpgrade('f', 23)) idmult = idmult.times(upgradeEffect('f', 23))
+                if (hasUpgrade('et', 13)) idmult = idmult.times(upgradeEffect('et', 13))
 
                 idtime = player.points.times(player.gamespeed()).times(idmult)
 
@@ -1848,6 +1859,7 @@ addLayer("i", {
                 costbasei11 = Decimal.dTen
 
                 logcosti11 = new Decimal(x).add(4.5).pow(2).add(119.75)
+                if (hasUpgrade('et', 14)) {logcosti11 = logcosti11.sub(upgradeEffect('et', 11).log10())}
 
 
                 ownedi11 = player.i.points.sub(119.75).root(2).sub(4.5).max(0)
@@ -1876,6 +1888,7 @@ addLayer("i", {
 
 
                 logcosti12 = new Decimal(x).add(1.5).pow(2).times(5).add(128.75)
+                if (hasUpgrade('et', 14)) {logcosti12 = logcosti12.sub(upgradeEffect('et', 11).log10())}
 
 
                 ownedi12 = player.i.points.log(costbasei12).sub(128.75).div(5).root(2).sub(1.5).max(0)
@@ -1905,6 +1918,7 @@ addLayer("i", {
 
 
                 logcosti13 = new Decimal(x).add(0.5).pow(2).times(50).add(187.5)
+                if (hasUpgrade('et', 14)) {logcosti13 = logcosti13.sub(upgradeEffect('et', 11).log10())}
 
 
                 ownedi13 = player.i.points.log(costbasei13).sub(187.5).div(50).root(2).sub(0.5).max(0)
@@ -2429,7 +2443,8 @@ addLayer("cg", {
         return expcg
     },
     getResetGain() {
-        return player.p.buyables[11].div(100).root(2).times(multcg).pow(expcg).trunc().sub(player.cg.total)
+        if (hasMilestone('cg', 1)) {basecurrencycg = ownedp11} else {basecurrencycg = player.p.buyables[11]}
+        return basecurrencycg.div(100).root(2).times(multcg).pow(expcg).trunc().sub(player.cg.total)
     },
     getNextAt() {
         nextcg = player.cg.total.add(getResetGain('cg')).add(1)
@@ -2545,7 +2560,7 @@ addLayer("et", {
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "eternity points", // Name of prestige currency
     baseResource: "infinity points", // Name of resource prestige is based on
-    baseAmount() {player.i.points}, // Get the current amount of baseResource
+    baseAmount() {return player.i.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
 
@@ -2559,11 +2574,11 @@ addLayer("et", {
         return expet
     },
     getResetGain() {
-        return player.i.points.root(646.07206765717242).div(2).times(multet).pow(expet).floor().sub(player.et.total) //646.1 = 102*ln2/ln3
+        return player.i.points.max(1).root(646.07206765717242).div(3).times(multet).pow(expet).floor().sub(player.et.total).max(0) //646.1 = 1024*ln2/ln3
     },
     getNextAt() {
         nextet = player.et.total.add(getResetGain('et')).add(1)
-        return nextet.root(expet).div(multet).times(2).pow(646.07206765717242)
+        return nextet.root(expet).div(multet).times(3).pow(646.07206765717242)
     },
     canReset() {return getResetGain('et').gte(0)},
     prestigeNotify() {return true},
@@ -2606,6 +2621,7 @@ addLayer("et", {
                 timepow = timepow.add(tdtime.pow(6).div(720).times(timed6))
                 timepow = timepow.add(tdtime.pow(7).div(5040).times(timed7))
                 timepow = timepow.add(tdtime.pow(8).div(40320).times(timed8))
+                timepow = timepow.max(1)
 
                 tickspeedboost = new Decimal(1.03)
 
@@ -2628,8 +2644,8 @@ addLayer("et", {
 
 
                 timemult = Decimal.pow(tickspeedboost, tickspeeds)
-                if (timepow.gte(1)) {text += "<br> you have "+format(timepow)+" time shards, the next tickspeed upgrade costs "+format(marginaltickspeedcost)+"x more than this one"}
-                if (timepow.gte(1)) {text += "<br> you have "+format(tickspeeds)+" tickspeed upgrades, each giving a "+format(tickspeedboost)+"x boost to your row 0 timespeed to multiply it by "+format(timemult)+" in total"}
+                if (timepow.gt(1)) {text += "<br> you have "+format(timepow)+" time shards, the next tickspeed upgrade costs "+format(marginaltickspeedcost)+"x more than this one"}
+                if (timepow.gt(1)) {text += "<br> you have "+format(tickspeeds)+" tickspeed upgrades, each giving a "+format(tickspeedboost)+"x boost to your row 0 timespeed to multiply it by "+format(timemult)+" in total"}
                 if (timepow.gte(tickspeedcost.pow(tickspeedScalingStart))) {text += "<br> after "+format(tickspeedScalingStart)+" tickspeed upgrades, each upgrade is "+format(tickspeedScalingStrength)+"x more expensive than the last"}
                 if (timed1.gt(0)) {text += "<br> you have "+format(timed1)+" first time dimension"}
                 if (timed2.gt(0)) {text += "<br> you have "+format(timed2)+" second time dimension"}
@@ -2649,15 +2665,59 @@ addLayer("et", {
     },
     
     upgrades: {
+        11: {
+            title: "eternity upgrade 11",
+            description: "raise fire upgrade 23 to 1.5",
+            cost: new Decimal(1),
+            effect() {
+                eff = new Decimal(1.5)
+                return eff
+            },
+            unlocked() {return player.et.total.gte(1)}, 
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+        },
+        12: {
+            title: "eternity upgrade 12",
+            description: "remove a softcap for prestige upgrade 11",
+            cost: new Decimal(1),
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            unlocked() {return player.et.total.gte(1)}, 
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+        },
+        13: {
+            title: "eternity upgrade 13",
+            description: "multiply infinity dimensions by (eternity points +1)",
+            cost: new Decimal(1),
+            effect() {
+                eff = player.et.points.add(1).max(1)
+                return eff
+            },
+            unlocked() {return player.et.total.gte(1)}, 
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+        },
         14: {
             title: "eternity upgrade 14",
-            description: "unlock time dimensions",
+            description: "divide the first 3 infinity buyable costs by 1e10",
+            cost: new Decimal(1),
+            effect() {
+                eff = new Decimal(1e10)
+                return eff
+            },
+            unlocked() {return player.et.total.gte(1)}, 
+            effectDisplay() {return "/"+format(upgradeEffect(this.layer, this.id))},
+        },
+        21: {
+            title: "eternity upgrade 21",
+            description: "unlock time dimensions at 3 eternity points",
             cost: new Decimal(0),
             effect() {
                 eff = timemult
                 return eff
             },
-            unlocked() {return player.et.points.gte(3)}, //req for 1 of 1st time dimenson
+            unlocked() {return player.et.total.gte(3)}, //req for 1 of 1st time dimenson
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
         },
     }
