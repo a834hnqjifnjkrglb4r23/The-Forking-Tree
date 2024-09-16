@@ -2,7 +2,7 @@ let modInfo = {
 	name: "The Modding Tree 866: Need for Speed",
 	id: "7h27uZrOwr6jeGtBZ31X6jr1gG1LzSWs",
 	author: "nameunavailable866",
-	pointsName: "time",
+	pointsName: "seconds",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -55,7 +55,10 @@ function addedPlayerData() { return {
 	},
 	totalGameTime() {
 		totalRealTime = new Decimal(10)  
-		if (hasUpgrade('p', 13)){totalRealTime = totalRealTime.add(upgradeEffect('p', 13))}
+		if (hasUpgrade('ik', 33)){totalRealTime = totalRealTime.add(upgradeEffect('ik', 33))}
+		if (hasUpgrade('ik', 43)){totalRealTime = totalRealTime.add(upgradeEffect('ik', 43))}
+
+ 		if (hasUpgrade('p', 13)){totalRealTime = totalRealTime.add(upgradeEffect('p', 13))}
 		if (hasUpgrade('p', 23)){totalRealTime = totalRealTime.add(upgradeEffect('p', 23))}
 		if (hasUpgrade('p', 33)){totalRealTime = totalRealTime.add(upgradeEffect('p', 33))}
 		if (hasUpgrade('p', 43)){totalRealTime = totalRealTime.add(upgradeEffect('p', 43))}
@@ -66,7 +69,9 @@ function addedPlayerData() { return {
 
 		if (hasUpgrade('p', 113)){totalRealTime = totalRealTime.add(upgradeEffect('p', 113))}
 	
-		if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))}
+		if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))} 
+
+		if (hasUpgrade('cg', 23)){totalRealTime = totalRealTime.add(upgradeEffect('cg', 23))} 
 
 		totalGameTime = totalRealTime.times(player.gamespeed())
 		return totalGameTime
