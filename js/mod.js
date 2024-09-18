@@ -14,8 +14,11 @@ let modInfo = {
 // Set your version in num and name
 let VERSION = {
 	num: "15.9 Pro Max Air",
+
+
 	name: "Reality Transformation ~everything is but what it is not~",
 }
+
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v15.9</h3><br>
@@ -67,7 +70,7 @@ function addedPlayerData() { return {
 		if (hasUpgrade('p', 73)){totalRealTime = totalRealTime.add(upgradeEffect('p', 73))}
 		if (hasUpgrade('p', 83)){totalRealTime = totalRealTime.add(upgradeEffect('p', 83))}
 
-		if (hasUpgrade('p', 113)){totalRealTime = totalRealTime.add(upgradeEffect('p', 113))}
+		if (hasUpgrade('p', 133)){totalRealTime = totalRealTime.add(upgradeEffect('p', 133))}
 	
 		if (hasUpgrade('i', 13)){totalRealTime = totalRealTime.add(upgradeEffect('i', 13))} 
 
@@ -75,6 +78,9 @@ function addedPlayerData() { return {
 
 		totalGameTime = totalRealTime.times(player.gamespeed())
 		return totalGameTime
+	},
+	versionNumber() {
+		if (hasUpgrade('p', 143)) {Object.defineProperty(VERSION, "num", {value:"23.85 Pro Max Air"})}
 	}
 
 }}
