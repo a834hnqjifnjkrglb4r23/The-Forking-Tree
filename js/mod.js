@@ -79,11 +79,14 @@ function addedPlayerData() { return {
 		if (hasUpgrade('cg', 23)){totalRealTime = totalRealTime.add(upgradeEffect('cg', 23))} 
 
 		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 23))} 
+		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 43))} 
 
 		totalGameTime = totalRealTime.times(player.gamespeed())
 		return totalGameTime
 	},
-
+	veryLargeNumber() {
+		return new Decimal(911).pentate(1.911) //trolling
+	}
 
 }}
 
