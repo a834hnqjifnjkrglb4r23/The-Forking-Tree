@@ -40,7 +40,7 @@ function getStartPoints(){
 // Determines if it should show points/sec
 function canGenPoints(){
 	
-	return player.totalGameTime().gte(player.points.sub(0.05))
+	return player.totalGameTime().gte(player.points)
 }
 
 // Calculate points/sec!
@@ -81,11 +81,20 @@ function addedPlayerData() { return {
 		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 23))} 
 		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 43))} 
 
+
+		
 		totalGameTime = totalRealTime.times(player.gamespeed())
+
+
 		return totalGameTime
 	},
-	veryLargeNumber() {
-		return new Decimal(911).pentate(1.911) //trolling
+
+	veryLargeNumber(seed1) {
+		if (typeof(seed1)=="undefined") {seed1 = 1}
+		seed1 = seed1 + 200
+		seed2 = format(player.p.points).slice(-2)*1+100
+		if (buyableEffect('q', 11).eq(0)) {seed3 = format(player.points.sub(player.points.floor()).times(100).div(player.gamespeed()).floor(), 0)} else if (format(buyableEffect('q', 11))==='-0.33') {seed3 = format(player.points.sub(player.points.div(100).floor().times(100)).div(player.gamespeed()).floor(), 0)} else {seed3 = 1}
+		return new Decimal(1000).pentate((seed1*seed2*seed3 % 541)/619+1.2) //we do a bit trolling with this one
 	}
 
 }}

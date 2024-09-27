@@ -99,7 +99,7 @@ addLayer("ik", {
                 costik11 = Decimal.dTen.pow(x.minus(freeRank).div(rankMult).pow(scaling)).times(baseCost)
 
                 ownedik11 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(rankMult).add(freeRank.add(1)).max(0)
-                if (hasUpgrade('q', 22)) {return player.veryLargeNumber().tetrate(ownedik11.pow10())} else {return costik11}
+                if (hasUpgrade('q', 22)) {return player.veryLargeNumber(1)} else {return costik11}
             },
             effect(x) {
                 if (hasUpgrade('ik', 44)) {effbaseik11 = new Decimal(1.3)} else {effbaseik11 = new Decimal(1.2)}
@@ -137,7 +137,7 @@ addLayer("ik", {
                 costik12 = Decimal.dTen.pow(x.sub(freeRankCheapener).div(rankCheapenerMult).pow(scaling)).times(baseCost)
 
                 ownedik12 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(rankCheapenerMult).add(freeRankCheapener.add(1)).max(0)
-                if (hasUpgrade('q', 22)) {return player.veryLargeNumber().tetrate(ownedik12.pow10())} else {return costik12}
+                if (hasUpgrade('q', 22)) {return player.veryLargeNumber(2)} else {return costik12}
             },
             effect(x) {
                 rankCheapenerBase = new Decimal(1.2)
@@ -172,7 +172,7 @@ addLayer("ik", {
                 costik13 = baseCost.times(x.minus(freeTiers).div(tierMult).pow(scaling))
 
                 ownedik13 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(tierMult).add(freeTiers.add(1)).max(0)
-                if (hasUpgrade('q', 22)) {return player.veryLargeNumber().tetrate(ownedik13.pow10())} else {return costik13}
+                if (hasUpgrade('q', 22)) {return player.veryLargeNumber(3)} else {return costik13}
             },
             effect(x) {
                 effbaseik13 = new Decimal(1.2)
@@ -603,10 +603,10 @@ addLayer("c", {
     upgrades: {
         11: {
             title: "charge upgrade 11",
-            description: "raise prestige point gain by log10(log10(prestige points))^(0.05*current^0.5)",
+            description: "raise prestige point gain by log10(log10(prestige points))^(0.125*current^0.5)",
             cost: new Decimal(2000),
             effect() {
-                eff = player.p.points.max(1e10).log10().log10().root(20).pow(Ecurrent.max(1).pow(0.5)).min(1.5)
+                eff = player.p.points.max(1e10).log10().log10().root(8).pow(Ecurrent.max(1).pow(0.5)).min(4)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -614,10 +614,10 @@ addLayer("c", {
         },
         12: {
             title: "charge upgrade 12",
-            description: "raise prestige point gain by log10(log10(prestige upgrade 11 effect))^(0.05*current^0.5)",
+            description: "raise prestige point gain by log10(log10(prestige upgrade 11 effect))^(0.125*current^0.5)",
             cost: new Decimal(1500),
             effect() {
-                eff = upgradeEffect('p', 11).max(1e10).log10().log10().root(20).pow(Ecurrent.max(1).pow(0.5)).min(1.5)
+                eff = upgradeEffect('p', 11).max(1e10).log10().log10().root(8).pow(Ecurrent.max(1).pow(0.5)).min(4)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -625,10 +625,10 @@ addLayer("c", {
         },
         13: {
             title: "charge upgrade 13",
-            description: "raise prestige point gain by log10(integral points)^(0.012*current^0.5)",
+            description: "raise prestige point gain by log10(log10(fire))^(0.125*current^0.5)",
             cost: new Decimal(1000),
             effect() {
-                eff = player.ik.points.max(10).log10().root(80).pow(Ecurrent.max(1).pow(0.5)).min(2)
+                eff = player.f.points.max(1e10).log10().log10().root(8).pow(Ecurrent.max(1).pow(0.5)).min(4)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -636,10 +636,10 @@ addLayer("c", {
         },
         14: {
             title: "charge upgrade 14",
-            description: "raise prestige point gain by log10(log10(fire))^(0.025*current^0.5)",
+            description: "raise prestige point gain by log10(log10(integral points))^(0.125*current^0.5)",
             cost: new Decimal(500),
             effect() {
-                eff = player.f.points.max(1e10).log10().log10().root(40).pow(Ecurrent.max(1).pow(0.5)).min(2)
+                eff = player.ik.points.max(1e10).log10().log10().root(8).pow(Ecurrent.max(1).pow(0.5)).min(4)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -647,14 +647,14 @@ addLayer("c", {
         },
         21: {
             title: "charge upgrade 21",
-            description: "multiply integral point timespeed by voltage^0.5",
+            description: "multiply integral point timespeed by 1.42*voltage^0.5",
             cost() {
                 boughtInRow = hasUpgrade('c', 21)+hasUpgrade('c', 22)+hasUpgrade('c', 23)+hasUpgrade('c', 24)
                 maxBought = 1
-                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber()}
+                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber(4)}
             },
             effect() {
-                eff = Evoltage.max(1).pow(0.5)
+                eff = Evoltage.max(1).pow(0.5).times(1.5)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -662,14 +662,14 @@ addLayer("c", {
         },
         22: {
             title: "charge upgrade 22",
-            description: "multiply energy timespeed by voltage^0.5",
+            description: "multiply energy timespeed by 1.42*voltage^0.5",
             cost() {
                 boughtInRow = hasUpgrade('c', 21)+hasUpgrade('c', 22)+hasUpgrade('c', 23)+hasUpgrade('c', 24)
                 maxBought = 1
-                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber()}
+                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber(5)}
             },
             effect() {
-                eff = Evoltage.max(1).pow(0.5)
+                eff = Evoltage.max(1).pow(0.5).times(1.5)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -677,14 +677,14 @@ addLayer("c", {
         },
         23: {
             title: "charge upgrade 23",
-            description: "multiply fire timespeed by voltage^0.5",
+            description: "multiply fire timespeed by 1.5*voltage^0.5",
             cost() {
                 boughtInRow = hasUpgrade('c', 21)+hasUpgrade('c', 22)+hasUpgrade('c', 23)+hasUpgrade('c', 24)
                 maxBought = 1
-                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber()}
+                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber(6)}
             },
             effect() {
-                eff = Evoltage.max(1).pow(0.5)
+                eff = Evoltage.max(1).pow(0.5).times(1.5)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -692,14 +692,14 @@ addLayer("c", {
         },
         24: {
             title: "charge upgrade 24",
-            description: "multiply infinity dimensions by voltage^0.5",
+            description: "multiply infinity dimensions by 1.42*voltage^0.5",
             cost() {
                 boughtInRow = hasUpgrade('c', 21)+hasUpgrade('c', 22)+hasUpgrade('c', 23)+hasUpgrade('c', 24)
                 maxBought = 1
-                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber()}
+                if (boughtInRow<maxBought) {return new Decimal(20)} else {return player.veryLargeNumber(7)}
             },
             effect() {
-                eff = Evoltage.max(1).pow(0.5)
+                eff = Evoltage.max(1).pow(0.5).times(1.5)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -740,7 +740,7 @@ addLayer("f", {
         if (hasUpgrade('et', 34)){multf = multf.times(upgradeEffect('et', 34))}
 
 
-        firstFireSoftcapStart = new Decimal(1e10).times(buyableEffect('f', 13)) //** */
+        firstFireSoftcapStart = new Decimal('e10').times(buyableEffect('f', 13)) //** */
         if (hasUpgrade('et', 42)) {firstFireSoftcapStart = firstFireSoftcapStart.times(upgradeEffect('et', 42))}
         firstFireSoftcapStrength = new Decimal(0.08) 
         if (hasUpgrade('et', 24)) {firstFireSoftcapStrength = firstFireSoftcapStrength.div(upgradeEffect('et', 24))}
@@ -766,14 +766,15 @@ addLayer("f", {
     layerShown(){return hasUpgrade('p', 64)||player.f.total.gt(1)||player.cg.total.gte(1)},
     update(diff) {
         if (canGenPoints()) {
-            if (multf.eq(0)) {return;} else {
-                if (totalFirePenalty.eq(1)) {
-                    currentFireTime = player.f.points.max(0.0001).ln().div(multf) //unsoftcapped: dx/xdt = mx
-                    nextTickFireTime = currentFireTime.add(player.gamespeed().times(diff))
-                    addPoints('f', nextTickFireTime.times(multf).exp().sub(player.f.points))
+            if (multf.eq(0)||(player.f.points.eq(0))) {return;} else {
+                unsoftcappedCurrentFireTime = player.f.points.max(0.0000000000001).ln().div(multf) //unsoftcapped: dx/xdt = mx
+                unsoftcappedNextTickFireTime = unsoftcappedCurrentFireTime.add(player.gamespeed().times(diff))
+                unsoftcappedFire = unsoftcappedNextTickFireTime.times(multf).exp()
+                if (unsoftcappedFire.lt(firstFireSoftcapStart)) {
+                    addPoints('f', unsoftcappedNextTickFireTime.times(multf).exp().sub(player.f.points))                    
                 }
                 else {
-                    currentFireTime = player.f.points.div(firstFireSoftcapStart).pow(firstFireSoftcapStrength).div(multf).div(firstFireSoftcapStrength) // softcapped: dx/dt = m * s^(-p) * x^(1+p) where m = multiplier, s = start (not logten), p = strength logten per oom, x = fire amount, t = real time
+                    currentFireTime = player.f.points.div(firstFireSoftcapStart).pow(firstFireSoftcapStrength).div(multf).div(firstFireSoftcapStrength) // softcapped: dx/dt = m * s^(p) * x^(1-p) where m = multiplier, s = start , p = strength in positive, x = fire amount, t = game time not layer time
                     nextTickFireTime = currentFireTime.add(player.gamespeed().times(diff))      
                     addPoints('f', multf.times(firstFireSoftcapStrength).times(nextTickFireTime).pow(firstFireSoftcapStrength.pow(-1)).times(firstFireSoftcapStart).sub(player.f.points))
                 }
@@ -886,6 +887,28 @@ addLayer("f", {
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('i', 74)}
         },
+        31: {
+            title: "fire upgrade 31",
+            description: "communtatively raise effects of prestige upgrade 91 and 92 with each other in base 10",
+            cost: new Decimal(1e120),
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasUpgrade('i', 74)}
+        },
+        32: {
+            title: "fire upgrade 32",
+            description: "communtatively raise effects of prestige upgrade 93 and 94 with each other in base 10",
+            cost: new Decimal(1e180),
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasUpgrade('i', 74)}
+        },
     },
     buyables: {
         11: {
@@ -906,7 +929,7 @@ addLayer("f", {
 
                 ownedf11 = effectiveFireForBuyables.root(1.1).max(0)
 
-                if (hasUpgrade('q', 23)) {return player.veryLargeNumber()} else {return Decimal.pow(costbasef11, logcostf11)}
+                if (hasUpgrade('q', 23)) {return player.veryLargeNumber(8)} else {return Decimal.pow(costbasef11, logcostf11)}
             },
             effect(x) {
                 effbasef11 = new Decimal(0.05)
@@ -939,7 +962,7 @@ addLayer("f", {
                 ownedf12 = effectiveFireForBuyables.root(1.2).div(2).sub(1).max(0)
 
                 
-                if (hasUpgrade('q', 23)) {return player.veryLargeNumber()} else {return Decimal.pow(costbasef12, logcostf12)}
+                if (hasUpgrade('q', 23)) {return player.veryLargeNumber(9)} else {return Decimal.pow(costbasef12, logcostf12)}
 
             },
             effect(x) {
@@ -972,7 +995,7 @@ addLayer("f", {
 
                 ownedf13 = effectiveFireForBuyables.root(1.3).sub(5).max(0)
 
-                if (hasUpgrade('q', 23)) {return player.veryLargeNumber()} else {return Decimal.pow(costbasef13, logcostf13)}
+                if (hasUpgrade('q', 23)) {return player.veryLargeNumber(10)} else {return Decimal.pow(costbasef13, logcostf13)}
                 
             },
             effect(x) {
@@ -1130,6 +1153,7 @@ addLayer("p", {
             ikLastReset = new Decimal(0)
             layerDataReset("p", [])
         }
+
     },
     infoboxes: {
         A: {
@@ -1674,8 +1698,8 @@ addLayer("p", {
             description: "multiply prestige point gain by log(p points)^2",
             cost: new Decimal('e350'),
             effect() {
-                eff = player.p.points.max(10).log10().pow(2).min('e500')
-                
+                eff91 = player.p.points.max(10).log10().pow(2).min('e500')
+                if (hasUpgrade('f', 31)) {eff = eff91.log10().times(eff92.log10()).pow10()} else {eff = eff91}
 
                 return eff
             },
@@ -1687,8 +1711,8 @@ addLayer("p", {
             description: "multiply prestige point gain by log(p points)^4",
             cost: new Decimal('e400'),
             effect() {
-                eff = player.p.points.max(10).log10().pow(4).min('e500')
-                
+                eff92 = player.p.points.max(10).log10().pow(4).min('e500')
+                if (hasUpgrade('f', 31)) {eff = eff91.log10().times(eff92.log10()).pow10()} else {eff = eff92}
 
                 return eff
             },
@@ -1700,8 +1724,8 @@ addLayer("p", {
             description: "multiply prestige point gain by log(p points)^6",
             cost: new Decimal('e450'),
             effect() {
-                eff = player.p.points.max(10).log10().pow(6).min('e500')
-                
+                eff93 = player.p.points.max(10).log10().pow(6).min('e500')
+                if (hasUpgrade('f', 32)) {eff = eff93.log10().times(eff94.log10()).pow10()} else {eff = eff93}
 
                 return eff
             },
@@ -1713,8 +1737,8 @@ addLayer("p", {
             description: "multiply prestige point gain by log(p points)^16",
             cost: new Decimal('e500'),
             effect() {
-                eff = player.p.points.max(10).log10().pow(16).min('e500')
-                
+                eff94 = player.p.points.max(10).log10().pow(16).min('e500')
+                if (hasUpgrade('f', 32)) {eff = eff93.log10().times(eff94.log10()).pow10()} else {eff = eff94}
 
                 return eff
             },
@@ -1989,7 +2013,6 @@ addLayer("q", {
         if (hasUpgrade('p', 104)) {qualityPoints = qualityPoints.add(10)}
         if (hasUpgrade('p', 124)) {qualityPoints = qualityPoints.add(12)}
         if (hasUpgrade('p', 144)) {qualityPoints = qualityPoints.add(14)}
-        if (hasUpgrade('q', 24)) {qualityPoints = qualityPoints.add(2)}
         if (hasUpgrade('i', 24)) {qualityPoints = qualityPoints.add(4)}
         if (hasUpgrade('i', 44)) {qualityPoints = qualityPoints.add(8)}
         if (hasUpgrade('i', 64)) {qualityPoints = qualityPoints.add(12)}
@@ -2038,7 +2061,8 @@ addLayer("q", {
         
 
 
-        layerDataReset("p", keep)
+        layerDataReset("q", keep)
+
     },
     glowColor: "#ff0000",
     milestones:{
@@ -2057,7 +2081,31 @@ addLayer("q", {
         },
     },
     buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+            
 
+                return Decimal.dZero
+            },
+            effect(x) {
+                
+
+                return getBuyableAmount(this.layer, this.id).div(3).floor().sub(getBuyableAmount(this.layer, this.id).div(3))
+            },
+            title() { return "quality buyable 11"},
+            display() { 
+                if (format(buyableEffect(this.layer, this.id)) == "0.00") textq = "changing every tick"
+                if (format(buyableEffect(this.layer, this.id)) == "-0.33") textq = "changing slowly"
+                if (format(buyableEffect(this.layer, this.id)) == "-0.67") textq = "unchanging"
+                
+                return "toggles flickering large numbers"  },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
     },
     
     upgrades: {
@@ -2141,7 +2189,7 @@ addLayer("q", {
         24: {
             title: "quality upgrade 24",
             description: "with the upgrade above this, row 3 resets do not reset prestige///////",
-            cost: new Decimal(0), //75
+            cost: new Decimal(0), //45
             effect() {
                 eff = new Decimal(1)
                 return eff
@@ -2468,9 +2516,11 @@ addLayer("i", {
                 logcosti11 = new Decimal(x).add(4.5).pow(2).add(119.75)
                 if (hasUpgrade('et', 14)) {logcosti11 = logcosti11.sub(upgradeEffect('et', 14).log10())}
                 if (logcosti11.gte(1000)) {logcosti11 = logcosti11.div(1000).pow(1.5).times(1000)}
+                if (logcosti11.gte(10000)) {logcosti11 = logcosti11.div(10000).pow(4/3).times(10000)}
 
                 effectiveIpForBuyables = player.i.points.log10()
-                if (effectiveIpForBuyables.gte(2000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(2000).root(1.5).times(2000)}
+                if (effectiveIpForBuyables.gte(10000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(10000).root(1.5).times(10000)}
+                if (effectiveIpForBuyables.gte(1000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(1000).root(1.5).times(1000)}
 
 
                 if (hasUpgrade('et', 14)) {ownedi11 = effectiveIpForBuyables.max(1).log(costbasei11).sub(94.875).div(0.5).root(2).sub(9.5)} else {ownedi11 = effectiveIpForBuyables.max(1).log(costbasei11).sub(119.75).root(2).sub(4.5).max(0)}
@@ -2500,7 +2550,7 @@ addLayer("i", {
                 logcosti12 = new Decimal(x).add(1.5).pow(2).times(5).add(128.75)
                 if (hasUpgrade('et', 14)) {logcosti12 = logcosti12.sub(upgradeEffect('et', 14).log10())}
                 if (logcosti12.gte(1000)) {logcosti12 = logcosti12.div(1000).pow(1.5).times(1000)}
-
+                if (logcosti12.gte(10000)) {logcosti12 = logcosti12.div(10000).pow(4/3).times(10000)}
 
                 if (hasUpgrade('et', 14)) {ownedi12 = effectiveIpForBuyables.max(1).log(costbasei12).sub(109.375).div(2.5).root(2).sub(3.5)} else {ownedi12 = effectiveIpForBuyables.log(costbasei12).sub(128.75).div(5).root(2).sub(1.5).max(0)}
 
@@ -2536,6 +2586,7 @@ addLayer("i", {
                 logcosti13 = new Decimal(x).add(0.5).pow(2).times(25).add(193.75)
                 if (hasUpgrade('et', 14)) {logcosti13 = logcosti13.sub(upgradeEffect('et', 14).log10())}
                 if (logcosti13.gte(1000)) {logcosti13 = logcosti13.div(1000).pow(1.5).times(1000)}
+                if (logcosti13.gte(10000)) {logcosti13 = logcosti13.div(10000).pow(4/3).times(10000)}
 
 
                 if (hasUpgrade('et', 14)) {ownedi13 = effectiveIpForBuyables.max(1).log10().sub(171.875).div(12.5).root(2).sub(1.5)} else {ownedi13 = effectiveIpForBuyables.log(costbasei13).sub(193.75).div(25).root(2).sub(0.5).max(0)}
