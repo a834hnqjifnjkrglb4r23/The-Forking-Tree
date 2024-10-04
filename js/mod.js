@@ -1,14 +1,14 @@
 let modInfo = {
-	name: "The ??? Tree",
-	id: "mymod",
+	name: "The Trolling Tree",
+	id: "jacorb90aL3GhF8bs8NB76hGDmeqA9ZzrF",
 	author: "nobody",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
+	offlineLimit: 0,  // In hours
 }
 
 // Set your version in num and name
@@ -43,6 +43,17 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	gain = gain.add(buyableEffect('p', 11))
+	gain = gain.times(buyableEffect('p', 12))
+
+
+	firstSoftcapStrength = new Decimal(4)
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 15))
+	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
+	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(6))}
+	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(10))}
+	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(20))}
+	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
 	return gain
 }
 
