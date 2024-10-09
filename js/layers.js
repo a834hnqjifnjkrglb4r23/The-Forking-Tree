@@ -1,3 +1,29 @@
+addLayer("j", {
+    name: "job", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "J", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#e6d200",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "money", // Name of prestige currency
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    canReset() {return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "This layer cannot be reset" },
+    row: 0, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return true},
+    doReset(resettingLayer) {
+        return;
+    },
+
+    buyables: {
+
+    }
+})
+
 addLayer("p", {
     name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -55,7 +81,8 @@ addLayer("p", {
         11: {
             unlocked() {return true},
             cost(x) {
-                costBasep11 = new Decimal(1.5)
+                costBasep11 = new Decimal(1.5).root(buyableEffect('bp', 15))
+                
 
                 costExpp11 = new Decimal(x).add(1).pow(1.1)
                 return Decimal.pow(costBasep11, costExpp11).floor()
@@ -77,7 +104,7 @@ addLayer("p", {
         12: {
             unlocked() {return true},
             cost(x) {
-                costBasep12= new Decimal(1.9)
+                costBasep12= new Decimal(1.9).root(buyableEffect('bp', 15))
 
                 costExpp12 = new Decimal(x).add(1).pow(1.28)
                 return Decimal.pow(costBasep12, costExpp12).floor()
@@ -99,7 +126,7 @@ addLayer("p", {
         13: {
             unlocked() {return true},
             cost(x) {
-                costBasep13 = new Decimal(1.55)
+                costBasep13 = new Decimal(1.55).root(buyableEffect('bp', 15))
 
                 costExpp13 = new Decimal(x).add(1).pow(1.2)
                 return Decimal.pow(costBasep13, costExpp13).floor()
@@ -121,7 +148,7 @@ addLayer("p", {
         14: {
             unlocked() {return true},
             cost(x) {
-                costBasep14 = new Decimal(1.95)
+                costBasep14 = new Decimal(1.95).root(buyableEffect('bp', 15))
 
                 costExpp14 = new Decimal(x).add(1).pow(1.38)
                 return Decimal.pow(costBasep14, costExpp14).floor()
@@ -143,9 +170,9 @@ addLayer("p", {
         15: {
             unlocked() {return true},
             cost(x) {
-                costBasep15 = new Decimal(7)
+                costBasep15 = new Decimal(7).root(buyableEffect('bp', 15))
 
-                costExpp15 = new Decimal(1).sub(x/10).pow(-2.5)
+                costExpp15 = new Decimal(1).sub(x/10).pow(-1.3)
                 return Decimal.pow(costBasep15, costExpp15).floor()
             },
             purchaseLimit: new Decimal(10),
@@ -166,7 +193,7 @@ addLayer("p", {
         16: {
             unlocked() {return true},
             cost(x) {
-                costBasep16 = new Decimal(2.25)
+                costBasep16 = new Decimal(2.25).root(buyableEffect('bp', 15))
 
                 costExpp16 = new Decimal(x).add(1).pow(1.75).log10().pow(1.25).pow10()
                 return Decimal.pow(costBasep16, costExpp16).floor()
@@ -188,9 +215,9 @@ addLayer("p", {
         17: {
             unlocked() {return true},
             cost(x) {
-                costBasep17 = new Decimal(15)
+                costBasep17 = new Decimal(15).root(buyableEffect('bp', 15))
 
-                costExpp17 = new Decimal(1).sub(x/10).pow(-3.5)
+                costExpp17 = new Decimal(1).sub(x/10).pow(-2.3)
                 return Decimal.pow(costBasep17, costExpp17).floor()
             },
             purchaseLimit: new Decimal(10),
@@ -264,7 +291,7 @@ addLayer("sp", {
         11: {
             unlocked() {return true},
             cost(x) {
-                costBasesp11 = new Decimal(1.4)
+                costBasesp11 = new Decimal(1.4).root(buyableEffect('bp', 16))
 
                 costExpsp11 = new Decimal(x).add(1).pow(1.1)
                 return Decimal.pow(costBasesp11, costExpsp11).floor()
@@ -286,7 +313,7 @@ addLayer("sp", {
         12: {
             unlocked() {return true},
             cost(x) {
-                costBasesp12 = new Decimal(1.8)
+                costBasesp12 = new Decimal(1.8).root(buyableEffect('bp', 16))
 
                 costExpsp12 = new Decimal(x).add(1).pow(1.28)
                 return Decimal.pow(costBasesp12, costExpsp12).floor()
@@ -308,7 +335,7 @@ addLayer("sp", {
         13: {
             unlocked() {return true},
             cost(x) {
-                costBasesp13 = new Decimal(1.45)
+                costBasesp13 = new Decimal(1.45).root(buyableEffect('bp', 16))
 
                 costExpsp13 = new Decimal(x).add(1).pow(1.2)
                 return Decimal.pow(costBasesp13, costExpsp13).floor()
@@ -330,7 +357,7 @@ addLayer("sp", {
         14: {
             unlocked() {return true},
             cost(x) {
-                costBasesp14 = new Decimal(1.85)
+                costBasesp14 = new Decimal(1.85).root(buyableEffect('bp', 16))
 
                 costExpsp14 = new Decimal(x).add(1).pow(1.38)
                 return Decimal.pow(costBasesp14, costExpsp14).floor()
@@ -352,7 +379,7 @@ addLayer("sp", {
         15: {
             unlocked() {return true},
             cost(x) {
-                costBasesp15 = new Decimal(1.5)
+                costBasesp15 = new Decimal(1.5).root(buyableEffect('bp', 16))
 
                 costExpsp15 = new Decimal(x).add(1).pow(1.3)
                 return Decimal.pow(costBasesp15, costExpsp15).floor()
@@ -374,7 +401,7 @@ addLayer("sp", {
         16: {
             unlocked() {return true},
             cost(x) {
-                costBasesp16 = new Decimal(1.9)
+                costBasesp16 = new Decimal(1.9).root(buyableEffect('bp', 16))
 
                 costExpsp16 = new Decimal(x).add(1).pow(1.48)
                 return Decimal.pow(costBasesp16, costExpsp16).floor()
@@ -396,9 +423,9 @@ addLayer("sp", {
         17: {
             unlocked() {return true},
             cost(x) {
-                costBasesp17 = new Decimal(3)
+                costBasesp17 = new Decimal(3).root(buyableEffect('bp', 16))
 
-                costExpsp17 = new Decimal(1).sub(x/10).pow(-2.5)
+                costExpsp17 = new Decimal(1).sub(x/10).pow(-1.3)
                 return Decimal.pow(costBasesp17, costExpsp17).floor()
             },
             purchaseLimit: new Decimal(10),
@@ -419,9 +446,9 @@ addLayer("sp", {
         18: {
             unlocked() {return true},
             cost(x) {
-                costBasesp18 = new Decimal(4)
+                costBasesp18 = new Decimal(4).root(buyableEffect('bp', 16))
 
-                costExpsp18 = new Decimal(1).sub(x/10).pow(-3)
+                costExpsp18 = new Decimal(1).sub(x/10).pow(-1.8)
                 return Decimal.pow(costBasesp18, costExpsp18).floor()
             },
             purchaseLimit: new Decimal(10),
@@ -442,7 +469,7 @@ addLayer("sp", {
         19: {
             unlocked() {return true},
             cost(x) {
-                costBasesp19 = new Decimal(1.9)
+                costBasesp19 = new Decimal(1.9).root(buyableEffect('bp', 16))
 
                 costExpsp19 = new Decimal(x).add(1).pow(1.65).log10().pow(1.25).pow10()
                 return Decimal.pow(costBasesp19, costExpsp19).floor()
@@ -464,9 +491,9 @@ addLayer("sp", {
         21: {
             unlocked() {return true},
             cost(x) {
-                costBasesp21 = new Decimal(9)
+                costBasesp21 = new Decimal(9).root(buyableEffect('bp', 16))
 
-                costExpsp21 = new Decimal(1).sub(x/10).pow(-3.5)
+                costExpsp21 = new Decimal(1).sub(x/10).pow(-2.3)
                 return Decimal.pow(costBasesp21, costExpsp21).floor()
             },
             effect(x) {
@@ -477,7 +504,201 @@ addLayer("sp", {
             },
             purchaseLimit: new Decimal(10),
             title() { return "superprestige buyable 21"},
-            display() { return "add prestige point exponent by "+format(effBasesp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp21)+"/10 <br> effect: "+format(this.effect())},
+            display() { return "add prestige point exponent power by "+format(effBasesp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp21)+"/10 <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+    },
+})
+
+addLayer("bp", {
+    name: "buyable points", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "BP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#14dba3",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "buyable points", // Name of prestige currency
+    baseResource: "prestige buyables", // Name of resource prestige is based on
+    baseAmount() {
+        totalPB = new Decimal(0)
+        for (let i = 11; i < 18; i++) {
+            totalPB = totalPB.add(player.p.buyables[i])
+        }
+        totalPBuyables = totalPB
+        return totalPBuyables
+    }, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        addbp = new Decimal(0)
+        //addbp = addsp.add(buyableEffect('sp', 15))
+
+        multbp = new Decimal(0.025)
+        //multbp = multsp.times(buyableEffect('sp', 16))
+        return multbp
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        expbp = new Decimal(1.6)
+        //expbp = expp.times(buyableEffect('p', 16))
+
+        exp2bp = new Decimal(0.6)
+        //exp2sp = exp2sp.add(buyableEffect('p', 17))
+        return expbp
+    },
+    getResetGain() {
+        bpp = totalPBuyables.add(addbp).times(multbp).pow(expbp)
+        if (bpp.gte(1)) {bpp = bpp.log10().pow(exp2bp).pow10()}
+
+        return bpp.floor().max(0)
+    },
+    getNextAt() {
+        nextbp = getResetGain('bp').add(1)
+        if (nextbp.gte(1)) {nextbp = nextbp.log10().root(exp2bp).pow10()}
+        return nextbp.root(expbp).div(multbp).sub(addbp)
+    },
+    canReset() {return getResetGain('bp').gte(0)},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('bp'))+" buyable points. Next at "+format(getNextAt('bp'))+" prestige buyables" },
+    row: 2, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "b", description: "B: Reset for buyable points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown(){return true},
+    buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                costBasebp11 = new Decimal(1.3)
+
+                costExpbp11 = new Decimal(x).add(1).pow(1.1)
+                return Decimal.pow(costBasebp11, costExpbp11).floor()
+            },
+            effect(x) {
+                effBasebp11 = new Decimal(0.3)
+                effStackbp11 = new Decimal(x)
+
+                return Decimal.times(effBasebp11, effStackbp11)
+            },
+            title() { return "buyable buyable 11"},
+            display() { return "increase base point gain by "+format(effBasebp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp11)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                costBasebp12 = new Decimal(1.7)
+
+                costExpbp12 = new Decimal(x).add(1).pow(1.28)
+                return Decimal.pow(costBasebp12, costExpbp12).floor()
+            },
+            effect(x) {
+                effBasebp12 = new Decimal(1.3)
+                effStackbp12 = new Decimal(x)
+
+                return Decimal.pow(effBasebp12, effStackbp12)
+            },
+            title() { return "buyable buyable 12"},
+            display() { return "multiply base point gain by "+format(effBasebp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp12)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        13: {
+            unlocked() {return true},
+            cost(x) {
+                costBasebp13 = new Decimal(4)
+
+                costExpbp13 = new Decimal(1).sub(x/10).pow(-1.3)
+                return Decimal.pow(costBasebp13, costExpbp13).floor()
+            },
+            purchaseLimit: new Decimal(10),
+            effect(x) {
+                effBasebp13 = new Decimal(0.1)
+                effStackbp13 = new Decimal(x)
+
+                return Decimal.times(effBasebp13, effStackbp13)
+            },
+            title() { return "buyable buyable 13"},
+            display() { return "reduce the first point softcap strength by "+format(effBasebp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp13)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        14: {
+            unlocked() {return true},
+            cost(x) {
+                costBasebp14 = new Decimal(6)
+
+                costExpbp14 = new Decimal(1).sub(x/10).pow(-1.8)
+                return Decimal.pow(costBasebp14, costExpbp14).floor()
+            },
+            purchaseLimit: new Decimal(10),
+            effect(x) {
+                effBasebp14 = new Decimal(0.1)
+                effStackbp14 = new Decimal(x)
+
+                return Decimal.times(effBasebp14, effStackbp14)
+            },
+            title() { return "buyable buyable 14"},
+            display() { return "reduce the second point softcap strength by "+format(effBasebp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp13)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        15: {
+            unlocked() {return true},
+            cost(x) {
+                costBasebp15 = new Decimal(1.75)
+
+                costExpbp15 = new Decimal(x).add(1).pow(1.75)
+                return Decimal.pow(costBasebp15, costExpbp15).floor()
+            },
+            effect(x) {
+                effBasebp15 = new Decimal(1.1)
+                effStackbp15 = new Decimal(x)
+
+                return Decimal.pow(effBasebp15, effStackbp15)
+            },
+            title() { return "buyable buyable 15"},
+            display() { return "root the prestige buyables cost by "+format(effBasebp15)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp15)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        16: {
+            unlocked() {return true},
+            cost(x) {
+                costBasebp16 = new Decimal(2)
+
+                costExpbp16 = new Decimal(x).add(1).pow(1.75)
+                return Decimal.pow(costBasebp16, costExpbp16).floor()
+            },
+            effect(x) {
+                effBasebp16 = new Decimal(1.1)
+                effStackbp16 = new Decimal(x)
+
+                return Decimal.pow(effBasebp16, effStackbp16)
+            },
+            title() { return "buyable buyable 16"},
+            display() { return "root the superprestige buyables cost by "+format(effBasebp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp16)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())

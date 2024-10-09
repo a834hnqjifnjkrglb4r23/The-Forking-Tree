@@ -45,16 +45,21 @@ function getPointGen() {
 	let gain = new Decimal(1)
 	gain = gain.add(buyableEffect('p', 11))
 	gain = gain.add(buyableEffect('sp', 11))
+	gain = gain.add(buyableEffect('bp', 11))
 	gain = gain.times(buyableEffect('p', 12))
+	gain = gain.times(buyableEffect('sp', 12))
+	gain = gain.times(buyableEffect('bp', 12))
 
 
 	firstSoftcapStrength = new Decimal(6)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 15))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 17))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
 	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
 
 	secondSoftcapStrength = new Decimal(10)
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 18))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(20))}
