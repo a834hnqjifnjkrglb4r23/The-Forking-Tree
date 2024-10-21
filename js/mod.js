@@ -60,8 +60,6 @@ function addedPlayerData() { return {
 	},
 	totalGameTime() {
 		totalRealTime = new Decimal(10)  
-		if (hasUpgrade('ik', 33)){totalRealTime = totalRealTime.add(upgradeEffect('ik', 33))}
-		if (hasUpgrade('ik', 43)){totalRealTime = totalRealTime.add(upgradeEffect('ik', 43))}
 
  		if (hasUpgrade('p', 13)){totalRealTime = totalRealTime.add(upgradeEffect('p', 13))}
 		if (hasUpgrade('p', 23)){totalRealTime = totalRealTime.add(upgradeEffect('p', 23))}
@@ -95,7 +93,7 @@ function addedPlayerData() { return {
 		seed1 = seed1 + 100
 		seed2 = format(player.p.points).slice(-2) * 1 + 100
 		if (buyableEffect('q', 11).eq(0)) {seed3 = format(player.points.sub(player.points.floor()).times(100).div(player.gamespeed()).floor(), 0)} else if (format(buyableEffect('q', 11))==='-0.33') {seed3 = format(player.points.sub(player.points.div(100).floor().times(100)).div(player.gamespeed()).floor(), 0)} else {seed3 = 1}
-		return new Decimal(1000).pentate((seed1 * seed2 * seed3 % 541) / 618 + 1.2) //we do a bit trolling with this one
+		return new Decimal(1000).pentate(((seed1 + seed2 + seed3) % 541) / 618 + 1.2) //we do a bit of trolling with this one
 	}
 
 }}
