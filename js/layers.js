@@ -5,6 +5,7 @@ addLayer("j", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
+        clickedAmount: 0,
     }},
     color: "#e6d200",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
@@ -18,10 +19,17 @@ addLayer("j", {
     doReset(resettingLayer) {
         return;
     },
-
     buyables: {
-
+    },
+    clickables: {
+        11: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+            }
+        }
     }
+
 })
 
 addLayer("p", {
