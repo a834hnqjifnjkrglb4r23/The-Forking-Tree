@@ -12,6 +12,11 @@ addLayer("j", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {
         if (typeof(lastClickedTime)=="undefined") {lastClickedTime = Date.now()}
+        if (getClickableState('j', 11) == '') {setClickableState('j', 11, 0)}
+        if (getClickableState('j', 12) == '') {setClickableState('j', 12, 0)}
+        if (getClickableState('j', 13) == '') {setClickableState('j', 13, 0)}
+        if (getClickableState('j', 14) == '') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
+        if (getClickableState('j', 15) == '') {setClickableState('j', 15, 0)}
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
@@ -20,6 +25,11 @@ addLayer("j", {
     doReset(resettingLayer) {
         return;
     },
+    infoboxes: {
+        11: {
+            body() {return "you have $"+format(player.j.points, 2)+" left"}
+        }
+    }, 
     buyables: {
         11: {
             unlocked() {return true},
@@ -27,23 +37,53 @@ addLayer("j", {
                 return Decimal.dZero
             },
             effect(x) {
-                wages = 7.25
+                wages = 11.75 + getClickableState('j', 15)
                 clicksPerHour = 4800
                 owedMoney = Math.floor(getClickableState('j', 11)*wages/clicksPerHour*100)/100
                 return Decimal.dZero
             },
             title() { return "get paid for all the work you did"},
-            display() { return "you have clicked "+getClickableState('j', 11)+" times <br> your wages are $"+wages+" per "+clicksPerHour+" clicks <br> you are owed $"+owedMoney+"<br> you may get a payday after "+timeUntilPayday+" seconds"},
+            display() { return "you have clicked "+getClickableState('j', 11)+" times <br> your wages are $"+wages.toFixed(2)+" per "+clicksPerHour+" clicks <br> you are owed $"+owedMoney+"<br> you may get a payday after "+timeUntilPayday+" seconds"},
             canAfford() { 
-                if (typeof(lastPaydayTime)=="undefined") {lastPaydayTime = 0}
-                nextPaydayTime = lastPaydayTime + 86400
-                timeUntilPayday = Math.max(nextPaydayTime - Date.now(), 0)
-                
-                return (timeUntilPayday == 0) },
+                nextPaydayTime = getClickableState('j', 12) + 1000
+                timeUntilPayday = Math.ceil(Math.max(nextPaydayTime - Date.now(), 0)/1000)
+                return timeUntilPayday == 0},
             buy() {
                 player[this.layer].points = player[this.layer].points.add(owedMoney)
+                clicksToBeTotalled = getClickableState('j', 11)
                 setClickableState('j', 11, 0)
-                lastPaydayTime = Date.now()
+                setClickableState('j', 12, Date.now())
+
+                if (getClickableState('j', 14) == Math.floor((Date.now()-342000000)/604800000)) {setClickableState('j', 13, getClickableState('j', 13)+clicksToBeTotalled)} else {setClickableState('j', 13, clicksToBeTotalled)}
+                setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))
+                
+                //states:
+                //11 is the amount of clicks unpaid
+                //12 is the last time player got paid
+                //13 is the amount of total paid clicks this week
+                //14 is the week number 
+                //15 is the raise
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dZero
+            },
+            effect(x) {
+                clicksGoal = getClickableState('j', 15) * 4800
+                raiseChance = Math.tanh(getClickableState('j', 13)/4800-getClickableState('j', 15))
+
+                return Decimal.dZero
+            },
+            title() { return "apply for a 25c raise"},
+            display() { return "you have clicked "+getClickableState('j', 13)+" times this week <br> your productivity goal is "+clicksGoal+" clicks each week <br> if you apply for a raise now, there's a "+Math.floor(raiseChance*10000)/100+"% chance you'll get it"},
+            canAfford() { 
+                return true},
+            buy() {
+                if (Math.random() <= raiseChance) {setClickableState('j', 15, getClickableState('j', 15)+0.25)}
+                setClickableState('j', 13, 0)
+                
             },
         },
     },
@@ -53,7 +93,7 @@ addLayer("j", {
             onClick() {
                 
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 0}
         },
@@ -61,7 +101,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 1}
         },
@@ -69,7 +109,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 2}
         },
@@ -77,7 +117,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 3}
         },
@@ -85,7 +125,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 4}
         },
@@ -93,7 +133,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 5}
         },
@@ -101,7 +141,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 6}
         },
@@ -109,7 +149,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 7}
         },
@@ -117,7 +157,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 8}
         },
@@ -125,7 +165,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 9}
         },
@@ -133,7 +173,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 10}
         },
@@ -141,7 +181,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 11}
         },
@@ -149,7 +189,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 12}
         },
@@ -157,7 +197,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 13}
         },
@@ -165,7 +205,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 14}
         },
@@ -173,7 +213,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 15}
         },
@@ -181,7 +221,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 16}
         },
@@ -189,7 +229,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 17}
         },
@@ -197,7 +237,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 18}
         },
@@ -205,7 +245,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 19}
         },
@@ -213,7 +253,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 20}
         },
@@ -221,7 +261,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 21}
         },
@@ -229,7 +269,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 22}
         },
@@ -237,7 +277,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 23}
         },
@@ -245,7 +285,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 24}
         },
@@ -253,7 +293,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 25}
         },
@@ -261,12 +301,11 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+                setClickableState('j', 11, getClickableState('j', 11)+1)
             },
             canClick() {return lastClickedTime % 27 == 26}
         },
     }
-
 })
 
 addLayer("p", {
@@ -286,21 +325,21 @@ addLayer("p", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addp = new Decimal(0)
         addp = addp.add(buyableEffect('p', 13))
-        addp = addp.add(buyableEffect('sp', 13))
+        addp = addp.add(buyableEffect('mp', 13))
 
         multp = new Decimal(1)
         multp = multp.times(buyableEffect('p', 14))
-        multp = multp.times(buyableEffect('sp', 14))
+        multp = multp.times(buyableEffect('mp', 14))
         return multp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         expp = new Decimal(1)
         expp = expp.add(buyableEffect('p', 16))
-        expp = expp.add(buyableEffect('sp', 19))
+        expp = expp.add(buyableEffect('mp', 19))
 
         exp2p = new Decimal(0.6)
         exp2p = exp2p.add(buyableEffect('p', 17))
-        exp2p = exp2p.add(buyableEffect('sp', 21))
+        exp2p = exp2p.add(buyableEffect('mp', 21))
         return expp
     },
     getResetGain() {
@@ -483,9 +522,9 @@ addLayer("p", {
     },
 })
 
-addLayer("sp", {
-    name: "superprestige", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "SP", // This appears on the layer's node. Default is the id with the first letter capitalized
+addLayer("mp", {
+    name: "metaprestige", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "MP", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -493,16 +532,16 @@ addLayer("sp", {
     }},
     color: "#3ba80f",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
-    resource: "superprestige points", // Name of prestige currency
+    resource: "metaprestige points", // Name of prestige currency
     baseResource: "prestige points", // Name of resource prestige is based on
     baseAmount() {return player.p.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addsp = new Decimal(0)
-        addsp = addsp.add(buyableEffect('sp', 15))
+        addsp = addsp.add(buyableEffect('mp', 15))
 
         multsp = new Decimal(0.01)
-        multsp = multsp.times(buyableEffect('sp', 16))
+        multsp = multsp.times(buyableEffect('mp', 16))
         return multsp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -520,16 +559,16 @@ addLayer("sp", {
         return spp.floor().max(0)
     },
     getNextAt() {
-        nextsp = getResetGain('sp').add(1)
+        nextsp = getResetGain('mp').add(1)
         if (nextsp.gte(1)) {nextsp = nextsp.log10().root(exp2sp).pow10()}
         return nextsp.root(expsp).div(multsp).sub(addsp)
     },
-    canReset() {return getResetGain('sp').gte(0)},
+    canReset() {return getResetGain('mp').gte(0)},
     prestigeNotify() {return true},
-    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('sp'))+" superprestige points. Next at "+format(getNextAt('sp'))+" prestige points" },
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('mp'))+" metaprestige points. Next at "+format(getNextAt('mp'))+" prestige points" },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "s", description: "S: Reset for superprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "s", description: "S: Reset for metaprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
     buyables: {
@@ -547,7 +586,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp11, effStacksp11)
             },
-            title() { return "superprestige buyable 11"},
+            title() { return "metaprestige buyable 11"},
             display() { return "increase base point gain by "+format(effBasesp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp11)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -569,7 +608,7 @@ addLayer("sp", {
 
                 return Decimal.pow(effBasesp12, effStacksp12)
             },
-            title() { return "superprestige buyable 12"},
+            title() { return "metaprestige buyable 12"},
             display() { return "multiply base point gain by "+format(effBasesp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp12)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -591,7 +630,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp13, effStacksp13)
             },
-            title() { return "superprestige buyable 13"},
+            title() { return "metaprestige buyable 13"},
             display() { return "add base prestige point gain by "+format(effBasesp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp13)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -613,7 +652,7 @@ addLayer("sp", {
 
                 return Decimal.pow(effBasesp14, effStacksp14)
             },
-            title() { return "superprestige buyable 14"},
+            title() { return "metaprestige buyable 14"},
             display() { return "multiply prestige point gain by "+format(effBasesp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp16)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -635,8 +674,8 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp15, effStacksp15)
             },
-            title() { return "superprestige buyable 15"},
-            display() { return "add base superprestige point gain by "+format(effBasesp15)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp15)+" <br> effect: "+format(this.effect())},
+            title() { return "metaprestige buyable 15"},
+            display() { return "add base metaprestige point gain by "+format(effBasesp15)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp15)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -657,8 +696,8 @@ addLayer("sp", {
 
                 return Decimal.pow(effBasesp16, effStacksp16)
             },
-            title() { return "superprestige buyable 16"},
-            display() { return "multiply superprestige point gain by "+format(effBasesp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp16)+" <br> effect: "+format(this.effect())},
+            title() { return "metaprestige buyable 16"},
+            display() { return "multiply metaprestige point gain by "+format(effBasesp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp16)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -680,7 +719,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp17, effStacksp17)
             },
-            title() { return "superprestige buyable 17"},
+            title() { return "metaprestige buyable 17"},
             display() { return "reduce the first point softcap strength by "+format(effBasesp17)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp17)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -703,7 +742,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp18, effStacksp18)
             },
-            title() { return "superprestige buyable 18"},
+            title() { return "metaprestige buyable 18"},
             display() { return "reduce the second point softcap strength by "+format(effBasesp18)+" <br> cost: "+format(this.cost())+"/10 <br> owned: "+format(effStacksp18)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -725,7 +764,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp19, effStacksp19)
             },
-            title() { return "superprestige buyable 19"},
+            title() { return "metaprestige buyable 19"},
             display() { return "add prestige point exponent by "+format(effBasesp19)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp19)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -748,7 +787,7 @@ addLayer("sp", {
                 return Decimal.times(effBasesp21, effStacksp21)
             },
             purchaseLimit: new Decimal(10),
-            title() { return "superprestige buyable 21"},
+            title() { return "metaprestige buyable 21"},
             display() { return "add prestige point exponent power by "+format(effBasesp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp21)+"/10 <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -782,10 +821,10 @@ addLayer("bp", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addbp = new Decimal(0)
-        //addbp = addsp.add(buyableEffect('sp', 15))
+        //addbp = addsp.add(buyableEffect('mp', 15))
 
         multbp = new Decimal(0.025)
-        //multbp = multsp.times(buyableEffect('sp', 16))
+        //multbp = multsp.times(buyableEffect('mp', 16))
         return multbp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -943,7 +982,7 @@ addLayer("bp", {
                 return Decimal.pow(effBasebp16, effStackbp16)
             },
             title() { return "buyable buyable 16"},
-            display() { return "root the superprestige buyables cost by "+format(effBasebp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp16)+" <br> effect: "+format(this.effect())},
+            display() { return "root the metaprestige buyables cost by "+format(effBasebp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp16)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
