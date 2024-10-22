@@ -5,13 +5,14 @@ addLayer("j", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
-        clickedAmount: 0,
     }},
     color: "#e6d200",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "money", // Name of prestige currency
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    canReset() {return false},
+    canReset() {
+        if (typeof(lastClickedTime)=="undefined") {lastClickedTime = Date.now()}
+        return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
     row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -20,14 +21,250 @@ addLayer("j", {
         return;
     },
     buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dZero
+            },
+            effect(x) {
+                wages = 7.25
+                clicksPerHour = 4800
+                owedMoney = Math.floor(getClickableState('j', 11)*wages/clicksPerHour*100)/100
+                return Decimal.dZero
+            },
+            title() { return "get paid for all the work you did"},
+            display() { return "you have clicked "+getClickableState('j', 11)+" times <br> your wages are $"+wages+" per "+clicksPerHour+" clicks <br> you are owed $"+owedMoney+"<br> you may get a payday after "+timeUntilPayday+" seconds"},
+            canAfford() { 
+                if (typeof(lastPaydayTime)=="undefined") {lastPaydayTime = 0}
+                nextPaydayTime = lastPaydayTime + 86400
+                timeUntilPayday = Math.max(nextPaydayTime - Date.now(), 0)
+                
+                return (timeUntilPayday == 0) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.add(owedMoney)
+                setClickableState('j', 11, 0)
+                lastPaydayTime = Date.now()
+            },
+        },
     },
     clickables: {
         11: {
             display: "click me",
             onClick() {
+                
                 lastClickedTime = Date.now()
-            }
-        }
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 0}
+        },
+        12: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 1}
+        },
+        13: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 2}
+        },
+        14: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 3}
+        },
+        15: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 4}
+        },
+        16: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 5}
+        },
+        17: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 6}
+        },
+        18: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 7}
+        },
+        19: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 8}
+        },
+        21: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 9}
+        },
+        22: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 10}
+        },
+        23: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 11}
+        },
+        24: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 12}
+        },
+        25: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 13}
+        },
+        26: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 14}
+        },
+        27: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 15}
+        },
+        28: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 16}
+        },
+        29: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 17}
+        },
+        31: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 18}
+        },
+        32: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 19}
+        },
+        33: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 20}
+        },
+        34: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 21}
+        },
+        35: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 22}
+        },
+        36: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 23}
+        },
+        37: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 24}
+        },
+        38: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 25}
+        },
+        39: {
+            display: "click me",
+            onClick() {
+                lastClickedTime = Date.now()
+                if (getClickableState('j', 11) == '') {setClickableState('j', 11, 1)} else {setClickableState('j', 11, getClickableState('j', 11)+1)}
+            },
+            canClick() {return lastClickedTime % 27 == 26}
+        },
     }
 
 })
@@ -57,7 +294,7 @@ addLayer("p", {
         return multp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expp = new Decimal(3)
+        expp = new Decimal(1)
         expp = expp.add(buyableEffect('p', 16))
         expp = expp.add(buyableEffect('sp', 19))
 
