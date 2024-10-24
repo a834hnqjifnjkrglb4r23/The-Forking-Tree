@@ -8,7 +8,7 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
-	offlineLimit: 168,  // In hours
+	offlineLimit: 672,  // In hours
 }
 
 // Set your version in num and name
@@ -46,20 +46,23 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('p', 11))
 	gain = gain.add(buyableEffect('mp', 11))
 	gain = gain.add(buyableEffect('bp', 11))
+	gain = gain.add(buyableEffect('sp', 11))
 	gain = gain.times(buyableEffect('p', 12))
 	gain = gain.times(buyableEffect('mp', 12))
 	gain = gain.times(buyableEffect('bp', 12))
-
+	gain = gain.times(buyableEffect('sp', 12))
 
 	firstSoftcapStrength = new Decimal(6)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 15))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 17))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 19))
 	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
 
 	secondSoftcapStrength = new Decimal(10)
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 18))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 21))
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(20))}

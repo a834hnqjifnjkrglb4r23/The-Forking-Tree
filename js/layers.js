@@ -308,10 +308,259 @@ addLayer("j", {
     }
 })
 
+addLayer("sj", {
+    name: "superjob", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "SJ", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#c08c8c",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "nothing", // Name of prestige currency
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    canReset() {
+        if (typeof(lastClickedTimeS)=="undefined") {lastClickedTimeS = Date.now()}
+        return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "This layer cannot be reset" },
+    row: 0, // Row the layer is in on the tree (0 is the first row)
+    layerShown(){return true},
+    doReset(resettingLayer) {
+        return;
+    },
+    infoboxes: {
+        11: {
+            body() {return "each click in the superjob counts as 14 clicks in the job"}
+        }
+    }, 
+    buyables: {
+    },
+    clickables: {
+        11: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 0}
+        },
+        12: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 1}
+        },
+        13: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 2}
+        },
+        14: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 3}
+        },
+        15: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 4}
+        },
+        16: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 5}
+        },
+        17: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 6}
+        },
+        18: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 7}
+        },
+        19: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 8}
+        },
+        21: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 9}
+        },
+        22: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 10}
+        },
+        23: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 11}
+        },
+        24: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 12}
+        },
+        25: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 13}
+        },
+        26: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 14}
+        },
+        27: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 15}
+        },
+        28: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 16}
+        },
+        29: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 17}
+        },
+        31: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 18}
+        },
+        32: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 19}
+        },
+        33: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 20}
+        },
+        34: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 21}
+        },
+        35: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 22}
+        },
+        36: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 23}
+        },
+        37: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 24}
+        },
+        38: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 25}
+        },
+        39: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+14)
+            },
+            canClick() {return lastClickedTimeS % 27 == 26}
+        },
+    }
+})
+
 addLayer("g", {
     name: "in-game shop", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "G", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
@@ -324,12 +573,7 @@ addLayer("g", {
     prestigeNotify() {return true},
     row: 0, // Row the layer is in on the tree (0 is the first row)
     doReset(resettingLayer) {
-        if (layers[resettingLayer].row > 1.5) {setBuyableAmount('g', 51, Decimal.dZero)}
-        if (layers[resettingLayer].row > 1.5) {setBuyableAmount('g', 52, Decimal.dZero)}
-        if (layers[resettingLayer].row > 1.5) {setBuyableAmount('g', 53, Decimal.dZero)}
-        if (layers[resettingLayer].row > 2.5) {setBuyableAmount('g', 61, Decimal.dZero)}
-        if (layers[resettingLayer].row > 2.5) {setBuyableAmount('g', 62, Decimal.dZero)}
-        if (layers[resettingLayer].row > 2.5) {setBuyableAmount('g', 63, Decimal.dZero)}
+
         return;
     },
     layerShown(){return true},
@@ -576,7 +820,7 @@ addLayer("g", {
             buy() {
                 const timelapseobject1 = {remain: 3600}
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                player.offTime = timelapseobject1
+                if (typeof(player.offTime) == "undefined") {player.offTime = timelapseobject1} else {player.offTime.remain += 3600}
             },
         },
         42: {
@@ -584,20 +828,20 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(50)
+                return new Decimal(400)
             },
             effect(x) {
 
 
                 return new Decimal(4)
             },
-            title() { return "4 hour timelapse"},
+            title() { return "24 hour timelapse"},
             display() { return "instantly gain "+format(this.effect(), 0)+" hours of offline time but loses currently owned offline time <br> cost: "+format(this.cost())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                const timelapseobject2 = {remain: 14400}
+                const timelapseobject2 = {remain: 86400}
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                player.offTime = timelapseobject2
+                if (typeof(player.offTime) == "undefined") {player.offTime = timelapseobject2} else {player.offTime.remain += 14400}
             },
         },
         43: {
@@ -605,20 +849,20 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(150)
+                return new Decimal(2000)
             },
             effect(x) {
 
 
-                return new Decimal(24)
+                return new Decimal(168)
             },
-            title() { return "24 hour timelapse"},
+            title() { return "168 hour timelapse"},
             display() { return "instantly gain "+format(this.effect(), 0)+" hours of offline time but loses currently owned offline time <br> cost: "+format(this.cost())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
-                const timelapseobject3 = {remain: 86400}
+                const timelapseobject3 = {remain: 604800}
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                player.offTime = timelapseobject3
+                if (typeof(player.offTime) == "undefined") {player.offTime = timelapseobject3} else {player.offTime.remain += 604800}
             },
         },
         51: {
@@ -626,60 +870,20 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(50).add(x*10)
+                return new Decimal(1)
             },
             effect(x) {
 
 
                 return new Decimal(2)
             },
-            title() { return "double prestige points"},
-            display() { return "instantly double your prestige points  <br> cost: "+format(this.cost())},
+            title() { return "instant prestige"},
+            display() { return "instantly gain your prestige points on prestige <br> cost: "+format(this.cost())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                addPoints('p', player.p.points)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            },
-        },
-        52: {
-            unlocked() {return true},
-            cost(x) {
-                
+                addPoints('p', getResetGain('p'))
 
-                return new Decimal(50).add(x*10)
-            },
-            effect(x) {
-
-
-                return new Decimal(2)
-            },
-            title() { return "free prestige buyable 16"},
-            display() { return "instantly get 1 free level on prestige buyable 16 that loses on reset <br> cost: "+format(this.cost())},
-            canAfford() { return player[this.layer].points.gte(this.cost()) },
-            buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            },
-        },
-        53: {
-            unlocked() {return true},
-            cost(x) {
-                
-
-                return new Decimal(50).add(x*10)
-            },
-            effect(x) {
-
-
-                return new Decimal(2)
-            },
-            title() { return "free prestige buyable 17"},
-            display() { return "instantly get 1 free level on prestige buyable 17 that loses on reset <br> cost: "+format(this.cost())},
-            canAfford() { return player[this.layer].points.gte(this.cost()) },
-            buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
         },
         61: {
@@ -687,20 +891,19 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(100).add(x*20)
+                return new Decimal(10)
             },
             effect(x) {
 
 
                 return new Decimal(2)
             },
-            title() { return "double metaprestige points"},
-            display() { return "instantly double your metaprestige points  <br> cost: "+format(this.cost())},
+            title() { return "instant metaprestige"},
+            display() { return "instantly gain your metaprestige points on metaprestige <br> cost: "+format(this.cost())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                addPoints('mp', player.mp.points)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                addPoints('mp', getResetGain('mp'))
             },
         },
         62: {
@@ -708,20 +911,19 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(100).add(x*20)
+                return new Decimal(11)
             },
             effect(x) {
 
 
                 return new Decimal(2)
             },
-            title() { return "double buyable points"},
-            display() { return "instantly double your buyable points  <br> cost: "+format(this.cost())},
+            title() { return "instant buyable points"},
+            display() { return "instantly gain your buyable points on buyable <br> cost: "+format(this.cost())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                addPoints('bp', player.bp.points)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                addPoints('bp', getResetGain('bp'))
             },
         },
         63: {
@@ -729,20 +931,19 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(100).add(x*20)
+                return new Decimal(12)
             },
             effect(x) {
 
 
                 return new Decimal(2)
             },
-            title() { return "double superprestige points"},
-            display() { return "instantly double your superprestige points  <br> cost: "+format(this.cost())},
+            title() { return "instant superprestige"},
+            display() { return "instantly gain your superprestige points on superprestige <br> cost: "+format(this.cost())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
-                addPoints('sp', player.sp.points)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                addPoints('sp', getResetGain('sp'))
             },
         },
     },
@@ -766,21 +967,25 @@ addLayer("p", {
         addp = new Decimal(0)
         addp = addp.add(buyableEffect('p', 13))
         addp = addp.add(buyableEffect('mp', 13))
+        addp = addp.add(buyableEffect('sp', 13))
 
         multp = new Decimal(2.5)
         multp = multp.times(buyableEffect('p', 14))
         multp = multp.times(buyableEffect('mp', 14))
+        multp = multp.times(buyableEffect('sp', 14))  
         return multp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         expp = new Decimal(1)
         expp = expp.add(buyableEffect('p', 16))
         expp = expp.add(buyableEffect('mp', 19))
+        expp = expp.add(buyableEffect('sp', 22))
 
         exp2p = new Decimal(0.6)
         exp2p = exp2p.add(buyableEffect('p', 17))
         exp2p = exp2p.add(buyableEffect('mp', 21))
-        exp2p = exp2p.min(1)
+        exp2p = exp2p.add(buyableEffect('sp', 23))
+
         return expp
     },
     getResetGain() {
@@ -980,9 +1185,11 @@ addLayer("mp", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addmp = new Decimal(0)
         addmp = addmp.add(buyableEffect('mp', 15))
+        addmp = addmp.add(buyableEffect('sp', 15))
 
         multmp = new Decimal(0.01)
         multmp = multmp.times(buyableEffect('mp', 16))
+        multmp = multmp.times(buyableEffect('sp', 16))
         return multmp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1009,26 +1216,26 @@ addLayer("mp", {
     prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('mp'))+" metaprestige points. Next at "+format(getNextAt('mp'))+" prestige points" },
     row: 2, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "s", description: "S: Reset for metaprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "m", description: "M: Reset for metaprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     layerShown(){return true},
     buyables: {
         11: {
             unlocked() {return true},
             cost(x) {
-                costBasesp11 = new Decimal(1.4).root(buyableEffect('bp', 16))
+                costBasemp11 = new Decimal(1.4).root(buyableEffect('bp', 16))
 
-                costExpsp11 = new Decimal(x).add(1).pow(1.1)
-                return Decimal.pow(costBasesp11, costExpsp11).floor()
+                costExpmp11 = new Decimal(x).add(1).pow(1.1)
+                return Decimal.pow(costBasemp11, costExpmp11).floor()
             },
             effect(x) {
-                effBasesp11 = new Decimal(0.3)
-                effStacksp11 = new Decimal(x)
+                effBasemp11 = new Decimal(0.3)
+                effStackmp11 = new Decimal(x)
 
-                return Decimal.times(effBasesp11, effStacksp11)
+                return Decimal.times(effBasemp11, effStackmp11)
             },
             title() { return "metaprestige buyable 11"},
-            display() { return "increase base point gain by "+format(effBasesp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp11)+" <br> effect: "+format(this.effect())},
+            display() { return "increase base point gain by "+format(effBasemp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp11)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1038,19 +1245,19 @@ addLayer("mp", {
         12: {
             unlocked() {return true},
             cost(x) {
-                costBasesp12 = new Decimal(1.8).root(buyableEffect('bp', 16))
+                costBasemp12 = new Decimal(1.8).root(buyableEffect('bp', 16))
 
-                costExpsp12 = new Decimal(x).add(1).pow(1.28)
-                return Decimal.pow(costBasesp12, costExpsp12).floor()
+                costExpmp12 = new Decimal(x).add(1).pow(1.28)
+                return Decimal.pow(costBasemp12, costExpmp12).floor()
             },
             effect(x) {
-                effBasesp12 = new Decimal(1.3)
-                effStacksp12 = new Decimal(x)
+                effBasemp12 = new Decimal(1.3)
+                effStackmp12 = new Decimal(x)
 
-                return Decimal.pow(effBasesp12, effStacksp12)
+                return Decimal.pow(effBasemp12, effStackmp12)
             },
             title() { return "metaprestige buyable 12"},
-            display() { return "multiply base point gain by "+format(effBasesp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp12)+" <br> effect: "+format(this.effect())},
+            display() { return "multiply base point gain by "+format(effBasemp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp12)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1060,19 +1267,19 @@ addLayer("mp", {
         13: {
             unlocked() {return true},
             cost(x) {
-                costBasesp13 = new Decimal(1.45).root(buyableEffect('bp', 16))
+                costBasemp13 = new Decimal(1.45).root(buyableEffect('bp', 16))
 
-                costExpsp13 = new Decimal(x).add(1).pow(1.2)
-                return Decimal.pow(costBasesp13, costExpsp13).floor()
+                costExpmp13 = new Decimal(x).add(1).pow(1.2)
+                return Decimal.pow(costBasemp13, costExpmp13).floor()
             },
             effect(x) {
-                effBasesp13 = new Decimal(0.2)
-                effStacksp13 = new Decimal(x)
+                effBasemp13 = new Decimal(0.2)
+                effStackmp13 = new Decimal(x)
 
-                return Decimal.times(effBasesp13, effStacksp13)
+                return Decimal.times(effBasemp13, effStackmp13)
             },
             title() { return "metaprestige buyable 13"},
-            display() { return "add base prestige point gain by "+format(effBasesp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp13)+" <br> effect: "+format(this.effect())},
+            display() { return "add base prestige point gain by "+format(effBasemp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp13)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1082,19 +1289,19 @@ addLayer("mp", {
         14: {
             unlocked() {return true},
             cost(x) {
-                costBasesp14 = new Decimal(1.85).root(buyableEffect('bp', 16))
+                costBasemp14 = new Decimal(1.85).root(buyableEffect('bp', 16))
 
-                costExpsp14 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasesp14, costExpsp14).floor()
+                costExpmp14 = new Decimal(x).add(1).pow(1.38)
+                return Decimal.pow(costBasemp14, costExpmp14).floor()
             },
             effect(x) {
-                effBasesp14 = new Decimal(1.2)
-                effStacksp14 = new Decimal(x)
+                effBasemp14 = new Decimal(1.2)
+                effStackmp14 = new Decimal(x)
 
-                return Decimal.pow(effBasesp14, effStacksp14)
+                return Decimal.pow(effBasemp14, effStackmp14)
             },
             title() { return "metaprestige buyable 14"},
-            display() { return "multiply prestige point gain by "+format(effBasesp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp16)+" <br> effect: "+format(this.effect())},
+            display() { return "multiply prestige point gain by "+format(effBasemp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp16)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1104,19 +1311,19 @@ addLayer("mp", {
         15: {
             unlocked() {return true},
             cost(x) {
-                costBasesp15 = new Decimal(1.5).root(buyableEffect('bp', 16))
+                costBasemp15 = new Decimal(1.5).root(buyableEffect('bp', 16))
 
-                costExpsp15 = new Decimal(x).add(1).pow(1.3)
-                return Decimal.pow(costBasesp15, costExpsp15).floor()
+                costExpmp15 = new Decimal(x).add(1).pow(1.3)
+                return Decimal.pow(costBasemp15, costExpmp15).floor()
             },
             effect(x) {
-                effBasesp15 = new Decimal(0.1)
-                effStacksp15 = new Decimal(x)
+                effBasemp15 = new Decimal(0.1)
+                effStackmp15 = new Decimal(x)
 
-                return Decimal.times(effBasesp15, effStacksp15)
+                return Decimal.times(effBasemp15, effStackmp15)
             },
             title() { return "metaprestige buyable 15"},
-            display() { return "add base metaprestige point gain by "+format(effBasesp15)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp15)+" <br> effect: "+format(this.effect())},
+            display() { return "add base metaprestige point gain by "+format(effBasemp15)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp15)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1126,19 +1333,19 @@ addLayer("mp", {
         16: {
             unlocked() {return true},
             cost(x) {
-                costBasesp16 = new Decimal(1.9).root(buyableEffect('bp', 16))
+                costBasemp16 = new Decimal(1.9).root(buyableEffect('bp', 16))
 
-                costExpsp16 = new Decimal(x).add(1).pow(1.48)
-                return Decimal.pow(costBasesp16, costExpsp16).floor()
+                costExpmp16 = new Decimal(x).add(1).pow(1.48)
+                return Decimal.pow(costBasemp16, costExpmp16).floor()
             },
             effect(x) {
-                effBasesp16 = new Decimal(1.1)
-                effStacksp16 = new Decimal(x)
+                effBasemp16 = new Decimal(1.1)
+                effStackmp16 = new Decimal(x)
 
-                return Decimal.pow(effBasesp16, effStacksp16)
+                return Decimal.pow(effBasemp16, effStackmp16)
             },
             title() { return "metaprestige buyable 16"},
-            display() { return "multiply metaprestige point gain by "+format(effBasesp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp16)+" <br> effect: "+format(this.effect())},
+            display() { return "multiply metaprestige point gain by "+format(effBasemp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp16)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1148,20 +1355,20 @@ addLayer("mp", {
         17: {
             unlocked() {return true},
             cost(x) {
-                costBasesp17 = new Decimal(3).root(buyableEffect('bp', 16))
+                costBasemp17 = new Decimal(3).root(buyableEffect('bp', 16))
 
-                costExpsp17 = new Decimal(1).sub(x/10).pow(-1.3)
-                return Decimal.pow(costBasesp17, costExpsp17).floor()
+                costExpmp17 = new Decimal(1).sub(x/10).pow(-1.3)
+                return Decimal.pow(costBasemp17, costExpmp17).floor()
             },
             purchaseLimit: new Decimal(10),
             effect(x) {
-                effBasesp17 = new Decimal(0.1)
-                effStacksp17 = new Decimal(x)
+                effBasemp17 = new Decimal(0.1)
+                effStackmp17 = new Decimal(x)
 
-                return Decimal.times(effBasesp17, effStacksp17)
+                return Decimal.times(effBasemp17, effStackmp17)
             },
             title() { return "metaprestige buyable 17"},
-            display() { return "reduce the first point softcap strength by "+format(effBasesp17)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp17)+" <br> effect: "+format(this.effect())},
+            display() { return "reduce the first point softcap strength by "+format(effBasemp17)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp17)+"/10 <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1171,20 +1378,20 @@ addLayer("mp", {
         18: {
             unlocked() {return true},
             cost(x) {
-                costBasesp18 = new Decimal(4).root(buyableEffect('bp', 16))
+                costBasemp18 = new Decimal(4).root(buyableEffect('bp', 16))
 
-                costExpsp18 = new Decimal(1).sub(x/10).pow(-1.8)
-                return Decimal.pow(costBasesp18, costExpsp18).floor()
+                costExpmp18 = new Decimal(1).sub(x/10).pow(-1.8)
+                return Decimal.pow(costBasemp18, costExpmp18).floor()
             },
             purchaseLimit: new Decimal(10),
             effect(x) {
-                effBasesp18 = new Decimal(0.1)
-                effStacksp18 = new Decimal(x)
+                effBasemp18 = new Decimal(0.1)
+                effStackmp18 = new Decimal(x)
 
-                return Decimal.times(effBasesp18, effStacksp18)
+                return Decimal.times(effBasemp18, effStackmp18)
             },
             title() { return "metaprestige buyable 18"},
-            display() { return "reduce the second point softcap strength by "+format(effBasesp18)+" <br> cost: "+format(this.cost())+"/10 <br> owned: "+format(effStacksp18)+" <br> effect: "+format(this.effect())},
+            display() { return "reduce the second point softcap strength by "+format(effBasemp18)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp18)+"/10 <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1194,19 +1401,19 @@ addLayer("mp", {
         19: {
             unlocked() {return true},
             cost(x) {
-                costBasesp19 = new Decimal(1.9).root(buyableEffect('bp', 16))
+                costBasemp19 = new Decimal(1.9).root(buyableEffect('bp', 16))
 
-                costExpsp19 = new Decimal(x).add(1).pow(1.65).log10().pow(1.25).pow10()
-                return Decimal.pow(costBasesp19, costExpsp19).floor()
+                costExpmp19 = new Decimal(x).add(1).pow(1.65).log10().pow(1.25).pow10()
+                return Decimal.pow(costBasemp19, costExpmp19).floor()
             },
             effect(x) {
-                effBasesp19 = new Decimal(0.05)
-                effStacksp19 = new Decimal(x)
+                effBasemp19 = new Decimal(0.05)
+                effStackmp19 = new Decimal(x)
 
-                return Decimal.times(effBasesp19, effStacksp19)
+                return Decimal.times(effBasemp19, effStackmp19)
             },
             title() { return "metaprestige buyable 19"},
-            display() { return "add prestige point exponent by "+format(effBasesp19)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp19)+" <br> effect: "+format(this.effect())},
+            display() { return "add prestige point exponent by "+format(effBasemp19)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp19)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1216,20 +1423,20 @@ addLayer("mp", {
         21: {
             unlocked() {return true},
             cost(x) {
-                costBasesp21 = new Decimal(9).root(buyableEffect('bp', 16))
+                costBasemp21 = new Decimal(9).root(buyableEffect('bp', 16))
 
-                costExpsp21 = new Decimal(1).sub(x/10).pow(-2.3)
-                return Decimal.pow(costBasesp21, costExpsp21).floor()
+                costExpmp21 = new Decimal(1).sub(x/10).pow(-2.3)
+                return Decimal.pow(costBasemp21, costExpmp21).floor()
             },
             effect(x) {
-                effBasesp21 = new Decimal(0.01)
-                effStacksp21 = new Decimal(x)
+                effBasemp21 = new Decimal(0.01)
+                effStackmp21 = new Decimal(x)
 
-                return Decimal.times(effBasesp21, effStacksp21)
+                return Decimal.times(effBasemp21, effStackmp21)
             },
             purchaseLimit: new Decimal(10),
             title() { return "metaprestige buyable 21"},
-            display() { return "add prestige point exponent power by "+format(effBasesp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp21)+"/10 <br> effect: "+format(this.effect())},
+            display() { return "add prestige point exponent power by "+format(effBasemp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmp21)+"/10 <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1269,7 +1476,7 @@ addLayer("bp", {
         return multbp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expbp = new Decimal(1.6)
+        expbp = new Decimal(1.5)
         //expbp = expp.times(buyableEffect('p', 16))
 
         exp2bp = new Decimal(0.6)
@@ -1356,7 +1563,7 @@ addLayer("bp", {
                 return Decimal.times(effBasebp13, effStackbp13)
             },
             title() { return "buyable buyable 13"},
-            display() { return "reduce the first point softcap strength by "+format(effBasebp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp13)+" <br> effect: "+format(this.effect())},
+            display() { return "reduce the first point softcap strength by "+format(effBasebp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp13)+"/10 <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1379,7 +1586,7 @@ addLayer("bp", {
                 return Decimal.times(effBasebp14, effStackbp14)
             },
             title() { return "buyable buyable 14"},
-            display() { return "reduce the second point softcap strength by "+format(effBasebp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp13)+" <br> effect: "+format(this.effect())},
+            display() { return "reduce the second point softcap strength by "+format(effBasebp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp13)+" <br>/10 effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1452,10 +1659,10 @@ addLayer("sp", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addsp = new Decimal(0)
-        //addbp = addsp.add(buyableEffect('mp', 15))
+        addsp = addsp.add(buyableEffect('sp', 17))
 
         multsp = new Decimal(0.333333333333333)
-        //multbp = multsp.times(buyableEffect('mp', 16))
+        multsp = multsp.times(buyableEffect('sp', 18))
         return multsp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -1486,5 +1693,272 @@ addLayer("sp", {
     ],
     layerShown(){return true},
     buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp11 = new Decimal(1.3)
+
+                costExpsp11 = new Decimal(x).add(1).pow(1.1)
+                return Decimal.pow(costBasesp11, costExpsp11).floor()
+            },
+            effect(x) {
+                effBasesp11 = new Decimal(0.3)
+                effStacksp11 = new Decimal(x)
+
+                return Decimal.times(effBasesp11, effStacksp11)
+            },
+            title() { return "superprestige buyable 11"},
+            display() { return "increase base point gain by "+format(effBasesp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp11)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp12 = new Decimal(1.7)
+
+                costExpsp12 = new Decimal(x).add(1).pow(1.28)
+                return Decimal.pow(costBasesp12, costExpsp12).floor()
+            },
+            effect(x) {
+                effBasesp12 = new Decimal(1.3)
+                effStacksp12 = new Decimal(x)
+
+                return Decimal.pow(effBasesp12, effStacksp12)
+            },
+            title() { return "superprestige buyable 12"},
+            display() { return "multiply base point gain by "+format(effBasebp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackbp12)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        13: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp13 = new Decimal(1.45)
+
+                costExpsp13 = new Decimal(x).add(1).pow(1.2)
+                return Decimal.pow(costBasesp13, costExpsp13).floor()
+            },
+            effect(x) {
+                effBasesp13 = new Decimal(0.2)
+                effStacksp13 = new Decimal(x)
+
+                return Decimal.times(effBasesp13, effStacksp13)
+            },
+            title() { return "superprestige buyable 13"},
+            display() { return "add base prestige point gain by "+format(effBasesp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp13)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        14: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp14 = new Decimal(1.85)
+
+                costExpsp14 = new Decimal(x).add(1).pow(1.38)
+                return Decimal.pow(costBasesp14, costExpsp14).floor()
+            },
+            effect(x) {
+                effBasesp14 = new Decimal(1.2)
+                effStacksp14 = new Decimal(x)
+
+                return Decimal.pow(effBasesp14, effStacksp14)
+            },
+            title() { return "superprestige buyable 14"},
+            display() { return "multiply base prestige point gain by "+format(effBasesp14)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp14)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        15: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp15 = new Decimal(1.4)
+
+                costExpsp15 = new Decimal(x).add(1).pow(1.3)
+                return Decimal.pow(costBasesp15, costExpsp15).floor()
+            },
+            effect(x) {
+                effBasesp15 = new Decimal(0.1)
+                effStacksp15 = new Decimal(x)
+
+                return Decimal.times(effBasesp15, effStacksp15)
+            },
+            title() { return "superprestige buyable 15"},
+            display() { return "add base metaprestige point gain by "+format(effBasesp15)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp15)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        16: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp16 = new Decimal(1.8)
+
+                costExpsp16 = new Decimal(x).add(1).pow(1.48)
+                return Decimal.pow(costBasesp16, costExpsp16).floor()
+            },
+            effect(x) {
+                effBasesp16 = new Decimal(1.1)
+                effStacksp16 = new Decimal(x)
+
+                return Decimal.pow(effBasesp16, effStacksp16)
+            },
+            title() { return "superprestige buyable 16"},
+            display() { return "multiply metaprestige point gain by "+format(effBasesp16)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp16)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        17: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp17 = new Decimal(1.5)
+
+                costExpsp17 = new Decimal(x).add(1).pow(1.3)
+                return Decimal.pow(costBasesp17, costExpsp17).floor()
+            },
+            effect(x) {
+                effBasesp17 = new Decimal(0.1)
+                effStacksp17 = new Decimal(x)
+
+                return Decimal.times(effBasesp17, effStacksp17)
+            },
+            title() { return "superprestige buyable 17"},
+            display() { return "add base superprestige point gain by "+format(effBasesp17)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp17)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        18: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp18 = new Decimal(1.9)
+
+                costExpsp18 = new Decimal(x).add(1).pow(1.48)
+                return Decimal.pow(costBasesp18, costExpsp18).floor()
+            },
+            effect(x) {
+                effBasesp18 = new Decimal(1.1)
+                effStacksp18 = new Decimal(x)
+
+                return Decimal.pow(effBasesp18, effStacksp18)
+            },
+            title() { return "superprestige buyable 18"},
+            display() { return "multiply superprestige point gain by "+format(effBasesp18)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp18)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        19: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp19 = new Decimal(2.5)
+
+                costExpsp19 = new Decimal(1).sub(x/10).pow(-1.3)
+                return Decimal.pow(costBasesp19, costExpsp19).floor()
+            },
+            purchaseLimit: new Decimal(10),
+            effect(x) {
+                effBasesp19 = new Decimal(0.1)
+                effStacksp19 = new Decimal(x)
+
+                return Decimal.times(effBasesp19, effStacksp19)
+            },
+            title() { return "superprestige buyable 19"},
+            display() { return "reduce the first point softcap strength by "+format(effBasesp19)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp19)+"/10 <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        21: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp21 = new Decimal(3.5)
+
+                costExpsp21 = new Decimal(1).sub(x/10).pow(-1.8)
+                return Decimal.pow(costBasesp21, costExpsp21).floor()
+            },
+            purchaseLimit: new Decimal(10),
+            effect(x) {
+                effBasesp21 = new Decimal(0.1)
+                effStacksp21 = new Decimal(x)
+
+                return Decimal.times(effBasesp21, effStacksp21)
+            },
+            title() { return "superprestige buyable 21"},
+            display() { return "reduce the second point softcap strength by "+format(effBasesp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp21)+"/10 <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        22: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp22 = new Decimal(1.8)
+
+                costExpsp22 = new Decimal(x).add(1).pow(1.65).log10().pow(1.25).pow10()
+                return Decimal.pow(costBasesp22, costExpsp22).floor()
+            },
+            effect(x) {
+                effBasesp22 = new Decimal(0.05)
+                effStacksp22 = new Decimal(x)
+
+                return Decimal.times(effBasesp22, effStacksp22)
+            },
+            title() { return "superprestige buyable 22"},
+            display() { return "add prestige point exponent by "+format(effBasesp22)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp22)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costBasesp23 = new Decimal(9).root(buyableEffect('bp', 16))
+
+                costExpsp23 = new Decimal(1).sub(x/10).pow(-2.3)
+                return Decimal.pow(costBasesp23, costExpsp23).floor()
+            },
+            effect(x) {
+                effBasesp23 = new Decimal(0.01)
+                effStacksp23 = new Decimal(x)
+
+                return Decimal.times(effBasesp23, effStacksp23)
+            },
+            purchaseLimit: new Decimal(10),
+            title() { return "superprestige buyable 23"},
+            display() { return "add prestige point exponent power by "+format(effBasesp23)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp23)+"/10 <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+        },
     },
 })
