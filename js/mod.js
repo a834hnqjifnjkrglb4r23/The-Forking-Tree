@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Trolling Tree",
-	id: "jacorb90aL3GhF8bs8NB76hGDmeqA9ZzrF",
+	id: "jacorb90aL3GhF8bs8NB76hGDmeqA9ZzrH",
 	author: "nobody",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],

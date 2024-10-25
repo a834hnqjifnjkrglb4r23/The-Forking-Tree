@@ -20,7 +20,7 @@ addLayer("j", {
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
-    row: 0, // Row the layer is in on the tree (0 is the first row)
+    row: "side", // Row the layer is in on the tree (0 is the first row)
     layerShown(){return true},
     doReset(resettingLayer) {
         return;
@@ -113,7 +113,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 2}
         },
-        14: {
+        21: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -121,7 +121,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 3}
         },
-        15: {
+        22: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -129,7 +129,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 4}
         },
-        16: {
+        23: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -137,7 +137,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 5}
         },
-        17: {
+        31: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -145,7 +145,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 6}
         },
-        18: {
+        32: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -153,7 +153,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 7}
         },
-        19: {
+        33: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -161,7 +161,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 8}
         },
-        21: {
+        41: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -169,7 +169,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 9}
         },
-        22: {
+        42: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -177,7 +177,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 10}
         },
-        23: {
+        43: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -185,7 +185,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 11}
         },
-        24: {
+        51: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -193,7 +193,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 12}
         },
-        25: {
+        52: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -201,7 +201,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 13}
         },
-        26: {
+        53: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -209,7 +209,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 14}
         },
-        27: {
+        61: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -217,7 +217,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 15}
         },
-        28: {
+        62: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -225,7 +225,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 16}
         },
-        29: {
+        63: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -233,7 +233,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 17}
         },
-        31: {
+        71: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -241,7 +241,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 18}
         },
-        32: {
+        72: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -249,7 +249,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 19}
         },
-        33: {
+        73: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -257,7 +257,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 20}
         },
-        34: {
+        81: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -265,7 +265,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 21}
         },
-        35: {
+        82: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -273,7 +273,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 22}
         },
-        36: {
+        83: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -281,7 +281,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 23}
         },
-        37: {
+        91: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -289,7 +289,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 24}
         },
-        38: {
+        92: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -297,7 +297,7 @@ addLayer("j", {
             },
             canClick() {return lastClickedTime % 27 == 25}
         },
-        39: {
+        93: {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
@@ -325,14 +325,14 @@ addLayer("sj", {
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
-    row: 0, // Row the layer is in on the tree (0 is the first row)
+    row: "side", // Row the layer is in on the tree (0 is the first row)
     layerShown(){return true},
     doReset(resettingLayer) {
         return;
     },
     infoboxes: {
         11: {
-            body() {return "each click in the superjob counts as 14 clicks in the job"}
+            body() {return "each click in the superjob counts as 5 clicks in the job"}
         }
     }, 
     buyables: {
@@ -342,7 +342,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 0}
         },
@@ -350,7 +350,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 1}
         },
@@ -358,199 +358,199 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 2}
-        },
-        14: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 3}
-        },
-        15: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 4}
-        },
-        16: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 5}
-        },
-        17: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 6}
-        },
-        18: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 7}
-        },
-        19: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 8}
         },
         21: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
-            canClick() {return lastClickedTimeS % 27 == 9}
+            canClick() {return lastClickedTimeS % 27 == 3}
         },
         22: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
-            canClick() {return lastClickedTimeS % 27 == 10}
+            canClick() {return lastClickedTimeS % 27 == 4}
         },
         23: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
-            canClick() {return lastClickedTimeS % 27 == 11}
-        },
-        24: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 12}
-        },
-        25: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 13}
-        },
-        26: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 14}
-        },
-        27: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 15}
-        },
-        28: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 16}
-        },
-        29: {
-            display: "click me",
-            onClick() {
-                lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
-            },
-            canClick() {return lastClickedTimeS % 27 == 17}
+            canClick() {return lastClickedTimeS % 27 == 5}
         },
         31: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
-            canClick() {return lastClickedTimeS % 27 == 18}
+            canClick() {return lastClickedTimeS % 27 == 6}
         },
         32: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
-            canClick() {return lastClickedTimeS % 27 == 19}
+            canClick() {return lastClickedTimeS % 27 == 7}
         },
         33: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 8}
+        },
+        41: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 9}
+        },
+        42: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 10}
+        },
+        43: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 11}
+        },
+        51: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 12}
+        },
+        52: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 13}
+        },
+        53: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 14}
+        },
+        61: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 15}
+        },
+        62: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 16}
+        },
+        63: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 17}
+        },
+        71: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 18}
+        },
+        72: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
+            },
+            canClick() {return lastClickedTimeS % 27 == 19}
+        },
+        73: {
+            display: "click me",
+            onClick() {
+                lastClickedTimeS = Date.now()
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 20}
         },
-        34: {
+        81: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 21}
         },
-        35: {
+        82: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 22}
         },
-        36: {
+        83: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 23}
         },
-        37: {
+        91: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 24}
         },
-        38: {
+        92: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 25}
         },
-        39: {
+        93: {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+14)
+                setClickableState('j', 11, getClickableState('j', 11)+5)
             },
             canClick() {return lastClickedTimeS % 27 == 26}
         },
@@ -571,7 +571,7 @@ addLayer("g", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {return false},
     prestigeNotify() {return true},
-    row: 0, // Row the layer is in on the tree (0 is the first row)
+    row: "side", // Row the layer is in on the tree (0 is the first row)
     doReset(resettingLayer) {
 
         return;
@@ -948,6 +948,7 @@ addLayer("g", {
         },
     },
 })
+
 
 addLayer("p", {
     name: "prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
