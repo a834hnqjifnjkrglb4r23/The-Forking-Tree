@@ -8,12 +8,12 @@ let modInfo = {
 	discordName: "",
 	discordLink: "",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
-	offlineLimit: 672,  // In hours
+	offlineLimit: 0,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
+	num: "0.1",
 	name: "Literally nothing",
 }
 
@@ -65,9 +65,14 @@ function getPointGen() {
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 21))
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
-	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(20))}
-	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(60))}
+	thirdSoftcapStrength = new Decimal(20)
+	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
+
+	fourthSoftcapStrength = new Decimal(60)
+	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(fourthSoftcapStrength))}
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
+
+	gain = gain.times(player.a.points.add(1))
 
 	gain = gain.min(1)
 	return gain
@@ -104,4 +109,5 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+	if (player.version == '0.0') {player.g.points = player.g.points.times(16.667).floor()}
 }
