@@ -13,14 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.1",
+	num: "0.2",
 	name: "Literally nothing",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.2</h3><br>
+		- Overhaul on some structure.<br>
+		- Added lootboxes.<br>
+	<h3>v0.1</h3><br>
+		- Gems inflation update.<br>
 	<h3>v0.0</h3><br>
-		- Added things.<br>
-		- Added stuff.`
+		- Added microtransactions.<br>
+		- Added advertisements.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -47,32 +52,40 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('mp', 11))
 	gain = gain.add(buyableEffect('bp', 11))
 	gain = gain.add(buyableEffect('sp', 11))
-	gain = gain.times(buyableEffect('p', 12))
-	gain = gain.times(buyableEffect('mp', 12))
-	gain = gain.times(buyableEffect('bp', 12))
-	gain = gain.times(buyableEffect('sp', 12))
+	gainMult = new Decimal(1)
+	gainMult = gainMult.add(buyableEffect('p', 12))
+	gainMult = gainMult.add(buyableEffect('mp', 12))
+	gainMult = gainMult.add(buyableEffect('bp', 12))
+	gainMult = gainMult.add(buyableEffect('sp', 12))
 
-	firstSoftcapStrength = new Decimal(6)
+	gain = gain.times(gainMult)
+
+	firstSoftcapStrength = new Decimal(20)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 15))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 17))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 19))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('l', 37))
 	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
 
-	secondSoftcapStrength = new Decimal(10)
+	secondSoftcapStrength = new Decimal(20)
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 18))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 21))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 38))
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
-	thirdSoftcapStrength = new Decimal(20)
+	thirdSoftcapStrength = new Decimal(30)
+	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 39))
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
 
 	fourthSoftcapStrength = new Decimal(60)
 	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(fourthSoftcapStrength))}
+
+
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
 
-	gain = gain.times(player.a.points.add(1))
+	gain = gain.times(player.a.points.add(1).pow(buyableEffect('l', 23)).add(1))
 
 	gain = gain.min(1)
 	return gain
@@ -109,5 +122,12 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
-	if (player.version == '0.0') {player.g.points = player.g.points.times(16.667).floor()}
+	if (player.version == '0.0') {player.g.points = player.g.points.times(100).floor()}
+	if (player.version == '0.1') {
+		if (player.points.gte(2)) {player.points = player.points.div(2).pow(0.5).times(2)}
+		if (player.points.gte(3)) {player.points = player.points.div(3).pow(0.1).times(3)}
+		if (player.points.gte(3.3)) {player.points = player.points.div(3.3).pow(0.1).times(3.3)
+			player.g.points = player.g.points.times(6).floor()
+		}
+	}
 }
