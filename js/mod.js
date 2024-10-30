@@ -13,7 +13,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.2.3",
+	num: "1.69.420",
 
 
 	name: "Reality Transformation",
@@ -23,9 +23,9 @@ let VERSION = {
 
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v1.2.3</h3><br>
-		- Added advertisements.<br>
-		- Added microtransactions.`
+	<h3>v1.69.420</h3><br>
+		- Added things.<br>
+		- Added stuff.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
