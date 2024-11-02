@@ -384,7 +384,7 @@ addLayer("ik", {
         44: {
             title: "integral kinematics upgrade 44",
             description: "improve integral kinematics buyable 11 effect to 1.25",
-            cost: new Decimal(1e10),
+            cost: new Decimal(1e9),
             effect() {
                 eff = new Decimal(1)
                 return eff
@@ -549,10 +549,10 @@ addLayer("e", {
         },
         24: {
             title: "energy upgrade 24",
-            description: "multiply prestige gain by (energy upgrade 21 effect)*log10(energy upgrade 21 effect)",
-            cost: new Decimal(100),
+            description: "multiply prestige upgrade 11 effect before any upgrades by its logarithm ^8",
+            cost: new Decimal(160),
             effect() {
-                eff = upgradeEffect('e', 21).log10().times(upgradeEffect('e', 21))
+                eff = new Decimal(8)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -812,7 +812,7 @@ addLayer("f", {
         },
         13: {
             title: "fire upgrade 13",
-            description: "improve integral kinematics buyables 13 to 1.5",
+            description: "improve integral kinematics buyables 13 to 1.33",
             cost: new Decimal(3),
             effect() {
                 eff = new Decimal(1)
@@ -823,10 +823,10 @@ addLayer("f", {
         },
         14: {
             title: "fire upgrade 14",
-            description: "multiply prestige point gain by log(p points)^10",
+            description: "multiply prestige point gain by log(p points)^14",
             cost: new Decimal(4),
             effect() {
-                eff = player.p.points.max(1).log10().pow(10)
+                eff = player.p.points.max(1).log10().pow(14)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -1073,7 +1073,7 @@ addLayer("p", {
         if (hasUpgrade('e', 13)){multp = multp.times(upgradeEffect('e', 13))}
         if (hasUpgrade('e', 14)){multp = multp.times(upgradeEffect('e', 14))}
         if (hasUpgrade('e', 21)){multp = multp.times(upgradeEffect('e', 21))}
-        if (hasUpgrade('e', 24)){multp = multp.times(upgradeEffect('e', 24))}
+
 
         if (hasUpgrade('e', 23)){multp = multp.times(upgradeEffect('e', 23))}
 
@@ -1331,6 +1331,8 @@ addLayer("p", {
                 if (eff.gte(1000)) eff = eff.div(1000).root(2).times(1000)
 
                 eff = eff.min('e100')
+
+                if (hasUpgrade('e', 24)){eff = eff.times(eff.log10().max(1).pow(upgradeEffect('e', 24)))}
 
                 if (hasUpgrade('ik', 32)){eff = eff.pow(upgradeEffect('ik', 32))}    
 
@@ -1825,7 +1827,7 @@ addLayer("p", {
         101: {
             title: "prestige upgrade 101",
             description: "raise prestige point gain by 1.05",
-            cost: new Decimal('e550'),
+            cost: new Decimal('e600'),
             effect() {
                 eff = new Decimal(1.05)
                 return eff
@@ -1836,7 +1838,7 @@ addLayer("p", {
         102: {
             title: "prestige upgrade 102",
             description: "raise prestige point gain by 1.05",
-            cost: new Decimal('e600'),
+            cost: new Decimal('e700'),
             effect() {
                 eff = new Decimal(1.05)
                 return eff
@@ -1847,7 +1849,7 @@ addLayer("p", {
         103: {
             title: "prestige upgrade 103",
             description: "raise prestige point gain by 1.1",
-            cost: new Decimal('e700'),
+            cost: new Decimal('e800'),
             effect() {
                 eff = new Decimal(1.1)
                 return eff
@@ -1858,7 +1860,7 @@ addLayer("p", {
         104: {
             title: "prestige upgrade 104",
             description: "unlocks 8 prestige upgrades",
-            cost: new Decimal('e800'),
+            cost: new Decimal('e900'),
             effect() {
                 eff = new Decimal(1)
                 return eff
@@ -1880,10 +1882,10 @@ addLayer("p", {
         },
         112: {
             title: "prestige upgrade 112",
-            description: "raise prestige point gain by 1.05",
+            description: "raise prestige point gain by 1.1",
             cost: new Decimal('e1200'),
             effect() {
-                eff = new Decimal(1.05)
+                eff = new Decimal(1.1)
                 return eff
             },
             unlocked() {return hasUpgrade('p', 104)},
@@ -1902,10 +1904,10 @@ addLayer("p", {
         },
         114: {
             title: "prestige upgrade 114",
-            description: "raise prestige point gain by 1.1",
+            description: "raise prestige point gain by 1.05",
             cost: new Decimal('e2000'),
             effect() {
-                eff = new Decimal(1.1)
+                eff = new Decimal(1.05)
                 return eff
             },
             unlocked() {return hasUpgrade('p', 104)},
@@ -2027,8 +2029,8 @@ addLayer("p", {
         142: {
             title: "prestige upgrade 142",
             description() { 
-                text = "multiply power gain by 1.5"
-                if (hasUpgrade('p', 142)) {text = "we have come across the same problem as last upgrade"}
+                text = "multiply gem gain by 1.5"
+                if (hasUpgrade('p', 142)) {text = "sorry, we're in the wrong game. change /master to /one in the githack link to see if this upgrade works"}
                 return text},
             cost: new Decimal('e20000'),
             effect() {
@@ -2046,7 +2048,7 @@ addLayer("p", {
                 return text},
             cost: new Decimal('e24000'),
             effect() {
-                eff = new Decimal(1.5)
+                eff = new Decimal(1.5-0.5*(hasUpgrade('p', 143)))
                 return eff
             },
             unlocked() {return hasUpgrade('p', 124)},
