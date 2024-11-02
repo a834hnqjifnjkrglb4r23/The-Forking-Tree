@@ -47,18 +47,18 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
-	gain = gain.add(buyableEffect('p', 11))
-	gain = gain.add(buyableEffect('mp', 11))
-	gain = gain.add(buyableEffect('bp', 11))
-	gain = gain.add(buyableEffect('sp', 11))
+	baseGain = new Decimal(1)
+	baseGain = baseGain.add(buyableEffect('p', 11))
+	baseGain = baseGain.add(buyableEffect('mp', 11))
+	baseGain = baseGain.add(buyableEffect('bp', 11))
+	baseGain = baseGain.add(buyableEffect('sp', 11))
 	gainMult = new Decimal(1)
 	gainMult = gainMult.add(buyableEffect('p', 12))
 	gainMult = gainMult.add(buyableEffect('mp', 12))
 	gainMult = gainMult.add(buyableEffect('bp', 12))
 	gainMult = gainMult.add(buyableEffect('sp', 12))
 
-	gain = gain.times(gainMult)
+	gain = baseGain.times(gainMult)
 
 	firstSoftcapStrength = new Decimal(20)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 15))
@@ -122,12 +122,13 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
-	if (player.version == '0.0') {player.g.points = player.g.points.times(100).floor()}
-	if (player.version == '0.1') {
+	if (player.version < '0.1') {player.g.points = player.g.points.times(100).floor()}
+	if (player.version < '0.2') {
 		if (player.points.gte(2)) {player.points = player.points.div(2).pow(0.5).times(2)}
 		if (player.points.gte(3)) {player.points = player.points.div(3).pow(0.1).times(3)}
 		if (player.points.gte(3.3)) {player.points = player.points.div(3.3).pow(0.1).times(3.3)
 			player.g.points = player.g.points.times(6).floor()
 		}
 	}
+
 }

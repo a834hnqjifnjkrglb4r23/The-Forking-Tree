@@ -971,7 +971,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(8500)
+                return new Decimal(4250)
             },
             effect(x) {
 
@@ -991,7 +991,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(9000)
+                return new Decimal(4500)
             },
             effect(x) {
 
@@ -1011,7 +1011,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(9500)
+                return new Decimal(4750)
             },
             effect(x) {
 
@@ -1107,7 +1107,7 @@ addLayer("a", {
     layerShown(){return true},
     infoboxes: {
         11: {
-            body() {return "your alternative points multiply point gain by "+format(player.a.points.add(1).pow(buyableEffect('l', 23)).add(1))}
+            body() {return "you have "+format(player.a.points, 4)+" alternative points, which multiply point gain by "+format(player.a.points.add(1).pow(buyableEffect('l', 23).add(1)), 4)}
         }
     }, 
     buyables: {
@@ -1652,7 +1652,7 @@ addLayer("bp", {
         return multbp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expbp = new Decimal(1.5)
+        expbp = new Decimal(3)
         expbp = expbp.times(buyableEffect('l', 32))
 
         exp2bp = new Decimal(0.5)
@@ -1867,7 +1867,7 @@ addLayer("sp", {
         return multsp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expsp = new Decimal(2.5)
+        expsp = new Decimal(2)
         expsp = expsp.times(buyableEffect('l', 35))
 
 
@@ -2242,7 +2242,7 @@ addLayer("l", {
                 lootboxseed = Math.random() * 10000
                 LBlayerDeterminer = parseInt(lootboxseed.toString().slice(0, 2))
                 LBoperationDeterminer = parseInt(lootboxseed.toString().slice(2, 4))
-                LBintensityDeterminer = lootboxseed % 1 + 3e-44
+                LBintensityDeterminer = lootboxseed % 1 + 2**-52
                 APweight = 40
                 PPweight = 20
                 MPweight = 10
@@ -2254,7 +2254,7 @@ addLayer("l", {
                 if (LBlayerDeterminer<APweight) {finalBuyableIndex = 21} else if (LBlayerDeterminer<APweight+PPweight) {finalBuyableIndex = 24} else if (LBlayerDeterminer<APweight+PPweight+MPweight) {finalBuyableIndex = 27} else if (LBlayerDeterminer<APweight+PPweight+MPweight+BPweight) {finalBuyableIndex = 31} else if (LBlayerDeterminer<APweight+PPweight+MPweight+BPweight+SPweight) {finalBuyableIndex = 34} else {finalBuyableIndex = 37}
                 if (LBoperationDeterminer<70) {} else if (LBoperationDeterminer<90) {finalBuyableIndex += 1} else {finalBuyableIndex += 2}
 
-                LBintensity = new Decimal(Math.floor(Math.log(LBintensityDeterminer) * -10 + 10))
+                LBintensity = new Decimal(Math.floor(Math.log2(LBintensityDeterminer) * -1 + 1))
 
                 setBuyableAmount('l', finalBuyableIndex, getBuyableAmount('l', finalBuyableIndex).add(LBintensity))
                 lastEffectText = formatWhole(LBintensity)+" amount, index "+finalBuyableIndex+"<br> this text will be improved"
@@ -2267,7 +2267,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel21 = new Decimal(0.00025)
+                effBasel21 = new Decimal(0.1)
                 effStackl21 = new Decimal(x)
 
                 return Decimal.times(effBasel21, effStackl21)
@@ -2286,7 +2286,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel22 = new Decimal(0.00001)
+                effBasel22 = new Decimal(0.0001)
                 effStackl22 = new Decimal(x)
 
                 return Decimal.times(effBasel22, effStackl22)
@@ -2305,7 +2305,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel23 = new Decimal(0.00001)
+                effBasel23 = new Decimal(0.0001)
                 effStackl23 = new Decimal(x)
 
                 return Decimal.times(effBasel23, effStackl23)
@@ -2324,7 +2324,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel24 = new Decimal(1.1)
+                effBasel24 = new Decimal(2)
                 effStackl24 = new Decimal(x)
 
                 return Decimal.pow(effBasel24, effStackl24)
@@ -2343,8 +2343,8 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel25 = new Decimal(1.04)
-                effStackl25 = new Decimal(x).pow(0.9)
+                effBasel25 = new Decimal(1.2)
+                effStackl25 = new Decimal(x).pow(0.75)
 
                 return Decimal.pow(effBasel25, effStackl25)
             },
@@ -2363,7 +2363,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl26 = new Decimal(0.2)
-                effStackl26 = Decimal.dOne.sub(new Decimal(x).div(-300).exp()) //exponential approach
+                effStackl26 = Decimal.dOne.sub(new Decimal(x).div(-30).exp()) //exponential approach
 
                 return Decimal.times(effMaxl26, effStackl26)
             },
@@ -2381,7 +2381,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel27 = new Decimal(1.05)
+                effBasel27 = new Decimal(1.5)
                 effStackl27 = new Decimal(x)
 
                 return Decimal.pow(effBasel27, effStackl27)
@@ -2400,8 +2400,8 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel28 = new Decimal(1.02)
-                effStackl28 = new Decimal(x).pow(0.9)
+                effBasel28 = new Decimal(1.1)
+                effStackl28 = new Decimal(x).pow(0.75)
 
                 return Decimal.pow(effBasel28, effStackl28)
             },
@@ -2420,7 +2420,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl29 = new Decimal(0.5)
-                effStackl29 = Decimal.dOne.sub(new Decimal(x).div(-1000).exp()) //exponential approach
+                effStackl29 = Decimal.dOne.sub(new Decimal(x).div(-100).exp()) //exponential approach
 
                 return Decimal.times(effMaxl29, effStackl29)
             },
@@ -2438,7 +2438,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel31 = new Decimal(1.05)
+                effBasel31 = new Decimal(1.5)
                 effStackl31 = new Decimal(x)
 
                 return Decimal.pow(effBasel31, effStackl31)
@@ -2457,8 +2457,8 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel32 = new Decimal(1.02)
-                effStackl32 = new Decimal(x).pow(0.9)
+                effBasel32 = new Decimal(1.1)
+                effStackl32 = new Decimal(x).pow(0.75)
 
                 return Decimal.pow(effBasel32, effStackl32)
             },
@@ -2477,7 +2477,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl33 = new Decimal(0.5)
-                effStackl33 = Decimal.dOne.sub(new Decimal(x).div(-1000).exp()) //exponential approach
+                effStackl33 = Decimal.dOne.sub(new Decimal(x).div(-100).exp()) //exponential approach
 
                 return Decimal.times(effMaxl33, effStackl33)
             },
@@ -2495,7 +2495,7 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel34 = new Decimal(1.05)
+                effBasel34 = new Decimal(1.5)
                 effStackl34 = new Decimal(x)
 
                 return Decimal.pow(effBasel34, effStackl34)
@@ -2514,8 +2514,8 @@ addLayer("l", {
                 return Decimal.dInf
             },
             effect(x) {
-                effBasel35 = new Decimal(1.02)
-                effStackl35 = new Decimal(x).pow(0.9)
+                effBasel35 = new Decimal(1.1)
+                effStackl35 = new Decimal(x).pow(0.75)
 
                 return Decimal.pow(effBasel35, effStackl35)
             },
@@ -2534,7 +2534,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl36 = new Decimal(0.5)
-                effStackl36 = Decimal.dOne.sub(new Decimal(x).div(-1000).exp()) //exponential approach
+                effStackl36 = Decimal.dOne.sub(new Decimal(x).div(-100).exp()) //exponential approach
 
                 return Decimal.times(effMaxl36, effStackl36)
             },
@@ -2553,7 +2553,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl37 = new Decimal(4)
-                effStackl37 = Decimal.dOne.sub(new Decimal(x).div(-125).exp()) //exponential approach
+                effStackl37 = Decimal.dOne.sub(new Decimal(x).div(-12).exp()) //exponential approach
 
                 return Decimal.times(effMaxl37, effStackl37)
             },
@@ -2572,7 +2572,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl38 = new Decimal(8)
-                effStackl38 = Decimal.dOne.sub(new Decimal(x).div(-250).exp()) //exponential approach
+                effStackl38 = Decimal.dOne.sub(new Decimal(x).div(-24).exp()) //exponential approach
 
                 return Decimal.times(effMaxl38, effStackl38)
             },
@@ -2591,7 +2591,7 @@ addLayer("l", {
             },
             effect(x) {
                 effMaxl39 = new Decimal(40)
-                effStackl39 = Decimal.dOne.sub(new Decimal(x).div(-1000).exp()) //exponential approach
+                effStackl39 = Decimal.dOne.sub(new Decimal(x).div(-120).exp()) //exponential approach
 
                 return Decimal.times(effMaxl39, effStackl39)
             },
