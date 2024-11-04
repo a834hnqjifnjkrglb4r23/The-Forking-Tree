@@ -1216,7 +1216,7 @@ addLayer("p", {
     },
     canReset() {return getResetGain('p').gte(0)&&!(hasMilestone('m', 1)&&player.p.autoGain)},
     passiveGeneration() {
-        return new Decimal(hasMilestone('m', 1)&&player.p.autoGain*0.1)
+        return new Decimal((hasMilestone('m', 1)&&player.p.autoGain)*0.1)
     },
     prestigeNotify() {return true},
     prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('p'))+" prestige points. Next at "+format(getNextAt('p'))+" points" },
