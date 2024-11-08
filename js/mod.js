@@ -59,6 +59,7 @@ function getPointGen() {
 	gainMult = gainMult.add(buyableEffect('sp', 12))
 
 	gain = baseGain.times(gainMult).times(buyableEffect('l', 37))
+	gain = gain.times(player.b.points.add(1).pow(buyableEffect('l', 23).add(1)))
 
 	firstSoftcapStrength = new Decimal(20)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
@@ -102,7 +103,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.a.points.gte(1)
 }
 
 
