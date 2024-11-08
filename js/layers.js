@@ -98,7 +98,7 @@ addLayer("ik", {
 
                 costik11 = Decimal.dTen.pow(x.minus(freeRank).div(rankMult).pow(scaling)).times(baseCost)
 
-                ownedik11 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(rankMult).add(freeRank.add(1)).add(1).max(0)
+                ownedik11 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(rankMult).add(freeRank).add(1).max(0)
                 if (hasUpgrade('q', 22)) {return player.veryLargeNumber(1)} else {return costik11}
             },
             effect(x) {
@@ -136,7 +136,7 @@ addLayer("ik", {
                 scaling = new Decimal(4)
                 costik12 = Decimal.dTen.pow(x.sub(freeRankCheapener).div(rankCheapenerMult).pow(scaling)).times(baseCost)
 
-                ownedik12 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(rankCheapenerMult).add(freeRankCheapener.add(1)).add(1).max(0)
+                ownedik12 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(rankCheapenerMult).add(freeRankCheapener).add(1).max(0)
                 if (hasUpgrade('q', 22)) {return player.veryLargeNumber(2)} else {return costik12}
             },
             effect(x) {
@@ -171,7 +171,7 @@ addLayer("ik", {
                 scaling = new Decimal(1.5)
                 costik13 = baseCost.times(x.minus(freeTiers).div(tierMult).pow(scaling))
 
-                ownedik13 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(tierMult).add(freeTiers.add(1)).add(1).max(0)
+                ownedik13 = player.ik.points.div(baseCost).max(1).log10().root(scaling).times(tierMult).add(freeTiers).add(1).max(0)
                 if (hasUpgrade('q', 22)) {return player.veryLargeNumber(3)} else {return costik13}
             },
             effect(x) {
@@ -2259,7 +2259,7 @@ addLayer("q", {
         23: {
             title: "quality upgrade 23",
             description: "unlock continuum for fire buyables 11 to 13 (requires fire buyables unlock)",
-            cost: new Decimal(35),
+            cost: new Decimal(70),
             effect() {
                 eff = new Decimal(1)
                 return eff
@@ -2270,7 +2270,7 @@ addLayer("q", {
         24: {
             title: "quality upgrade 24",
             description: "with the upgrade above this, row 3 resets do not reset prestige",
-            cost: new Decimal(45), 
+            cost: new Decimal(90), 
             effect() {
                 eff = new Decimal(1)
                 return eff
@@ -2281,7 +2281,7 @@ addLayer("q", {
         33: {
             title: "quality upgrade 33",
             description: "unlock continuum for infinity buyables 11 to 13",
-            cost: new Decimal(35), 
+            cost: new Decimal(70), 
             effect() {
                 eff = new Decimal(1)
                 return eff
@@ -2954,10 +2954,10 @@ addLayer("i", {
         },
         54: {
             title: "infinity upgrade 54",
-            description: "raise prestige point gain to 1.2",
+            description: "raise prestige point gain to 1.1",
             cost: new Decimal(1e35),
             effect() {
-                eff = new Decimal(1.2)
+                eff = new Decimal(1.1)
                 return eff
             },
             unlocked() {return hasUpgrade('i', 44)},
@@ -2965,10 +2965,10 @@ addLayer("i", {
         },
         61: {
             title: "infinity upgrade 61",
-            description: "multiply prestige point gain by 10^(log(i points)^0.5*18)",
+            description: "multiply prestige point gain by 10^(log(i points)^0.5*180)",
             cost: new Decimal(1e40),
             effect() {
-                eff = upgradeIPoints.max(1).log10().pow(0.5).times(18)
+                eff = upgradeIPoints.max(1).log10().pow(0.5).times(180)
 
                 eff = eff.min(5000)
                 eff = eff.pow10()
@@ -2979,7 +2979,7 @@ addLayer("i", {
         },
         62: {
             title: "infinity upgrade 62",
-            description: "raise prestige upgrade 11 to ^1.5",
+            description: "raise prestige upgrade 11 to 1.5",
             cost: new Decimal(1e45),
             effect() {
                 eff = new Decimal(1.5)
@@ -2990,10 +2990,10 @@ addLayer("i", {
         },
         63: {
             title: "infinity upgrade 63",
-            description: "raise prestige point gain by 1.2",
+            description: "raise prestige point gain by 1.1",
             cost: new Decimal(1e50),
             effect() {
-                eff = new Decimal(1.2)
+                eff = new Decimal(1.1)
                 return eff
             },
             unlocked() {return hasUpgrade('i', 44)},
@@ -3023,10 +3023,10 @@ addLayer("i", {
         },
         72: {
             title: "infinity upgrade 72",
-            description: "raise prestige point gain by 1.1",
+            description: "raise prestige point gain by 1.15",
             cost: new Decimal(1e80),
             effect() {
-                eff = new Decimal(1.1)
+                eff = new Decimal(1.15)
                 return eff
             },
             unlocked() {return hasUpgrade('i', 64)},
@@ -3034,10 +3034,10 @@ addLayer("i", {
         },
         73: {
             title: "infinity upgrade 73",
-            description: "raise prestige point gain to 1.2",
+            description: "raise prestige point gain to 1.15",
             cost: new Decimal(1e110),
             effect() {
-                eff = new Decimal(1.2)
+                eff = new Decimal(1.15)
                 return eff
             },
             unlocked() {return hasUpgrade('i', 64)},
