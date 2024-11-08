@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Trolling Tree",
-	id: "jacorb90aL3GhF8bs8NB76hGDmeqA9ZzrH",
+	id: "jacorb90aL3GhF8bs8NB76hGDmeqA9ZzrI",
 	author: "nobody",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
@@ -61,17 +61,17 @@ function getPointGen() {
 	gain = baseGain.times(gainMult).times(buyableEffect('l', 37))
 
 	firstSoftcapStrength = new Decimal(20)
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 15))
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 17))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 19))
-
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 13))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('l', 37))
 	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
 
 	secondSoftcapStrength = new Decimal(20)
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 18))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 21))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 38))
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
@@ -122,13 +122,6 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
-	if (player.version < '0.1') {player.g.points = player.g.points.times(100).floor()}
-	if (player.version < '0.2') {
-		if (player.points.gte(2)) {player.points = player.points.div(2).pow(0.5).times(2)}
-		if (player.points.gte(3)) {player.points = player.points.div(3).pow(0.1).times(3)}
-		if (player.points.gte(3.3)) {player.points = player.points.div(3.3).pow(0.1).times(3.3)
-			player.g.points = player.g.points.times(6).floor()
-		}
-	}
+
 
 }
