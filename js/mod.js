@@ -9,6 +9,7 @@ let modInfo = {
 	discordLink: "",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 0,  // In hours
+	allowSmall: true,
 }
 
 // Set your version in num and name
@@ -91,7 +92,7 @@ function addedPlayerData() { return {
 	veryLargeNumber(seed1) {
 		if (typeof(seed1)=="undefined") {seed1 = 1}
 		seed1 = seed1 + 100
-		seed2 = format(player.p.points).slice(-2) * 1 + 100
+		seed2 = format(player.p.points).slice(-2) * 1
 		if (buyableEffect('q', 11).eq(0)) {seed3 = format(player.points.sub(player.points.floor()).times(100).div(player.gamespeed()).floor(), 0)} else if (format(buyableEffect('q', 11))==='-0.33') {seed3 = format(player.points.sub(player.points.div(100).floor().times(100)).div(player.gamespeed()).floor(), 0)} else {seed3 = 1}
 		return new Decimal(1000).pentate(((seed1 + seed2 + seed3) % 541) / 618 + 1.2) //we do a bit of trolling with this one
 	}
