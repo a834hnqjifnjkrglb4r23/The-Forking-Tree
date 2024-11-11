@@ -9,6 +9,7 @@ let modInfo = {
 	discordLink: "",
 	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 0,  // In hours
+	allowSmall: true,
 }
 
 // Set your version in num and name
