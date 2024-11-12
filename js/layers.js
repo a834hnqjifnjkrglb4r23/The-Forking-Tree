@@ -973,7 +973,7 @@ addLayer("f", {
 
 
                 ownedf12 = effectiveFireForBuyables.root(1.2).div(2).sub(1).add(1).max(0)
-                if (hasUpgrade('et', 72)) {ownedf11 = ownedf11.times(upgradeEffect('et', 72))}
+                if (hasUpgrade('et', 72)) {ownedf12 = ownedf12.times(upgradeEffect('et', 72))}
                 
                 if (hasUpgrade('q', 23)) {return player.veryLargeNumber(9)} else {return Decimal.pow(costbasef12, logcostf12)}
 
@@ -1016,7 +1016,7 @@ addLayer("f", {
 
 
                 ownedf13 = effectiveFireForBuyables.root(1.3).sub(5).add(1).max(0)
-                if (hasUpgrade('et', 73)) {ownedf11 = ownedf11.times(upgradeEffect('et', 73))}
+                if (hasUpgrade('et', 73)) {ownedf13 = ownedf13.times(upgradeEffect('et', 73))}
 
                 if (hasUpgrade('q', 23)) {return player.veryLargeNumber(10)} else {return Decimal.pow(costbasef13, logcostf13)}
                 
@@ -2611,14 +2611,14 @@ addLayer("i", {
                 logcosti11 = inf11realx.add(4.5).pow(2).times(0.5).add(129.875)
 
                 if (hasUpgrade('et', 21)) {logcosti11 = logcosti11.sub(upgradeEffect('et', 21).log10())}
-                if (logcosti11.gte(1000)) {logcosti11 = logcosti11.div(1000).pow(1.5).times(1000)}
-                if (logcosti11.gte(5000)) {logcosti11 = logcosti11.div(5000).pow(4/3).times(5000)}
-                if (logcosti11.gte(25000)) {logcosti11 = logcosti11.div(25000).pow(5/4).times(25000)}
+                if (logcosti11.gte(2500)) {logcosti11 = logcosti11.div(2500).pow(6/5).times(2500)}
+                if (logcosti11.gte(10000)) {logcosti11 = logcosti11.div(10000).pow(5/4).times(10000)}
+                if (logcosti11.gte(50000)) {logcosti11 = logcosti11.div(50000).pow(4/3).times(50000)}
 
                 effectiveIpForBuyables = player.i.points.log10()
-                if (effectiveIpForBuyables.gte(25000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(25000).root(5/4).times(25000)}
-                if (effectiveIpForBuyables.gte(5000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(5000).root(4/3).times(5000)}
-                if (effectiveIpForBuyables.gte(1000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(1000).root(1.5).times(1000)}
+                if (effectiveIpForBuyables.gte(50000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(50000).root(4/3).times(50000)}
+                if (effectiveIpForBuyables.gte(10000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(10000).root(5/4).times(10000)}
+                if (effectiveIpForBuyables.gte(2500)) {effectiveIpForBuyables = effectiveIpForBuyables.div(2500).root(6/5).times(2500)}
                 if (hasUpgrade('et', 21)) {effectiveIpForBuyables = effectiveIpForBuyables.add(upgradeEffect('et', 21).log10())}
 
 
@@ -2652,9 +2652,9 @@ addLayer("i", {
                 if (hasUpgrade('et', 72)) {inf12realx = inf12realx.div(upgradeEffect('et', 72))}
                 logcosti12 = inf12realx.add(1.5).pow(2).times(2.5).add(134.375)
                 if (hasUpgrade('et', 21)) {logcosti12 = logcosti12.sub(upgradeEffect('et', 21).log10())}
-                if (logcosti12.gte(1000)) {logcosti12 = logcosti12.div(1000).pow(1.5).times(1000)}
-                if (logcosti12.gte(5000)) {logcosti12 = logcosti12.div(5000).pow(4/3).times(5000)}
-                if (logcosti12.gte(25000)) {logcosti12 = logcosti12.div(25000).pow(5/4).times(25000)}
+                if (logcosti12.gte(2500)) {logcosti12 = logcosti12.div(2500).pow(6/5).times(2500)}
+                if (logcosti12.gte(10000)) {logcosti12 = logcosti12.div(10000).pow(5/4).times(10000)}
+                if (logcosti12.gte(50000)) {logcosti12 = logcosti12.div(50000).pow(4/3).times(50000)}
 
                 ownedi12 = effectiveIpForBuyables.sub(134.375).div(2.5).root(2).sub(1.5).add(1).max(0)
                 if (hasUpgrade('et', 72)) {ownedi12 = ownedi12.times(upgradeEffect('et', 72))}
@@ -2687,9 +2687,9 @@ addLayer("i", {
                 if (hasUpgrade('et', 74)) {inf13realx = inf13realx.div(upgradeEffect('et', 74))}
                 logcosti13 = new Decimal(x).add(0.5).pow(2).times(25).add(193.75)
                 if (hasUpgrade('et', 21)) {logcosti13 = logcosti13.sub(upgradeEffect('et', 21).log10())}
-                if (logcosti13.gte(1000)) {logcosti13 = logcosti13.div(1000).pow(1.5).times(1000)}
-                if (logcosti13.gte(5000)) {logcosti13 = logcosti13.div(5000).pow(4/3).times(5000)}
-                if (logcosti13.gte(25000)) {logcosti13 = logcosti13.div(25000).pow(5/4).times(25000)}
+                if (logcosti13.gte(2500)) {logcosti13 = logcosti13.div(2500).pow(6/5).times(2500)}
+                if (logcosti13.gte(10000)) {logcosti13 = logcosti13.div(10000).pow(5/4).times(10000)}
+                if (logcosti13.gte(50000)) {logcosti13 = logcosti13.div(50000).pow(4/3).times(50000)}
 
                 ownedi13 = effectiveIpForBuyables.sub(193.75).div(25).root(2).sub(0.5).add(1).max(0)
                 if (hasUpgrade('et', 74)) {owned13 = owned13.times(upgradeEffect('et', 72))}
@@ -3554,7 +3554,8 @@ addLayer("et", {
 
                 
                 timemult = Decimal.pow(tickspeedboost, tickspeeds)
-                if (timepow.gt(1)) {textt = "<br> you have "+format(timepow)+" time shards, the next tickspeed upgrade costs "+format(marginaltickspeedcost)+"x more than this one"}
+                textt = ""
+                if (timepow.gt(1)) {textt += "<br> you have "+format(timepow)+" time shards, the next tickspeed upgrade costs "+format(marginaltickspeedcost)+"x more than this one"}
                 if (timepow.gt(1)) {textt += "<br> you have "+format(tickspeeds)+" tickspeed upgrades, each giving a "+format(tickspeedboost)+"x boost to your row 0 timespeed to multiply it by "+format(timemult)+" in total"}
                 if (timepow.gte(tickspeedcost.pow(tickspeedScalingStart))) {text += "<br> after "+format(tickspeedScalingStart)+" tickspeed upgrades, each upgrade is "+format(tickspeedScalingStrength)+"x more expensive than the last"}
                 if (timed1.gt(0)) {textt += "<br> you have "+format(timed1)+" first time dimension"}
@@ -3632,10 +3633,10 @@ addLayer("et", {
         },
         22: {
             title: "eternity upgrade 22",
-            description: "multiply infinity power conversion rate by 2",
+            description: "multiply infinity power conversion rate by 2.5",
             cost: new Decimal(1),
             effect() {
-                eff = new Decimal(2)
+                eff = new Decimal(2.5)
                 return eff
             },
             unlocked() {return player.et.total.gte(1)}, 
