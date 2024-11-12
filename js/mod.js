@@ -79,7 +79,7 @@ function addedPlayerData() { return {
 		if (hasUpgrade('cg', 43)){totalRealTime = totalRealTime.add(upgradeEffect('cg', 43))} 
 
 		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 23))} 
-		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 43))} 
+		if (hasUpgrade('et', 43)){totalRealTime = totalRealTime.add(upgradeEffect('et', 43))} 
 
 
 		
@@ -95,7 +95,8 @@ function addedPlayerData() { return {
 		seed2 = format(player.p.points).slice(-2) + 1
 		if (buyableEffect('q', 11).eq(0)) {seed3 = format(player.points.sub(player.points.floor()).times(100).div(player.gamespeed()).floor(), 0)} else if (format(buyableEffect('q', 11))==='-0.33') {seed3 = format(player.points.sub(player.points.div(100).floor().times(100)).div(player.gamespeed()).floor(), 0)} else {seed3 = 1}
 		seed3 = seed3 * 100
-		return new Decimal(1000).pentate(((seed1 + seed2 + seed3) % 541) / 618 + 1.2) //we do a bit of trolling with this one
+		seedx = (seed1 + seed2 + seed3) ** 2 % 541
+		return new Decimal(1000).pentate(seedx / 618 + 1.2) //we do a bit of trolling with this one
 	}
 
 }}
@@ -120,7 +121,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return(1) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,

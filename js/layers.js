@@ -599,7 +599,7 @@ addLayer("c", {
         A: {
             title: "General Information",
             body() {
-                textc = "You gain "+format(Ecurrent)+" charge per second"
+                textc = "you gain "+format(Ecurrent)+" charge per second"
                 return textc
             }
         },
@@ -778,7 +778,9 @@ addLayer("f", {
                 textf = "you have "+format(player.f.points)+" fire <br>"
                 textf += "you gain "+format(player.f.points.times(multfAfterPenalty))+" fire per second, which is "
                 if (multfAfterPenalty.gte(10)) {textf += "+"+format(multfAfterPenalty.log(10))+" OoM of your fire <br>"} else {textf += format(multfAfterPenalty)+"x of your fire <br>"}
-                if (player.f.points.gte(firstFireSoftcapStart)) {textf += "first fire softcap: after "+format(firstFireSoftcapStart)+" fire, slow down time for this layer by "+format(firstFirePenalty)+"x"}
+                if (player.f.points.gte(firstFireSoftcapStart)) {textf += "first fire softcap: after "+format(firstFireSoftcapStart)+" fire, slow down time for this layer by "
+                    if (firstFirePenalty.gte(10)) {textf += "-"+format(firstFirePenalty.log(10))+" OoM"} else {textf += format(firstFirePenalty)+"x"}
+                }
                 textf += "<br> you have "+format(player.f.total)+" total fire <br>"
                 
                 if (hasUpgrade('i', 74)) {textf += "<br> <br> this mechanic is from Replicanti Incremental from MrRedShark77"}
@@ -2611,14 +2613,14 @@ addLayer("i", {
                 logcosti11 = inf11realx.add(4.5).pow(2).times(0.5).add(129.875)
 
                 if (hasUpgrade('et', 21)) {logcosti11 = logcosti11.sub(upgradeEffect('et', 21).log10())}
-                if (logcosti11.gte(2500)) {logcosti11 = logcosti11.div(2500).pow(6/5).times(2500)}
+                if (logcosti11.gte(2000)) {logcosti11 = logcosti11.div(2000).pow(6/5).times(2000)}
                 if (logcosti11.gte(10000)) {logcosti11 = logcosti11.div(10000).pow(5/4).times(10000)}
                 if (logcosti11.gte(50000)) {logcosti11 = logcosti11.div(50000).pow(4/3).times(50000)}
 
                 effectiveIpForBuyables = player.i.points.log10()
                 if (effectiveIpForBuyables.gte(50000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(50000).root(4/3).times(50000)}
                 if (effectiveIpForBuyables.gte(10000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(10000).root(5/4).times(10000)}
-                if (effectiveIpForBuyables.gte(2500)) {effectiveIpForBuyables = effectiveIpForBuyables.div(2500).root(6/5).times(2500)}
+                if (effectiveIpForBuyables.gte(2000)) {effectiveIpForBuyables = effectiveIpForBuyables.div(2000).root(6/5).times(2000)}
                 if (hasUpgrade('et', 21)) {effectiveIpForBuyables = effectiveIpForBuyables.add(upgradeEffect('et', 21).log10())}
 
 
@@ -2652,7 +2654,7 @@ addLayer("i", {
                 if (hasUpgrade('et', 72)) {inf12realx = inf12realx.div(upgradeEffect('et', 72))}
                 logcosti12 = inf12realx.add(1.5).pow(2).times(2.5).add(134.375)
                 if (hasUpgrade('et', 21)) {logcosti12 = logcosti12.sub(upgradeEffect('et', 21).log10())}
-                if (logcosti12.gte(2500)) {logcosti12 = logcosti12.div(2500).pow(6/5).times(2500)}
+                if (logcosti12.gte(2000)) {logcosti12 = logcosti12.div(2000).pow(6/5).times(2000)}
                 if (logcosti12.gte(10000)) {logcosti12 = logcosti12.div(10000).pow(5/4).times(10000)}
                 if (logcosti12.gte(50000)) {logcosti12 = logcosti12.div(50000).pow(4/3).times(50000)}
 
@@ -2687,7 +2689,7 @@ addLayer("i", {
                 if (hasUpgrade('et', 74)) {inf13realx = inf13realx.div(upgradeEffect('et', 74))}
                 logcosti13 = new Decimal(x).add(0.5).pow(2).times(25).add(193.75)
                 if (hasUpgrade('et', 21)) {logcosti13 = logcosti13.sub(upgradeEffect('et', 21).log10())}
-                if (logcosti13.gte(2500)) {logcosti13 = logcosti13.div(2500).pow(6/5).times(2500)}
+                if (logcosti13.gte(2000)) {logcosti13 = logcosti13.div(2000).pow(6/5).times(2000)}
                 if (logcosti13.gte(10000)) {logcosti13 = logcosti13.div(10000).pow(5/4).times(10000)}
                 if (logcosti13.gte(50000)) {logcosti13 = logcosti13.div(50000).pow(4/3).times(50000)}
 
@@ -3688,10 +3690,10 @@ addLayer("et", {
         },
         33: {
             title: "eternity upgrade 33",
-            description: "multiply infinity power conversion rate by 1.33",
+            description: "multiply infinity power conversion rate by 1.5",
             cost: new Decimal(100),
             effect() {
-                eff = new Decimal(4/3)
+                eff = new Decimal(1.5)
                 return eff
             },
             unlocked() {return hasUpgrade('et', 24)}, 
@@ -3710,10 +3712,10 @@ addLayer("et", {
         },
         41: {
             title: "eternity upgrade 41",
-            description: "multiply infinity dimensions by 10000",
+            description: "multiply infinity dimensions by 1e4",
             cost: new Decimal(1e4),
             effect() {
-                eff = new Decimal(10000)
+                eff = new Decimal(1e4)
                 return eff
             },
             unlocked() {return hasUpgrade('et', 24)}, 
@@ -3732,10 +3734,10 @@ addLayer("et", {
         },
         43: {
             title: "eternity upgrade 43",
-            description: "adds 30 seconds to total time",
+            description: "adds 10 seconds to total time",
             cost: new Decimal(1e7),
             effect() {
-                effe = new Decimal(30)
+                effe = new Decimal(10)
                 return effe
             },
             unlocked() {return hasUpgrade('et', 24)}, 
