@@ -2757,9 +2757,9 @@ addLayer("sp", {
 
 
         exp2sp = new Decimal(0.5)
-        exp2sp = exp2sp.times(buyableEffect('mp', 54))
-        exp2sp = exp2sp.times(buyableEffect('bp', 54))
-        exp2sp = exp2sp.times(buyableEffect('sp', 54))
+        exp2sp = exp2sp.add(buyableEffect('mp', 54))
+        exp2sp = exp2sp.add(buyableEffect('bp', 54))
+        exp2sp = exp2sp.add(buyableEffect('sp', 54))
         exp2sp = exp2sp.add(buyableEffect('l', 36))
 
         return expsp
@@ -3881,7 +3881,7 @@ addLayer("a", {
     }},
     color: "#ffffff",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
-    resource: "lootboxes", // Name of prestige currency
+    resource: "higher planes of existence", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {
 
