@@ -14,7 +14,7 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.7",
+	num: "1.(∞-1)",
 
 
 	name: "Reality Transformation",
@@ -24,7 +24,7 @@ let VERSION = {
 
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v1.7</h3><br>
+	<h3>v1.(∞-1)</h3><br>
 		- Added things.<br>
 		- Added stuff.`
 
