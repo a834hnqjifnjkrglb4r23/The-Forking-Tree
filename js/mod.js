@@ -79,7 +79,7 @@ function addedPlayerData() { return {
 		if (hasUpgrade('cg', 43)){totalRealTime = totalRealTime.add(upgradeEffect('cg', 43))} 
 
 		if (hasUpgrade('et', 23)){totalRealTime = totalRealTime.add(upgradeEffect('et', 23))} 
-		if (hasUpgrade('et', 43)){totalRealTime = totalRealTime.add(upgradeEffect('et', 43))} 
+		if (hasUpgrade('et', 53)){totalRealTime = totalRealTime.add(upgradeEffect('et', 53))} 
 
 
 		
