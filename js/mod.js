@@ -1,24 +1,24 @@
 let modInfo = {
-	name: "The ??? Tree",
+	name: "The Cookie Modder Tree",
 	author: "nobody",
-	pointsName: "points",
+	pointsName: "cookies",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
-	offlineLimit: 1,  // In hours
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
+	offlineLimit: 8784,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.0",
+	num: "0.1",
 	name: "Literally nothing",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.0</h3><br>
-		- Added things.<br>
+	<h3>v0.1</h3><br>
+		- Added building points.<br>
 		- Added stuff.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
@@ -41,12 +41,22 @@ function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
 
-	let gain = new Decimal(1)
+	let gain = new Decimal(0)
+	gain = gain.add(buyableEffect('b', 11))
+	gain = gain.add(buyableEffect('b', 21))
+	gain = gain.add(buyableEffect('b', 31))
+	gain = gain.add(buyableEffect('b', 41))
+
+	if (hasUpgrade('p', 11)) {gain = gain.times(upgradeEffect('p', 11))}
 	return gain
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	clickgain() {
+		clickgain = new Decimal(1)
+		return clickgain
+	}
 }}
 
 // Display extra things at the top of the page
