@@ -52,7 +52,7 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('b', 81))
 	gain = gain.add(buyableEffect('b', 91))
 
-	gain = gain.times(buyableEffect('p', 11))
+	gain = gain.times(buyableEffect('p', 12))
 	return gain
 }
 
