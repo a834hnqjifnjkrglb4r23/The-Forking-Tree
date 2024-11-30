@@ -19,7 +19,7 @@ addLayer("b", {
         return multb
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expb = new Decimal(0.75).add(buyableEffect('p', 13))
+        expb = new Decimal(0.7).add(buyableEffect('p', 13))
 
         return expb
     },
@@ -75,8 +75,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb11 = new Decimal(x).add(buyableEffect('b', 12).spent)
-                buyableTierb11 = new Decimal(1)
-                constantCostb11 = Decimal.pow(1.05, buyableTierb11.pow(2)).times(Decimal.pow(10, buyableTierb11))
+                buyableTierb11 = new Decimal(10/9)
+                constantCostb11 = Decimal.pow(1.04, buyableTierb11.pow(2)).times(Decimal.pow(10, buyableTierb11))
                 linearCostb11 = new Decimal(1.1)
                 quadraticCostb11 = new Decimal(1.001)
 
@@ -84,13 +84,13 @@ addLayer("b", {
                 return constantCostb11.times(linearCostb11.pow(costStackb11)).times(quadraticCostb11.pow(costStackb11.pow(2))).floor()
             },
             effect(x) {
-                effBaseb11 = Decimal.dTen.pow(buyableTierb11.sub(1)).times(buyableEffect('b', 12).effect)
+                effBaseb11 = Decimal.dTen.pow(buyableTierb11).times(buyableEffect('b', 12).effect)
                 effStackb11 = new Decimal(x)
 
                 return Decimal.times(effBaseb11, effStackb11)
             },
             title() { return "building 11"},
-            display() { return "increase point gain by "+format(effBaseb11)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb11)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb11)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb11)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -133,8 +133,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb21 = new Decimal(x).add(buyableEffect('b', 22).spent)
-                buyableTierb21 = new Decimal(2)
-                constantCostb21 = Decimal.pow(1.05, buyableTierb21.pow(2)).times(Decimal.pow(10, buyableTierb21))
+                buyableTierb21 = new Decimal(20/8)
+                constantCostb21 = Decimal.pow(1.04, buyableTierb21.pow(2)).times(Decimal.pow(10, buyableTierb21))
                 linearCostb21 = new Decimal(1.1)
                 quadraticCostb21 = new Decimal(1.001)
 
@@ -142,13 +142,13 @@ addLayer("b", {
                 return constantCostb21.times(linearCostb21.pow(costStackb21)).times(quadraticCostb21.pow(costStackb21.pow(2))).floor()
             },
             effect(x) {
-                effBaseb21 = Decimal.dTen.pow(buyableTierb21.sub(1)).times(buyableEffect('b', 22).effect)
+                effBaseb21 = Decimal.dTen.pow(buyableTierb21).times(buyableEffect('b', 22).effect)
                 effStackb21 = new Decimal(x)
 
                 return Decimal.times(effBaseb21, effStackb21)
             },
             title() { return "building 21"},
-            display() { return "increase point gain by "+format(effBaseb21)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb21)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb21)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb21)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -191,8 +191,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb31 = new Decimal(x).add(buyableEffect('b', 32).spent)
-                buyableTierb31 = new Decimal(3)
-                constantCostb31 = Decimal.pow(1.05, buyableTierb31.pow(2)).times(Decimal.pow(10, buyableTierb31))
+                buyableTierb31 = new Decimal(30/7)
+                constantCostb31 = Decimal.pow(1.04, buyableTierb31.pow(2)).times(Decimal.pow(10, buyableTierb31))
                 linearCostb31 = new Decimal(1.12)
                 quadraticCostb31 = new Decimal(1.001)
 
@@ -200,13 +200,13 @@ addLayer("b", {
                 return constantCostb31.times(linearCostb31.pow(costStackb31)).times(quadraticCostb31.pow(costStackb31.pow(2))).floor()
             },
             effect(x) {
-                effBaseb31 = Decimal.dTen.pow(buyableTierb31.sub(1)).times(buyableEffect('b', 32).effect)
+                effBaseb31 = Decimal.dTen.pow(buyableTierb31).times(buyableEffect('b', 32).effect)
                 effStackb31 = new Decimal(x)
 
                 return Decimal.times(effBaseb31, effStackb31)
             },
             title() { return "building 31"},
-            display() { return "increase point gain by "+format(effBaseb31)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb31)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb31)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb31)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -249,8 +249,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb41 = new Decimal(x).add(buyableEffect('b', 42).spent)
-                buyableTierb41 = new Decimal(4)
-                constantCostb41 = Decimal.pow(1.05, buyableTierb41.pow(2)).times(Decimal.pow(10, buyableTierb41))
+                buyableTierb41 = new Decimal(40/6)
+                constantCostb41 = Decimal.pow(1.04, buyableTierb41.pow(2)).times(Decimal.pow(10, buyableTierb41))
                 linearCostb41 = new Decimal(1.1)
                 quadraticCostb41 = new Decimal(1.001)
 
@@ -258,13 +258,13 @@ addLayer("b", {
                 return constantCostb41.times(linearCostb41.pow(costStackb41)).times(quadraticCostb41.pow(costStackb41.pow(2))).floor()
             },
             effect(x) {
-                effBaseb41 =  Decimal.dTen.pow(buyableTierb41.sub(1)).times(buyableEffect('b', 42).effect)
+                effBaseb41 =  Decimal.dTen.pow(buyableTierb41).times(buyableEffect('b', 42).effect)
                 effStackb41 = new Decimal(x)
 
                 return Decimal.times(effBaseb41, effStackb41)
             },
             title() { return "building 41"},
-            display() { return "increase point gain by "+format(effBaseb41)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb41)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb41)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb41)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -307,8 +307,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb51 = new Decimal(x).add(buyableEffect('b', 52).spent)
-                buyableTierb51 = new Decimal(5)
-                constantCostb51 = Decimal.pow(1.05, buyableTierb51.pow(2)).times(Decimal.pow(10, buyableTierb51))
+                buyableTierb51 = new Decimal(50/5)
+                constantCostb51 = Decimal.pow(1.04, buyableTierb51.pow(2)).times(Decimal.pow(10, buyableTierb51))
                 linearCostb51 = new Decimal(1.1)
                 quadraticCostb51 = new Decimal(1.001)
 
@@ -316,13 +316,13 @@ addLayer("b", {
                 return constantCostb51.times(linearCostb51.pow(costStackb51)).times(quadraticCostb51.pow(costStackb51.pow(2))).floor()
             },
             effect(x) {
-                effBaseb51 =  Decimal.dTen.pow(buyableTierb51.sub(1)).times(buyableEffect('b', 52).effect)
+                effBaseb51 =  Decimal.dTen.pow(buyableTierb51).times(buyableEffect('b', 52).effect)
                 effStackb51 = new Decimal(x)
 
                 return Decimal.times(effBaseb51, effStackb51)
             },
             title() { return "building 51"},
-            display() { return "increase point gain by "+format(effBaseb51)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb51)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb51)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb51)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -365,8 +365,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb61 = new Decimal(x).add(buyableEffect('b', 62).spent)
-                buyableTierb61 = new Decimal(7)
-                constantCostb61 = Decimal.pow(1.05, buyableTierb61.pow(2)).times(Decimal.pow(10, buyableTierb61))
+                buyableTierb61 = new Decimal(60/4)
+                constantCostb61 = Decimal.pow(1.04, buyableTierb61.pow(2)).times(Decimal.pow(10, buyableTierb61))
                 linearCostb61 = new Decimal(1.1)
                 quadraticCostb61 = new Decimal(1.001)
 
@@ -374,13 +374,13 @@ addLayer("b", {
                 return constantCostb61.times(linearCostb61.pow(costStackb61)).times(quadraticCostb61.pow(costStackb61.pow(2))).floor()
             },
             effect(x) {
-                effBaseb61 =  Decimal.dTen.pow(buyableTierb61.sub(1)).times(buyableEffect('b', 62).effect)
+                effBaseb61 =  Decimal.dTen.pow(buyableTierb61).times(buyableEffect('b', 62).effect)
                 effStackb61 = new Decimal(x)
 
                 return Decimal.times(effBaseb61, effStackb61)
             },
             title() { return "building 61"},
-            display() { return "increase point gain by "+format(effBaseb61)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb61)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb61)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb61)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -423,8 +423,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb71 = new Decimal(x).add(buyableEffect('b', 72).spent)
-                buyableTierb71 = new Decimal(9)
-                constantCostb71 = Decimal.pow(1.05, buyableTierb71.pow(2)).times(Decimal.pow(10, buyableTierb71))
+                buyableTierb71 = new Decimal(70/3)
+                constantCostb71 = Decimal.pow(1.04, buyableTierb71.pow(2)).times(Decimal.pow(10, buyableTierb71))
                 linearCostb71 = new Decimal(1.1)
                 quadraticCostb71 = new Decimal(1.001)
 
@@ -432,13 +432,13 @@ addLayer("b", {
                 return constantCostb71.times(linearCostb71.pow(costStackb71)).times(quadraticCostb71.pow(costStackb71.pow(2))).floor()
             },
             effect(x) {
-                effBaseb71 =  Decimal.dTen.pow(buyableTierb71.sub(1)).times(buyableEffect('b', 72).effect)
+                effBaseb71 =  Decimal.dTen.pow(buyableTierb71).times(buyableEffect('b', 72).effect)
                 effStackb71 = new Decimal(x)
 
                 return Decimal.times(effBaseb71, effStackb71)
             },
             title() { return "building 71"},
-            display() { return "increase point gain by "+format(effBaseb71)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb71)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb71)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb71)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -481,8 +481,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb81 = new Decimal(x).add(buyableEffect('b', 82).spent)
-                buyableTierb81 = new Decimal(12)
-                constantCostb81 = Decimal.pow(1.05, buyableTierb81.pow(2)).times(Decimal.pow(10, buyableTierb81))
+                buyableTierb81 = new Decimal(80/2)
+                constantCostb81 = Decimal.pow(1.04, buyableTierb81.pow(2)).times(Decimal.pow(10, buyableTierb81))
                 linearCostb81 = new Decimal(1.1)
                 quadraticCostb81 = new Decimal(1.001)
 
@@ -490,13 +490,13 @@ addLayer("b", {
                 return constantCostb81.times(linearCostb81.pow(costStackb81)).times(quadraticCostb81.pow(costStackb81.pow(2))).floor()
             },
             effect(x) {
-                effBaseb81 =  Decimal.dTen.pow(buyableTierb81.sub(1)).times(buyableEffect('b', 82).effect)
+                effBaseb81 =  Decimal.dTen.pow(buyableTierb81).times(buyableEffect('b', 82).effect)
                 effStackb81 = new Decimal(x)
 
                 return Decimal.times(effBaseb81, effStackb81)
             },
             title() { return "building 81"},
-            display() { return "increase point gain by "+format(effBaseb81)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb81)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb81)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb81)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -539,8 +539,8 @@ addLayer("b", {
             unlocked() {return true},
             cost(x) {
                 costStackb91 = new Decimal(x).add(buyableEffect('b', 92).spent)
-                buyableTierb91 = new Decimal(17)
-                constantCostb91 = Decimal.pow(1.05, buyableTierb91.pow(2)).times(Decimal.pow(10, buyableTierb91))
+                buyableTierb91 = new Decimal(90/1)
+                constantCostb91 = Decimal.pow(1.04, buyableTierb91.pow(2)).times(Decimal.pow(10, buyableTierb91))
                 linearCostb91 = new Decimal(1.1)
                 quadraticCostb91 = new Decimal(1.001)
 
@@ -548,13 +548,13 @@ addLayer("b", {
                 return constantCostb91.times(linearCostb91.pow(costStackb91)).times(quadraticCostb91.pow(costStackb91.pow(2))).floor()
             },
             effect(x) {
-                effBaseb91 =  Decimal.dTen.pow(buyableTierb91.sub(1)).times(buyableEffect('b', 92).effect)
+                effBaseb91 =  Decimal.dTen.pow(buyableTierb91).times(buyableEffect('b', 92).effect)
                 effStackb91 = new Decimal(x)
 
                 return Decimal.times(effBaseb91, effStackb91)
             },
             title() { return "building 91"},
-            display() { return "increase point gain by "+format(effBaseb91)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb91)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBaseb91)+" per second <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackb91)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -612,24 +612,30 @@ addLayer("p", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        multp = new Decimal(0.001)
+        multp = new Decimal(0.0001)
 
 
         return multp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expp = new Decimal(0.5)
+        expp = new Decimal(1/3)
+        softcapStartp = new Decimal('ee9')
+        softcapPowerp = new Decimal(1/2)
 
         return expp
     },
     getResetGain() {
-        pp = player.points.times(multp).pow(expp)
+        basep = player.points
+        if (basep.gte(softcapStartp)) {basep = basep.pow(softcapPowerp).times(softcapStartp.pow(Decimal.dOne.sub(softcapPowerp)))}
+        pp = basep.times(multp).pow(expp)
 
         return pp.sub(player.p.total).floor().max(0)
     },
     getNextAt() {
         nextp = getResetGain('p').add(1).add(player.p.total)
-        return nextp.root(expp).div(multp)
+        nextp = nextp.root(expp).div(multp)
+        if (nextp.gte(softcapStartp)) {nextp = nextp.root(softcapPowerp).div(softcapStartp.pow(Decimal.dOne.sub(softcapPowerp)))}
+        return nextp
     },
     canReset() {return getResetGain('p').gte(0)&&!(false)}, //change false to autogain trigger
     passiveGeneration() {
@@ -643,7 +649,7 @@ addLayer("p", {
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown() {return player.points.gte(1000)||player.p.total.gte(1)},
+    layerShown() {return player.points.gte(10000)||player.p.total.gte(1)},
     automate() {//change to when player unlock autobuy
         if (false) {
             for (let i = 11; i < 14; i++) {
@@ -680,7 +686,7 @@ addLayer("p", {
                 return Decimal.times(effBasep11, effStackp11).add(1)
             },
             title() { return "prestige buyable 11"},
-            display() { return "increase point gain by 0.1 times point gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackp11)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by 0.1 times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackp11)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -697,8 +703,8 @@ addLayer("p", {
             cost(x) {
                 costStackp12 = new Decimal(x)
                 constantCostp12 = new Decimal(5)
-                linearCostp12 = new Decimal(5)
-                quadraticCostp12 = new Decimal(1.5)
+                linearCostp12 = new Decimal(3)
+                quadraticCostp12 = new Decimal(2)
 
 
                 return constantCostp12.times(linearCostp12.pow(costStackp12)).times(quadraticCostp12.pow(costStackp12.pow(2))).floor()
@@ -727,8 +733,8 @@ addLayer("p", {
             cost(x) {
                 costStackp13 = new Decimal(x)
                 constantCostp13 = new Decimal(10)
-                linearCostp13 = new Decimal(20)
-                quadraticCostp13 = new Decimal(2)
+                linearCostp13 = new Decimal(10)
+                quadraticCostp13 = new Decimal(3)
 
 
                 return constantCostp13.times(linearCostp13.pow(costStackp13)).times(quadraticCostp13.pow(costStackp13.pow(2))).floor()
