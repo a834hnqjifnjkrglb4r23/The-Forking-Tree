@@ -2,6 +2,7 @@ let modInfo = {
 	name: "The Cookie Modder Tree",
 	author: "nobody",
 	pointsName: "cookies",
+	id: "H6iBtvKRUFy3lqYAqqX7+PjA8KvFpBtM",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -52,7 +53,7 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('b', 81))
 	gain = gain.add(buyableEffect('b', 91))
 
-	gain = gain.times(buyableEffect('p', 12))
+	gain = gain.times(buyableEffect('p', 11))
 	return gain
 }
 
