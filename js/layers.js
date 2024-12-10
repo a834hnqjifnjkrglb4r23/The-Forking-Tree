@@ -34,10 +34,11 @@ addLayer("b", {
         return nextb.root(expb).div(multb)
     },
     canReset() {return getResetGain('b').gte(0)&&!(hasMilestone('h', 0))}, //change false to autogain trigger
-    update(diff) {
+    update(diff) { if (hasMilestone('h', 0)) {
         resetTimePeriod = new Decimal(1).times(buyableEffect('h', 11))
         bgainPerReset = resetTimePeriod.times(getPointGen()).times(multb).pow(expb)
         addPoints('b', bgainPerReset.div(resetTimePeriod).times(diff))
+        } else {}
     },
     prestigeNotify() {return true},
     prestigeButtonText() {
@@ -99,8 +100,8 @@ addLayer("b", {
                 buyableTierb11 = new Decimal(10/9)
                 constantCostb11 = Decimal.pow(1.04, buyableTierb11.pow(2)).times(Decimal.pow(10, buyableTierb11))
                 if (hasUpgrade('h', 21)) {constantCostb11 = constantCostb11.div(upgradeEffect('h', 21))}
-                linearCostb11 = new Decimal(1.1)
-                quadraticCostb11 = new Decimal(1.001)
+                linearCostb11 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 11)))
+                quadraticCostb11 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 11)))
 
 
                 return constantCostb11.times(linearCostb11.pow(costStackb11)).times(quadraticCostb11.pow(costStackb11.pow(2))).floor()
@@ -188,10 +189,10 @@ addLayer("b", {
             cost(x) {
                 costStackb21 = new Decimal(x).add(buyableEffect('b', 22).spent)
                 buyableTierb21 = new Decimal(20/8)
-                constantCostb21 = Decimal.pow(1.04, buyableTierb21.pow(2)).times(Decimal.pow(10, buyableTierb21))
+                constantCostb21 = Decimal.pow(1.0455, buyableTierb21.pow(2)).times(Decimal.pow(10, buyableTierb21))
                 if (hasUpgrade('h', 21)) {constantCostb21 = constantCostb21.div(upgradeEffect('h', 21))}
-                linearCostb21 = new Decimal(1.1)
-                quadraticCostb21 = new Decimal(1.001)
+                linearCostb21 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 12)))
+                quadraticCostb21 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 12)))
 
 
                 return constantCostb21.times(linearCostb21.pow(costStackb21)).times(quadraticCostb21.pow(costStackb21.pow(2))).floor()
@@ -279,10 +280,10 @@ addLayer("b", {
             cost(x) {
                 costStackb31 = new Decimal(x).add(buyableEffect('b', 32).spent)
                 buyableTierb31 = new Decimal(30/7)
-                constantCostb31 = Decimal.pow(1.04, buyableTierb31.pow(2)).times(Decimal.pow(10, buyableTierb31))
+                constantCostb31 = Decimal.pow(1.045, buyableTierb31.pow(2)).times(Decimal.pow(10, buyableTierb31))
                 if (hasUpgrade('h', 21)) {constantCostb31 = constantCostb31.div(upgradeEffect('h', 21))}
-                linearCostb31 = new Decimal(1.12)
-                quadraticCostb31 = new Decimal(1.001)
+                linearCostb31 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 13)))
+                quadraticCostb31 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 13)))
 
 
                 return constantCostb31.times(linearCostb31.pow(costStackb31)).times(quadraticCostb31.pow(costStackb31.pow(2))).floor()
@@ -370,10 +371,10 @@ addLayer("b", {
             cost(x) {
                 costStackb41 = new Decimal(x).add(buyableEffect('b', 42).spent)
                 buyableTierb41 = new Decimal(40/6)
-                constantCostb41 = Decimal.pow(1.04, buyableTierb41.pow(2)).times(Decimal.pow(10, buyableTierb41))
+                constantCostb41 = Decimal.pow(1.0455, buyableTierb41.pow(2)).times(Decimal.pow(10, buyableTierb41))
                 if (hasUpgrade('h', 21)) {constantCostb41 = constantCostb41.div(upgradeEffect('h', 21))}
-                linearCostb41 = new Decimal(1.1)
-                quadraticCostb41 = new Decimal(1.001)
+                linearCostb41 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 14)))
+                quadraticCostb41 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 14)))
 
 
                 return constantCostb41.times(linearCostb41.pow(costStackb41)).times(quadraticCostb41.pow(costStackb41.pow(2))).floor()
@@ -463,8 +464,8 @@ addLayer("b", {
                 buyableTierb51 = new Decimal(50/5)
                 constantCostb51 = Decimal.pow(1.04, buyableTierb51.pow(2)).times(Decimal.pow(10, buyableTierb51))
                 if (hasUpgrade('h', 21)) {constantCostb51 = constantCostb51.div(upgradeEffect('h', 21))}
-                linearCostb51 = new Decimal(1.1)
-                quadraticCostb51 = new Decimal(1.001)
+                linearCostb51 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 15)))
+                quadraticCostb51 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 15)))
 
 
                 return constantCostb51.times(linearCostb51.pow(costStackb51)).times(quadraticCostb51.pow(costStackb51.pow(2))).floor()
@@ -554,8 +555,8 @@ addLayer("b", {
                 buyableTierb61 = new Decimal(60/4)
                 constantCostb61 = Decimal.pow(1.04, buyableTierb61.pow(2)).times(Decimal.pow(10, buyableTierb61))
                 if (hasUpgrade('h', 21)) {constantCostb61 = constantCostb61.div(upgradeEffect('h', 21))}
-                linearCostb61 = new Decimal(1.1)
-                quadraticCostb61 = new Decimal(1.001)
+                linearCostb61 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 16)))
+                quadraticCostb61 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 16)))
 
 
                 return constantCostb61.times(linearCostb61.pow(costStackb61)).times(quadraticCostb61.pow(costStackb61.pow(2))).floor()
@@ -645,8 +646,8 @@ addLayer("b", {
                 buyableTierb71 = new Decimal(70/3)
                 constantCostb71 = Decimal.pow(1.04, buyableTierb71.pow(2)).times(Decimal.pow(10, buyableTierb71))
                 if (hasUpgrade('h', 21)) {constantCostb71 = constantCostb71.div(upgradeEffect('h', 21))}
-                linearCostb71 = new Decimal(1.1)
-                quadraticCostb71 = new Decimal(1.001)
+                linearCostb71 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 17)))
+                quadraticCostb71 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 17)))
 
 
                 return constantCostb71.times(linearCostb71.pow(costStackb71)).times(quadraticCostb71.pow(costStackb71.pow(2))).floor()
@@ -736,8 +737,8 @@ addLayer("b", {
                 buyableTierb81 = new Decimal(80/2)
                 constantCostb81 = Decimal.pow(1.04, buyableTierb81.pow(2)).times(Decimal.pow(10, buyableTierb81))
                 if (hasUpgrade('h', 21)) {constantCostb81 = constantCostb81.div(upgradeEffect('h', 21))}
-                linearCostb81 = new Decimal(1.1)
-                quadraticCostb81 = new Decimal(1.001)
+                linearCostb81 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 18)))
+                quadraticCostb81 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 18)))
 
 
                 return constantCostb81.times(linearCostb81.pow(costStackb81)).times(quadraticCostb81.pow(costStackb81.pow(2))).floor()
@@ -827,8 +828,8 @@ addLayer("b", {
                 buyableTierb91 = new Decimal(90/1)
                 constantCostb91 = Decimal.pow(1.04, buyableTierb91.pow(2)).times(Decimal.pow(10, buyableTierb91))
                 if (hasUpgrade('h', 21)) {constantCostb91 = constantCostb91.div(upgradeEffect('h', 21))}
-                linearCostb91 = new Decimal(1.1)
-                quadraticCostb91 = new Decimal(1.001)
+                linearCostb91 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 19)))
+                quadraticCostb91 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 19)))
 
 
                 return constantCostb91.times(linearCostb91.pow(costStackb91)).times(quadraticCostb91.pow(costStackb91.pow(2))).floor()
@@ -930,7 +931,7 @@ addLayer("s", {
     baseAmount() {return new Decimal(0)}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        mults = new Decimal(1/300).times(buyableEffect('p', 31))
+        mults = new Decimal(1/180).times(buyableEffect('p', 31))
         if (hasUpgrade('h', 24)) {mults = mults.times(upgradeEffect('h', 24))}
 
         return mults
@@ -1011,14 +1012,13 @@ addLayer("p", {
     gainExp() { // Calculate the exponent on main currency from bonuses
         expp = new Decimal(1/3)
         if (hasUpgrade('h', 12)) {expp = expp.times(upgradeEffect('h', 12))}
-        softcapStartp = new Decimal('1e31')
-        softcapPowerp = new Decimal(1/2)
+
 
         return expp
     },
     getResetGain() {
         basep = player.points
-        if (basep.gte(softcapStartp)) {basep = basep.div(softcapStartp).pow(softcapPowerp).times(softcapStartp)}
+
         pp = basep.times(multp).pow(expp)
 
         return pp.sub(player.p.total).floor().max(0)
@@ -1026,7 +1026,7 @@ addLayer("p", {
     getNextAt() {
         nextp = getResetGain('p').add(1).add(player.p.total)
         nextp = nextp.root(expp).div(multp)
-        if (nextp.gte(softcapStartp)) {nextp = nextp.div(softcapStartp).root(softcapPowerp).times(softcapStartp)}
+
         return nextp
     },
     canReset() {return getResetGain('p').gte(0)&&!(false)}, //change false to autogain trigger
@@ -1066,10 +1066,10 @@ addLayer("p", {
                 costStackp11 = new Decimal(x)
                 constantCostp11 = new Decimal(1)
                 linearCostp11 = new Decimal(2)
-                quadraticCostp11 = new Decimal(1.05)
+                quadraticCostp11 = new Decimal(1.1)
 
 
-                return constantCostp11.times(linearCostp11.pow(costStackp11)).times(quadraticCostp11.pow(costStackp11.pow(2))).floor()
+                return constantCostp11.times(linearCostp11.pow(costStackp11)).times(quadraticCostp11.pow(costStackp11.pow(2))).round()
             },
             effect(x) {
                 effBasep11 = new Decimal(0.1)
@@ -1079,7 +1079,7 @@ addLayer("p", {
                 return Decimal.times(effBasep11, effStackp11).add(1)
             },
             title() { return "prestige buyable 11"},
-            display() { return "increase cookie gain by "+format(effBasep11)+" times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackp11)+" <br> effect: "+format(this.effect())},
+            display() { return "increase cookie gain by "+format(effBasep11)+" times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1096,11 +1096,11 @@ addLayer("p", {
             cost(x) {
                 costStackp12 = new Decimal(x)
                 constantCostp12 = new Decimal(5)
-                linearCostp12 = new Decimal(2.5)
-                quadraticCostp12 = new Decimal(2.4)
+                linearCostp12 = new Decimal(2)
+                quadraticCostp12 = new Decimal(3)
 
 
-                return constantCostp12.times(linearCostp12.pow(costStackp12)).times(quadraticCostp12.pow(costStackp12.pow(2))).floor()
+                return constantCostp12.times(linearCostp12.pow(costStackp12)).times(quadraticCostp12.pow(costStackp12.pow(2))).round()
             },
             effect(x) {
                 effBasep12 = Decimal.dOne
@@ -1126,11 +1126,11 @@ addLayer("p", {
             cost(x) {
                 costStackp13 = new Decimal(x)
                 constantCostp13 = new Decimal(10)
-                linearCostp13 = new Decimal(7.5)
-                quadraticCostp13 = new Decimal(4)
+                linearCostp13 = new Decimal(5)
+                quadraticCostp13 = new Decimal(6)
 
 
-                return constantCostp13.times(linearCostp13.pow(costStackp13)).times(quadraticCostp13.pow(costStackp13.pow(2))).floor()
+                return constantCostp13.times(linearCostp13.pow(costStackp13)).times(quadraticCostp13.pow(costStackp13.pow(2))).round()
             },
             effect(x) {
                 effBasep13 = new Decimal(0.05)
@@ -1165,7 +1165,7 @@ addLayer("p", {
             },
             purchaseLimit: new Decimal(9),
             effect(x) {
-                effBasep21 = new Decimal(2.4)
+                effBasep21 = new Decimal(2.5)
                 effStackp21 = new Decimal(1)
 
                 return Decimal.times(effBasep21, effStackp21)
@@ -1189,7 +1189,7 @@ addLayer("p", {
                 costStackp22 = new Decimal(x).add(1)
                 costStackp22 = Decimal.div(costStackp22, Decimal.dTen.sub(costStackp22)).times(10)
                 constantCostp22 = new Decimal(1)
-                linearCostp22 = new Decimal('e800')
+                linearCostp22 = new Decimal('1e800')
                 quadraticCostp22 = new Decimal(1.04).pow(800)
 
 
@@ -1233,7 +1233,7 @@ addLayer("p", {
                 return Decimal.times(effBasep31, effStackp31)
             },
             title() { return "prestige buyable 31"},
-            display() { return "add sugar gain by "+format(this.effect())+" every 5 minutes <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
+            display() { return "add sugar gain by "+format(this.effect())+" every 3 minutes <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1271,8 +1271,7 @@ addLayer("h", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         exph = new Decimal(1/12)
-        softcapStarth = new Decimal('e999999')
-        softcapPowerh = new Decimal(1/2)
+
 
         exp2h = new Decimal(0.9)
 
@@ -1280,7 +1279,7 @@ addLayer("h", {
     },
     getResetGain() {
         baseh = player.points
-        if (baseh.gte(softcapStarth)) {baseh = baseh.pow(softcapPowerh).times(softcapStarth.pow(Decimal.dOne.sub(softcapPowerh)))}
+
         hp = baseh.times(multh).pow(exph)
         if (hp.gte(1)) {hp = hp.log10().pow(exp2h).pow10()}
 
@@ -1290,7 +1289,7 @@ addLayer("h", {
         nexth = getResetGain('h').add(1).add(player.h.total)
         if (nexth.gte(1)) {nexth = nexth.log10().root(exp2h).pow10()}
         nexth = nexth.root(exph).div(multh)
-        if (nexth.gte(softcapStarth)) {nexth = nexth.root(softcapPowerh).div(softcapStarth.pow(Decimal.dOne.sub(softcapPowerh)))}
+
         return nexth
     },
     canReset() {return getResetGain('h').gte(0)&&!(false)}, //change false to autogain trigger
@@ -1334,9 +1333,7 @@ addLayer("h", {
             done() { return player.h.total.gte(1) }
         }
     },
-    clickables: {
 
-    },
     buyables: {
         11: {
             unlocked() {return true},
@@ -1350,7 +1347,7 @@ addLayer("h", {
                 return constantCosth11.times(linearCosth11.pow(costStackh11)).times(quadraticCosth11.pow(costStackh11.pow(2))).floor()
             },
             effect(x) {
-                effBaseh11 = new Decimal(60)
+                effBaseh11 = new Decimal(360)
                 effStackh11 = new Decimal(x)
 
                 return Decimal.pow(effBaseh11, effStackh11)
@@ -1367,6 +1364,250 @@ addLayer("h", {
                     buyBuyable([this.layer], [this.id])
                 }
             },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                costStackh12 = new Decimal(x)
+                constantCosth12 = new Decimal(100)
+                linearCosth12 = new Decimal(2)
+                quadraticCosth12 = new Decimal(4)
+
+
+                return constantCosth12.times(linearCosth12.pow(costStackh12)).times(quadraticCosth12.pow(costStackh12.pow(2))).floor()
+            },
+            effect(x) {
+                effBaseh12 = new Decimal(1)
+                effStackh12 = new Decimal(x)
+
+                return Decimal.times(effBaseh12, effStackh12)
+            },
+            title() { return "heavenly buyable 12"},
+            display() { return "assign "+format(effBaseh12)+" more buildings ?1 to cost group. buildings in cost group' cost scaling are divided by "+format(clickableEffect('h', 21))+". <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())+" buildings assignable to cost group"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        21: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                costStackh21 = new Decimal(x)
+                constantCosth21 = new Decimal(10000)
+                linearCosth21 = new Decimal(10)
+                quadraticCosth21 = new Decimal(10)
+
+
+                return constantCosth21.times(linearCosth21.pow(costStackh21)).times(quadraticCosth21.pow(costStackh21.pow(2))).floor()
+            },
+            effect(x) {
+                effBaseh21 = new Decimal(1)
+                effStackh21 = new Decimal(x)
+
+                return Decimal.times(effBaseh21, effStackh21)
+            },
+            title() { return "heavenly buyable 21"},
+            display() { return "grant "+format(effBaseh21)+" synergy points. <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())+" total synergy point"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                addPoints('sy', new Decimal(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        22: {
+            unlocked() {return hasUpgrade('h', 32)},
+            cost(x) {
+                costStackh22 = new Decimal(x)
+                constantCosth22 = new Decimal(10000)
+                linearCosth22 = new Decimal(10)
+                quadraticCosth22 = new Decimal(10)
+
+
+                return constantCosth22.times(linearCosth22.pow(costStackh22)).times(quadraticCosth22.pow(costStackh22.pow(2))).floor()
+            },
+            effect(x) {
+                effBaseh22 = new Decimal(1)
+                effStackh22 = new Decimal(x)
+
+                return Decimal.times(effBaseh22, effStackh22)
+            },
+            title() { return "heavenly buyable 22"},
+            display() { return "grant "+format(effBaseh22)+" generators . <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())+" total generators"},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                addPoints('g', new Decimal(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+    },
+    clickables: {
+        11: {
+            display() { return "assign building 11 to cost group, assigned "+getClickableState('h', 11)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 11, getClickableState('h', 11)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        12: {
+            display() { return "assign building 21 to cost group, assigned "+getClickableState('h', 12)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 12, getClickableState('h', 12)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        13: {
+            display() { return "assign building 31 to cost group, assigned "+getClickableState('h', 13)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 13, getClickableState('h', 13)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        14: {
+            display() { return "assign building 41 to cost group, assigned "+getClickableState('h', 14)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 14, getClickableState('h', 14)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        15: {
+            display() { return "assign building 51 to cost group, assigned "+getClickableState('h', 15)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 15, getClickableState('h', 15)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        16: {
+            display() { return "assign building 61 to cost group, assigned "+getClickableState('h', 16)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 16, getClickableState('h', 16)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        17: {
+            display() { return "assign building 71 to cost group, assigned "+getClickableState('h', 17)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 17, getClickableState('h', 17)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        18: {
+            display() { return "assign building 81 to cost group, assigned "+getClickableState('h', 18)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 18, getClickableState('h', 18)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        19: {
+            display() { return "assign building 91 to cost group, assigned "+getClickableState('h', 19)+" times"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 19, getClickableState('h', 19)*1+1)
+            },
+            canClick() { 
+                alreadyAssigned = 0
+                for (let i = 11; i < 20; i++ ) {
+                    alreadyAssigned += getClickableState('h', i)
+                }
+                return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
+            },
+        },
+        21: {
+            display() { return "unassign all buildings and reset buildings"},
+            unlocked() {return getBuyableAmount('h', 12).gte(1)},
+            onClick() {
+                for (let i = 11; i < 20; i++ ) {
+                    setClickableState('h', i, 0)
+                }
+                tempvar1 = [Decimal.dZero]
+                for (let i = 1; i < 10; i++ ) {
+                    tempvar1.push(getBuyableAmount('b', i*10+3))
+                }
+                layerDataReset('b', [])
+                for (let i = 1; i < 10; i++ ) {
+                    setBuyableAmount('b', i*10+3, tempvar1[i])
+                }
+                player.points = new Decimal(0)
+                addPoints('b', 13)
+            },
+            effect() { 
+                eff = new Decimal(1.25)
+                return eff
+            },
+            canClick() {return true},
         },
     },
     upgrades: {
@@ -1436,5 +1677,135 @@ addLayer("h", {
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
         },
+        31: {
+            title: "heavenly upgrade 31",
+            description: "unlock synergy points",
+            cost() {if (hasUpgrade('h', 32)) {return new Decimal('eeee6')} else {return new Decimal(0)}} ,
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        32: {
+            title: "heavenly upgrade 32",
+            description: "unlock generators",
+            cost() {if (hasUpgrade('h', 31)) {return new Decimal('eeee6')} else {return new Decimal(0)}} ,
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+    },
+})
+  
+addLayer("sy", {
+    name: "synergy", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "SY", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        total: new Decimal(0),
+    }},
+    color: "#689cef",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "synergy points", // Name of prestige currency
+
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    row: 3, // Row the layer is in on the tree (0 is the first row)
+
+    layerShown() {return getBuyableAmount('h', 21).gte(1)},
+    automate() {//change to when player unlock autobuy
+        if (false) {
+
+        }
+    },
+    doReset(resettingLayer) { //change false to keep on reset trigger
+        if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
+    },
+    infoboxes: {
+
+    },
+    milestones: {
+
+    },
+
+    buyables: {
+        // 11: {
+        //     unlocked() {return hasUpgrade('h', 31)},
+        //     cost(x) {
+        //         linearCostsy = new Decimal(2)
+        //         return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+        //     },
+        //     effect(x) {
+        //         effBasesy = new Decimal(1.05)
+        //         return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+        //     },
+        //     title() { return "synergy building "+this.id.toString()},
+        //     display() { return "building "+Math.floor(this.id/10).toString()+"1 cps is multiplied by "+format(effBasesy)+" for every building "+Math.round(this.id % 10, 1).toString()+"1. <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())+" per building "},
+        //     canAfford() { return player[this.layer].points.gte(this.cost()) },
+        //     buy() {
+        //         player[this.layer].points = player[this.layer].points.sub(this.cost())
+        //         setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+        //     },
+        //     buyMax() {
+        //         while (canBuyBuyable([this.layer], [this.id])){
+        //             buyBuyable([this.layer], [this.id])
+        //         }
+        //     },
+        // },
+    },
+    clickables: {
+
+    },
+    upgrades: {
+
+    },
+})
+
+addLayer("g", {
+    name: "generate", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "G", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        total: new Decimal(0),
+    }},
+    color: "#69efc9",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "generators", // Name of prestige currency
+
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    row: 3, // Row the layer is in on the tree (0 is the first row)
+
+    layerShown() {return getBuyableAmount('h', 22).gte(1)},
+    automate() {//change to when player unlock autobuy
+        if (false) {
+
+        }
+    },
+    doReset(resettingLayer) { //change false to keep on reset trigger
+        if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
+    },
+    infoboxes: {
+
+    },
+    milestones: {
+
+    },
+
+    buyables: {
+
+    },
+    clickables: {
+
+    },
+    upgrades: {
+
     },
 })
