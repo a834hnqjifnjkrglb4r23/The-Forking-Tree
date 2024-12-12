@@ -108,6 +108,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb11 = Decimal.dTen.pow(buyableTierb11).times(buyableEffect('b', 12).effect)
+                totalSynergyLevels = new Decimal(0)
+                for (i = 1; i < 10; i++) {
+                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+1))
+                }
+                effBaseb11 = effBaseb11.times(Decimal.pow(1.05, totalSynergyLevels))
                 effStackb11 = new Decimal(x)
 
                 return Decimal.times(effBaseb11, effStackb11)
@@ -174,6 +179,8 @@ addLayer("b", {
             title() { return "building 13"},
             display() { return "gives "+format(effBaseb13)+" free levels to building 12 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb13)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -265,6 +272,8 @@ addLayer("b", {
             title() { return "building 23"},
             display() { return "gives "+format(effBaseb23)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb23)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -354,8 +363,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb33, effStackb33)
             },
             title() { return "building 33"},
-            display() { return "gives "+format(effBaseb33)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb33)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb33)+" free levels to building 32 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb33)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -445,8 +456,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb43, effStackb43)
             },
             title() { return "building 43"},
-            display() { return "gives "+format(effBaseb43)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb43)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb43)+" free levels to building 42 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb43)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -536,8 +549,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb53, effStackb53)
             },
             title() { return "building 53"},
-            display() { return "gives "+format(effBaseb53)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb53)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb53)+" free levels to building 52 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb53)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -627,8 +642,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb63, effStackb63)
             },
             title() { return "building 63"},
-            display() { return "gives "+format(effBaseb63)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb63)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb63)+" free levels to building 62 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb63)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -718,8 +735,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb73, effStackb73)
             },
             title() { return "building 73"},
-            display() { return "gives "+format(effBaseb73)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb73)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb73)+" free levels to building 72 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb73)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -809,8 +828,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb83, effStackb83)
             },
             title() { return "building 83"},
-            display() { return "gives "+format(effBaseb83)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb83)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb83)+" free levels to building 82 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb83)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -900,8 +921,10 @@ addLayer("b", {
                 return Decimal.times(effBaseb93, effStackb93)
             },
             title() { return "building 93"},
-            display() { return "gives "+format(effBaseb93)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb93)+" <br> effect: "+format(this.effect())},
+            display() { return "gives "+format(effBaseb93)+" free levels to building 92 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb93)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
+            style() {const color = {background: "#e1f09b"}
+            return color},
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -1472,6 +1495,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         12: {
             display() { return "assign building 21 to cost group, assigned "+getClickableState('h', 12)+" times"},
@@ -1486,6 +1511,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         13: {
             display() { return "assign building 31 to cost group, assigned "+getClickableState('h', 13)+" times"},
@@ -1500,6 +1527,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         14: {
             display() { return "assign building 41 to cost group, assigned "+getClickableState('h', 14)+" times"},
@@ -1514,6 +1543,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         15: {
             display() { return "assign building 51 to cost group, assigned "+getClickableState('h', 15)+" times"},
@@ -1528,6 +1559,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         16: {
             display() { return "assign building 61 to cost group, assigned "+getClickableState('h', 16)+" times"},
@@ -1542,6 +1575,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         17: {
             display() { return "assign building 71 to cost group, assigned "+getClickableState('h', 17)+" times"},
@@ -1556,6 +1591,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         18: {
             display() { return "assign building 81 to cost group, assigned "+getClickableState('h', 18)+" times"},
@@ -1570,6 +1607,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         19: {
             display() { return "assign building 91 to cost group, assigned "+getClickableState('h', 19)+" times"},
@@ -1584,6 +1623,8 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
+            style() {const size1 = {width: "65px", height: "65px"}
+            return size1},
         },
         21: {
             display() { return "unassign all buildings and reset buildings"},
@@ -1728,36 +1769,2042 @@ addLayer("sy", {
         if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
     },
     infoboxes: {
-
+        A: {
+            body() {
+                return "On each synergy, the boost amount is 1.05x per boosting building per synergy level. effect shown is per boosting building, all synergy levels"
+            }
+        }
     },
     milestones: {
 
     },
 
     buyables: {
-        // 11: {
-        //     unlocked() {return hasUpgrade('h', 31)},
-        //     cost(x) {
-        //         linearCostsy = new Decimal(2)
-        //         return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
-        //     },
-        //     effect(x) {
-        //         effBasesy = new Decimal(1.05)
-        //         return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
-        //     },
-        //     title() { return "synergy building "+this.id.toString()},
-        //     display() { return "building "+Math.floor(this.id/10).toString()+"1 cps is multiplied by "+format(effBasesy)+" for every building "+Math.round(this.id % 10, 1).toString()+"1. <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())+" per building "},
-        //     canAfford() { return player[this.layer].points.gte(this.cost()) },
-        //     buy() {
-        //         player[this.layer].points = player[this.layer].points.sub(this.cost())
-        //         setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-        //     },
-        //     buyMax() {
-        //         while (canBuyBuyable([this.layer], [this.id])){
-        //             buyBuyable([this.layer], [this.id])
-        //         }
-        //     },
-        // },
+        11: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        12: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        13: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        14: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        15: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        16: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        17: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        18: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        19: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        21: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        22: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        23: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        24: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        25: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        26: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        27: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        28: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        29: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        31: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        32: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        33: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        34: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        35: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        36: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        37: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        38: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        39: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        41: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        42: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        43: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        44: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        45: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        46: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        47: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        48: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        49: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        51: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        52: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        53: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        54: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        55: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        56: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        57: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        58: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        59: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        61: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        62: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        63: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        64: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        65: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        66: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        67: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        68: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        69: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        71: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        72: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        73: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        74: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        75: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        76: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        77: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        78: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        79: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        81: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        82: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        83: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        84: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        85: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        86: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        87: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        88: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        89: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        91: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        92: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        93: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        94: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        95: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        96: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        97: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        98: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        99: {
+            unlocked() {return hasUpgrade('h', 31)},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
+            },
+            effect(x) {
+                effBasesy = new Decimal(1.05)
+                return Decimal.pow(effBasesy, getBuyableAmount(this.layer, this.id))
+            },
+            title() { return this.id.toString()},
+            display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            style() {const size = {width: "67px", height: "67px"}
+                return size},
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
     },
     clickables: {
 
