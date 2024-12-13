@@ -62,6 +62,9 @@ function addedPlayerData() { return {
 	clickgain() {
 		clickgain = new Decimal(1)
 		return clickgain
+	},
+	effBasesy() {
+		return new Decimal(1.05)
 	}
 }}
 
