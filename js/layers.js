@@ -179,8 +179,9 @@ addLayer("b", {
             title() { return "building 13"},
             display() { return "gives "+format(effBaseb13)+" free levels to building 12 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb13)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -277,8 +278,9 @@ addLayer("b", {
             title() { return "building 23"},
             display() { return "gives "+format(effBaseb23)+" free levels to building 22 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb23)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -375,8 +377,9 @@ addLayer("b", {
             title() { return "building 33"},
             display() { return "gives "+format(effBaseb33)+" free levels to building 32 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb33)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -473,8 +476,9 @@ addLayer("b", {
             title() { return "building 43"},
             display() { return "gives "+format(effBaseb43)+" free levels to building 42 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb43)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -571,8 +575,9 @@ addLayer("b", {
             title() { return "building 53"},
             display() { return "gives "+format(effBaseb53)+" free levels to building 52 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb53)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -669,8 +674,9 @@ addLayer("b", {
             title() { return "building 63"},
             display() { return "gives "+format(effBaseb63)+" free levels to building 62 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb63)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -767,8 +773,9 @@ addLayer("b", {
             title() { return "building 73"},
             display() { return "gives "+format(effBaseb73)+" free levels to building 72 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb73)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -865,8 +872,9 @@ addLayer("b", {
             title() { return "building 83"},
             display() { return "gives "+format(effBaseb83)+" free levels to building 82 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb83)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -963,8 +971,9 @@ addLayer("b", {
             title() { return "building 93"},
             display() { return "gives "+format(effBaseb93)+" free levels to building 92 <br> cost: "+format(this.cost())+" sugar <br> owned: "+format(effStackb93)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.s.points.gte(this.cost()) },
-            style() {const color = {background: "#e1f09b"}
-            return color},
+            style() {
+                if (tmp[this.layer].buyables[this.id].canBuy) return { background: "#e1f09b" }
+            },
             buy() {
                 player.s.points = player.s.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -1136,13 +1145,21 @@ addLayer("p", {
             },
             effect(x) {
                 effBasep11 = new Decimal(0.1)
-                if (hasMilestone('h', 0)) {effBasep11 = effBasep11.times(player.h.total.add(1))}
-                effStackp11 = new Decimal(x).times(player.p.total)
+                heavenlycomponent = player.h.total.add(1)
 
-                return Decimal.times(effBasep11, effStackp11).add(1)
+                prestigecomponent = player.p.total.add(1)
+                if (prestigecomponent.gte(1e100)) {prestigecomponent = prestigecomponent.log10().log10().pow(0.975).pow10().pow10()}
+                
+                effDisplay = effBasep11.times(heavenlycomponent) //add future prestige here
+
+
+                return Decimal.times(effDisplay, prestigecomponent).add(1)
             },
             title() { return "prestige buyable 11"},
-            display() { return "increase cookie gain by "+format(effBasep11)+" times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect())},
+            display() { 
+                textone = "increase cookie gain by "+format(effDisplay)+" times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect())
+                if (prestigecomponent.gte(1e100)) {textone += "beyond 1e100 prestige points, effect second exponent ^0.975"} else {}
+            return textone},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -1464,7 +1481,7 @@ addLayer("h", {
                 costStackh21 = new Decimal(x)
                 constantCosth21 = new Decimal(10000)
                 linearCosth21 = new Decimal(10)
-                quadraticCosth21 = new Decimal(10)
+                quadraticCosth21 = new Decimal(2)
 
 
                 return constantCosth21.times(linearCosth21.pow(costStackh21)).times(quadraticCosth21.pow(costStackh21.pow(2))).floor()
@@ -1495,7 +1512,7 @@ addLayer("h", {
                 costStackh22 = new Decimal(x)
                 constantCosth22 = new Decimal(10000)
                 linearCosth22 = new Decimal(10)
-                quadraticCosth22 = new Decimal(10)
+                quadraticCosth22 = new Decimal(2)
 
 
                 return constantCosth22.times(linearCosth22.pow(costStackh22)).times(quadraticCosth22.pow(costStackh22.pow(2))).floor()
