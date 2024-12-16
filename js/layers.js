@@ -37,7 +37,7 @@ addLayer("b", {
     update(diff) { if (hasMilestone('h', 0)) {
         resetTimePeriod = new Decimal(1).times(buyableEffect('h', 11))
         bgainPerReset = resetTimePeriod.times(getPointGen()).times(multb).pow(expb)
-        addPoints('b', bgainPerReset.div(resetTimePeriod).times(diff))
+        addPoints('b', bgainPerReset.div(resetTimePeriod).max(1).times(diff))
         } else {}
     },
     prestigeNotify() {return true},
@@ -108,11 +108,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb11 = Decimal.dTen.pow(buyableTierb11).times(buyableEffect('b', 12).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+1).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+1).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb11 = effBaseb11.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb11 = effBaseb11.times(totalSynergyBoost)
                 effStackb11 = new Decimal(x)
 
                 return Decimal.times(effBaseb11, effStackb11)
@@ -140,7 +140,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb12, costMultb12).round()
             },
             effect(x) {
-                effBaseb12 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb12 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 11))
                 if (hasUpgrade('h', 23)) {effBaseb12 = effBaseb12.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(1)) {effBaseb12 = effBaseb12.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(1)) {effBaseb12 = effBaseb12.pow(buyableEffect('p', 22))}
@@ -168,7 +168,7 @@ addLayer("b", {
                 initialCostb13 = new Decimal(2)
                 linearCostb13 = new Decimal(x)
 
-                return Decimal.pow(initialCostb13, linearCostb13).floor()
+                return Decimal.pow(initialCostb13, linearCostb13).round()
             },
             effect(x) {
                 effBaseb13 = new Decimal(1)
@@ -207,11 +207,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb21 = Decimal.dTen.pow(buyableTierb21).times(buyableEffect('b', 22).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+2).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+2).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb21 = effBaseb21.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb21 = effBaseb21.times(totalSynergyBoost)
                 effStackb21 = new Decimal(x)
 
                 return Decimal.times(effBaseb21, effStackb21)
@@ -239,7 +239,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb22, costMultb22).round()
             },
             effect(x) {
-                effBaseb22 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb22 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 12))
                 if (hasUpgrade('h', 23)) {effBaseb22 = effBaseb22.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(2)) {effBaseb22 = effBaseb22.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(2)) {effBaseb22 = effBaseb22.pow(buyableEffect('p', 22))}
@@ -267,7 +267,7 @@ addLayer("b", {
                 initialCostb23 = new Decimal(2)
                 linearCostb23 = new Decimal(x)
 
-                return Decimal.pow(initialCostb23, linearCostb23).floor()
+                return Decimal.pow(initialCostb23, linearCostb23).round()
             },
             effect(x) {
                 effBaseb23 = new Decimal(1)
@@ -306,11 +306,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb31 = Decimal.dTen.pow(buyableTierb31).times(buyableEffect('b', 32).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+3).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+3).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb31 = effBaseb31.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb31 = effBaseb31.times(totalSynergyBoost)
                 effStackb31 = new Decimal(x)
 
                 return Decimal.times(effBaseb31, effStackb31)
@@ -338,7 +338,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb32, costMultb32).round()
             },
             effect(x) {
-                effBaseb32 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb32 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 13))
                 if (hasUpgrade('h', 23)) {effBaseb32 = effBaseb32.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(3)) {effBaseb32 = effBaseb32.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(3)) {effBaseb32 = effBaseb32.pow(buyableEffect('p', 22))}
@@ -366,7 +366,7 @@ addLayer("b", {
                 initialCostb33 = new Decimal(2)
                 linearCostb33 = new Decimal(x)
 
-                return Decimal.pow(initialCostb33, linearCostb33).floor()
+                return Decimal.pow(initialCostb33, linearCostb33).round()
             },
             effect(x) {
                 effBaseb33 = new Decimal(1)
@@ -405,11 +405,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb41 =  Decimal.dTen.pow(buyableTierb41).times(buyableEffect('b', 42).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+4).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+4).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb41 = effBaseb41.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb41 = effBaseb41.times(totalSynergyBoost)
                 effStackb41 = new Decimal(x)
 
                 return Decimal.times(effBaseb41, effStackb41)
@@ -437,7 +437,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb42, costMultb42).round()
             },
             effect(x) {
-                effBaseb42 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb42 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 14))
                 if (hasUpgrade('h', 23)) {effBaseb42 = effBaseb42.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(4)) {effBaseb42 = effBaseb42.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(4)) {effBaseb42 = effBaseb42.pow(buyableEffect('p', 22))}
@@ -465,7 +465,7 @@ addLayer("b", {
                 initialCostb43 = new Decimal(2)
                 linearCostb43 = new Decimal(x)
 
-                return Decimal.pow(initialCostb43, linearCostb43).floor()
+                return Decimal.pow(initialCostb43, linearCostb43).round()
             },
             effect(x) {
                 effBaseb43 = new Decimal(1)
@@ -504,11 +504,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb51 =  Decimal.dTen.pow(buyableTierb51).times(buyableEffect('b', 52).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+5).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+5).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb51 = effBaseb51.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb51 = effBaseb51.times(totalSynergyBoost)
                 effStackb51 = new Decimal(x)
 
                 return Decimal.times(effBaseb51, effStackb51)
@@ -536,7 +536,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb52, costMultb52).round()
             },
             effect(x) {
-                effBaseb52 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb52 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 15))
                 if (hasUpgrade('h', 23)) {effBaseb52 = effBaseb52.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(5)) {effBaseb52 = effBaseb52.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(5)) {effBaseb52 = effBaseb52.pow(buyableEffect('p', 22))}
@@ -564,7 +564,7 @@ addLayer("b", {
                 initialCostb53 = new Decimal(2)
                 linearCostb53 = new Decimal(x)
 
-                return Decimal.pow(initialCostb53, linearCostb53).floor()
+                return Decimal.pow(initialCostb53, linearCostb53).round()
             },
             effect(x) {
                 effBaseb53 = new Decimal(1)
@@ -603,11 +603,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb61 =  Decimal.dTen.pow(buyableTierb61).times(buyableEffect('b', 62).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+6).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+6).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb61 = effBaseb61.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb61 = effBaseb61.times(totalSynergyBoost)
                 effStackb61 = new Decimal(x)
 
                 return Decimal.times(effBaseb61, effStackb61)
@@ -635,7 +635,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb62, costMultb62).round()
             },
             effect(x) {
-                effBaseb62 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb62 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 16))
                 if (hasUpgrade('h', 23)) {effBaseb62 = effBaseb62.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(6)) {effBaseb62 = effBaseb62.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(6)) {effBaseb62 = effBaseb62.pow(buyableEffect('p', 22))}
@@ -663,7 +663,7 @@ addLayer("b", {
                 initialCostb63 = new Decimal(2)
                 linearCostb63 = new Decimal(x)
 
-                return Decimal.pow(initialCostb63, linearCostb63).floor()
+                return Decimal.pow(initialCostb63, linearCostb63).round()
             },
             effect(x) {
                 effBaseb63 = new Decimal(1)
@@ -702,11 +702,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb71 =  Decimal.dTen.pow(buyableTierb71).times(buyableEffect('b', 72).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+7).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+7).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb71 = effBaseb71.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb71 = effBaseb71.times(totalSynergyBoost)
                 effStackb71 = new Decimal(x)
 
                 return Decimal.times(effBaseb71, effStackb71)
@@ -734,7 +734,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb72, costMultb72).round()
             },
             effect(x) {
-                effBaseb72 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb72 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 17))
                 if (hasUpgrade('h', 23)) {effBaseb72 = effBaseb72.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(7)) {effBaseb72 = effBaseb72.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(7)) {effBaseb72 = effBaseb72.pow(buyableEffect('p', 22))}
@@ -762,7 +762,7 @@ addLayer("b", {
                 initialCostb73 = new Decimal(2)
                 linearCostb73 = new Decimal(x)
 
-                return Decimal.pow(initialCostb73, linearCostb73).floor()
+                return Decimal.pow(initialCostb73, linearCostb73).round()
             },
             effect(x) {
                 effBaseb73 = new Decimal(1)
@@ -801,11 +801,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb81 =  Decimal.dTen.pow(buyableTierb81).times(buyableEffect('b', 82).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+8).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+8).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb81 = effBaseb81.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb81 = effBaseb81.times(totalSynergyBoost)
                 effStackb81 = new Decimal(x)
 
                 return Decimal.times(effBaseb81, effStackb81)
@@ -833,7 +833,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb82, costMultb82).round()
             },
             effect(x) {
-                effBaseb82 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb82 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 18))
                 if (hasUpgrade('h', 23)) {effBaseb82 = effBaseb82.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(8)) {effBaseb82 = effBaseb82.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(8)) {effBaseb82 = effBaseb82.pow(buyableEffect('p', 22))}
@@ -861,7 +861,7 @@ addLayer("b", {
                 initialCostb83 = new Decimal(2)
                 linearCostb83 = new Decimal(x)
 
-                return Decimal.pow(initialCostb83, linearCostb83).floor()
+                return Decimal.pow(initialCostb83, linearCostb83).round()
             },
             effect(x) {
                 effBaseb83 = new Decimal(1)
@@ -900,11 +900,11 @@ addLayer("b", {
             },
             effect(x) {
                 effBaseb91 =  Decimal.dTen.pow(buyableTierb91).times(buyableEffect('b', 92).effect)
-                totalSynergyLevels = new Decimal(0)
+                totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
-                    totalSynergyLevels = totalSynergyLevels.add(getBuyableAmount('sy', i*10+9).times(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
+                    totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+9).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                 }
-                effBaseb91 = effBaseb91.times(Decimal.pow(player.effBasesy(), totalSynergyLevels))
+                effBaseb91 = effBaseb91.times(totalSynergyBoost)
                 effStackb91 = new Decimal(x)
 
                 return Decimal.times(effBaseb91, effStackb91)
@@ -932,7 +932,7 @@ addLayer("b", {
                 return Decimal.times(initialCostb92, costMultb92).round()
             },
             effect(x) {
-                effBaseb92 = new Decimal(2).add(buyableEffect('p', 12))
+                effBaseb92 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 19))
                 if (hasUpgrade('h', 23)) {effBaseb92 = effBaseb92.times(upgradeEffect('h', 23))}
                 if (getBuyableAmount('p', 21).gte(9)) {effBaseb92 = effBaseb92.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(9)) {effBaseb92 = effBaseb92.pow(buyableEffect('p', 22))}
@@ -960,7 +960,7 @@ addLayer("b", {
                 initialCostb93 = new Decimal(2)
                 linearCostb93 = new Decimal(x)
 
-                return Decimal.pow(initialCostb93, linearCostb93).floor()
+                return Decimal.pow(initialCostb93, linearCostb93).round()
             },
             effect(x) {
                 effBaseb93 = new Decimal(1)
@@ -1022,9 +1022,8 @@ addLayer("s", {
         return new Decimal(1)
     },
     canReset() {return false}, //change false to autogain trigger
-    passiveGeneration() {
-        return Decimal.dOne
-
+    update(diff) { 
+        addPoints('s', mults.times(diff))
     },
     prestigeNotify() {return true},
     prestigeButtonText() { 
@@ -1158,7 +1157,7 @@ addLayer("p", {
             title() { return "prestige buyable 11"},
             display() { 
                 textone = "increase cookie gain by "+format(effDisplay)+" times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect())
-                if (prestigecomponent.gte(1e100)) {textone += "beyond 1e100 prestige points, effect second exponent ^0.975"} else {}
+                if (prestigecomponent.gte(1e100)) {textone += "<br> beyond 1e100 prestige points, effect second exponent ^0.975"} else {}
             return textone},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -1480,7 +1479,7 @@ addLayer("h", {
             cost(x) {
                 costStackh21 = new Decimal(x)
                 constantCosth21 = new Decimal(10000)
-                linearCosth21 = new Decimal(10)
+                linearCosth21 = new Decimal(5)
                 quadraticCosth21 = new Decimal(2)
 
 
@@ -1511,7 +1510,7 @@ addLayer("h", {
             cost(x) {
                 costStackh22 = new Decimal(x)
                 constantCosth22 = new Decimal(10000)
-                linearCosth22 = new Decimal(10)
+                linearCosth22 = new Decimal(5)
                 quadraticCosth22 = new Decimal(2)
 
 
@@ -1552,7 +1551,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         12: {
@@ -1568,7 +1567,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         13: {
@@ -1584,7 +1583,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         14: {
@@ -1600,7 +1599,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         15: {
@@ -1616,7 +1615,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         16: {
@@ -1632,7 +1631,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         17: {
@@ -1648,7 +1647,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         18: {
@@ -1664,7 +1663,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         19: {
@@ -1680,7 +1679,7 @@ addLayer("h", {
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
-            style() {const size1 = {width: "65px", height: "65px"}
+            style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         21: {
@@ -1851,7 +1850,7 @@ addLayer("sy", {
         A: {
             body() {
 
-                return "On each synergy, the boost amount is "+format(player.effBasesy())+"x per boosting building per synergy level. effect shown is per boosting building, all synergy levels"
+                return "On each synergy, the boost amount is "+format(player.effBasesy())+"^((boosting no./boosted no.)^0.33)x per boosting building per synergy level. effect shown is per boosting building, all synergy levels"
             }
         }
     },
@@ -1867,8 +1866,7 @@ addLayer("sy", {
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -1893,7 +1891,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -1918,7 +1916,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -1943,7 +1941,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -1968,7 +1966,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -1993,7 +1991,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2018,7 +2016,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2043,7 +2041,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2068,7 +2066,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2093,7 +2091,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2118,7 +2116,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2143,7 +2141,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2168,7 +2166,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2193,7 +2191,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2218,7 +2216,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2243,7 +2241,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2268,7 +2266,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2293,7 +2291,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2318,7 +2316,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2343,7 +2341,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2368,7 +2366,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2393,7 +2391,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2418,7 +2416,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2443,7 +2441,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2468,7 +2466,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2493,7 +2491,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2518,7 +2516,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2543,7 +2541,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2568,7 +2566,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2593,7 +2591,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2618,7 +2616,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2643,7 +2641,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2668,7 +2666,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2693,7 +2691,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2718,7 +2716,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2743,7 +2741,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2768,7 +2766,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2793,7 +2791,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2818,7 +2816,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2843,7 +2841,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2868,7 +2866,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2893,7 +2891,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2918,7 +2916,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2943,7 +2941,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2968,7 +2966,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -2993,7 +2991,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3018,7 +3016,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3043,7 +3041,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3068,7 +3066,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3093,7 +3091,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3118,7 +3116,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3143,7 +3141,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3168,7 +3166,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3193,7 +3191,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3218,7 +3216,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3243,7 +3241,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3268,7 +3266,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3293,7 +3291,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3318,7 +3316,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3343,7 +3341,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3368,7 +3366,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3393,7 +3391,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3418,7 +3416,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3443,7 +3441,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3468,7 +3466,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3493,7 +3491,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3518,7 +3516,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3543,7 +3541,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3568,7 +3566,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3593,7 +3591,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3618,7 +3616,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3643,7 +3641,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3668,7 +3666,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3693,7 +3691,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3718,7 +3716,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3743,7 +3741,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3768,7 +3766,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3793,7 +3791,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3818,7 +3816,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3843,7 +3841,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3868,7 +3866,7 @@ addLayer("sy", {
             },
             effect(x) {
 
-                return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
+return Decimal.pow(player.effBasesy(), getBuyableAmount(this.layer, this.id))
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3909,8 +3907,9 @@ addLayer("g", {
 
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: 3, // Row the layer is in on the tree (0 is the first row)
-
-    layerShown() {return getBuyableAmount('h', 22).gte(1)},
+    layerShown() {
+        if (getClickableState('g', 11) == "") {setClickableState('g', 11, 12)}
+        return getBuyableAmount('h', 22).gte(1)},
     automate() {//change to when player unlock autobuy
         if (false) {
 
@@ -3919,11 +3918,343 @@ addLayer("g", {
     doReset(resettingLayer) { //change false to keep on reset trigger
         if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
     },
+    update(diff) { 
+        setBuyableAmount('g', getClickableState('g', 11), getBuyableAmount('g', getClickableState('g', 11)).add(buyableEffect('g', 21).times(diff)))
+    },
     infoboxes: {
 
     },
     milestones: {
 
+    },
+
+    buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        13: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        14: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        15: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        16: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        17: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        18: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        19: {
+            unlocked() {return true},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(x)
+            },
+            display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "67px", height: "110px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        21: {
+            unlocked() {return true},
+            cost(x) {
+                costStackg11 = new Decimal(x)
+                constantCostg11 = new Decimal(10)
+                linearCostg11 = new Decimal(3)
+                quadraticCostg11 = new Decimal(1.5)
+                return constantCostg11.times(linearCostg11.pow(costStackg11)).times(quadraticCostg11.pow(costStackg11.pow(2)))
+            },
+            effect(x) {
+                effStackg11 = new Decimal(x)
+                effBaseg11 = new Decimal(0.25)
+
+                return Decimal.times(effBaseg11, effStackg11).add(1).times(0.125).times(player.g.points)
+            },
+            title() { return "generator buyable 21"},
+            display() { return "your "+format(player.g.points)+" generators are generating "+format(this.effect(), 3)+" effect to all assigned buildings every second. <br> this buyable adds generator effect by "+format(effBaseg11)+"x. <br> cost: "+formatShort(this.cost())+" sugar. "+"assigned to: <br>"+Math.round(getClickableState('g', 11) * 10 - 98, 1).toString()},
+            canAfford() { return player.s.points.gte(this.cost()) },
+
+            buy() {
+                player.s.points = player.s.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+    },
+    clickables: {
+        11: {
+            unlocked: false,
+            onClick() {
+            },
+            canClick() {return false},
+
+        },
+    },
+    upgrades: {
+
+    },
+})
+
+addLayer("c", {
+    name: "crunch", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "C", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+        total: new Decimal(0),
+    }},
+    color: "#ff9800",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "crunch", // Name of prestige currency
+    baseResource: "cookies", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+
+        multc = new Decimal(1/308.25471555991674389886862819788085941062643861719914630187772019415878)
+
+
+        return multc
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        expc = new Decimal(2)
+
+
+        return expc
+    },
+    getResetGain() {
+        basec = player.points.max(1).log10()
+
+        cp = basec.times(multc).pow(expc)
+
+
+        return cp.sub(player.c.total).floor().max(0)
+    },
+    getNextAt() {
+        nextc = getResetGain('c').add(1).add(player.c.total)
+
+        nextc = nextc.root(expc).div(multc).pow10()
+
+        return nextc
+    },
+    canReset() {return getResetGain('c').gte(0)&&!(false)}, //change false to autogain trigger
+
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('c'))+" crunch. Next at "+format(getNextAt('c'))+" cookies" },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+        {key: "c", description: "C: Reset for crunch", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+    ],
+    layerShown() {return player.points.gte(1e300)||player.c.total.gte(1)},
+    automate() {//change to when player unlock autobuy
+        if (false) {
+            for (let i = 11; i < 14; i++) {
+                if (canBuyBuyable('p', i)) {buyMaxBuyable('p', i)}
+            }
+            for (let i = 21; i < 25; i++) {
+                if (canBuyBuyable('p', i)) {buyMaxBuyable('p', i)}
+            }
+        }
+    },
+    doReset(resettingLayer) { //change false to keep on reset trigger
+        if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
+
+    },
+    infoboxes: {
+
+    },
+    milestones: {
+        0: {
+            requirementDescription: "crunch milestone 0",
+            effectDescription: "1 crunch: (not implemented) continuum all building ?1s",
+            done() { return player.c.total.gte(1) }
+        }
     },
 
     buyables: {
@@ -3936,3 +4267,4 @@ addLayer("g", {
 
     },
 })
+
