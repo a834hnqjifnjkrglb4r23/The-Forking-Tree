@@ -1465,7 +1465,8 @@ addLayer("h", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         exph = new Decimal(1/12)
-
+        if (hasUpgrade('h', 13)) {exph = exph.pow(upgradeEffect('h', 13))}
+        if (hasUpgrade('h', 43)) {exph = exph.pow(upgradeEffect('h', 43))}
 
         exp2h = new Decimal(0.9)
 
@@ -1826,7 +1827,12 @@ addLayer("h", {
         11: {
             title: "heavenly upgrade 11",
             description: "multiply building gain exponent by 1.2",
-            cost() {if (hasUpgrade('h', 12)) {return new Decimal('eeee6')} else {return new Decimal(1)}} ,
+            cost() {
+                maxPurchaseh1 = new Decimal(1)
+                if (hasUpgrade('c', 11)) {maxPurchaseh1 = maxPurchaseh1.add(1)}
+                actualPurchaseh1 = new Decimal(hasUpgrade('h', 11)+hasUpgrade('h', 12)+hasUpgrade('h', 13))
+                if (maxPurchaseh1.lte(actualPurchaseh1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
             effect() {
                 eff = new Decimal(1.2)
                 return eff
@@ -1837,7 +1843,9 @@ addLayer("h", {
         12: {
             title: "heavenly upgrade 12",
             description: "multiply prestige gain exponent by 1.2",
-            cost() {if (hasUpgrade('h', 11)) {return new Decimal('eeee6')} else {return new Decimal(1)}} ,
+            cost() {
+                if (maxPurchaseh1.lte(actualPurchaseh1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
             effect() {
                 eff = new Decimal(1.2)
                 return eff
@@ -1845,93 +1853,144 @@ addLayer("h", {
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
         },
+        13: {
+            title: "heavenly upgrade 13",
+            description: "multiply heavenly gain exponent by 1.2",
+            cost() {
+                if (maxPurchaseh1.lte(actualPurchaseh1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
+            effect() {
+                eff = new Decimal(1.2)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasMilestone('c', 0)}
+        },
         21: {
             title: "heavenly upgrade 21",
             description: "divide all building ?1 costs by 60",
-            cost() {if (hasUpgrade('h', 22)||hasUpgrade('h', 23)||hasUpgrade('h', 24)) {return new Decimal('eeee6')} else {return new Decimal(10)}} ,
+            cost() {
+                maxPurchaseh2 = new Decimal(1)
+                if (hasUpgrade('c', 12)) {maxPurchaseh2 = maxPurchaseh2.add(1)}
+                actualPurchaseh2 = new Decimal(hasUpgrade('h', 21)+hasUpgrade('h', 22)+hasUpgrade('h', 23)+hasUpgrade('h', 24))
+                if (maxPurchaseh2.lte(actualPurchaseh2)) {return new Decimal('eeee10')} else {return new Decimal(10)}
+            },
             effect() {
                 eff = new Decimal(60)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 11)||hasUpgrade('h', 12)||hasUpgrade('h', 13)},
         },
         22: {
             title: "heavenly upgrade 22",
             description: "divide all building ?2 cost by 1.25",
-            cost() {if (hasUpgrade('h', 21)||hasUpgrade('h', 23)||hasUpgrade('h', 24)) {return new Decimal('eeee6')} else {return new Decimal(10)}} ,
+            cost() {
+                if (maxPurchaseh2.lte(actualPurchaseh2)) {return new Decimal('eeee10')} else {return new Decimal(10)}
+            },
             effect() {
                 eff = new Decimal(1.25)
                 return eff
             },
             effectDisplay() {return "/"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 11)||hasUpgrade('h', 12)||hasUpgrade('h', 13)},
         },
         23: {
             title: "heavenly upgrade 23",
             description: "multiply all building ?2 effects by 4",
-            cost() {if (hasUpgrade('h', 21)||hasUpgrade('h', 22)||hasUpgrade('h', 24)) {return new Decimal('eeee6')} else {return new Decimal(10)}} ,
+            cost() {
+                if (maxPurchaseh2.lte(actualPurchaseh2)) {return new Decimal('eeee10')} else {return new Decimal(10)}
+            },
             effect() {
                 eff = new Decimal(4)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 11)||hasUpgrade('h', 12)||hasUpgrade('h', 13)},
         },
         24: {
             title: "heavenly upgrade 24",
             description: "multiply sugar gain by 2",
-            cost() {if (hasUpgrade('h', 21)||hasUpgrade('h', 22)||hasUpgrade('h', 23)) {return new Decimal('eeee6')} else {return new Decimal(10)}} ,
+            cost() {
+                if (maxPurchaseh2.lte(actualPurchaseh2)) {return new Decimal('eeee10')} else {return new Decimal(10)}
+            },
             effect() {
                 eff = new Decimal(2)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 11)||hasUpgrade('h', 12)||hasUpgrade('h', 13)},
         },
         31: {
             title: "heavenly upgrade 31",
             description: "unlock synergy points",
-            cost() {if (hasUpgrade('h', 32)) {return new Decimal('eeee6')} else {return new Decimal(0)}} ,
+            cost() {
+                maxPurchaseh3 = new Decimal(1)
+                //if (hasMilestone('c', 0)) {maxPurchaseh1 =}
+                actualPurchaseh3 = new Decimal(hasUpgrade('h', 31)+hasUpgrade('h', 32))
+                if (maxPurchaseh3.lte(actualPurchaseh3)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
             effect() {
                 eff = new Decimal(1)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 21)||hasUpgrade('h', 22)||hasUpgrade('h', 23)||hasUpgrade('h', 24)},
         },
         32: {
             title: "heavenly upgrade 32",
             description: "unlock generators",
-            cost() {if (hasUpgrade('h', 31)) {return new Decimal('eeee6')} else {return new Decimal(0)}} ,
+            cost() {
+                if (maxPurchaseh3.lte(actualPurchaseh3)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
             effect() {
                 eff = new Decimal(1)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 21)||hasUpgrade('h', 22)||hasUpgrade('h', 23)||hasUpgrade('h', 24)},
         },
         41: {
             title: "heavenly upgrade 41",
             description: "multiply building gain exponent by 1.25",
-            cost() {if (hasUpgrade('h', 42)) {return new Decimal('eeee6')} else {return new Decimal(1000)}} ,
+            cost() {
+                maxPurchaseh4 = new Decimal(1)
+                //if (hasMilestone('c', 0)) {maxPurchaseh1 =}
+                actualPurchaseh4 = new Decimal(hasUpgrade('h', 41)+hasUpgrade('h', 42))
+                if (maxPurchaseh4.lte(actualPurchaseh4)) {return new Decimal('eeee10')} else {return new Decimal(1000)}
+            },
             effect() {
                 eff = new Decimal(1.25)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 31)||hasUpgrade('h', 32)},
         },
         42: {
             title: "heavenly upgrade 42",
             description: "multiply prestige gain exponent by 1.25",
-            cost() {if (hasUpgrade('h', 41)) {return new Decimal('eeee6')} else {return new Decimal(1000)}} ,
+            cost() {
+                if (maxPurchaseh4.lte(actualPurchaseh4)) {return new Decimal('eeee10')} else {return new Decimal(1000)}
+            },
             effect() {
                 eff = new Decimal(1.25)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return true}
+            unlocked() {return hasUpgrade('h', 31)||hasUpgrade('h', 32)},
+        },
+        43: {
+            title: "heavenly upgrade 43",
+            description: "multiply heavenly gain exponent by 1.25",
+            cost() {
+                if (maxPurchaseh4.lte(actualPurchaseh4)) {return new Decimal('eeee10')} else {return new Decimal(1000)}
+            },
+            effect() {
+                eff = new Decimal(1.25)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return (hasUpgrade('h', 31)||hasUpgrade('h', 32))&&hasMilestone('c', 0)},
         },
     },
 })
@@ -4264,7 +4323,10 @@ addLayer("g", {
                 effStackg11 = new Decimal(x)
                 effBaseg11 = new Decimal(0.25)
 
-                return Decimal.times(effBaseg11, effStackg11).add(1).times(0.125).times(player.g.points)
+                baseGaingenerator = new Decimal(0.125)
+                if (hasUpgrade('c', 14)) {baseGaingenerator = baseGaingenerator.times(upgradeEffect('c', 14))}
+
+                return Decimal.times(effBaseg11, effStackg11).add(1).times(baseGaingenerator).times(player.g.points)
             },
             title() { return "generator buyable 21"},
             display() { return "your "+format(player.g.points)+" generators are generating "+format(this.effect(), 3)+" effect to all assigned buildings every second. <br> this buyable adds generator effect by "+format(effBaseg11)+"x. <br> cost: "+formatShort(this.cost())+" sugar. "+"assigned to: <br>"+Math.round(getClickableState('g', 11) * 10 - 98, 1).toString()},
@@ -4367,7 +4429,7 @@ addLayer("c", {
     milestones: {
         0: {
             requirementDescription: "crunch milestone 0",
-            effectDescription: "1 crunch: (not implemented) continuum all building ?1s",
+            effectDescription: "1 crunch: continuum all building ?1s, raise prestige buyable 11 effect by (crunch total)/10+1",
             done() { return player.c.total.gte(1) }
         }
     },
@@ -4379,7 +4441,61 @@ addLayer("c", {
 
     },
     upgrades: {
-
+        11: {
+            title: "crunch upgrade 11",
+            description: "buy one more upgrade on heavenly row 1",
+            cost() {
+                maxPurchasec1 = new Decimal(1)
+                //if (hasMilestone('c', 0)) {maxPurchaseh1 =}
+                actualPurchasec1 = new Decimal(hasUpgrade('c', 11)+hasUpgrade('c', 12)+hasUpgrade('c', 13)+hasUpgrade('c', 14))
+                if (maxPurchasec1.lte(actualPurchasec1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        12: {
+            title: "crunch upgrade 12",
+            description: "buy one more upgrade on heavenly row 2",
+            cost() {
+                if (maxPurchasec1.lte(actualPurchasec1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        13: {
+            title: "crunch upgrade 13",
+            description: "synergy base is +0.01",
+            cost() {
+                if (maxPurchasec1.lte(actualPurchasec1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
+            effect() {
+                eff = new Decimal(0.01)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        14: {
+            title: "crunch upgrade 14",
+            description: "generator base is *1.25",
+            cost() {
+                if (maxPurchasec1.lte(actualPurchasec1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
+            effect() {
+                eff = new Decimal(1.25)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
     },
 })
 
