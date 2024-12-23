@@ -22,6 +22,7 @@ addLayer("b", {
         expb = new Decimal(0.7).add(buyableEffect('p', 13))
         if (hasUpgrade('h', 11)) {expb = expb.times(upgradeEffect('h', 11))}
         if (hasUpgrade('h', 41)) {expb = expb.times(upgradeEffect('h', 41))}
+        expb = expb.times(buyableEffect('c', 11))
         return expb
     },
     getResetGain() {
@@ -78,7 +79,7 @@ addLayer("b", {
             } else {
                 layerDataReset(this.layer, [])
             }
-            if (hasMilestone('h', 0)||hasMilestone('c', 0)) {addPoints('b', 13)}
+            if (hasMilestone('h', 0)||hasMilestone('c', 0)) {addPoints('b', 14)}
         }
 
     },
@@ -100,9 +101,12 @@ addLayer("b", {
                 costStackb11 = new Decimal(x).add(buyableEffect('b', 12).spent)
                 buyableTierb11 = new Decimal(10/9)
                 constantCostb11 = Decimal.pow(1.04, buyableTierb11.pow(2)).times(Decimal.pow(10, buyableTierb11))
-                if (hasUpgrade('h', 21)) {constantCostb11 = constantCostb11.div(upgradeEffect('h', 21))}
+
                 linearCostb11 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 11)))
                 quadraticCostb11 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 11)))
+
+                if (hasUpgrade('h', 21)) {linearCostb11 = linearCostb11.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb11 = quadraticCostb11.root(upgradeEffect('h', 21))}
 
                 constantCostLogb11 = constantCostb11.log10()
                 linearCostLogb11 = linearCostb11.log10()
@@ -119,7 +123,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+1).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+1).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+1).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -155,6 +159,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb12 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 11))
                 if (hasUpgrade('h', 23)) {effBaseb12 = effBaseb12.times(upgradeEffect('h', 23))}
+                effBaseb12 = effBaseb12.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(1)) {effBaseb12 = effBaseb12.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(1)) {effBaseb12 = effBaseb12.pow(buyableEffect('p', 22))}
                 spentStackb12 = new Decimal(x)
@@ -211,9 +216,12 @@ addLayer("b", {
                 costStackb21 = new Decimal(x).add(buyableEffect('b', 22).spent)
                 buyableTierb21 = new Decimal(20/8)
                 constantCostb21 = Decimal.pow(1.0455, buyableTierb21.pow(2)).times(Decimal.pow(10, buyableTierb21))
-                if (hasUpgrade('h', 21)) {constantCostb21 = constantCostb21.div(upgradeEffect('h', 21))}
                 linearCostb21 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 12)))
                 quadraticCostb21 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 12)))
+
+                
+                if (hasUpgrade('h', 21)) {linearCostb21 = linearCostb21.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb21 = quadraticCostb21.root(upgradeEffect('h', 21))}
 
                 constantCostLogb21 = constantCostb21.log10()
                 linearCostLogb21 = linearCostb21.log10()
@@ -230,7 +238,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+2).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+2).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+2).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -266,6 +274,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb22 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 12))
                 if (hasUpgrade('h', 23)) {effBaseb22 = effBaseb22.times(upgradeEffect('h', 23))}
+                effBaseb22 = effBaseb22.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(2)) {effBaseb22 = effBaseb22.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(2)) {effBaseb22 = effBaseb22.pow(buyableEffect('p', 22))}
                 spentStackb22 = new Decimal(x)
@@ -322,9 +331,12 @@ addLayer("b", {
                 costStackb31 = new Decimal(x).add(buyableEffect('b', 32).spent)
                 buyableTierb31 = new Decimal(30/7)
                 constantCostb31 = Decimal.pow(1.045, buyableTierb31.pow(2)).times(Decimal.pow(10, buyableTierb31))
-                if (hasUpgrade('h', 21)) {constantCostb31 = constantCostb31.div(upgradeEffect('h', 21))}
                 linearCostb31 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 13)))
                 quadraticCostb31 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 13)))
+
+                
+                if (hasUpgrade('h', 21)) {linearCostb31 = linearCostb31.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb31 = quadraticCostb31.root(upgradeEffect('h', 21))}
 
                 constantCostLogb31 = constantCostb31.log10()
                 linearCostLogb31 = linearCostb31.log10()
@@ -341,7 +353,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+3).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+3).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+3).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -377,6 +389,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb32 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 13))
                 if (hasUpgrade('h', 23)) {effBaseb32 = effBaseb32.times(upgradeEffect('h', 23))}
+                effBaseb32 = effBaseb32.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(3)) {effBaseb32 = effBaseb32.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(3)) {effBaseb32 = effBaseb32.pow(buyableEffect('p', 22))}
                 spentStackb32 = new Decimal(x)
@@ -433,9 +446,12 @@ addLayer("b", {
                 costStackb41 = new Decimal(x).add(buyableEffect('b', 42).spent)
                 buyableTierb41 = new Decimal(40/6)
                 constantCostb41 = Decimal.pow(1.0455, buyableTierb41.pow(2)).times(Decimal.pow(10, buyableTierb41))
-                if (hasUpgrade('h', 21)) {constantCostb41 = constantCostb41.div(upgradeEffect('h', 21))}
+
                 linearCostb41 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 14)))
                 quadraticCostb41 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 14)))
+
+                if (hasUpgrade('h', 21)) {linearCostb41 = linearCostb41.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb41 = quadraticCostb41.root(upgradeEffect('h', 21))}
 
                 constantCostLogb41 = constantCostb41.log10()
                 linearCostLogb41 = linearCostb41.log10()
@@ -452,7 +468,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+4).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+4).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+4).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -488,6 +504,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb42 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 14))
                 if (hasUpgrade('h', 23)) {effBaseb42 = effBaseb42.times(upgradeEffect('h', 23))}
+                effBaseb42 = effBaseb42.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(4)) {effBaseb42 = effBaseb42.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(4)) {effBaseb42 = effBaseb42.pow(buyableEffect('p', 22))}
                 spentStackb42 = new Decimal(x)
@@ -544,9 +561,11 @@ addLayer("b", {
                 costStackb51 = new Decimal(x).add(buyableEffect('b', 52).spent)
                 buyableTierb51 = new Decimal(50/5)
                 constantCostb51 = Decimal.pow(1.04, buyableTierb51.pow(2)).times(Decimal.pow(10, buyableTierb51))
-                if (hasUpgrade('h', 21)) {constantCostb51 = constantCostb51.div(upgradeEffect('h', 21))}
                 linearCostb51 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 15)))
                 quadraticCostb51 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 15)))
+
+                if (hasUpgrade('h', 21)) {linearCostb51 = linearCostb51.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb51 = quadraticCostb51.root(upgradeEffect('h', 21))}
 
                 constantCostLogb51 = constantCostb51.log10()
                 linearCostLogb51 = linearCostb51.log10()
@@ -563,7 +582,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+5).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+5).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+5).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -599,6 +618,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb52 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 15))
                 if (hasUpgrade('h', 23)) {effBaseb52 = effBaseb52.times(upgradeEffect('h', 23))}
+                effBaseb52 = effBaseb52.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(5)) {effBaseb52 = effBaseb52.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(5)) {effBaseb52 = effBaseb52.pow(buyableEffect('p', 22))}
                 spentStackb52 = new Decimal(x)
@@ -655,9 +675,11 @@ addLayer("b", {
                 costStackb61 = new Decimal(x).add(buyableEffect('b', 62).spent)
                 buyableTierb61 = new Decimal(60/4)
                 constantCostb61 = Decimal.pow(1.04, buyableTierb61.pow(2)).times(Decimal.pow(10, buyableTierb61))
-                if (hasUpgrade('h', 21)) {constantCostb61 = constantCostb61.div(upgradeEffect('h', 21))}
                 linearCostb61 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 16)))
                 quadraticCostb61 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 16)))
+
+                if (hasUpgrade('h', 21)) {linearCostb61 = linearCostb61.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb61 = quadraticCostb61.root(upgradeEffect('h', 21))}
 
                 constantCostLogb61 = constantCostb61.log10()
                 linearCostLogb61 = linearCostb61.log10()
@@ -674,7 +696,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+6).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+6).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+6).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -710,6 +732,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb62 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 16))
                 if (hasUpgrade('h', 23)) {effBaseb62 = effBaseb62.times(upgradeEffect('h', 23))}
+                effBaseb62 = effBaseb62.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(6)) {effBaseb62 = effBaseb62.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(6)) {effBaseb62 = effBaseb62.pow(buyableEffect('p', 22))}
                 spentStackb62 = new Decimal(x)
@@ -766,9 +789,11 @@ addLayer("b", {
                 costStackb71 = new Decimal(x).add(buyableEffect('b', 72).spent)
                 buyableTierb71 = new Decimal(70/3)
                 constantCostb71 = Decimal.pow(1.04, buyableTierb71.pow(2)).times(Decimal.pow(10, buyableTierb71))
-                if (hasUpgrade('h', 21)) {constantCostb71 = constantCostb71.div(upgradeEffect('h', 21))}
                 linearCostb71 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 17)))
                 quadraticCostb71 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 17)))
+
+                if (hasUpgrade('h', 21)) {linearCostb71 = linearCostb71.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb71 = quadraticCostb71.root(upgradeEffect('h', 21))}
 
                 constantCostLogb71 = constantCostb71.log10()
                 linearCostLogb71 = linearCostb71.log10()
@@ -785,7 +810,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+7).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+7).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+7).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -821,6 +846,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb72 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 17))
                 if (hasUpgrade('h', 23)) {effBaseb72 = effBaseb72.times(upgradeEffect('h', 23))}
+                effBaseb72 = effBaseb72.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(7)) {effBaseb72 = effBaseb72.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(7)) {effBaseb72 = effBaseb72.pow(buyableEffect('p', 22))}
                 spentStackb72 = new Decimal(x)
@@ -877,9 +903,12 @@ addLayer("b", {
                 costStackb81 = new Decimal(x).add(buyableEffect('b', 82).spent)
                 buyableTierb81 = new Decimal(80/2)
                 constantCostb81 = Decimal.pow(1.04, buyableTierb81.pow(2)).times(Decimal.pow(10, buyableTierb81))
-                if (hasUpgrade('h', 21)) {constantCostb81 = constantCostb81.div(upgradeEffect('h', 21))}
+
                 linearCostb81 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 18)))
                 quadraticCostb81 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 18)))
+
+                if (hasUpgrade('h', 21)) {linearCostb81 = linearCostb81.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb81 = quadraticCostb81.root(upgradeEffect('h', 21))}
 
                 constantCostLogb81 = constantCostb81.log10()
                 linearCostLogb81 = linearCostb81.log10()
@@ -896,7 +925,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+8).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+8).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+8).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -932,6 +961,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb82 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 18))
                 if (hasUpgrade('h', 23)) {effBaseb82 = effBaseb82.times(upgradeEffect('h', 23))}
+                effBaseb82 = effBaseb82.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(8)) {effBaseb82 = effBaseb82.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(8)) {effBaseb82 = effBaseb82.pow(buyableEffect('p', 22))}
                 spentStackb82 = new Decimal(x)
@@ -988,9 +1018,12 @@ addLayer("b", {
                 costStackb91 = new Decimal(x).add(buyableEffect('b', 92).spent)
                 buyableTierb91 = new Decimal(90/1)
                 constantCostb91 = Decimal.pow(1.04, buyableTierb91.pow(2)).times(Decimal.pow(10, buyableTierb91))
-                if (hasUpgrade('h', 21)) {constantCostb91 = constantCostb91.div(upgradeEffect('h', 21))}
+
                 linearCostb91 = new Decimal(1.1).root(clickableEffect('h', 21).pow(getClickableState('h', 19)))
                 quadraticCostb91 = new Decimal(1.001).root(clickableEffect('h', 21).pow(getClickableState('h', 19)))
+                
+                if (hasUpgrade('h', 21)) {linearCostb91 = linearCostb91.root(upgradeEffect('h', 21))}
+                if (hasUpgrade('h', 21)) {quadraticCostb91 = quadraticCostb91.root(upgradeEffect('h', 21))}
 
                 constantCostLogb91 = constantCostb91.log10()
                 linearCostLogb91 = linearCostb91.log10()
@@ -1007,7 +1040,7 @@ addLayer("b", {
                 totalSynergyBoost = new Decimal(1)
                 for (i = 1; i < 10; i++) {
                     if (hasMilestone('c', 0)) {
-                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+9).pow(layers.b.buyables[i*10+1].cost().continuum.add(buyableEffect('b', i*10+2).spent)))
+                        totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+9).pow(layers.b.buyables[i*10+1].cost().continuum))
                     } else {
                         totalSynergyBoost = totalSynergyBoost.times(buyableEffect('sy', i*10+9).pow(getBuyableAmount('b', i*10+1).add(buyableEffect('b', i*10+2).spent)))
                     }
@@ -1043,6 +1076,7 @@ addLayer("b", {
             effect(x) {
                 effBaseb92 = new Decimal(2).add(buyableEffect('p', 12)).add(buyableEffect('g', 19))
                 if (hasUpgrade('h', 23)) {effBaseb92 = effBaseb92.times(upgradeEffect('h', 23))}
+                effBaseb92 = effBaseb92.times(buyableEffect('c', 12))
                 if (getBuyableAmount('p', 21).gte(9)) {effBaseb92 = effBaseb92.pow(buyableEffect('p', 21))}
                 if (getBuyableAmount('p', 22).gte(9)) {effBaseb92 = effBaseb92.pow(buyableEffect('p', 22))}
                 spentStackb92 = new Decimal(x)
@@ -1114,6 +1148,7 @@ addLayer("s", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mults = new Decimal(1/180).times(buyableEffect('p', 31))
         if (hasUpgrade('h', 24)) {mults = mults.times(upgradeEffect('h', 24))}
+        mults = mults.times(buyableEffect('c', 13))
 
         return mults
     },
@@ -1193,7 +1228,7 @@ addLayer("p", {
         expp = new Decimal(1/3)
         if (hasUpgrade('h', 12)) {expp = expp.times(upgradeEffect('h', 12))}
         if (hasUpgrade('h', 42)) {expp = expp.times(upgradeEffect('h', 42))}
-
+        expp = expp.times(buyableEffect('c', 22))
         return expp
     },
     getResetGain() {
@@ -1257,10 +1292,13 @@ addLayer("p", {
                 crunchcomponent = player.c.total.div(10).add(1)
 
                 heavenlycomponent = player.h.total.add(1)
+                if (heavenlycomponent.gte(1e10)) {heavenlycomponent = heavenlycomponent.log10().log10().pow(0.75).pow10().pow10()}
+                if (heavenlycomponent.gte(1e100)) {heavenlycomponent = heavenlycomponent.log10().log10().pow(2/3).pow10().pow10()}
 
                 prestigecomponent = player.p.total
-                if (prestigecomponent.gte(1e100)) {prestigecomponent = prestigecomponent.log10().log10().pow(0.975).pow10().pow10()}
-                
+                if (prestigecomponent.gte(1e100)) {prestigecomponent = prestigecomponent.log10().log10().div(2).pow(0.75).times(2).pow10().pow10()}
+                if (prestigecomponent.gte('e1000')) {prestigecomponent = prestigecomponent.log10().log10().div(3).pow(2/3).times(3).pow10().pow10()}
+
                 effDisplay = effBasep11.times(heavenlycomponent) //add future prestige here
 
                 effPerBuyable = Decimal.times(heavenlycomponent, prestigecomponent).pow(crunchcomponent).div(10)
@@ -1272,7 +1310,7 @@ addLayer("p", {
             title() { return "prestige buyable 11"},
             display() { 
                 textone = "increase cookie gain by "+format(effDisplay)+" times cookie gain per total prestige point <br> cost: "+format(this.cost())+" <br> owned: "+format(getBuyableAmount(this.layer, this.id))+" <br> effect: "+format(this.effect())
-                if (prestigecomponent.gte(1e100)) {textone += "<br> beyond 1e100 prestige points, effect second exponent ^0.975"} else {}
+                if (prestigecomponent.gte(1e100)) {textone += "<br> beyond 1e100 prestige points, effect second exponent ^0.75"} else {}
             return textone},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -1383,8 +1421,8 @@ addLayer("p", {
                 costStackp22 = new Decimal(x).add(1)
                 costStackp22 = Decimal.div(costStackp22, Decimal.dTen.sub(costStackp22)).times(10)
                 constantCostp22 = new Decimal(1)
-                linearCostp22 = new Decimal('1e800')
-                quadraticCostp22 = new Decimal(1.04).pow(800)
+                linearCostp22 = new Decimal('1e1600')
+                quadraticCostp22 = new Decimal(1.04).pow(1600)
 
 
                 return constantCostp22.times(linearCostp22.pow(costStackp22)).times(quadraticCostp22.pow(costStackp22.pow(2))).floor()
@@ -1512,7 +1550,12 @@ addLayer("h", {
     },
     doReset(resettingLayer) { //change false to keep on reset trigger
         if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
-
+    },
+    onPrestige(gain){
+        if (getClickableState('h', 21)) 
+            for (let i = 11; i < 20; i++ ) {
+                    setClickableState('h', i, 0)
+            }
     },
     infoboxes: {
         A: {
@@ -1524,7 +1567,7 @@ addLayer("h", {
     milestones: {
         0: {
             requirementDescription: "heavenly milestone 0",
-            effectDescription: "1 heavenly cookies: start with 13 building points, multiply prestige buyable 11 effect by total heavenly cookies, automatically reset for building points every 1 seconds",
+            effectDescription: "1 heavenly cookies: start with 14 building points, multiply prestige buyable 11 effect by total heavenly cookies, automatically reset for building points every 1 seconds",
             done() { return player.h.total.gte(1)||hasMilestone('c', 0) }
         }
     },
@@ -1595,8 +1638,8 @@ addLayer("h", {
             cost(x) {
                 costStackh21 = new Decimal(x)
                 constantCosth21 = new Decimal(10000)
-                linearCosth21 = new Decimal(5)
-                quadraticCosth21 = new Decimal(2)
+                linearCosth21 = new Decimal(2).root(buyableEffect('c', 21))
+                quadraticCosth21 = new Decimal(5).root(buyableEffect('c', 21))
 
 
                 return constantCosth21.times(linearCosth21.pow(costStackh21)).times(quadraticCosth21.pow(costStackh21.pow(2))).floor()
@@ -1626,8 +1669,8 @@ addLayer("h", {
             cost(x) {
                 costStackh22 = new Decimal(x)
                 constantCosth22 = new Decimal(10000)
-                linearCosth22 = new Decimal(5)
-                quadraticCosth22 = new Decimal(2)
+                linearCosth22 = new Decimal(2).root(buyableEffect('c', 21))
+                quadraticCosth22 = new Decimal(5).root(buyableEffect('c', 21))
 
 
                 return constantCosth22.times(linearCosth22.pow(costStackh22)).times(quadraticCosth22.pow(costStackh22.pow(2))).floor()
@@ -1664,6 +1707,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1680,6 +1724,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1696,6 +1741,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1712,6 +1758,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1728,6 +1775,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1744,6 +1792,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1760,6 +1809,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1776,6 +1826,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1792,6 +1843,7 @@ addLayer("h", {
                 alreadyAssigned = 0
                 for (let i = 11; i < 20; i++ ) {
                     alreadyAssigned += getClickableState('h', i)
+
                 }
                 return new Decimal(alreadyAssigned).lt(getBuyableAmount('h', 12))
             },
@@ -1799,22 +1851,10 @@ addLayer("h", {
             return size1},
         },
         21: {
-            display() { return "unassign all buildings and reset buildings"},
+            display() { return "unassign all buildings when you reset for heavenly cookies, currently "+getClickableState('h', 21)},
             unlocked() {return getBuyableAmount('h', 12).gte(1)},
             onClick() {
-                for (let i = 11; i < 20; i++ ) {
-                    setClickableState('h', i, 0)
-                }
-                tempvar1 = [Decimal.dZero]
-                for (let i = 1; i < 10; i++ ) {
-                    tempvar1.push(getBuyableAmount('b', i*10+3))
-                }
-                layerDataReset('b', [])
-                for (let i = 1; i < 10; i++ ) {
-                    setBuyableAmount('b', i*10+3, tempvar1[i])
-                }
-                player.points = new Decimal(0)
-                addPoints('b', 13)
+                setClickableState('h', 21, !getClickableState('h', 21))
             },
             effect() { 
                 eff = new Decimal(1.25)
@@ -1829,7 +1869,8 @@ addLayer("h", {
             description: "multiply building gain exponent by 1.2",
             cost() {
                 maxPurchaseh1 = new Decimal(1)
-                if (hasUpgrade('c', 11)) {maxPurchaseh1 = maxPurchaseh1.add(1)}
+                if (hasUpgrade('c', 11)) {maxPurchaseh1 = maxPurchaseh1.add(upgradeEffect('c', 11))}
+                if (hasUpgrade('c', 21)) {maxPurchaseh1 = maxPurchaseh1.add(upgradeEffect('c', 11))}
                 actualPurchaseh1 = new Decimal(hasUpgrade('h', 11)+hasUpgrade('h', 12)+hasUpgrade('h', 13))
                 if (maxPurchaseh1.lte(actualPurchaseh1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
             },
@@ -1868,16 +1909,22 @@ addLayer("h", {
         },
         21: {
             title: "heavenly upgrade 21",
-            description: "divide all building ?1 costs by 60",
+            description: "divide all building ?1 cost scaling by 1.25",
             cost() {
                 maxPurchaseh2 = new Decimal(1)
-                if (hasUpgrade('c', 12)) {maxPurchaseh2 = maxPurchaseh2.add(1)}
+                if (hasUpgrade('c', 12)) {maxPurchaseh2 = maxPurchaseh2.add(upgradeEffect('c', 12))}
+                if (hasUpgrade('c', 22)) {maxPurchaseh2 = maxPurchaseh2.add(upgradeEffect('c', 22))}
                 actualPurchaseh2 = new Decimal(hasUpgrade('h', 21)+hasUpgrade('h', 22)+hasUpgrade('h', 23)+hasUpgrade('h', 24))
                 if (maxPurchaseh2.lte(actualPurchaseh2)) {return new Decimal('eeee10')} else {return new Decimal(10)}
             },
             effect() {
-                eff = new Decimal(60)
+                eff = new Decimal(1.15)
                 return eff
+            },
+            onPurchase() {
+                for (let i = 11; i < 20; i++ ) {
+                    setClickableState(getClickableState('h', i)*1+1)
+                }
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('h', 11)||hasUpgrade('h', 12)||hasUpgrade('h', 13)},
@@ -1926,7 +1973,7 @@ addLayer("h", {
             description: "unlock synergy points",
             cost() {
                 maxPurchaseh3 = new Decimal(1)
-                //if (hasMilestone('c', 0)) {maxPurchaseh1 =}
+                if (hasUpgrade('c', 24)) {maxPurchaseh3 = maxPurchaseh3.add(upgradeEffect('c', 24))}
                 actualPurchaseh3 = new Decimal(hasUpgrade('h', 31)+hasUpgrade('h', 32))
                 if (maxPurchaseh3.lte(actualPurchaseh3)) {return new Decimal('eeee10')} else {return new Decimal(1)}
             },
@@ -2024,7 +2071,7 @@ addLayer("sy", {
         A: {
             body() {
 
-                return "On each synergy, the boost amount is "+format(player.effBasesy())+"^((boosting no./boosted no.)^0.33)x per boosting building per synergy level. effect shown is per boosting building, all synergy levels"
+                return "On each synergy, the boost amount is "+format(player.effBasesy(), 4)+" per boosting building per synergy level. effect shown is per boosting building, all synergy levels"
             }
         }
     },
@@ -4314,7 +4361,7 @@ addLayer("g", {
             unlocked() {return true},
             cost(x) {
                 costStackg11 = new Decimal(x)
-                constantCostg11 = new Decimal(10)
+                constantCostg11 = new Decimal(3)
                 linearCostg11 = new Decimal(3)
                 quadraticCostg11 = new Decimal(1.5)
                 return constantCostg11.times(linearCostg11.pow(costStackg11)).times(quadraticCostg11.pow(costStackg11.pow(2)))
@@ -4323,7 +4370,7 @@ addLayer("g", {
                 effStackg11 = new Decimal(x)
                 effBaseg11 = new Decimal(0.25)
 
-                baseGaingenerator = new Decimal(0.125)
+                baseGaingenerator = new Decimal(0.25)
                 if (hasUpgrade('c', 14)) {baseGaingenerator = baseGaingenerator.times(upgradeEffect('c', 14))}
 
                 return Decimal.times(effBaseg11, effStackg11).add(1).times(baseGaingenerator).times(player.g.points)
@@ -4374,13 +4421,13 @@ addLayer("c", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
 
-        multc = new Decimal(1/308.25471555991674389886862819788085941062643861719914630187772019415878)
+        multc = new Decimal(1/308.25471555991674389886862819788085941062643861719914630187772019415878) // = 1/(1024*log2)
 
 
         return multc
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expc = new Decimal(2)
+        expc = new Decimal(2) 
 
 
         return expc
@@ -4435,7 +4482,156 @@ addLayer("c", {
     },
 
     buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                costStackc11 = new Decimal(x)
+                constantCostc11 = new Decimal(5)
+                linearCostc11 = new Decimal(2)
+                quadraticCostc11 = new Decimal(3)
 
+
+                return constantCostc11.times(linearCostc11.pow(costStackc11)).times(quadraticCostc11.pow(costStackc11.pow(2))).floor()
+            },
+            effect(x) {
+                effBasec11 = new Decimal(1.05)
+                effStackc11 = new Decimal(x)
+
+                return Decimal.pow(effBasec11, effStackc11)
+            },
+            title() { return "crunch buyable 11"},
+            display() { return "multiply the building exponent by "+format(effBasec11)+" <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                costStackc12 = new Decimal(x)
+                constantCostc12 = new Decimal(3)
+                linearCostc12 = new Decimal(1.5)
+                quadraticCostc12 = new Decimal(2)
+
+
+                return constantCostc12.times(linearCostc12.pow(costStackc12)).times(quadraticCostc12.pow(costStackc12.pow(2))).floor()
+            },
+            effect(x) {
+                effBasec12 = new Decimal(1.1)
+                effStackc12 = new Decimal(x)
+
+                return Decimal.pow(effBasec12, effStackc12)
+            },
+            title() { return "crunch buyable 12"},
+            display() { return "multiply the building ?2 effect by "+format(effBasec12)+" <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        13: {
+            unlocked() {return true},
+            cost(x) {
+                costStackc13 = new Decimal(x)
+                constantCostc13 = new Decimal(1)
+                linearCostc13 = new Decimal(2)
+                quadraticCostc13 = new Decimal(1.1)
+
+
+                return constantCostc13.times(linearCostc13.pow(costStackc13)).times(quadraticCostc13.pow(costStackc13.pow(2))).floor()
+            },
+            effect(x) {
+                effBasec13 = new Decimal(1.2)
+                effStackc13 = new Decimal(x)
+
+                return Decimal.pow(effBasec13, effStackc13)
+            },
+            title() { return "crunch buyable 13"},
+            display() { return "multiply sugar production by "+format(effBasec13)+" <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        21: {
+            unlocked() {return true},
+            cost(x) {
+                costStackc21 = new Decimal(x)
+                constantCostc21 = new Decimal(100)
+                linearCostc21 = new Decimal(50)
+                quadraticCostc21 = new Decimal(20)
+
+
+                return constantCostc21.times(linearCostc21.pow(costStackc21)).times(quadraticCostc21.pow(costStackc21.pow(2))).floor()
+            },
+            effect(x) {
+                effBasec21 = new Decimal(1.05)
+                effStackc21 = new Decimal(x)
+
+                return Decimal.pow(effBasec21, effStackc21)
+            },
+            title() { return "crunch buyable 21"},
+            display() { return "multiply synergy and generator gain by "+format(effBasec21)+" <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
+        22: {
+            unlocked() {return true},
+            cost(x) {
+                costStackc22 = new Decimal(x)
+                constantCostc22 = new Decimal(10)
+                linearCostc22 = new Decimal(5)
+                quadraticCostc22 = new Decimal(2)
+
+
+                return constantCostc22.times(linearCostc22.pow(costStackc22)).times(quadraticCostc22.pow(costStackc22.pow(2))).floor()
+            },
+            effect(x) {
+                effBasec22 = new Decimal(1.05)
+                effStackc22 = new Decimal(x)
+
+                return Decimal.pow(effBasec22, effStackc22)
+            },
+            title() { return "crunch buyable 22"},
+            display() { return "multiply the prestige exponent by "+format(effBasec22)+" <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
     },
     clickables: {
 
@@ -4446,7 +4642,7 @@ addLayer("c", {
             description: "buy one more upgrade on heavenly row 1",
             cost() {
                 maxPurchasec1 = new Decimal(1)
-                //if (hasMilestone('c', 0)) {maxPurchaseh1 =}
+                if (hasUpgrade('c', 23)) {maxPurchasec1 = maxPurchasec1.add(upgradeEffect('c', 23))}
                 actualPurchasec1 = new Decimal(hasUpgrade('c', 11)+hasUpgrade('c', 12)+hasUpgrade('c', 13)+hasUpgrade('c', 14))
                 if (maxPurchasec1.lte(actualPurchasec1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
             },
@@ -4485,12 +4681,67 @@ addLayer("c", {
         },
         14: {
             title: "crunch upgrade 14",
-            description: "generator base is *1.25",
+            description: "generator base is *1.33",
             cost() {
                 if (maxPurchasec1.lte(actualPurchasec1)) {return new Decimal('eeee10')} else {return new Decimal(1)}
             },
             effect() {
-                eff = new Decimal(1.25)
+                eff = new Decimal(4/3)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        21: {
+            title: "crunch upgrade 21",
+            description: "buy two more upgrades on heavenly row 1",
+            cost() {
+                maxPurchasec2 = new Decimal(1)
+                //if (hasMilestone('c', 0)) {maxPurchaseh1 =}
+                actualPurchasec2 = new Decimal(hasUpgrade('c', 21)+hasUpgrade('c', 22)+hasUpgrade('c', 23)+hasUpgrade('c', 24))
+                if (maxPurchasec2.lte(actualPurchasec2)) {return new Decimal('eeee10')} else {return new Decimal(3)}
+            },
+            effect() {
+                eff = new Decimal(2)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        22: {
+            title: "crunch upgrade 22",
+            description: "buy two more upgrade on heavenly row 2",
+            cost() {
+                if (maxPurchasec2.lte(actualPurchasec2)) {return new Decimal('eeee10')} else {return new Decimal(3)}
+            },
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        23: {
+            title: "crunch upgrade 23",
+            description: "buy one more upgrade on crunch row 1",
+            cost() {
+                if (maxPurchasec2.lte(actualPurchasec2)) {return new Decimal('eeee10')} else {return new Decimal(3)}
+            },
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        24: {
+            title: "crunch upgrade 24",
+            description: "buy one more upgrade on heavenly row 3",
+            cost() {
+                if (maxPurchasec2.lte(actualPurchasec2)) {return new Decimal('eeee10')} else {return new Decimal(1)}
+            },
+            effect() {
+                eff = new Decimal(4/3)
                 return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},

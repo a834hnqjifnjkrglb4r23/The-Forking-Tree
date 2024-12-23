@@ -121,7 +121,7 @@ function formatTime(s) {
     else if (s < 60e9) return formatWhole(Math.floor(s / 31536000)) + "y " + formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " + formatWhole(Math.floor(s / 60) % 60) + "m " 
     else if (s < 360e9) return formatWhole(Math.floor(s / 31536000)) + "y " + formatWhole(Math.floor(s / 86400) % 365) + "d " + formatWhole(Math.floor(s / 3600) % 24) + "h " 
     else if (s < 86400e9) return formatWhole(Math.floor(s / 31536000)) + "y " + formatWhole(Math.floor(s / 86400) % 365) + "d " 
-    else return formatWhole(Math.floor(s / 31536000)) + "y "
+    else return formatWhole(s.div(31536000)) + "y "
 }
 
 function toPlaces(x, precision, maxAccepted) {
