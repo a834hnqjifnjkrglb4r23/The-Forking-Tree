@@ -54,6 +54,7 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('b', 91))
 
 	gain = gain.times(buyableEffect('p', 11))
+	gain = gain.pow(buyableEffect('m', 11))
 	return gain
 }
 
@@ -96,4 +97,25 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+}
+
+function croot(base, root) { 
+	//base is a complex decimal, in the format of a list of decimal. root is a decimal that has to be integer
+	r = base[0].pow(2).add(base[1].pow(2)).pow(1/2) //distance of complex number from zero 
+	theta = base[1].div(base[0]).atan() //angle of complex number from real line
+	if (theta.gte(Infinity)) {theta = new Decimal(1.57079632679489661923132169163975144209858469968755291048747229615390820314)} //pi/2
+	if (base[0].lt(0)) {theta = theta.add(3.14159265358979323846264338327950288419716939937510582097494459230781640628)} //pi
+	if (base[1].lt(0)&&(base[0].lt(0))) {theta = theta.sub(6.2831853071795864769252867665590057683943387987502116419498891846156328125)} //2pi
+	// i am using a version of decimal without hypot or atan2
+	rnew = r.root(root) //application of demoivres theorem
+	thetanew = theta.div(root)
+	thetasnew = []
+	for (let i = 0; i < root; i++) {
+		thetasnew.push(thetanew.add(new Decimal(6.28318530717958647692528676655900576839433879875021164194988918461563281257).div(root).times(i)))
+	} //list of possible new angles for roots
+	results = []
+	for (let i = 0; i < root; i++) {
+		results.push([rnew.times(thetasnew[i].cos()), rnew.times(thetasnew[i].sin())])
+	} //list of all roots, multipling all possible angles with (only possible) new distance
+	return results //list of root items, each item is 2 decimals
 }
