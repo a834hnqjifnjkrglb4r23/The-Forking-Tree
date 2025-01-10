@@ -54,7 +54,7 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('b', 91))
 
 	gain = gain.times(buyableEffect('p', 11))
-	gain = gain.pow(buyableEffect('m', 11))
+	if ((getBuyableAmount('m', 11)).gt(0)){gain = gain.pow(buyableEffect('m', 11).eff)}
 	return gain
 }
 

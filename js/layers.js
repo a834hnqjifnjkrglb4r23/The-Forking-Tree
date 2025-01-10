@@ -67,7 +67,7 @@ addLayer("b", {
     },
     doReset(resettingLayer) { //change false to keep building trigger
         if ((layers[resettingLayer].row > this.row)&&(!false)) {
-            if ((layers[resettingLayer].row == 2)||hasMilestone('c', 0)) {
+            if ((layers[resettingLayer].row == 2)||hasMilestone('c', 0)||hasMilestone('m', 0)) {
                 tempvar1 = [Decimal.dZero]
                 tempvar2 = [Decimal.dZero]
                 for (let i = 1; i < 10; i++ ) {
@@ -229,7 +229,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb14, costStackb14).round()
             },
             effect(x) {
-                effBaseb14 = new Decimal(1.618033988749894848204587)
+                effBaseb14 = new Decimal(1.5)
                 effStackb14 = new Decimal(x)
 
                 return Decimal.pow(effBaseb14, effStackb14)
@@ -381,7 +381,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb24, costStackb24).round()
             },
             effect(x) {
-                effBaseb24 = new Decimal(1.618033988749894848204587)
+                effBaseb24 = new Decimal(1.5)
                 effStackb24 = new Decimal(x)
 
                 return Decimal.pow(effBaseb24, effStackb24)
@@ -533,7 +533,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb34, costStackb34).round()
             },
             effect(x) {
-                effBaseb34 = new Decimal(1.618033988749894848204587)
+                effBaseb34 = new Decimal(1.5)
                 effStackb34 = new Decimal(x)
 
                 return Decimal.pow(effBaseb34, effStackb34)
@@ -685,7 +685,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb44, costStackb44).round()
             },
             effect(x) {
-                effBaseb44 = new Decimal(1.618033988749894848204587)
+                effBaseb44 = new Decimal(1.5)
                 effStackb44 = new Decimal(x)
 
                 return Decimal.pow(effBaseb44, effStackb44)
@@ -836,7 +836,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb54, costStackb54).round()
             },
             effect(x) {
-                effBaseb54 = new Decimal(1.618033988749894848204587)
+                effBaseb54 = new Decimal(1.5)
                 effStackb54 = new Decimal(x)
 
                 return Decimal.pow(effBaseb54, effStackb54)
@@ -987,7 +987,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb64, costStackb64).round()
             },
             effect(x) {
-                effBaseb64 = new Decimal(1.618033988749894848204587)
+                effBaseb64 = new Decimal(1.5)
                 effStackb64 = new Decimal(x)
 
                 return Decimal.pow(effBaseb64, effStackb64)
@@ -1138,7 +1138,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb74, costStackb74).round()
             },
             effect(x) {
-                effBaseb74 = new Decimal(1.618033988749894848204587)
+                effBaseb74 = new Decimal(1.5)
                 effStackb74 = new Decimal(x)
 
                 return Decimal.pow(effBaseb74, effStackb74)
@@ -1290,7 +1290,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb84, costStackb84).round()
             },
             effect(x) {
-                effBaseb84 = new Decimal(1.618033988749894848204587)
+                effBaseb84 = new Decimal(1.5)
                 effStackb84 = new Decimal(x)
 
                 return Decimal.pow(effBaseb84, effStackb84)
@@ -1442,7 +1442,7 @@ addLayer("b", {
                 return Decimal.pow(linearCostb94, costStackb94).round()
             },
             effect(x) {
-                effBaseb94 = new Decimal(1.618033988749894848204587)
+                effBaseb94 = new Decimal(1.5)
                 effStackb94 = new Decimal(x)
 
                 return Decimal.pow(effBaseb94, effStackb94)
@@ -1546,8 +1546,8 @@ addLayer("s", {
             cost(x) {
                 costStacks11 = new Decimal(x).add(1).div(buyableEffect('c', 32)).sub(1)
                 constantCosts11 = new Decimal(1)
-                linearCosts11 = new Decimal(2)
-                quadraticCosts11 = new Decimal(1.018)
+                linearCosts11 = new Decimal(1.47)
+                quadraticCosts11 = new Decimal(1.02)
 
                 return constantCosts11.times(linearCosts11.pow(costStacks11)).times(quadraticCosts11.pow(costStacks11.pow(2)))
             },
@@ -2133,7 +2133,7 @@ addLayer("h", {
                 return Decimal.times(effBaseh12, effStackh12)
             },
             title() { return "heavenly buyable 12"},
-            display() { return "assign "+format(effBaseh12)+" more buildings ?1 to cost group. buildings in cost group' cost scaling are divided by "+format(clickableEffect('h', 21))+"^(amount of times assigned^0.5). <br> <br> cost: "+format(this.cost())+" <br> effect: "+format(this.effect())+" buildings assignable to cost group"},
+            display() { return "assign "+format(effBaseh12)+" more buildings ?1 to cost group. buildings in cost group' cost scaling are divided by "+format(clickableEffect('h', 21))+"^(amount of times assigned^0.5). <br> <br> cost: "+format(this.cost().cost)+" <br> effect: "+format(this.effect())+" buildings assignable to cost group"},
             canAfford() { return player[this.layer].points.gte(this.cost().cost)&&(!hasMilestone('m', 0)) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost().cost)
@@ -2146,7 +2146,7 @@ addLayer("h", {
             },
         },
         21: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return hasUpgrade('h', 31)},
             cost(x) {
                 costStackh21 = new Decimal(x).add(1).div(buyableEffect('c', 22)).sub(1)
                 constantCosth21 = new Decimal(10000)
@@ -5015,11 +5015,11 @@ addLayer("g", {
                 return Decimal.times(effBaseg21, effStackg21).add(1).times(baseGaingenerator).times(player.g.points)
             },
             title() { return "generator buyable 21"},
-            display() { return "your "+format(player.g.points)+" generators are generating "+format(this.effect(), 3)+" effect to all assigned buildings every second. <br> this buyable adds generator effect by "+format(effBaseg21)+"x. <br> cost: "+formatShort(this.cost())+" sugar. <br> owned: "+format(effStackg21)+"<br> assigned to: <br>"+Math.round(getClickableState('g', 11) * 10 - 98, 1).toString()},
-            canAfford() { return player.s.points.gte(this.cost())&&(!hasMilestone('m', 0)) },
+            display() { return "your "+format(player.g.points)+" generators are generating "+format(this.effect(), 3)+" effect to all assigned buildings every second. <br> this buyable adds generator effect by "+format(effBaseg21)+"x. <br> cost: "+formatShort(this.cost().cost)+" sugar. <br> owned: "+format(effStackg21)+"<br> assigned to: <br>"+Math.round(getClickableState('g', 11) * 10 - 98, 1).toString()},
+            canAfford() { return player.s.points.gte(this.cost().cost)&&(!hasMilestone('m', 0)) },
 
             buy() {
-                player.s.points = player.s.points.sub(this.cost())
+                player.s.points = player.s.points.sub(this.cost().cost)
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -5660,11 +5660,8 @@ addLayer("m", {
     update(diff) {
         magicGain = getBuyableAmount('m', 101).times(buyableEffect('m', 101).magicCap.sub(getBuyableAmount('m', 101))).div(60)
         setBuyableAmount('m', 101, getBuyableAmount('m', 101).add(magicGain.times(diff)).min(buyableEffect('m', 101).magicCap.max(1)).max(0)) 
-        for (i = 1; i < 2; i++) {
-            for (j = 1; j < 2; j++) {
-                setBuyableAmount('m', i*10+j, getBuyableAmount('m', i*10+j).times(Decimal.pow(0.01831563888873418029371802127324124221191206755347559476959992743925043159, diff)))
-            }
-        }
+        if (getBuyableAmount('m', 11).gt(0)) {setBuyableAmount('m', 11, getBuyableAmount('m', 11).sub(diff).max(0))}
+    
     },
     infoboxes: {
         A: {
@@ -5718,16 +5715,19 @@ addLayer("m", {
             },
             effect(x) {
                 effBasem11 = new Decimal(1.2)
-                effStackm11 = new Decimal(x)
+                effStackm11 = new Decimal(1)
 
-                return Decimal.pow(effBasem11, effStackm11)
+                effTimem11 = new Decimal(0.5)
+                effTimeStackm11 = new Decimal(1)
+
+                return {eff: Decimal.pow(effBasem11, effStackm11), time: Decimal.times(effTimem11, effTimeStackm11)}
             },
             title() { return "spell 11"},
-            display() { return "your cookie/sec is raised to "+format(effBasem11)+" for a short time <br> cost: "+format(this.cost())+" magic"},
+            display() { return "your cookie/sec is raised to "+format(this.effect().eff)+" for "+format(this.effect().time)+" sec <br> cost: "+format(this.cost())+" magic"},
             canAfford() { return player[this.layer].buyables[101].sub(buyableEffect('m', 101).magicMin).gte(this.cost()) },
             buy() {
                 player[this.layer].buyables[101] = player[this.layer].buyables[101].sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(this.effect().time))
             },
             buyMax() {
                 while (canBuyBuyable([this.layer], [this.id])){
@@ -5748,7 +5748,7 @@ addLayer("m", {
                     totalBuildingb1s = totalBuildingb1s.add(layers.b.buyables[i*10+1].cost().continuum)
                 }
 
-                return {totalBuildingb1s: totalBuildingb1s, magicCap: totalBuildingb1s.max(10).log10().log2(), magicMin: new Decimal(getClickableState('m', 11)).tanh().add(1).div(2).times(totalBuildingb1s.max(10).log10().log2())}
+                return {totalBuildingb1s: totalBuildingb1s, magicCap: totalBuildingb1s.max(1).log10().sqrt(), magicMin: new Decimal(getClickableState('m', 11)).tanh().add(1).div(2).times(totalBuildingb1s.max(10).log10().sqrt())}
             },
             title() { return "crunch buyable 101"},
             canAfford() { return false },
