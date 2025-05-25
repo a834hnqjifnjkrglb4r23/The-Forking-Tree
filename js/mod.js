@@ -1,6 +1,6 @@
 let modInfo = {
 	name: "The Trolling Tree",
-	id: "jacorb90aL3GhF8bs8NB76hGDmeqA9ZzrI",
+	id: "jacorb90timewallbelikeU2FtcGxlQm",
 	author: "nobody",
 	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
@@ -59,7 +59,7 @@ function getPointGen() {
 	gainMult = gainMult.add(buyableEffect('bp', 12))
 	gainMult = gainMult.add(buyableEffect('sp', 12))
 
-	gain = baseGain.times(gainMult).times(buyableEffect('l', 37))
+	gain = baseGain.times(gainMult)
 	gain = gain.times(player.b.points.add(1).pow(buyableEffect('l', 23).add(1)))
 
 	firstSoftcapStrength = new Decimal(20)
@@ -87,7 +87,7 @@ function getPointGen() {
 
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
 
-	gain = gain.times(player.a.points.add(1).pow(buyableEffect('l', 23)).add(1))
+	gain = gain.times(player.a.points.add(1).pow(buyableEffect('l', 23)))
 
 	gain = gain.min(1)
 	return gain

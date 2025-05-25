@@ -20,8 +20,8 @@ addLayer("j", {
         if (typeof(getClickableState('j', 13)) == 'undefined') {setClickableState('j', 13, 0)}
         if (getClickableState('j', 14) == '') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
         if (typeof(getClickableState('j', 14)) == 'undefined') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
-        if (getClickableState('j', 15) == '') {setClickableState('j', 15, 14.75)}
-        if (typeof(getClickableState('j', 15)) == 'undefined') {setClickableState('j', 15, 14.75)}
+        if (getClickableState('j', 15) == '') {setClickableState('j', 15, 7.25)}
+        if (typeof(getClickableState('j', 15)) == 'undefined') {setClickableState('j', 15, 7.25)}
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
@@ -50,7 +50,7 @@ addLayer("j", {
             title() { return "get paid for all the work you did"},
             display() { return "you have clicked "+getClickableState('j', 11)+" times <br> your wages are $"+wages.toFixed(2)+" per "+clicksPerHour+" clicks <br> you are owed $"+owedMoney+"<br> you may get a payday after "+timeUntilPayday+" seconds"},
             canAfford() { 
-                nextPaydayTime = getClickableState('j', 12) + 86400000
+                nextPaydayTime = getClickableState('j', 12) + 21600000
                 timeUntilPayday = Math.ceil(Math.max(nextPaydayTime - Date.now(), 0)/1000)
                 return timeUntilPayday == 0},
             buy() {
@@ -77,7 +77,7 @@ addLayer("j", {
             },
             effect(x) {
                 clicksGoal = getClickableState('j', 15)*2400
-                raiseChance = Math.tanh(getClickableState('j', 13)/4800-getClickableState('j', 15))
+                raiseChance = Math.min(Math.max((getClickableState('j', 13)-clicksGoal)/4800, 0), 1)
 
                 return Decimal.dZero
             },
@@ -584,11 +584,11 @@ addLayer("g", {
     infoboxes: {
         11: {
             body() {
-                vipLevel = getBuyableAmount('g', 11).max(500).div(500).log(2).floor()
-                vipEffect = vipLevel.div(60).add(1)
+                vipLevel = getBuyableAmount('g', 11).max(100).div(100).log(2).floor()
+                vipEffect = vipLevel.div(60)
                 text = "you have "+formatWhole(getBuyableAmount('g', 11))+" vip points, which gives you vip level "+formatWhole(vipLevel)
-                text += "<br> your vip levels gives you "+format(vipEffect.sub(1).times(100), 1)+"% free gems on gem purchases"
-                text += "<br> you need "+formatWhole(Decimal.dTwo.pow(vipLevel.add(1)).times(500).sub(getBuyableAmount('g', 11)))+" vip points to get the next level"
+                text += "<br> your vip levels gives you "+format(vipEffect.times(100), 1)+"% free gems on gem purchases"
+                text += "<br> you need "+formatWhole(Decimal.dTwo.pow(vipLevel.add(1)).times(100).sub(getBuyableAmount('g', 11)))+" vip points to get the next level"
                 return text
             
             }
@@ -604,16 +604,16 @@ addLayer("g", {
                 return new Decimal(0.49)
             },
             effect(x) {
-                baseGems1 = new Decimal(6000)
-                gemMultiplier1 = new Decimal(1).times(vipEffect)
-                vipPoints1 = new Decimal(200)
+                baseGems1 = new Decimal(60)
+                gemMultiplier1 = new Decimal(1).add(vipEffect)
+                vipPoints1 = new Decimal(30)
 
                 return Decimal.times(baseGems1, gemMultiplier1).round()
             },
             title() { return "gems pack 1"},
             display() { 
                 text = "gives "+format(baseGems1, 0)+" gems "
-                if (gemMultiplier1.gt(1)) {text += "with "+format(gemMultiplier1.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems. "}
+                if (gemMultiplier1.gt(1)) {text += "with "+format(gemMultiplier1.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems. "}
                 text += "<br> also gives "+format(vipPoints1, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -631,16 +631,16 @@ addLayer("g", {
                 return new Decimal(0.99)
             },
             effect(x) {
-                baseGems2 = new Decimal(12000)
-                gemMultiplier2 = new Decimal(1.05).times(vipEffect)
-                vipPoints2 = new Decimal(405)
+                baseGems2 = new Decimal(120)
+                gemMultiplier2 = new Decimal(1.05).add(vipEffect)
+                vipPoints2 = new Decimal(63)
 
                 return Decimal.times(baseGems2, gemMultiplier2).round()
             },
             title() { return "gems pack 2"},
             display() { 
                 text = "gives "+format(baseGems2, 0)+" gems "
-                if (gemMultiplier2.gt(1)) {text += "with "+format(gemMultiplier2.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier2.gt(1)) {text += "with "+format(gemMultiplier2.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints2, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -658,16 +658,16 @@ addLayer("g", {
                 return new Decimal(1.99)
             },
             effect(x) {
-                baseGems3 = new Decimal(24000)
-                gemMultiplier3 = new Decimal(1.1).times(vipEffect)
-                vipPoints3 = new Decimal(820)
+                baseGems3 = new Decimal(240)
+                gemMultiplier3 = new Decimal(1.1).add(vipEffect)
+                vipPoints3 = new Decimal(132)
 
                 return Decimal.times(baseGems3, gemMultiplier3).round()
             },
             title() { return "gems pack 3"},
             display() { 
                 text = "gives "+format(baseGems3, 0)+" gems "
-                if (gemMultiplier3.gt(1)) {text += "with "+format(gemMultiplier3.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier3.gt(1)) {text += "with "+format(gemMultiplier3.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints3, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -685,16 +685,16 @@ addLayer("g", {
                 return new Decimal(4.99)
             },
             effect(x) {
-                baseGems4 = new Decimal(60000)
-                gemMultiplier4 = new Decimal(1.166).times(vipEffect)
-                vipPoints4 = new Decimal(2083)
+                baseGems4 = new Decimal(600)
+                gemMultiplier4 = new Decimal(1+1/6).add(vipEffect)
+                vipPoints4 = new Decimal(350)
 
                 return Decimal.times(baseGems4, gemMultiplier4).round()
             },
             title() { return "gems pack 4"},
             display() { 
                 text = "gives "+format(baseGems4, 0)+" gems "
-                if (gemMultiplier4.gt(1)) {text += "with "+format(gemMultiplier4.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier4.gt(1)) {text += "with "+format(gemMultiplier4.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints4, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -712,16 +712,16 @@ addLayer("g", {
                 return new Decimal(9.99)
             },
             effect(x) {
-                baseGems5 = new Decimal(120000)
-                gemMultiplier5 = new Decimal(1.216).times(vipEffect)
-                vipPoints5 = new Decimal(4216)
+                baseGems5 = new Decimal(1200)
+                gemMultiplier5 = new Decimal(1.05+1/6).add(vipEffect)
+                vipPoints5 = new Decimal(730)
 
                 return Decimal.times(baseGems5, gemMultiplier5).round()
             },
             title() { return "gems pack 5"},
             display() { 
                 text = "gives "+format(baseGems5, 0)+" gems "
-                if (gemMultiplier5.gt(1)) {text += "with "+format(gemMultiplier5.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier5.gt(1)) {text += "with "+format(gemMultiplier5.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints5, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -739,16 +739,16 @@ addLayer("g", {
                 return new Decimal(19.99)
             },
             effect(x) {
-                baseGems6 = new Decimal(240000)
-                gemMultiplier6 = new Decimal(1.266).times(vipEffect)
-                vipPoints6 = new Decimal(8532)
+                baseGems6 = new Decimal(2400)
+                gemMultiplier6 = new Decimal(1.1+1/6).add(vipEffect)
+                vipPoints6 = new Decimal(1520)
 
                 return Decimal.times(baseGems6, gemMultiplier6).round()
             },
             title() { return "gems pack 6"},
             display() { 
                 text = "gives "+format(baseGems6, 0)+" gems "
-                if (gemMultiplier6.gt(1)) {text += "with "+format(gemMultiplier6.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier6.gt(1)) {text += "with "+format(gemMultiplier6.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints6, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -766,16 +766,16 @@ addLayer("g", {
                 return new Decimal(49.99)
             },
             effect(x) {
-                baseGems7 = new Decimal(600000)
-                gemMultiplier7 = new Decimal(1.332).times(vipEffect)
-                vipPoints7 = new Decimal(21660)
+                baseGems7 = new Decimal(6000)
+                gemMultiplier7 = new Decimal(1+1/3).add(vipEffect)
+                vipPoints7 = new Decimal(4000)
 
                 return Decimal.times(baseGems7, gemMultiplier7).round()
             },
             title() { return "gems pack 7"},
             display() { 
                 text = "gives "+format(baseGems7, 0)+" gems "
-                if (gemMultiplier7.gt(1)) {text += "with "+format(gemMultiplier7.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier7.gt(1)) {text += "with "+format(gemMultiplier7.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints7, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -793,16 +793,16 @@ addLayer("g", {
                 return new Decimal(99.99)
             },
             effect(x) {
-                baseGems8 = new Decimal(1200000)
-                gemMultiplier8 = new Decimal(1.382).times(vipEffect)
-                vipPoints8 = new Decimal(43820)
+                baseGems8 = new Decimal(12000)
+                gemMultiplier8 = new Decimal(1.05+1/3).add(vipEffect)
+                vipPoints8 = new Decimal(8300)
 
                 return Decimal.times(baseGems8, gemMultiplier8).round()
             },
             title() { return "gems pack 8"},
             display() { 
                 text = "gives "+format(baseGems8, 0)+" gems "
-                if (gemMultiplier8.gt(1)) {text += "with "+format(gemMultiplier8.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier8.gt(1)) {text += "with "+format(gemMultiplier8.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints8, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -820,16 +820,16 @@ addLayer("g", {
                 return new Decimal(199.99)
             },
             effect(x) {
-                baseGems9 = new Decimal(2400000)
-                gemMultiplier9 = new Decimal(1.432).times(vipEffect)
-                vipPoints9 = new Decimal(88704)
+                baseGems9 = new Decimal(24000)
+                gemMultiplier9 = new Decimal(1.1+1/3).add(vipEffect)
+                vipPoints9 = new Decimal(17200)
 
                 return Decimal.times(baseGems9, gemMultiplier9).round()
             },
             title() { return "gems pack 9"},
             display() { 
                 text = "gives "+format(baseGems9, 0)+" gems "
-                if (gemMultiplier9.gt(1)) {text += "with "+format(gemMultiplier9.sub(1).times(100), 0)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
+                if (gemMultiplier9.gt(1)) {text += "with "+format(gemMultiplier9.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
                 text += "<br> also gives "+format(vipPoints9, 0)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
@@ -905,9 +905,10 @@ addLayer("g", {
         51: {
             unlocked() {return true},
             cost(x) {
-                
+                cost = new Decimal(6)
+                if (hasMilestone('m', 1)) {cost = new Decimal(1)}
 
-                return new Decimal(800)
+                return cost
             },
             effect(x) {
 
@@ -926,7 +927,7 @@ addLayer("g", {
         52: {
             unlocked() {return true},
             cost(x) {
-                costBaseg52 = new Decimal(160)
+                costBaseg52 = new Decimal(2)
 
                 costMultg52 = new Decimal(x).add(5)
                 return Decimal.times(costBaseg52, costMultg52).floor()
@@ -948,7 +949,7 @@ addLayer("g", {
         53: {
             unlocked() {return true},
             cost(x) {
-                costBaseg53 = new Decimal(320)
+                costBaseg53 = new Decimal(4)
 
                 costMultg53 = new Decimal(x).add(5)
                 return Decimal.times(costBaseg53, costMultg53).floor()
@@ -972,7 +973,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(4250)
+                return new Decimal(35)
             },
             effect(x) {
 
@@ -992,7 +993,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(4500)
+                return new Decimal(37)
             },
             effect(x) {
 
@@ -1012,7 +1013,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(4750)
+                return new Decimal(40)
             },
             effect(x) {
 
@@ -1032,7 +1033,7 @@ addLayer("g", {
             cost(x) {
                 
 
-                return new Decimal(49000)
+                return new Decimal(500)
             },
             effect(x) {
 
@@ -1079,7 +1080,7 @@ addLayer("m", {
         },
         1: {
             requirementDescription: "2.50 points",
-            effectDescription: "gain prestige gain on reset per 10 seconds",
+            effectDescription: "gain prestige gain on reset per 5 seconds and instant prestige gets cheaper",
             done() { return player.points.gte(2.5) },
             toggles: [["p", "autoGain"]]
 
@@ -1221,7 +1222,7 @@ addLayer("p", {
     canReset() {return getResetGain('p').gte(0)&&!(hasMilestone('m', 1)&&player.p.autoGain)},
     passiveGeneration() {
         if (hasMilestone('m', 1)) {
-            if (player.p.autoGain) {return new Decimal(0.1)} else {return Decimal.dZero}
+            if (player.p.autoGain) {return new Decimal(0.2)} else {return Decimal.dZero}
         } else {return Decimal.dZero}
     },
     prestigeNotify() {return true},
@@ -2114,7 +2115,7 @@ addLayer("bp", {
         return multbp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expbp = new Decimal(3)
+        expbp = new Decimal(2)
         expbp = expbp.add(buyableEffect('mp', 43))
         expbp = expbp.add(buyableEffect('bp', 43))
         expbp = expbp.add(buyableEffect('sp', 43))
@@ -2750,9 +2751,9 @@ addLayer("sp", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         expsp = new Decimal(2)
-        expsp = expsp.times(buyableEffect('mp', 53))
-        expsp = expsp.times(buyableEffect('bp', 53))
-        expsp = expsp.times(buyableEffect('sp', 53))
+        expsp = expsp.add(buyableEffect('mp', 53))
+        expsp = expsp.add(buyableEffect('bp', 53))
+        expsp = expsp.add(buyableEffect('sp', 53))
         expsp = expsp.times(buyableEffect('l', 35))
 
 
@@ -3709,7 +3710,7 @@ addLayer("l", {
 
                 return Decimal.pow(effBasel34, effStackl34)
             },
-            display() { return "multiply metaprestige points" },
+            display() { return "multiply superprestige points" },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -3729,7 +3730,7 @@ addLayer("l", {
 
                 return Decimal.pow(effBasel35, effStackl35.pow(0.5))
             },
-            display() { return "raise metaprestige points" },
+            display() { return "raise superprestige points" },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -3749,7 +3750,7 @@ addLayer("l", {
 
                 return Decimal.times(effMaxl36, Decimal.dOne.sub(effStackl36.div(-600).exp()))
             },
-            display() { return "raise metaprestige points power" },
+            display() { return "raise superprestige points power" },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
