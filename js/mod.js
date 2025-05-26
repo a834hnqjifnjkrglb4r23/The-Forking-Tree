@@ -38,10 +38,7 @@ function canGenPoints(){
 }
 
 // Calculate points/sec!
-function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-
+function getPointGenBeforePow() {
 	let gain = new Decimal(0)
 	gain = gain.add(buyableEffect('b', 11))
 	gain = gain.add(buyableEffect('b', 21))
@@ -54,18 +51,37 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('b', 91))
 
 	gain = gain.times(buyableEffect('p', 11))
-	if ((getBuyableAmount('m', 11)).gt(0)){gain = gain.pow(buyableEffect('m', 11).eff)}
+	gain = gain.times(buyableEffect('au', 12))
 	return gain
 }
+function getPointGen() {
+	if(!canGenPoints()) {return new Decimal(0)}
+	else {
+		gain = getPointGenBeforePow()
+
+
+
+
+		if (hasUpgrade('c', 44)) {gain = gain.pow(upgradeEffect('c', 44))}
+		if (getBuyableAmount('m', 11).gt(0)) {gain = gain.pow(buyableEffect('m', 11).eff)}
+
+
+	}
+	return gain
+}
+
+
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 	clickgain() {
 		clickgain = new Decimal(1)
+		clickgain = clickgain.times(buyableEffect('p', 11))
+		clickgain = clickgain.times(buyableEffect('au', 13))
 		return clickgain
 	},
 	effBasesy() {
-		eff = new Decimal(1.05)
+		eff = new Decimal(1.08)
 		if (hasUpgrade('c', 13)) {eff = eff.add(upgradeEffect('c', 13))}
 		return eff
 	}
