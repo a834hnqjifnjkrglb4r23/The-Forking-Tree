@@ -106,6 +106,48 @@ function getPointGen() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	buyablePrice(type, amt, base, exp, limit) {
+		if (type == "normal") {
+			if (limit.lte('e100')) {limit = new Decimal('e100')} //limit is softcap, in currency at which scaling change to double exponential : linear
+			if (base.pow(amt.add(1).pow(exp)).gt(limit)) {
+				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).log10().log10()
+				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).log10().log10()
+				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
+				return amt.sub(limitamt).times(newpricescalingloglog).add(limitpriceloglog).pow10().pow10()
+			} else {
+				return base.pow(amt.add(1).pow(exp)).floor()
+			}
+		}
+
+		if (type == "asymptote") {
+			return base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+		}
+		// if (type == "double") {
+		// 	return base.pow(exp.pow(amt.add(1)))
+		// }
+		// if (type == "tetrate") {
+		// 	return base.tetrate(amt.add(1).pow(exp))
+		// }
+
+	},
+	buyableMaxPurchaseable(type, currency, base, exp, limit) {
+		if (type == "normal") {
+			if (limit.lte('e100')) {limit = new Decimal('e100')}
+			if (currency.gt(limit)) {
+				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).log10().log10()
+				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).log10().log10()
+				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
+				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).floor()
+			} else {
+				return currency.max(1).log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+			}
+		}
+		
+	}
 						
 }}
 
