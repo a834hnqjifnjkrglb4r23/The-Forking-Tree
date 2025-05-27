@@ -77,23 +77,23 @@ addLayer("l", {
                 gearpower = [[Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero]]
                 gearpower[0][0] = new Decimal(getClickableState('l', 11)[0][0]).add(55.555555555555555556).div(55.555555555555555556).pow(2) // ((x+a)/b)^p = 1, 100
                 gearpower[0][1] = new Decimal(getClickableState('l', 11)[0][1]).add(16.327716016858755415).div(16.327716016858755415).pow(2) // ((x+a)/b)^p = 1, 1000
-                gearpower[0][2] = new Decimal(getClickableState('l', 11)[0][2]).div(62.5)
-                gearpower[0][3] = new Decimal(getClickableState('l', 11)[0][3]).div(25)
+                gearpower[0][2] = new Decimal(getClickableState('l', 11)[0][2]).div(62.5) //0, 8
+                gearpower[0][3] = new Decimal(getClickableState('l', 11)[0][3]).div(50) //0, 10
 
-                gearpower[1][0] = new Decimal(getClickableState('l', 11)[1][0]).div(70.710678118654752440).pow(2)  // 0, 50
-                gearpower[1][1] = new Decimal(getClickableState('l', 11)[1][1]).div(31.622776601683793320).pow(2) // 0, 250
-                gearpower[1][2] = new Decimal(getClickableState('l', 11)[1][2]).div(25)
-                gearpower[1][3] = new Decimal(getClickableState('l', 11)[1][3]).div(25)
+                gearpower[1][0] = new Decimal(getClickableState('l', 11)[1][0]).div(36.840314986403866058).pow(1.5)  // 0, 50
+                gearpower[1][1] = new Decimal(getClickableState('l', 11)[1][1]).div(14.620088691064330328).pow(1.5) // 0, 200
+                gearpower[1][2] = new Decimal(getClickableState('l', 11)[1][2]).div(50) //0, 10
+                gearpower[1][3] = new Decimal(getClickableState('l', 11)[1][3]).div(50) //0, 10
 
-                gearpower[2][0] = new Decimal(getClickableState('l', 11)[2][0]).add(16.327716016858755415).div(16.327716016858755415).pow(8)  // 1, 10^12
-                gearpower[2][1] = new Decimal(getClickableState('l', 11)[2][1]).add(2.8276074310506966758).div(2.8276074310506966758).pow(8)  // 1, 10^18
-                gearpower[2][2] = new Decimal(getClickableState('l', 11)[2][2]).div(447.97922992038109726).pow(2) // 0, 3
-                gearpower[2][3] = new Decimal(getClickableState('l', 11)[2][3]).div(5000)
+                gearpower[2][0] = new Decimal(getClickableState('l', 11)[2][0]).add(24.337595272607097033).div(24.337595272607097033).pow(6)  // 1, 10^8
+                gearpower[2][1] = new Decimal(getClickableState('l', 11)[2][1]).add(5.0505050505050505051).div(5.0505050505050505051).pow(6)  // 1, 10^12
+                gearpower[2][2] = new Decimal(getClickableState('l', 11)[2][2]).div(793.70052598409973738).pow(1.5) // 0, 0.5
+                gearpower[2][3] = new Decimal(getClickableState('l', 11)[2][3]).div(5000) //0, 0.1
 
-                gearpower[3][0] = new Decimal(getClickableState('l', 11)[3][0]).add(108.14521063937916128).div(108.14521063937916128).pow(8) // 1, 10^6
-                gearpower[3][1] = new Decimal(getClickableState('l', 11)[3][1]).add(40.534358541554521920).div(40.534358541554521920).pow(8) // 1, 10^9
-                gearpower[3][2] = new Decimal(getClickableState('l', 11)[3][2]).div(500).pow(2) // 0, 1
-                gearpower[3][3] = new Decimal(getClickableState('l', 11)[3][3]).div(2500)
+                gearpower[3][0] = new Decimal(getClickableState('l', 11)[3][0]).add(137.30270572692735409).div(137.30270572692735409).pow(6) // 1, 10^4
+                gearpower[3][1] = new Decimal(getClickableState('l', 11)[3][1]).add(55.555555555555555556).div(55.555555555555555556).pow(6) // 1, 10^6
+                gearpower[3][2] = new Decimal(getClickableState('l', 11)[3][2]).div(1259.9210498948731648).pow(1.5) // 0, 0.25
+                gearpower[3][3] = new Decimal(getClickableState('l', 11)[3][3]).div(5000) //0, 0.1
 
 
                 return gearpower
@@ -116,10 +116,10 @@ addLayer("l", {
                 else if (geartypecoef < geartypeboundstotal[2]) {geartype = 2}
                 else if (geartypecoef < geartypeboundstotal[3]) {geartype = 3} 
 
-                geartiercoef = (Math.floor(lootboxseed / 10000)) % 100
+                geartiercoef = Math.floor(lootboxseed % 100)
                 geartierbounds = [42, 35, 15, 8] //+, x, ^/sc1, ^x^/sc2#
-                if (hasMilestone('m', 3)) {geartypebounds = [37, 32, 18, 13]}
-                if (hasMilestone('m', 5)) {geartypebounds = [25, 25, 25, 25]}
+                if (hasMilestone('m', 3)) {geartierbounds = [37, 32, 18, 13]}
+                if (hasMilestone('m', 5)) {geartierbounds = [25, 25, 25, 25]}
                 geartierboundstotal = [geartierbounds[0], geartierbounds[0]+geartierbounds[1], geartierbounds[0]+geartierbounds[1]+geartierbounds[2], geartierbounds[0]+geartierbounds[1]+geartierbounds[2]+geartierbounds[3]]
                 if (geartiercoef < geartierboundstotal[0]) {geartier = 0}
                 else if (geartiercoef < geartierboundstotal[1]) {geartier = 1}
@@ -1451,11 +1451,11 @@ addLayer("p", {
         11: {
             unlocked() {return true},
             cost(x) {
+                costTypep11 = "normal"
                 costBasep11 = new Decimal(1.3)
-                
-
-                costExpp11 = new Decimal(x).add(1).pow(1.1)
-                return Decimal.pow(costBasep11, costExpp11).floor()
+                costExpp11 = new Decimal(1.1)
+                costLimitp11 = new Decimal('e200')
+                return player.buyablePrice(costTypep11, new Decimal(x), costBasep11, costExpp11, costLimitp11)
             },
             effect(x) {
                 effBasep11 = new Decimal(0.1)
@@ -1479,11 +1479,11 @@ addLayer("p", {
         12: {
             unlocked() {return true},
             cost(x) {
+                costTypep12 = "normal"
                 costBasep12 = new Decimal(1.5)
-                
-
-                costExpp12 = new Decimal(x).add(1).pow(1.2)
-                return Decimal.pow(costBasep12, costExpp12).floor()
+                costExpp12 = new Decimal(1.2)
+                costLimitp12 = new Decimal('e200')
+                return player.buyablePrice(costTypep12, new Decimal(x), costBasep12, costExpp12, costLimitp12)
             },
             effect(x) {
                 effBasep12 = new Decimal(0.1)
@@ -1507,11 +1507,11 @@ addLayer("p", {
         13: {
             unlocked() {return true},
             cost(x) {
+                costTypep13 = "asymptote"
                 costBasep13 = new Decimal(1.7)
-                
-
-                costExpp13 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.3)
-                return Decimal.pow(costBasep13, costExpp13).floor()
+                costExpp13 = new Decimal(1.3)
+                costLimitp13 = layers.p.buyables[13].purchaseLimit.add(1)
+                return player.buyablePrice(costTypep13, new Decimal(x), costBasep13, costExpp13, costLimitp13)
             },
             effect(x) {
                 effBasep13 = new Decimal(0.1)
@@ -1536,11 +1536,11 @@ addLayer("p", {
         21: {
             unlocked() {return true},
             cost(x) {
+                costTypep21 = "normal"
                 costBasep21 = new Decimal(1.5)
-                
-
-                costExpp21 = new Decimal(x).add(1).pow(1.1)
-                return Decimal.pow(costBasep21, costExpp21).floor()
+                costExpp21 = new Decimal(1.1)
+                costLimitp21 = new Decimal('e200')
+                return player.buyablePrice(costTypep21, new Decimal(x), costBasep21, costExpp21, costLimitp21)
             },
             effect(x) {
                 effBasep21 = new Decimal(0.1)
@@ -1564,11 +1564,11 @@ addLayer("p", {
         22: {
             unlocked() {return true},
             cost(x) {
+                costTypep22 = "normal"
                 costBasep22 = new Decimal(1.7)
-                
-
-                costExpp22 = new Decimal(x).add(1).pow(1.2)
-                return Decimal.pow(costBasep22, costExpp22).floor()
+                costExpp22 = new Decimal(1.2)
+                costLimitp22 = new Decimal('e200')
+                return player.buyablePrice(costTypep22, new Decimal(x), costBasep22, costExpp22, costLimitp22)
             },
             effect(x) {
                 effBasep22 = new Decimal(0.1)
@@ -1592,11 +1592,11 @@ addLayer("p", {
         23: {
             unlocked() {return true},
             cost(x) {
+                costTypep23 = "normal"
                 costBasep23 = new Decimal(1.9)
-                
-
-                costExpp23 = new Decimal(x).add(1).pow(1.4)
-                return Decimal.pow(costBasep23, costExpp23).floor()
+                costExpp23 = new Decimal(1.4)
+                costLimitp23 = new Decimal('e200')
+                return player.buyablePrice(costTypep23, new Decimal(x), costBasep23, costExpp23, costLimitp23)
             },
             effect(x) {
                 effBasep23 = new Decimal(0.2)
@@ -1620,11 +1620,12 @@ addLayer("p", {
         24: {
             unlocked() {return true},
             cost(x) {
+                costTypep24 = "asymptote"
                 costBasep24 = new Decimal(2.1)
-                
+                costExpp24 = new Decimal(1.6)
+                costLimitp24 = layers.p.buyables[24].purchaseLimit.add(1)
 
-                costExpp24 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.6)
-                return Decimal.pow(costBasep24, costExpp24).floor()
+                return player.buyablePrice(costTypep24, new Decimal(x), costBasep24, costExpp24, costLimitp24)
             },
             effect(x) {
                 effBasep24 = new Decimal(0.01)
@@ -1725,11 +1726,11 @@ addLayer("mp", {
         11: {
             unlocked() {return true},
             cost(x) {
+                costTypemp11 = "normal"
                 costBasemp11 = new Decimal(1.2)
-                
-
-                costExpmp11 = new Decimal(x).add(1).pow(1.1)
-                return Decimal.pow(costBasemp11, costExpmp11).floor()
+                costExpmp11 = new Decimal(1.1)
+                costLimitmp11 = new Decimal('e200')
+                return player.buyablePrice(costTypemp11, new Decimal(x), costBasemp11, costExpmp11, costLimitmp11)
             },
             effect(x) {
                 effBasemp11 = new Decimal(0.1)
@@ -1753,11 +1754,11 @@ addLayer("mp", {
         12: {
             unlocked() {return true},
             cost(x) {
+                costTypemp12 = "normal"
                 costBasemp12 = new Decimal(1.4)
-                
-
-                costExpmp12 = new Decimal(x).add(1).pow(1.2)
-                return Decimal.pow(costBasemp12, costExpmp12).floor()
+                costExpmp12 = new Decimal(1.2)
+                costLimitmp12 = new Decimal('e200')
+                return player.buyablePrice(costTypemp12, new Decimal(x), costBasemp12, costExpmp12, costLimitmp12)
             },
             effect(x) {
                 effBasemp12 = new Decimal(0.1)
@@ -1781,11 +1782,12 @@ addLayer("mp", {
         13: {
             unlocked() {return true},
             cost(x) {
+                costTypemp13 = "asymptote"
                 costBasemp13 = new Decimal(1.6)
-                
+                costExpmp13 = new Decimal(1.3)
+                costLimitmp13 = layers.mp.buyables[13].purchaseLimit.add(1)
 
-                costExpmp13 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.3)
-                return Decimal.pow(costBasemp13, costExpmp13).floor()
+                return player.buyablePrice(costTypemp13, new Decimal(x), costBasemp13, costExpmp13, costLimitmp13)
             },
             effect(x) {
                 effBasemp13 = new Decimal(0.1)
@@ -1810,11 +1812,12 @@ addLayer("mp", {
         14: {
             unlocked() {return true},
             cost(x) {
+                costTypemp14 = "asymptote"
                 costBasemp14 = new Decimal(1.8)
-                
+                costExpmp14 = new Decimal(1.4)
+                costLimitmp14 = layers.mp.buyables[14].purchaseLimit.add(1)
 
-                costExpmp14 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.4)
-                return Decimal.pow(costBasemp14, costExpmp14).floor()
+                return player.buyablePrice(costTypemp14, new Decimal(x), costBasemp14, costExpmp14, costLimitmp14)
             },
             effect(x) {
                 effBasemp14 = new Decimal(0.1)
@@ -1839,11 +1842,11 @@ addLayer("mp", {
         21: {
             unlocked() {return true},
             cost(x) {
+                costTypemp21 = "normal"
                 costBasemp21 = new Decimal(1.3)
-                
-
-                costExpmp21 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasemp21, costExpmp21).floor()
+                costExpmp21 = new Decimal(1.08)
+                costLimitmp21 = new Decimal('e200')
+                return player.buyablePrice(costTypemp21, new Decimal(x), costBasemp21, costExpmp21, costLimitmp21)
             },
             effect(x) {
                 effBasemp21 = new Decimal(0.1)
@@ -1867,11 +1870,11 @@ addLayer("mp", {
         22: {
             unlocked() {return true},
             cost(x) {
+                costTypemp22 = "normal"
                 costBasemp22 = new Decimal(1.5)
-                
-
-                costExpmp22 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasemp22, costExpmp22).floor()
+                costExpmp22 = new Decimal(1.18)
+                costLimitmp22 = new Decimal('e200')
+                return player.buyablePrice(costTypemp22, new Decimal(x), costBasemp22, costExpmp22, costLimitmp22)
             },
             effect(x) {
                 effBasemp22 = new Decimal(0.001)
@@ -1895,11 +1898,11 @@ addLayer("mp", {
         23: {
             unlocked() {return true},
             cost(x) {
+                costTypemp23 = "normal"
                 costBasemp23 = new Decimal(1.7)
-                
-
-                costExpmp23 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasemp23, costExpmp23).floor()
+                costExpmp23 = new Decimal(1.38)
+                costLimitmp23 = new Decimal('e200')
+                return player.buyablePrice(costTypemp23, new Decimal(x), costBasemp23, costExpmp23, costLimitmp23)
             },
             effect(x) {
                 effBasemp23 = new Decimal(0.2)
@@ -1923,11 +1926,12 @@ addLayer("mp", {
         24: {
             unlocked() {return true},
             cost(x) {
+                costTypemp24 = "asymptote"
                 costBasemp24 = new Decimal(1.9)
-                
+                costExpmp24 = new Decimal(1.58)
+                costLimitmp24 = layers.mp.buyables[24].purchaseLimit.add(1)
 
-                costExpmp24 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasemp24, costExpmp24).floor()
+                return player.buyablePrice(costTypemp24, new Decimal(x), costBasemp24, costExpmp24, costLimitmp24)
             },
             effect(x) {
                 effBasemp24 = new Decimal(0.01)
@@ -1952,11 +1956,11 @@ addLayer("mp", {
         31: {
             unlocked() {return true},
             cost(x) {
+                costTypemp31 = "normal"
                 costBasemp31 = new Decimal(1.5)
-                
-
-                costExpmp31 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasemp31, costExpmp31).floor()
+                costExpmp31 = new Decimal(1.08)
+                costLimitmp31 = new Decimal('e200')
+                return player.buyablePrice(costTypemp31, new Decimal(x), costBasemp31, costExpmp31, costLimitmp31)
             },
             effect(x) {
                 effBasemp31 = new Decimal(0.1)
@@ -1980,11 +1984,11 @@ addLayer("mp", {
         32: {
             unlocked() {return true},
             cost(x) {
+                costTypemp32 = "normal"
                 costBasemp32 = new Decimal(1.7)
-                
-
-                costExpmp32 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasemp32, costExpmp32).floor()
+                costExpmp32 = new Decimal(1.18)
+                costLimitmp32 = new Decimal('e200')
+                return player.buyablePrice(costTypemp32, new Decimal(x), costBasemp32, costExpmp32, costLimitmp32)
             },
             effect(x) {
                 effBasemp32 = new Decimal(0.001)
@@ -2008,11 +2012,11 @@ addLayer("mp", {
         33: {
             unlocked() {return true},
             cost(x) {
+                costTypemp33 = "normal"
                 costBasemp33 = new Decimal(1.9)
-                
-
-                costExpmp33 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasemp33, costExpmp33).floor()
+                costExpmp33 = new Decimal(1.38)
+                costLimitmp33 = new Decimal('e200')
+                return player.buyablePrice(costTypemp33, new Decimal(x), costBasemp33, costExpmp33, costLimitmp33)
             },
             effect(x) {
                 effBasemp33 = new Decimal(0.025)
@@ -2036,11 +2040,12 @@ addLayer("mp", {
         34: {
             unlocked() {return true},
             cost(x) {
+                costTypemp34 = "asymptote"
                 costBasemp34 = new Decimal(2.1)
-                
+                costExpmp34 = new Decimal(1.58)
+                costLimitmp34 = layers.mp.buyables[34].purchaseLimit.add(1)
 
-                costExpmp34 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasemp34, costExpmp34).floor()
+                return player.buyablePrice(costTypemp34, new Decimal(x), costBasemp34, costExpmp34, costLimitmp34)
             },
             effect(x) {
                 effBasemp34 = new Decimal(0.01)
@@ -2065,11 +2070,11 @@ addLayer("mp", {
         41: {
             unlocked() {return true},
             cost(x) {
+                costTypemp41 = "normal"
                 costBasemp41 = new Decimal(1.55)
-                
-
-                costExpmp41 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasemp41, costExpmp41).floor()
+                costExpmp41 = new Decimal(1.08)
+                costLimitmp41 = new Decimal('e200')
+                return player.buyablePrice(costTypemp41, new Decimal(x), costBasemp41, costExpmp41, costLimitmp41)
             },
             effect(x) {
                 effBasemp41 = new Decimal(0.1)
@@ -2093,11 +2098,11 @@ addLayer("mp", {
         42: {
             unlocked() {return true},
             cost(x) {
+                costTypemp42 = "normal"
                 costBasemp42 = new Decimal(1.75)
-                
-
-                costExpmp42 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasemp42, costExpmp42).floor()
+                costExpmp42 = new Decimal(1.18)
+                costLimitmp42 = new Decimal('e200')
+                return player.buyablePrice(costTypemp42, new Decimal(x), costBasemp42, costExpmp42, costLimitmp42)
             },
             effect(x) {
                 effBasemp42 = new Decimal(0.025)
@@ -2121,11 +2126,11 @@ addLayer("mp", {
         43: {
             unlocked() {return true},
             cost(x) {
-                costBasemp43 = new Decimal(1.95)
-                
-
-                costExpmp43 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasemp43, costExpmp43).floor()
+                costTypemp43 = "normal"
+                costBasemp43 = new Decimal(1.7)
+                costExpmp43 = new Decimal(1.38)
+                costLimitmp43 = new Decimal('e200')
+                return player.buyablePrice(costTypemp43, new Decimal(x), costBasemp43, costExpmp43, costLimitmp43)
             },
             effect(x) {
                 effBasemp43 = new Decimal(0.1)
@@ -2149,11 +2154,12 @@ addLayer("mp", {
         44: {
             unlocked() {return true},
             cost(x) {
+                costTypemp44 = "asymptote"
                 costBasemp44 = new Decimal(2.15)
-                
+                costExpmp44 = new Decimal(1.58)
+                costLimitmp44 = layers.mp.buyables[44].purchaseLimit.add(1)
 
-                costExpmp44 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasemp44, costExpmp44).floor()
+                return player.buyablePrice(costTypemp44, new Decimal(x), costBasemp44, costExpmp44, costLimitmp44)
             },
             effect(x) {
                 effBasemp44 = new Decimal(0.01)
@@ -2178,11 +2184,11 @@ addLayer("mp", {
         51: {
             unlocked() {return true},
             cost(x) {
+                costTypemp51 = "normal"
                 costBasemp51 = new Decimal(1.6)
-                
-
-                costExpmp51 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasemp51, costExpmp51).floor()
+                costExpmp51 = new Decimal(1.08)
+                costLimitmp51 = new Decimal('e200')
+                return player.buyablePrice(costTypemp51, new Decimal(x), costBasemp51, costExpmp51, costLimitmp51)
             },
             effect(x) {
                 effBasemp51 = new Decimal(0.1)
@@ -2206,11 +2212,11 @@ addLayer("mp", {
         52: {
             unlocked() {return true},
             cost(x) {
+                costTypemp52 = "normal"
                 costBasemp52 = new Decimal(1.8)
-                
-
-                costExpmp52 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasemp52, costExpmp52).floor()
+                costExpmp52 = new Decimal(1.18)
+                costLimitmp52 = new Decimal('e200')
+                return player.buyablePrice(costTypemp52, new Decimal(x), costBasemp52, costExpmp52, costLimitmp52)
             },
             effect(x) {
                 effBasemp52 = new Decimal(0.05)
@@ -2234,11 +2240,11 @@ addLayer("mp", {
         53: {
             unlocked() {return true},
             cost(x) {
+                costTypemp53 = "normal"
                 costBasemp53 = new Decimal(2)
-                
-
-                costExpmp53 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasemp53, costExpmp53).floor()
+                costExpmp53 = new Decimal(1.38)
+                costLimitmp53 = new Decimal('e200')
+                return player.buyablePrice(costTypemp53, new Decimal(x), costBasemp53, costExpmp53, costLimitmp53)
             },
             effect(x) {
                 effBasemp53 = new Decimal(0.1)
@@ -2262,11 +2268,12 @@ addLayer("mp", {
         54: {
             unlocked() {return true},
             cost(x) {
+                costTypemp54 = "asymptote"
                 costBasemp54 = new Decimal(2.2)
-                
+                costExpmp54 = new Decimal(1.58)
+                costLimitmp54 = layers.mp.buyables[54].purchaseLimit.add(1)
 
-                costExpmp54 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasemp54, costExpmp54).floor()
+                return player.buyablePrice(costTypemp54, new Decimal(x), costBasemp54, costExpmp54, costLimitmp54)
             },
             effect(x) {
                 effBasemp54 = new Decimal(0.01)
@@ -2374,11 +2381,11 @@ addLayer("bp", {
         11: {
             unlocked() {return true},
             cost(x) {
+                costTypebp11 = "normal"
                 costBasebp11 = new Decimal(1.2)
-                
-
-                costExpbp11 = new Decimal(x).add(1).pow(1.1)
-                return Decimal.pow(costBasebp11, costExpbp11).floor()
+                costExpbp11 = new Decimal(1.1)
+                costLimitbp11 = new Decimal('e200')
+                return player.buyablePrice(costTypebp11, new Decimal(x), costBasebp11, costExpbp11, costLimitbp11)
             },
             effect(x) {
                 effBasebp11 = new Decimal(0.1)
@@ -2402,11 +2409,11 @@ addLayer("bp", {
         12: {
             unlocked() {return true},
             cost(x) {
+                costTypebp12 = "normal"
                 costBasebp12 = new Decimal(1.4)
-                
-
-                costExpbp12 = new Decimal(x).add(1).pow(1.2)
-                return Decimal.pow(costBasebp12, costExpbp12).floor()
+                costExpbp12 = new Decimal(1.2)
+                costLimitbp12 = new Decimal('e200')
+                return player.buyablePrice(costTypebp12, new Decimal(x), costBasebp12, costExpbp12, costLimitbp12)
             },
             effect(x) {
                 effBasebp12 = new Decimal(0.1)
@@ -2430,11 +2437,13 @@ addLayer("bp", {
         13: {
             unlocked() {return true},
             cost(x) {
+                costTypebp13 = "asymptote"
                 costBasebp13 = new Decimal(1.6)
-                
+                costExpbp13 = new Decimal(1.3)
+                costLimitbp13 = layers.bp.buyables[13].purchaseLimit.add(1)
 
-                costExpbp13 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.3)
-                return Decimal.pow(costBasebp13, costExpbp13).floor()
+                return player.buyablePrice(costTypebp13, new Decimal(x), costBasebp13, costExpbp13, costLimitbp13)
+
             },
             effect(x) {
                 effBasebp13 = new Decimal(0.1)
@@ -2459,11 +2468,12 @@ addLayer("bp", {
         14: {
             unlocked() {return true},
             cost(x) {
+                costTypebp14 = "asymptote"
                 costBasebp14 = new Decimal(1.8)
-                
+                costExpbp14 = new Decimal(1.4)
+                costLimitbp14 = layers.bp.buyables[14].purchaseLimit.add(1)
 
-                costExpbp14 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.4)
-                return Decimal.pow(costBasebp14, costExpbp14).floor()
+                return player.buyablePrice(costTypebp14, new Decimal(x), costBasebp14, costExpbp14, costLimitbp14)
             },
             effect(x) {
                 effBasebp14 = new Decimal(0.1)
@@ -2488,11 +2498,11 @@ addLayer("bp", {
         21: {
             unlocked() {return true},
             cost(x) {
+                costTypebp21 = "normal"
                 costBasebp21 = new Decimal(1.3)
-                
-
-                costExpbp21 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasebp21, costExpbp21).floor()
+                costExpbp21 = new Decimal(1.075)
+                costLimitbp21 = new Decimal('e200')
+                return player.buyablePrice(costTypebp21, new Decimal(x), costBasebp21, costExpbp21, costLimitbp21)
             },
             effect(x) {
                 effBasebp21 = new Decimal(0.1)
@@ -2516,11 +2526,11 @@ addLayer("bp", {
         22: {
             unlocked() {return true},
             cost(x) {
+                costTypebp22 = "normal"
                 costBasebp22 = new Decimal(1.5)
-                
-
-                costExpbp22 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasebp22, costExpbp22).floor()
+                costExpbp22 = new Decimal(1.175)
+                costLimitbp22 = new Decimal('e200')
+                return player.buyablePrice(costTypebp22, new Decimal(x), costBasebp22, costExpbp22, costLimitbp22)
             },
             effect(x) {
                 effBasebp22 = new Decimal(0.001)
@@ -2544,11 +2554,11 @@ addLayer("bp", {
         23: {
             unlocked() {return true},
             cost(x) {
+                costTypebp23 = "normal"
                 costBasebp23 = new Decimal(1.7)
-                
-
-                costExpbp23 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasebp23, costExpbp23).floor()
+                costExpbp23 = new Decimal(1.375)
+                costLimitbp23 = new Decimal('e200')
+                return player.buyablePrice(costTypebp23, new Decimal(x), costBasebp23, costExpbp23, costLimitbp23)
             },
             effect(x) {
                 effBasebp23 = new Decimal(0.2)
@@ -2572,11 +2582,12 @@ addLayer("bp", {
         24: {
             unlocked() {return true},
             cost(x) {
+                costTypebp24 = "asymptote"
                 costBasebp24 = new Decimal(1.9)
-                
+                costExpbp24 = new Decimal(1.575)
+                costLimitbp24 = layers.bp.buyables[24].purchaseLimit.add(1)
 
-                costExpbp24 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasebp24, costExpbp24).floor()
+                return player.buyablePrice(costTypebp24, new Decimal(x), costBasebp24, costExpbp24, costLimitbp24)
             },
             effect(x) {
                 effBasebp24 = new Decimal(0.01)
@@ -2601,11 +2612,11 @@ addLayer("bp", {
         31: {
             unlocked() {return true},
             cost(x) {
+                costTypebp31 = "normal"
                 costBasebp31 = new Decimal(1.45)
-                
-
-                costExpbp31 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasebp31, costExpbp31).floor()
+                costExpbp31 = new Decimal(1.075)
+                costLimitbp31 = new Decimal('e200')
+                return player.buyablePrice(costTypebp31, new Decimal(x), costBasebp31, costExpbp31, costLimitbp31)
             },
             effect(x) {
                 effBasebp31 = new Decimal(0.1)
@@ -2629,11 +2640,11 @@ addLayer("bp", {
         32: {
             unlocked() {return true},
             cost(x) {
+                costTypebp32 = "normal"
                 costBasebp32 = new Decimal(1.65)
-                
-
-                costExpbp32 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasebp32, costExpbp32).floor()
+                costExpbp32 = new Decimal(1.175)
+                costLimitbp32 = new Decimal('e200')
+                return player.buyablePrice(costTypebp32, new Decimal(x), costBasebp32, costExpbp32, costLimitbp32)
             },
             effect(x) {
                 effBasebp32 = new Decimal(0.001)
@@ -2657,11 +2668,11 @@ addLayer("bp", {
         33: {
             unlocked() {return true},
             cost(x) {
+                costTypebp33 = "normal"
                 costBasebp33 = new Decimal(1.85)
-                
-
-                costExpbp33 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasebp33, costExpbp33).floor()
+                costExpbp33 = new Decimal(1.375)
+                costLimitbp33 = new Decimal('e200')
+                return player.buyablePrice(costTypebp33, new Decimal(x), costBasebp33, costExpbp33, costLimitbp33)
             },
             effect(x) {
                 effBasebp33 = new Decimal(0.025)
@@ -2685,11 +2696,12 @@ addLayer("bp", {
         34: {
             unlocked() {return true},
             cost(x) {
+                costTypebp34 = "asymptote"
                 costBasebp34 = new Decimal(2.05)
-                
+                costExpbp34 = new Decimal(1.575)
+                costLimitbp34 = layers.bp.buyables[34].purchaseLimit.add(1)
 
-                costExpbp34 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasebp34, costExpbp34).floor()
+                return player.buyablePrice(costTypebp34, new Decimal(x), costBasebp34, costExpbp34, costLimitbp34)
             },
             effect(x) {
                 effBasebp34 = new Decimal(0.01)
@@ -2714,11 +2726,11 @@ addLayer("bp", {
         41: {
             unlocked() {return true},
             cost(x) {
+                costTypebp41 = "normal"
                 costBasebp41 = new Decimal(1.5)
-                
-
-                costExpbp41 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasebp41, costExpbp41).floor()
+                costExpbp41 = new Decimal(1.075)
+                costLimitbp41 = new Decimal('e200')
+                return player.buyablePrice(costTypebp41, new Decimal(x), costBasebp41, costExpbp41, costLimitbp41)
             },
             effect(x) {
                 effBasebp41 = new Decimal(0.1)
@@ -2742,11 +2754,11 @@ addLayer("bp", {
         42: {
             unlocked() {return true},
             cost(x) {
+                costTypebp42 = "normal"
                 costBasebp42 = new Decimal(1.7)
-                
-
-                costExpbp42 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasebp42, costExpbp42).floor()
+                costExpbp42 = new Decimal(1.175)
+                costLimitbp42 = new Decimal('e200')
+                return player.buyablePrice(costTypebp42, new Decimal(x), costBasebp42, costExpbp42, costLimitbp42)
             },
             effect(x) {
                 effBasebp42 = new Decimal(0.025)
@@ -2770,11 +2782,11 @@ addLayer("bp", {
         43: {
             unlocked() {return true},
             cost(x) {
+                costTypebp43 = "normal"
                 costBasebp43 = new Decimal(1.9)
-                
-
-                costExpbp43 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasebp43, costExpbp43).floor()
+                costExpbp43 = new Decimal(1.375)
+                costLimitbp43 = new Decimal('e200')
+                return player.buyablePrice(costTypebp43, new Decimal(x), costBasebp43, costExpbp43, costLimitbp43)
             },
             effect(x) {
                 effBasebp43 = new Decimal(0.1)
@@ -2798,11 +2810,12 @@ addLayer("bp", {
         44: {
             unlocked() {return true},
             cost(x) {
+                costTypebp44 = "asymptote"
                 costBasebp44 = new Decimal(2.1)
-                
+                costExpbp44 = new Decimal(1.575)
+                costLimitbp44 = layers.bp.buyables[44].purchaseLimit.add(1)
 
-                costExpbp44 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasebp44, costExpbp44).floor()
+                return player.buyablePrice(costTypebp44, new Decimal(x), costBasebp44, costExpbp44, costLimitbp44)
             },
             effect(x) {
                 effBasebp44 = new Decimal(0.01)
@@ -2827,11 +2840,11 @@ addLayer("bp", {
         51: {
             unlocked() {return true},
             cost(x) {
+                costTypebp51 = "normal"
                 costBasebp51 = new Decimal(1.55)
-                
-
-                costExpbp51 = new Decimal(x).add(1).pow(1.08)
-                return Decimal.pow(costBasebp51, costExpbp51).floor()
+                costExpbp51 = new Decimal(1.075)
+                costLimitbp51 = new Decimal('e200')
+                return player.buyablePrice(costTypebp51, new Decimal(x), costBasebp51, costExpbp51, costLimitbp51)
             },
             effect(x) {
                 effBasebp51 = new Decimal(0.1)
@@ -2855,11 +2868,11 @@ addLayer("bp", {
         52: {
             unlocked() {return true},
             cost(x) {
+                costTypebp52 = "normal"
                 costBasebp52 = new Decimal(1.75)
-                
-
-                costExpbp52 = new Decimal(x).add(1).pow(1.18)
-                return Decimal.pow(costBasebp52, costExpbp52).floor()
+                costExpbp52 = new Decimal(1.175)
+                costLimitbp52 = new Decimal('e200')
+                return player.buyablePrice(costTypebp52, new Decimal(x), costBasebp52, costExpbp52, costLimitbp52)
             },
             effect(x) {
                 effBasebp52 = new Decimal(0.05)
@@ -2883,11 +2896,11 @@ addLayer("bp", {
         53: {
             unlocked() {return true},
             cost(x) {
+                costTypebp53 = "normal"
                 costBasebp53 = new Decimal(1.95)
-                
-
-                costExpbp53 = new Decimal(x).add(1).pow(1.38)
-                return Decimal.pow(costBasebp53, costExpbp53).floor()
+                costExpbp53 = new Decimal(1.375)
+                costLimitbp53 = new Decimal('e200')
+                return player.buyablePrice(costTypebp53, new Decimal(x), costBasebp53, costExpbp53, costLimitbp53)
             },
             effect(x) {
                 effBasebp53 = new Decimal(0.1)
@@ -2911,11 +2924,12 @@ addLayer("bp", {
         54: {
             unlocked() {return true},
             cost(x) {
+                costTypebp54 = "asymptote"
                 costBasebp54 = new Decimal(2.15)
-                
+                costExpbp54 = new Decimal(1.575)
+                costLimitbp54 = layers.bp.buyables[54].purchaseLimit.add(1)
 
-                costExpbp54 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.58)
-                return Decimal.pow(costBasebp54, costExpbp54).floor()
+                return player.buyablePrice(costTypebp54, new Decimal(x), costBasebp54, costExpbp54, costLimitbp54)
             },
             effect(x) {
                 effBasebp54 = new Decimal(0.01)
@@ -3020,11 +3034,11 @@ addLayer("sp", {
         11: {
             unlocked() {return true},
             cost(x) {
+                costTypesp11 = "normal"
                 costBasesp11 = new Decimal(1.2)
-                
-
-                costExpsp11 = new Decimal(x).add(1).pow(1.1)
-                return Decimal.pow(costBasesp11, costExpsp11).floor()
+                costExpsp11 = new Decimal(1.1)
+                costLimitsp11 = new Decimal('e200')
+                return player.buyablePrice(costTypesp11, new Decimal(x), costBasesp11, costExpsp11, costLimitsp11)
             },
             effect(x) {
                 effBasesp11 = new Decimal(0.1)
@@ -3048,11 +3062,11 @@ addLayer("sp", {
         12: {
             unlocked() {return true},
             cost(x) {
+                costTypesp12 = "normal"
                 costBasesp12 = new Decimal(1.4)
-                
-
-                costExpsp12 = new Decimal(x).add(1).pow(1.2)
-                return Decimal.pow(costBasesp12, costExpsp12).floor()
+                costExpsp12 = new Decimal(1.2)
+                costLimitsp12 = new Decimal('e200')
+                return player.buyablePrice(costTypesp12, new Decimal(x), costBasesp12, costExpsp12, costLimitsp12)
             },
             effect(x) {
                 effBasesp12 = new Decimal(0.1)
@@ -3076,11 +3090,11 @@ addLayer("sp", {
         13: {
             unlocked() {return true},
             cost(x) {
+                costTypesp13 = "asymptote"
                 costBasesp13 = new Decimal(1.6)
-                
-
-                costExpsp13 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.3)
-                return Decimal.pow(costBasesp13, costExpsp13).floor()
+                costExpsp13 = new Decimal(1.3)
+                costLimitsp13 = layers.sp.buyables[13].purchaseLimit.add(1)
+                return player.buyablePrice(costTypesp13, new Decimal(x), costBasesp13, costExpsp13, costLimitsp13)
             },
             effect(x) {
                 effBasesp13 = new Decimal(0.1)
@@ -3105,11 +3119,12 @@ addLayer("sp", {
         14: {
             unlocked() {return true},
             cost(x) {
+                costTypesp14 = "asymptote"
                 costBasesp14 = new Decimal(1.8)
-                
+                costExpsp14 = new Decimal(1.4)
+                costLimitsp14 = layers.sp.buyables[14].purchaseLimit.add(1)
 
-                costExpsp14 = new Decimal(x).add(1).times(41).div(Decimal.sub(41, x)).pow(1.4)
-                return Decimal.pow(costBasesp14, costExpsp14).floor()
+                return player.buyablePrice(costTypesp14, new Decimal(x), costBasesp14, costExpsp14, costLimitsp14)
             },
             effect(x) {
                 effBasesp14 = new Decimal(0.1)
@@ -3134,11 +3149,11 @@ addLayer("sp", {
         21: {
             unlocked() {return true},
             cost(x) {
+                costTypesp21 = "normal"
                 costBasesp21 = new Decimal(1.3)
-                
-
-                costExpsp21 = new Decimal(x).add(1).pow(1.07)
-                return Decimal.pow(costBasesp21, costExpsp21).floor()
+                costExpsp21 = new Decimal(1.07)
+                costLimitsp21 = new Decimal('e200')
+                return player.buyablePrice(costTypesp21, new Decimal(x), costBasesp21, costExpsp21, costLimitsp21)
             },
             effect(x) {
                 effBasesp21 = new Decimal(0.1)
@@ -3162,11 +3177,11 @@ addLayer("sp", {
         22: {
             unlocked() {return true},
             cost(x) {
+                costTypesp22 = "normal"
                 costBasesp22 = new Decimal(1.5)
-                
-
-                costExpsp22 = new Decimal(x).add(1).pow(1.17)
-                return Decimal.pow(costBasesp22, costExpsp22).floor()
+                costExpsp22 = new Decimal(1.17)
+                costLimitsp22 = new Decimal('e200')
+                return player.buyablePrice(costTypesp22, new Decimal(x), costBasesp22, costExpsp22, costLimitsp22)
             },
             effect(x) {
                 effBasesp22 = new Decimal(0.001)
@@ -3190,11 +3205,11 @@ addLayer("sp", {
         23: {
             unlocked() {return true},
             cost(x) {
+                costTypesp23 = "normal"
                 costBasesp23 = new Decimal(1.7)
-                
-
-                costExpsp23 = new Decimal(x).add(1).pow(1.37)
-                return Decimal.pow(costBasesp23, costExpsp23).floor()
+                costExpsp23 = new Decimal(1.37)
+                costLimitsp23 = new Decimal('e200')
+                return player.buyablePrice(costTypesp23, new Decimal(x), costBasesp23, costExpsp23, costLimitsp23)
             },
             effect(x) {
                 effBasesp23 = new Decimal(0.2)
@@ -3218,11 +3233,12 @@ addLayer("sp", {
         24: {
             unlocked() {return true},
             cost(x) {
+                costTypesp24 = "asymptote"
                 costBasesp24 = new Decimal(1.9)
-                
+                costExpsp24 = new Decimal(1.57)
+                costLimitsp24 = layers.sp.buyables[24].purchaseLimit.add(1)
 
-                costExpsp24 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.57)
-                return Decimal.pow(costBasesp24, costExpsp24).floor()
+                return player.buyablePrice(costTypesp24, new Decimal(x), costBasesp24, costExpsp24, costLimitsp24)
             },
             effect(x) {
                 effBasesp24 = new Decimal(0.01)
@@ -3247,11 +3263,11 @@ addLayer("sp", {
         31: {
             unlocked() {return true},
             cost(x) {
+                costTypesp31 = "normal"
                 costBasesp31 = new Decimal(1.4)
-                
-
-                costExpsp31 = new Decimal(x).add(1).pow(1.07)
-                return Decimal.pow(costBasesp31, costExpsp31).floor()
+                costExpsp31 = new Decimal(1.07)
+                costLimitsp31 = new Decimal('e200')
+                return player.buyablePrice(costTypesp31, new Decimal(x), costBasesp31, costExpsp31, costLimitsp31)
             },
             effect(x) {
                 effBasesp31 = new Decimal(0.1)
@@ -3275,11 +3291,11 @@ addLayer("sp", {
         32: {
             unlocked() {return true},
             cost(x) {
+                costTypesp32 = "normal"
                 costBasesp32 = new Decimal(1.6)
-                
-
-                costExpsp32 = new Decimal(x).add(1).pow(1.17)
-                return Decimal.pow(costBasesp32, costExpsp32).floor()
+                costExpsp32 = new Decimal(1.17)
+                costLimitsp32 = new Decimal('e200')
+                return player.buyablePrice(costTypesp32, new Decimal(x), costBasesp32, costExpsp32, costLimitsp32)
             },
             effect(x) {
                 effBasesp32 = new Decimal(0.001)
@@ -3303,11 +3319,11 @@ addLayer("sp", {
         33: {
             unlocked() {return true},
             cost(x) {
+                costTypesp33 = "normal"
                 costBasesp33 = new Decimal(1.8)
-                
-
-                costExpsp33 = new Decimal(x).add(1).pow(1.37)
-                return Decimal.pow(costBasesp33, costExpsp33).floor()
+                costExpsp33 = new Decimal(1.37)
+                costLimitsp33 = new Decimal('e200')
+                return player.buyablePrice(costTypesp33, new Decimal(x), costBasesp33, costExpsp33, costLimitsp33)
             },
             effect(x) {
                 effBasesp33 = new Decimal(0.025)
@@ -3331,11 +3347,12 @@ addLayer("sp", {
         34: {
             unlocked() {return true},
             cost(x) {
+                costTypesp34 = "asymptote"
                 costBasesp34 = new Decimal(2)
-                
+                costExpsp34 = new Decimal(1.57)
+                costLimitsp34 = layers.sp.buyables[34].purchaseLimit.add(1)
 
-                costExpsp34 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.57)
-                return Decimal.pow(costBasesp34, costExpsp34).floor()
+                return player.buyablePrice(costTypesp34, new Decimal(x), costBasesp34, costExpsp34, costLimitsp34)
             },
             effect(x) {
                 effBasesp34 = new Decimal(0.01)
@@ -3360,11 +3377,11 @@ addLayer("sp", {
         41: {
             unlocked() {return true},
             cost(x) {
+                costTypesp41 = "normal"
                 costBasesp41 = new Decimal(1.45)
-                
-
-                costExpsp41 = new Decimal(x).add(1).pow(1.07)
-                return Decimal.pow(costBasesp41, costExpsp41).floor()
+                costExpsp41 = new Decimal(1.07)
+                costLimitsp41 = new Decimal('e200')
+                return player.buyablePrice(costTypesp41, new Decimal(x), costBasesp41, costExpsp41, costLimitsp41)
             },
             effect(x) {
                 effBasesp41 = new Decimal(0.1)
@@ -3388,11 +3405,11 @@ addLayer("sp", {
         42: {
             unlocked() {return true},
             cost(x) {
+                costTypesp42 = "normal"
                 costBasesp42 = new Decimal(1.65)
-                
-
-                costExpsp42 = new Decimal(x).add(1).pow(1.17)
-                return Decimal.pow(costBasesp42, costExpsp42).floor()
+                costExpsp42 = new Decimal(1.17)
+                costLimitsp42 = new Decimal('e200')
+                return player.buyablePrice(costTypesp42, new Decimal(x), costBasesp42, costExpsp42, costLimitsp42)
             },
             effect(x) {
                 effBasesp42 = new Decimal(0.025)
@@ -3416,11 +3433,11 @@ addLayer("sp", {
         43: {
             unlocked() {return true},
             cost(x) {
+                costTypesp43 = "normal"
                 costBasesp43 = new Decimal(1.85)
-                
-
-                costExpsp43 = new Decimal(x).add(1).pow(1.37)
-                return Decimal.pow(costBasesp43, costExpsp43).floor()
+                costExpsp43 = new Decimal(1.37)
+                costLimitsp43 = new Decimal('e200')
+                return player.buyablePrice(costTypesp43, new Decimal(x), costBasesp43, costExpsp43, costLimitsp43)
             },
             effect(x) {
                 effBasesp43 = new Decimal(0.1)
@@ -3444,11 +3461,12 @@ addLayer("sp", {
         44: {
             unlocked() {return true},
             cost(x) {
+                costTypesp44 = "asymptote"
                 costBasesp44 = new Decimal(2.05)
-                
+                costExpsp44 = new Decimal(1.57)
+                costLimitsp44 = layers.sp.buyables[44].purchaseLimit.add(1)
 
-                costExpsp44 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.57)
-                return Decimal.pow(costBasesp44, costExpsp44).floor()
+                return player.buyablePrice(costTypesp44, new Decimal(x), costBasesp44, costExpsp44, costLimitsp44)
             },
             effect(x) {
                 effBasesp44 = new Decimal(0.01)
@@ -3473,11 +3491,11 @@ addLayer("sp", {
         51: {
             unlocked() {return true},
             cost(x) {
+                costTypesp51 = "normal"
                 costBasesp51 = new Decimal(1.5)
-                
-
-                costExpsp51 = new Decimal(x).add(1).pow(1.07)
-                return Decimal.pow(costBasesp51, costExpsp51).floor()
+                costExpsp51 = new Decimal(1.07)
+                costLimitsp51 = new Decimal('e200')
+                return player.buyablePrice(costTypesp51, new Decimal(x), costBasesp51, costExpsp51, costLimitsp51)
             },
             effect(x) {
                 effBasesp51 = new Decimal(0.1)
@@ -3501,11 +3519,11 @@ addLayer("sp", {
         52: {
             unlocked() {return true},
             cost(x) {
+                costTypesp52 = "normal"
                 costBasesp52 = new Decimal(1.7)
-                
-
-                costExpsp52 = new Decimal(x).add(1).pow(1.17)
-                return Decimal.pow(costBasesp52, costExpsp52).floor()
+                costExpsp52 = new Decimal(1.17)
+                costLimitsp52 = new Decimal('e200')
+                return player.buyablePrice(costTypesp52, new Decimal(x), costBasesp52, costExpsp52, costLimitsp52)
             },
             effect(x) {
                 effBasesp52 = new Decimal(0.05)
@@ -3529,11 +3547,11 @@ addLayer("sp", {
         53: {
             unlocked() {return true},
             cost(x) {
+                costTypesp53 = "normal"
                 costBasesp53 = new Decimal(1.9)
-                
-
-                costExpsp53 = new Decimal(x).add(1).pow(1.37)
-                return Decimal.pow(costBasesp53, costExpsp53).floor()
+                costExpsp53 = new Decimal(1.37)
+                costLimitsp53 = new Decimal('e200')
+                return player.buyablePrice(costTypesp53, new Decimal(x), costBasesp53, costExpsp53, costLimitsp53)
             },
             effect(x) {
                 effBasesp53 = new Decimal(0.1)
@@ -3557,11 +3575,12 @@ addLayer("sp", {
         54: {
             unlocked() {return true},
             cost(x) {
+                costTypesp54 = "asymptote"
                 costBasesp54 = new Decimal(2.1)
-                
+                costExpsp54 = new Decimal(1.57)
+                costLimitsp54 = layers.sp.buyables[54].purchaseLimit.add(1)
 
-                costExpsp54 = new Decimal(x).add(1).times(10).div(Decimal.sub(10, x)).pow(1.57)
-                return Decimal.pow(costBasesp54, costExpsp54).floor()
+                return player.buyablePrice(costTypesp54, new Decimal(x), costBasesp54, costExpsp54, costLimitsp54)
             },
             effect(x) {
                 effBasesp54 = new Decimal(0.01)
