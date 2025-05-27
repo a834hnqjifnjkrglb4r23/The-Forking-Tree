@@ -2,7 +2,7 @@ let modInfo = {
 	name: "The Trolling Tree",
 	id: "jacorb90timewallbelikeU2FtcGxlQm",
 	author: "nobody",
-	pointsName: "points",
+	pointsName: "points. It is recommended to play at 80% zoom",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -14,11 +14,16 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
+	num: "0.3",
 	name: "Literally nothing",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.3</h3><br>
+		- Uninflated gems.<br>
+		- Changed some coefficients.<br>
+		- Changed lootbox mechanic. <br>
+		- Changed milestone. <br>
 	<h3>v0.2</h3><br>
 		- Overhaul on some structure.<br>
 		- Added lootboxes.<br>
@@ -60,42 +65,48 @@ function getPointGen() {
 	gainMult = gainMult.add(buyableEffect('sp', 12))
 
 	gain = baseGain.times(gainMult)
-	gain = gain.times(player.b.points.add(1).pow(buyableEffect('l', 23).add(1)))
+	gain = gain.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
+	gain = gain.times(player.b.points.add(1).max(1))
 
-	firstSoftcapStrength = new Decimal(20)
+
+	firstSoftcapStrength = new Decimal(16)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 13))
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('l', 37))
 	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
 
 	secondSoftcapStrength = new Decimal(20)
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 14))
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 38))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 11)[0][2])
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
 	thirdSoftcapStrength = new Decimal(30)
-	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 39))
+	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 11)[0][3])
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
 
 	fourthSoftcapStrength = new Decimal(60)
-	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(fourthSoftcapStrength))}
+	if (player.points.gte(4)) {gain = gain.div(player.points.div(4).pow(fourthSoftcapStrength))}
 
 
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
 
-	gain = gain.times(player.a.points.add(1).pow(buyableEffect('l', 23)))
 
+
+	if (getBuyableAmount('g', 41).gt(0)) {gain = gain.times(buyableEffect('g', 41))}
+	if (getBuyableAmount('g', 42).gt(0)) {gain = gain.times(buyableEffect('g', 42))}
+	if (getBuyableAmount('g', 43).gt(0)) {gain = gain.times(buyableEffect('g', 43))}
+
+	
 	gain = gain.min(1)
 	return gain
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-
+						
 }}
 
 // Display extra things at the top of the page

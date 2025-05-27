@@ -74,9 +74,16 @@ function format(decimal, precision = 2, small) {
 
 function formatWhole(decimal) {
     decimal = new Decimal(decimal)
-    if (decimal.gte(1e9)) return format(decimal, 2)
+    if (decimal.gte(1e10)) return format(decimal, 2)
     if (decimal.lte(0.99) && !decimal.eq(0)) return format(decimal, 2)
     return format(decimal, 0)
+}
+
+function formatMoney(decimal) {
+    decimal = new Decimal(decimal)
+    if (decimal.gte('1e20')) return exponentialFormat(decimal, 2)
+    if (decimal.gte('1e10')) return commaFormat(decimal, 0)
+    return commaFormat(decimal, 2)
 }
 
 function formatTime(s) {
