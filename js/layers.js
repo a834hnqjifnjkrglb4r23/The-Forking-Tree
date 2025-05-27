@@ -147,7 +147,7 @@ addLayer("l", {
                     textdescription += "this is not better than your old gear, so you sell it for "
                 }
 
-                sellprice = oldgearlevel ** 2 / 100
+                sellprice = Math.max(oldgearlevel / 100, Math.floor(oldgearlevel ** 2 / 25) / 100)
                 textdescription += "$"+sellprice.toString()
                 addPoints('j', sellprice)
 
@@ -1333,7 +1333,7 @@ addLayer("b", {
         bfourthSoftcapStrength = new Decimal(60)
         if (player.b.points.gte(4)) {bgain = bgain.div(player.b.points.div(4).pow(bfourthSoftcapStrength))}
         
-        if (player.b.points.gte(9)) {bgain = bgain.times(player.b.points.sub(10).times(-1))}
+        if (player.b.points.gte(9)) {bgain = bgain.times(player.b.points.sub(10).times(-1))} //***** */
         return bgain.min(1)
     },
     getNextAt() {
@@ -1471,9 +1471,17 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep11, player[this.layer].points, costBasep11, costExpp11, costLimitp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep11, player[this.layer].points, costBasep11, costExpp11, costLimitp11))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep11, player.buyableMaxPurchaseable(costTypep11, player[this.layer].points, costBasep11, costExpp11, costLimitp11), costBasep11, costExpp11, costLimitp11))}
+                    }
                 }
+
             },
         },
         12: {
@@ -1499,8 +1507,15 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep12, player[this.layer].points, costBasep12, costExpp12, costLimitp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep12, player[this.layer].points, costBasep12, costExpp12, costLimitp12))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep12, player.buyableMaxPurchaseable(costTypep12, player[this.layer].points, costBasep12, costExpp12, costLimitp12), costBasep12, costExpp12, costLimitp12))}
+                    }
                 }
             },
         },
@@ -1528,8 +1543,15 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep13, player[this.layer].points, costBasep13, costExpp13, costLimitp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep13, player[this.layer].points, costBasep13, costExpp13, costLimitp13))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep13, player.buyableMaxPurchaseable(costTypep13, player[this.layer].points, costBasep13, costExpp13, costLimitp13), costBasep13, costExpp13, costLimitp13))}
+                    }
                 }
             },
         },
@@ -1556,8 +1578,15 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep21, player[this.layer].points, costBasep21, costExpp21, costLimitp21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep21, player[this.layer].points, costBasep21, costExpp21, costLimitp21))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep21, player.buyableMaxPurchaseable(costTypep21, player[this.layer].points, costBasep21, costExpp21, costLimitp21), costBasep21, costExpp21, costLimitp21))}
+                    }
                 }
             },
         },
@@ -1584,8 +1613,15 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep22, player[this.layer].points, costBasep22, costExpp22, costLimitp22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep22, player[this.layer].points, costBasep22, costExpp22, costLimitp22))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep22, player.buyableMaxPurchaseable(costTypep22, player[this.layer].points, costBasep22, costExpp22, costLimitp22), costBasep22, costExpp22, costLimitp22))}
+                    }
                 }
             },
         },
@@ -1612,8 +1648,15 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep23, player[this.layer].points, costBasep23, costExpp23, costLimitp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep23, player[this.layer].points, costBasep23, costExpp23, costLimitp23))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep23, player.buyableMaxPurchaseable(costTypep23, player[this.layer].points, costBasep23, costExpp23, costLimitp23), costBasep23, costExpp23, costLimitp23))}
+                    }
                 }
             },
         },
@@ -1642,8 +1685,15 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypep24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypep24, player[this.layer].points, costBasep24, costExpp24, costLimitp24).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypep24, player[this.layer].points, costBasep24, costExpp24, costLimitp24))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypep24, player.buyableMaxPurchaseable(costTypep24, player[this.layer].points, costBasep24, costExpp24, costLimitp24), costBasep24, costExpp24, costLimitp24))}
+                    }
                 }
             },
         },
@@ -1746,8 +1796,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp11, player[this.layer].points, costBasemp11, costExpmp11, costLimitmp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp11, player[this.layer].points, costBasemp11, costExpmp11, costLimitmp11))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp11, player.buyableMaxPurchaseable(costTypemp11, player[this.layer].points, costBasemp11, costExpmp11, costLimitmp11), costBasemp11, costExpmp11, costLimitmp11))}
+                    }
                 }
             },
         },
@@ -1774,8 +1831,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp12, player[this.layer].points, costBasemp12, costExpmp12, costLimitmp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp12, player[this.layer].points, costBasemp12, costExpmp12, costLimitmp12))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp12, player.buyableMaxPurchaseable(costTypemp12, player[this.layer].points, costBasemp12, costExpmp12, costLimitmp12), costBasemp12, costExpmp12, costLimitmp12))}
+                    }
                 }
             },
         },
@@ -1804,8 +1868,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp13, player[this.layer].points, costBasemp13, costExpmp13, costLimitmp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp13, player[this.layer].points, costBasemp13, costExpmp13, costLimitmp13))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp13, player.buyableMaxPurchaseable(costTypemp13, player[this.layer].points, costBasemp13, costExpmp13, costLimitmp13), costBasemp13, costExpmp13, costLimitmp13))}
+                    }
                 }
             },
         },
@@ -1834,8 +1905,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp14 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp14, player[this.layer].points, costBasemp14, costExpmp14, costLimitmp14).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp14, player[this.layer].points, costBasemp14, costExpmp14, costLimitmp14))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp14, player.buyableMaxPurchaseable(costTypemp14, player[this.layer].points, costBasemp14, costExpmp14, costLimitmp14), costBasemp14, costExpmp14, costLimitmp14))}
+                    }
                 }
             },
         },
@@ -1862,8 +1940,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp21, player[this.layer].points, costBasemp21, costExpmp21, costLimitmp21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp21, player[this.layer].points, costBasemp21, costExpmp21, costLimitmp21))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp21, player.buyableMaxPurchaseable(costTypemp21, player[this.layer].points, costBasemp21, costExpmp21, costLimitmp21), costBasemp21, costExpmp21, costLimitmp21))}
+                    }
                 }
             },
         },
@@ -1890,8 +1975,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp22, player[this.layer].points, costBasemp22, costExpmp22, costLimitmp22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp22, player[this.layer].points, costBasemp22, costExpmp22, costLimitmp22))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp22, player.buyableMaxPurchaseable(costTypemp22, player[this.layer].points, costBasemp22, costExpmp22, costLimitmp22), costBasemp22, costExpmp22, costLimitmp22))}
+                    }
                 }
             },
         },
@@ -1918,8 +2010,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp23, player[this.layer].points, costBasemp23, costExpmp23, costLimitmp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp23, player[this.layer].points, costBasemp23, costExpmp23, costLimitmp23))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp23, player.buyableMaxPurchaseable(costTypemp23, player[this.layer].points, costBasemp23, costExpmp23, costLimitmp23), costBasemp23, costExpmp23, costLimitmp23))}
+                    }
                 }
             },
         },
@@ -1948,8 +2047,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp24, player[this.layer].points, costBasemp24, costExpmp24, costLimitmp24).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp24, player[this.layer].points, costBasemp24, costExpmp24, costLimitmp24))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp24, player.buyableMaxPurchaseable(costTypemp24, player[this.layer].points, costBasemp24, costExpmp24, costLimitmp24), costBasemp24, costExpmp24, costLimitmp24))}
+                    }
                 }
             },
         },
@@ -1976,8 +2082,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp31 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp31, player[this.layer].points, costBasemp31, costExpmp31, costLimitmp31).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp31, player[this.layer].points, costBasemp31, costExpmp31, costLimitmp31))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp31, player.buyableMaxPurchaseable(costTypemp31, player[this.layer].points, costBasemp31, costExpmp31, costLimitmp31), costBasemp31, costExpmp31, costLimitmp31))}
+                    }
                 }
             },
         },
@@ -2004,8 +2117,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp32 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp32, player[this.layer].points, costBasemp32, costExpmp32, costLimitmp32).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp32, player[this.layer].points, costBasemp32, costExpmp32, costLimitmp32))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp32, player.buyableMaxPurchaseable(costTypemp32, player[this.layer].points, costBasemp32, costExpmp32, costLimitmp32), costBasemp32, costExpmp32, costLimitmp32))}
+                    }
                 }
             },
         },
@@ -2032,8 +2152,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp33 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp33, player[this.layer].points, costBasemp33, costExpmp33, costLimitmp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp33, player[this.layer].points, costBasemp33, costExpmp33, costLimitmp33))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp33, player.buyableMaxPurchaseable(costTypemp33, player[this.layer].points, costBasemp33, costExpmp33, costLimitmp33), costBasemp33, costExpmp33, costLimitmp33))}
+                    }
                 }
             },
         },
@@ -2062,8 +2189,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp34 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp34, player[this.layer].points, costBasemp34, costExpmp34, costLimitmp34).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp34, player[this.layer].points, costBasemp34, costExpmp34, costLimitmp34))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp34, player.buyableMaxPurchaseable(costTypemp34, player[this.layer].points, costBasemp34, costExpmp34, costLimitmp34), costBasemp34, costExpmp34, costLimitmp34))}
+                    }
                 }
             },
         },
@@ -2090,8 +2224,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp41 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp41, player[this.layer].points, costBasemp41, costExpmp41, costLimitmp41).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp41, player[this.layer].points, costBasemp41, costExpmp41, costLimitmp41))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp41, player.buyableMaxPurchaseable(costTypemp41, player[this.layer].points, costBasemp41, costExpmp41, costLimitmp41), costBasemp41, costExpmp41, costLimitmp41))}
+                    }
                 }
             },
         },
@@ -2118,8 +2259,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp42 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp42, player[this.layer].points, costBasemp42, costExpmp42, costLimitmp42).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp42, player[this.layer].points, costBasemp42, costExpmp42, costLimitmp42))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp42, player.buyableMaxPurchaseable(costTypemp42, player[this.layer].points, costBasemp42, costExpmp42, costLimitmp42), costBasemp42, costExpmp42, costLimitmp42))}
+                    }
                 }
             },
         },
@@ -2146,8 +2294,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp43 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp43, player[this.layer].points, costBasemp43, costExpmp43, costLimitmp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp43, player[this.layer].points, costBasemp43, costExpmp43, costLimitmp43))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp43, player.buyableMaxPurchaseable(costTypemp43, player[this.layer].points, costBasemp43, costExpmp43, costLimitmp43), costBasemp43, costExpmp43, costLimitmp43))}
+                    }
                 }
             },
         },
@@ -2176,8 +2331,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp44 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp44, player[this.layer].points, costBasemp44, costExpmp44, costLimitmp44).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp44, player[this.layer].points, costBasemp44, costExpmp44, costLimitmp44))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp44, player.buyableMaxPurchaseable(costTypemp44, player[this.layer].points, costBasemp44, costExpmp44, costLimitmp44), costBasemp44, costExpmp44, costLimitmp44))}
+                    }
                 }
             },
         },
@@ -2204,8 +2366,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp51 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp51, player[this.layer].points, costBasemp51, costExpmp51, costLimitmp51).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp51, player[this.layer].points, costBasemp51, costExpmp51, costLimitmp51))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp51, player.buyableMaxPurchaseable(costTypemp51, player[this.layer].points, costBasemp51, costExpmp51, costLimitmp51), costBasemp51, costExpmp51, costLimitmp51))}
+                    }
                 }
             },
         },
@@ -2232,8 +2401,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp52 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp52, player[this.layer].points, costBasemp52, costExpmp52, costLimitmp52).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp52, player[this.layer].points, costBasemp52, costExpmp52, costLimitmp52))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp52, player.buyableMaxPurchaseable(costTypemp52, player[this.layer].points, costBasemp52, costExpmp52, costLimitmp52), costBasemp52, costExpmp52, costLimitmp52))}
+                    }
                 }
             },
         },
@@ -2260,8 +2436,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp53 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp53, player[this.layer].points, costBasemp53, costExpmp53, costLimitmp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp53, player[this.layer].points, costBasemp53, costExpmp53, costLimitmp53))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp53, player.buyableMaxPurchaseable(costTypemp53, player[this.layer].points, costBasemp53, costExpmp53, costLimitmp53), costBasemp53, costExpmp53, costLimitmp53))}
+                    }
                 }
             },
         },
@@ -2290,8 +2473,15 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypemp54 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemp54, player[this.layer].points, costBasemp54, costExpmp54, costLimitmp54).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemp54, player[this.layer].points, costBasemp54, costExpmp54, costLimitmp54))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemp54, player.buyableMaxPurchaseable(costTypemp54, player[this.layer].points, costBasemp54, costExpmp54, costLimitmp54), costBasemp54, costExpmp54, costLimitmp54))}
+                    }
                 }
             },
         },
@@ -2401,8 +2591,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp11, player[this.layer].points, costBasebp11, costExpbp11, costLimitbp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp11, player[this.layer].points, costBasebp11, costExpbp11, costLimitbp11))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp11, player.buyableMaxPurchaseable(costTypebp11, player[this.layer].points, costBasebp11, costExpbp11, costLimitbp11), costBasebp11, costExpbp11, costLimitbp11))}
+                    }
                 }
             },
         },
@@ -2429,8 +2626,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp12, player[this.layer].points, costBasebp12, costExpbp12, costLimitbp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp12, player[this.layer].points, costBasebp12, costExpbp12, costLimitbp12))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp12, player.buyableMaxPurchaseable(costTypebp12, player[this.layer].points, costBasebp12, costExpbp12, costLimitbp12), costBasebp12, costExpbp12, costLimitbp12))}
+                    }
                 }
             },
         },
@@ -2460,8 +2664,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp13, player[this.layer].points, costBasebp13, costExpbp13, costLimitbp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp13, player[this.layer].points, costBasebp13, costExpbp13, costLimitbp13))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp13, player.buyableMaxPurchaseable(costTypebp13, player[this.layer].points, costBasebp13, costExpbp13, costLimitbp13), costBasebp13, costExpbp13, costLimitbp13))}
+                    }
                 }
             },
         },
@@ -2490,8 +2701,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp14 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp14, player[this.layer].points, costBasebp14, costExpbp14, costLimitbp14).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp14, player[this.layer].points, costBasebp14, costExpbp14, costLimitbp14))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp14, player.buyableMaxPurchaseable(costTypebp14, player[this.layer].points, costBasebp14, costExpbp14, costLimitbp14), costBasebp14, costExpbp14, costLimitbp14))}
+                    }
                 }
             },
         },
@@ -2518,8 +2736,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp21, player[this.layer].points, costBasebp21, costExpbp21, costLimitbp21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp21, player[this.layer].points, costBasebp21, costExpbp21, costLimitbp21))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp21, player.buyableMaxPurchaseable(costTypebp21, player[this.layer].points, costBasebp21, costExpbp21, costLimitbp21), costBasebp21, costExpbp21, costLimitbp21))}
+                    }
                 }
             },
         },
@@ -2546,8 +2771,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp22, player[this.layer].points, costBasebp22, costExpbp22, costLimitbp22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp22, player[this.layer].points, costBasebp22, costExpbp22, costLimitbp22))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp22, player.buyableMaxPurchaseable(costTypebp22, player[this.layer].points, costBasebp22, costExpbp22, costLimitbp22), costBasebp22, costExpbp22, costLimitbp22))}
+                    }
                 }
             },
         },
@@ -2574,8 +2806,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp23, player[this.layer].points, costBasebp23, costExpbp23, costLimitbp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp23, player[this.layer].points, costBasebp23, costExpbp23, costLimitbp23))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp23, player.buyableMaxPurchaseable(costTypebp23, player[this.layer].points, costBasebp23, costExpbp23, costLimitbp23), costBasebp23, costExpbp23, costLimitbp23))}
+                    }
                 }
             },
         },
@@ -2604,8 +2843,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp24, player[this.layer].points, costBasebp24, costExpbp24, costLimitbp24).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp24, player[this.layer].points, costBasebp24, costExpbp24, costLimitbp24))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp24, player.buyableMaxPurchaseable(costTypebp24, player[this.layer].points, costBasebp24, costExpbp24, costLimitbp24), costBasebp24, costExpbp24, costLimitbp24))}
+                    }
                 }
             },
         },
@@ -2632,8 +2878,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp31 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp31, player[this.layer].points, costBasebp31, costExpbp31, costLimitbp31).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp31, player[this.layer].points, costBasebp31, costExpbp31, costLimitbp31))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp31, player.buyableMaxPurchaseable(costTypebp31, player[this.layer].points, costBasebp31, costExpbp31, costLimitbp31), costBasebp31, costExpbp31, costLimitbp31))}
+                    }
                 }
             },
         },
@@ -2660,8 +2913,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp32 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp32, player[this.layer].points, costBasebp32, costExpbp32, costLimitbp32).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp32, player[this.layer].points, costBasebp32, costExpbp32, costLimitbp32))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp32, player.buyableMaxPurchaseable(costTypebp32, player[this.layer].points, costBasebp32, costExpbp32, costLimitbp32), costBasebp32, costExpbp32, costLimitbp32))}
+                    }
                 }
             },
         },
@@ -2688,8 +2948,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp33 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp33, player[this.layer].points, costBasebp33, costExpbp33, costLimitbp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp33, player[this.layer].points, costBasebp33, costExpbp33, costLimitbp33))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp33, player.buyableMaxPurchaseable(costTypebp33, player[this.layer].points, costBasebp33, costExpbp33, costLimitbp33), costBasebp33, costExpbp33, costLimitbp33))}
+                    }
                 }
             },
         },
@@ -2718,8 +2985,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp34 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp34, player[this.layer].points, costBasebp34, costExpbp34, costLimitbp34).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp34, player[this.layer].points, costBasebp34, costExpbp34, costLimitbp34))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp34, player.buyableMaxPurchaseable(costTypebp34, player[this.layer].points, costBasebp34, costExpbp34, costLimitbp34), costBasebp34, costExpbp34, costLimitbp34))}
+                    }
                 }
             },
         },
@@ -2746,8 +3020,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp41 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp41, player[this.layer].points, costBasebp41, costExpbp41, costLimitbp41).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp41, player[this.layer].points, costBasebp41, costExpbp41, costLimitbp41))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp41, player.buyableMaxPurchaseable(costTypebp41, player[this.layer].points, costBasebp41, costExpbp41, costLimitbp41), costBasebp41, costExpbp41, costLimitbp41))}
+                    }
                 }
             },
         },
@@ -2774,8 +3055,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp42 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp42, player[this.layer].points, costBasebp42, costExpbp42, costLimitbp42).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp42, player[this.layer].points, costBasebp42, costExpbp42, costLimitbp42))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp42, player.buyableMaxPurchaseable(costTypebp42, player[this.layer].points, costBasebp42, costExpbp42, costLimitbp42), costBasebp42, costExpbp42, costLimitbp42))}
+                    }
                 }
             },
         },
@@ -2802,8 +3090,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp43 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp43, player[this.layer].points, costBasebp43, costExpbp43, costLimitbp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp43, player[this.layer].points, costBasebp43, costExpbp43, costLimitbp43))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp43, player.buyableMaxPurchaseable(costTypebp43, player[this.layer].points, costBasebp43, costExpbp43, costLimitbp43), costBasebp43, costExpbp43, costLimitbp43))}
+                    }
                 }
             },
         },
@@ -2832,8 +3127,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp44 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp44, player[this.layer].points, costBasebp44, costExpbp44, costLimitbp44).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp44, player[this.layer].points, costBasebp44, costExpbp44, costLimitbp44))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp44, player.buyableMaxPurchaseable(costTypebp44, player[this.layer].points, costBasebp44, costExpbp44, costLimitbp44), costBasebp44, costExpbp44, costLimitbp44))}
+                    }
                 }
             },
         },
@@ -2860,8 +3162,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp51 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp51, player[this.layer].points, costBasebp51, costExpbp51, costLimitbp51).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp51, player[this.layer].points, costBasebp51, costExpbp51, costLimitbp51))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp51, player.buyableMaxPurchaseable(costTypebp51, player[this.layer].points, costBasebp51, costExpbp51, costLimitbp51), costBasebp51, costExpbp51, costLimitbp51))}
+                    }
                 }
             },
         },
@@ -2888,8 +3197,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp52 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp52, player[this.layer].points, costBasebp52, costExpbp52, costLimitbp52).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp52, player[this.layer].points, costBasebp52, costExpbp52, costLimitbp52))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp52, player.buyableMaxPurchaseable(costTypebp52, player[this.layer].points, costBasebp52, costExpbp52, costLimitbp52), costBasebp52, costExpbp52, costLimitbp52))}
+                    }
                 }
             },
         },
@@ -2916,8 +3232,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp53 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp53, player[this.layer].points, costBasebp53, costExpbp53, costLimitbp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp53, player[this.layer].points, costBasebp53, costExpbp53, costLimitbp53))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp53, player.buyableMaxPurchaseable(costTypebp53, player[this.layer].points, costBasebp53, costExpbp53, costLimitbp53), costBasebp53, costExpbp53, costLimitbp53))}
+                    }
                 }
             },
         },
@@ -2946,8 +3269,15 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypebp54 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypebp54, player[this.layer].points, costBasebp54, costExpbp54, costLimitbp54).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypebp54, player[this.layer].points, costBasebp54, costExpbp54, costLimitbp54))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypebp54, player.buyableMaxPurchaseable(costTypebp54, player[this.layer].points, costBasebp54, costExpbp54, costLimitbp54), costBasebp54, costExpbp54, costLimitbp54))}
+                    }
                 }
             },
         },
@@ -3054,8 +3384,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp11, player[this.layer].points, costBasesp11, costExpsp11, costLimitsp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp11, player[this.layer].points, costBasesp11, costExpsp11, costLimitsp11))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp11, player.buyableMaxPurchaseable(costTypesp11, player[this.layer].points, costBasesp11, costExpsp11, costLimitsp11), costBasesp11, costExpsp11, costLimitsp11))}
+                    }
                 }
             },
         },
@@ -3082,8 +3419,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp12, player[this.layer].points, costBasesp12, costExpsp12, costLimitsp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp12, player[this.layer].points, costBasesp12, costExpsp12, costLimitsp12))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp12, player.buyableMaxPurchaseable(costTypesp12, player[this.layer].points, costBasesp12, costExpsp12, costLimitsp12), costBasesp12, costExpsp12, costLimitsp12))}
+                    }
                 }
             },
         },
@@ -3111,8 +3455,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp13, player[this.layer].points, costBasesp13, costExpsp13, costLimitsp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp13, player[this.layer].points, costBasesp13, costExpsp13, costLimitsp13))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp13, player.buyableMaxPurchaseable(costTypesp13, player[this.layer].points, costBasesp13, costExpsp13, costLimitsp13), costBasesp13, costExpsp13, costLimitsp13))}
+                    }
                 }
             },
         },
@@ -3141,8 +3492,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp14 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp14, player[this.layer].points, costBasesp14, costExpsp14, costLimitsp14).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp14, player[this.layer].points, costBasesp14, costExpsp14, costLimitsp14))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp14, player.buyableMaxPurchaseable(costTypesp14, player[this.layer].points, costBasesp14, costExpsp14, costLimitsp14), costBasesp14, costExpsp14, costLimitsp14))}
+                    }
                 }
             },
         },
@@ -3169,8 +3527,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp21, player[this.layer].points, costBasesp21, costExpsp21, costLimitsp21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp21, player[this.layer].points, costBasesp21, costExpsp21, costLimitsp21))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp21, player.buyableMaxPurchaseable(costTypesp21, player[this.layer].points, costBasesp21, costExpsp21, costLimitsp21), costBasesp21, costExpsp21, costLimitsp21))}
+                    }
                 }
             },
         },
@@ -3197,8 +3562,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp22, player[this.layer].points, costBasesp22, costExpsp22, costLimitsp22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp22, player[this.layer].points, costBasesp22, costExpsp22, costLimitsp22))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp22, player.buyableMaxPurchaseable(costTypesp22, player[this.layer].points, costBasesp22, costExpsp22, costLimitsp22), costBasesp22, costExpsp22, costLimitsp22))}
+                    }
                 }
             },
         },
@@ -3225,8 +3597,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp23, player[this.layer].points, costBasesp23, costExpsp23, costLimitsp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp23, player[this.layer].points, costBasesp23, costExpsp23, costLimitsp23))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp23, player.buyableMaxPurchaseable(costTypesp23, player[this.layer].points, costBasesp23, costExpsp23, costLimitsp23), costBasesp23, costExpsp23, costLimitsp23))}
+                    }
                 }
             },
         },
@@ -3255,8 +3634,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp24, player[this.layer].points, costBasesp24, costExpsp24, costLimitsp24).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp24, player[this.layer].points, costBasesp24, costExpsp24, costLimitsp24))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp24, player.buyableMaxPurchaseable(costTypesp24, player[this.layer].points, costBasesp24, costExpsp24, costLimitsp24), costBasesp24, costExpsp24, costLimitsp24))}
+                    }
                 }
             },
         },
@@ -3283,8 +3669,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp31 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp31, player[this.layer].points, costBasesp31, costExpsp31, costLimitsp31).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp31, player[this.layer].points, costBasesp31, costExpsp31, costLimitsp31))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp31, player.buyableMaxPurchaseable(costTypesp31, player[this.layer].points, costBasesp31, costExpsp31, costLimitsp31), costBasesp31, costExpsp31, costLimitsp31))}
+                    }
                 }
             },
         },
@@ -3311,8 +3704,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp32 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp32, player[this.layer].points, costBasesp32, costExpsp32, costLimitsp32).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp32, player[this.layer].points, costBasesp32, costExpsp32, costLimitsp32))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp32, player.buyableMaxPurchaseable(costTypesp32, player[this.layer].points, costBasesp32, costExpsp32, costLimitsp32), costBasesp32, costExpsp32, costLimitsp32))}
+                    }
                 }
             },
         },
@@ -3339,8 +3739,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp33 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp33, player[this.layer].points, costBasesp33, costExpsp33, costLimitsp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp33, player[this.layer].points, costBasesp33, costExpsp33, costLimitsp33))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp33, player.buyableMaxPurchaseable(costTypesp33, player[this.layer].points, costBasesp33, costExpsp33, costLimitsp33), costBasesp33, costExpsp33, costLimitsp33))}
+                    }
                 }
             },
         },
@@ -3369,8 +3776,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp34 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp34, player[this.layer].points, costBasesp34, costExpsp34, costLimitsp34).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp34, player[this.layer].points, costBasesp34, costExpsp34, costLimitsp34))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp34, player.buyableMaxPurchaseable(costTypesp34, player[this.layer].points, costBasesp34, costExpsp34, costLimitsp34), costBasesp34, costExpsp34, costLimitsp34))}
+                    }
                 }
             },
         },
@@ -3397,8 +3811,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp41 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp41, player[this.layer].points, costBasesp41, costExpsp41, costLimitsp41).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp41, player[this.layer].points, costBasesp41, costExpsp41, costLimitsp41))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp41, player.buyableMaxPurchaseable(costTypesp41, player[this.layer].points, costBasesp41, costExpsp41, costLimitsp41), costBasesp41, costExpsp41, costLimitsp41))}
+                    }
                 }
             },
         },
@@ -3425,8 +3846,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp42 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp42, player[this.layer].points, costBasesp42, costExpsp42, costLimitsp42).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp42, player[this.layer].points, costBasesp42, costExpsp42, costLimitsp42))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp42, player.buyableMaxPurchaseable(costTypesp42, player[this.layer].points, costBasesp42, costExpsp42, costLimitsp42), costBasesp42, costExpsp42, costLimitsp42))}
+                    }
                 }
             },
         },
@@ -3453,8 +3881,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp43 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp43, player[this.layer].points, costBasesp43, costExpsp43, costLimitsp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp43, player[this.layer].points, costBasesp43, costExpsp43, costLimitsp43))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp43, player.buyableMaxPurchaseable(costTypesp43, player[this.layer].points, costBasesp43, costExpsp43, costLimitsp43), costBasesp43, costExpsp43, costLimitsp43))}
+                    }
                 }
             },
         },
@@ -3483,8 +3918,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp44 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp44, player[this.layer].points, costBasesp44, costExpsp44, costLimitsp44).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp44, player[this.layer].points, costBasesp44, costExpsp44, costLimitsp44))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp44, player.buyableMaxPurchaseable(costTypesp44, player[this.layer].points, costBasesp44, costExpsp44, costLimitsp44), costBasesp44, costExpsp44, costLimitsp44))}
+                    }
                 }
             },
         },
@@ -3511,8 +3953,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp51 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp51, player[this.layer].points, costBasesp51, costExpsp51, costLimitsp51).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp51, player[this.layer].points, costBasesp51, costExpsp51, costLimitsp51))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp51, player.buyableMaxPurchaseable(costTypesp51, player[this.layer].points, costBasesp51, costExpsp51, costLimitsp51), costBasesp51, costExpsp51, costLimitsp51))}
+                    }
                 }
             },
         },
@@ -3539,8 +3988,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp52 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp52, player[this.layer].points, costBasesp52, costExpsp52, costLimitsp52).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp52, player[this.layer].points, costBasesp52, costExpsp52, costLimitsp52))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp52, player.buyableMaxPurchaseable(costTypesp52, player[this.layer].points, costBasesp52, costExpsp52, costLimitsp52), costBasesp52, costExpsp52, costLimitsp52))}
+                    }
                 }
             },
         },
@@ -3567,8 +4023,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp53 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp53, player[this.layer].points, costBasesp53, costExpsp53, costLimitsp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp53, player[this.layer].points, costBasesp53, costExpsp53, costLimitsp53))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp53, player.buyableMaxPurchaseable(costTypesp53, player[this.layer].points, costBasesp53, costExpsp53, costLimitsp53), costBasesp53, costExpsp53, costLimitsp53))}
+                    }
                 }
             },
         },
@@ -3597,8 +4060,15 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                while (canBuyBuyable([this.layer], [this.id])){
-                    buyBuyable([this.layer], [this.id])
+                if ((costTypesp54 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypesp54, player[this.layer].points, costBasesp54, costExpsp54, costLimitsp54).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesp54, player[this.layer].points, costBasesp54, costExpsp54, costLimitsp54))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypesp54, player.buyableMaxPurchaseable(costTypesp54, player[this.layer].points, costBasesp54, costExpsp54, costLimitsp54), costBasesp54, costExpsp54, costLimitsp54))}
+                    }
                 }
             },
         },

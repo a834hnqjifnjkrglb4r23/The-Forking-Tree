@@ -124,14 +124,30 @@ function addedPlayerData() { return {
 		if (type == "asymptote") {
 			return base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
-		if (type == "double") {
-			return base.pow(exp.pow(amt.add(1)))
-		}
-		if (type == "tetrate") {
-			return base.tetrate(amt.add(1).pow(exp))
-		}
+		// if (type == "double") {
+		// 	return base.pow(exp.pow(amt.add(1)))
+		// }
+		// if (type == "tetrate") {
+		// 	return base.tetrate(amt.add(1).pow(exp))
+		// }
 
 	},
+	buyableMaxPurchaseable(type, currency, base, exp, limit) {
+		if (type == "normal") {
+			if (limit.lte('e100')) {limit = new Decimal('e100')}
+			if (currency.gt(limit)) {
+				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).log10().log10()
+				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).log10().log10()
+				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
+				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).floor()
+			} else {
+				return currency.max(1).log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+			}
+		}
+		
+	}
 						
 }}
 
