@@ -75,10 +75,10 @@ addLayer("l", {
             },
             effect(x) {
                 gearpower = [[Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero]]
-                gearpower[0][0] = new Decimal(getClickableState('l', 11)[0][0]).add(55.555555555555555556).div(55.555555555555555556).pow(2) // ((x+a)/b)^p = 1, 100
-                gearpower[0][1] = new Decimal(getClickableState('l', 11)[0][1]).add(16.327716016858755415).div(16.327716016858755415).pow(2) // ((x+a)/b)^p = 1, 1000
+                gearpower[0][0] = new Decimal(getClickableState('l', 11)[0][0]).add(39.770640859342509633).div(39.770640859342509633).pow(1.5) // ((x+a)/b)^p = 1, 50
+                gearpower[0][1] = new Decimal(getClickableState('l', 11)[0][1]).add(15.060459189213234906).div(15.060459189213234906).pow(1.5) // ((x+a)/b)^p = 1, 200
                 gearpower[0][2] = new Decimal(getClickableState('l', 11)[0][2]).div(62.5) //0, 8
-                gearpower[0][3] = new Decimal(getClickableState('l', 11)[0][3]).div(50) //0, 10
+                gearpower[0][3] = new Decimal(getClickableState('l', 11)[0][3]).div(25) //0, 20
 
                 gearpower[1][0] = new Decimal(getClickableState('l', 11)[1][0]).div(36.840314986403866058).pow(1.5)  // 0, 50
                 gearpower[1][1] = new Decimal(getClickableState('l', 11)[1][1]).div(14.620088691064330328).pow(1.5) // 0, 200
@@ -87,12 +87,12 @@ addLayer("l", {
 
                 gearpower[2][0] = new Decimal(getClickableState('l', 11)[2][0]).add(24.337595272607097033).div(24.337595272607097033).pow(6)  // 1, 10^8
                 gearpower[2][1] = new Decimal(getClickableState('l', 11)[2][1]).add(5.0505050505050505051).div(5.0505050505050505051).pow(6)  // 1, 10^12
-                gearpower[2][2] = new Decimal(getClickableState('l', 11)[2][2]).div(793.70052598409973738).pow(1.5) // 0, 0.5
+                gearpower[2][2] = new Decimal(getClickableState('l', 11)[2][2]).div(921.00787466009665144).pow(1.5) // 0, 0.4
                 gearpower[2][3] = new Decimal(getClickableState('l', 11)[2][3]).div(5000) //0, 0.1
 
                 gearpower[3][0] = new Decimal(getClickableState('l', 11)[3][0]).add(137.30270572692735409).div(137.30270572692735409).pow(6) // 1, 10^4
                 gearpower[3][1] = new Decimal(getClickableState('l', 11)[3][1]).add(55.555555555555555556).div(55.555555555555555556).pow(6) // 1, 10^6
-                gearpower[3][2] = new Decimal(getClickableState('l', 11)[3][2]).div(1259.9210498948731648).pow(1.5) // 0, 0.25
+                gearpower[3][2] = new Decimal(getClickableState('l', 11)[3][2]).div(1462.0088691064330328).pow(1.5) // 0, 0.2
                 gearpower[3][3] = new Decimal(getClickableState('l', 11)[3][3]).div(5000) //0, 0.1
 
 
@@ -147,8 +147,11 @@ addLayer("l", {
                     textdescription += "this is not better than your old gear, so you sell it for "
                 }
 
-                sellprice = Math.max(oldgearlevel / 100, Math.floor(oldgearlevel ** 2 / 25) / 100)
-                textdescription += "$"+sellprice.toString()
+                sellprice = Math.max(oldgearlevel / 100, oldgearlevel ** 2 / 10000) 
+                if (geartier == 3) {sellprice *= 4}
+                if (geartier == 2) {sellprice *= 2}
+                sellprice = Math.floor(sellprice * 100) / 100
+                textdescription += "$"+sellprice.toFixed(2)
                 addPoints('j', sellprice)
 
             },
@@ -162,8 +165,11 @@ addLayer("l", {
     infoboxes: {
         11: {
             body() {
-                textl = "Points: x"+format(gearpower[0][0])+", x"+format(gearpower[0][1])+", -"+format(gearpower[0][2])+" to 2nd softcap, -"+format(gearpower[0][3])+" to 3rd softcap"
-                textl += "<br> Bonus points: x"+format(gearpower[1][0])+", x"+format(gearpower[1][1])+", -"+format(gearpower[1][2])+" to 1st softcap, -"+format(gearpower[1][3])+" to 2nd softcap"
+                mingearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('j', 101).sub(3).times(250).toNumber(), 500), 1))
+                maxgearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('j', 101).sub(3).times(250).toNumber() * 2, 500), 1))
+                textl = "Current gear level: "+mingearlevel.toString()+" to "+maxgearlevel.toString()
+                textl += "<br> Points: x"+format(gearpower[0][0])+", x"+format(gearpower[0][1])+", -"+format(gearpower[0][2])+" to 2nd sc, -"+format(gearpower[0][3])+" to 3rd sc"
+                textl += "<br> Bonus points: x"+format(gearpower[1][0])+", x"+format(gearpower[1][1])+", -"+format(gearpower[1][2])+" to 1st sc, -"+format(gearpower[1][3])+" to 2nd sc"
                 textl += "<br> Prestige: x"+format(gearpower[2][0])+", x"+format(gearpower[2][1])+", +"+format(gearpower[2][2])+" to exp, +"+format(gearpower[2][3])+" to 2nd exp"
                 textl += "<br> 2nd row: x"+format(gearpower[3][0])+", x"+format(gearpower[3][1])+", +"+format(gearpower[3][2])+" to exp, +"+format(gearpower[3][3])+" to 2nd exp"
                 
@@ -1327,10 +1333,10 @@ addLayer("b", {
         bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('l', 11)[1][3])
         if (player.b.points.gte(2)) {bgain = bgain.div(player.b.points.div(2).pow(bsecondSoftcapStrength))}
 
-        bthirdSoftcapStrength = new Decimal(30)
+        bthirdSoftcapStrength = new Decimal(60)
         if (player.b.points.gte(3)) {bgain = bgain.div(player.b.points.div(3).pow(bthirdSoftcapStrength))}
 
-        bfourthSoftcapStrength = new Decimal(60)
+        bfourthSoftcapStrength = new Decimal(240)
         if (player.b.points.gte(4)) {bgain = bgain.div(player.b.points.div(4).pow(bfourthSoftcapStrength))}
         
         if (player.b.points.gte(9)) {bgain = bgain.times(player.b.points.sub(10).times(-1))} //***** */
@@ -1454,7 +1460,7 @@ addLayer("p", {
                 costTypep11 = "normal"
                 costBasep11 = new Decimal(1.3)
                 costExpp11 = new Decimal(1.1)
-                costLimitp11 = new Decimal('e200')
+                costLimitp11 = new Decimal('e100')
                 return player.buyablePrice(costTypep11, new Decimal(x), costBasep11, costExpp11, costLimitp11)
             },
             effect(x) {
@@ -1471,7 +1477,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep11 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1490,7 +1496,7 @@ addLayer("p", {
                 costTypep12 = "normal"
                 costBasep12 = new Decimal(1.5)
                 costExpp12 = new Decimal(1.2)
-                costLimitp12 = new Decimal('e200')
+                costLimitp12 = new Decimal('e100')
                 return player.buyablePrice(costTypep12, new Decimal(x), costBasep12, costExpp12, costLimitp12)
             },
             effect(x) {
@@ -1507,7 +1513,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep12 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1543,7 +1549,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep13 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1561,7 +1567,7 @@ addLayer("p", {
                 costTypep21 = "normal"
                 costBasep21 = new Decimal(1.5)
                 costExpp21 = new Decimal(1.1)
-                costLimitp21 = new Decimal('e200')
+                costLimitp21 = new Decimal('e100')
                 return player.buyablePrice(costTypep21, new Decimal(x), costBasep21, costExpp21, costLimitp21)
             },
             effect(x) {
@@ -1578,7 +1584,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep21 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1596,7 +1602,7 @@ addLayer("p", {
                 costTypep22 = "normal"
                 costBasep22 = new Decimal(1.7)
                 costExpp22 = new Decimal(1.2)
-                costLimitp22 = new Decimal('e200')
+                costLimitp22 = new Decimal('e100')
                 return player.buyablePrice(costTypep22, new Decimal(x), costBasep22, costExpp22, costLimitp22)
             },
             effect(x) {
@@ -1613,7 +1619,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep22 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1631,7 +1637,7 @@ addLayer("p", {
                 costTypep23 = "normal"
                 costBasep23 = new Decimal(1.9)
                 costExpp23 = new Decimal(1.4)
-                costLimitp23 = new Decimal('e200')
+                costLimitp23 = new Decimal('e100')
                 return player.buyablePrice(costTypep23, new Decimal(x), costBasep23, costExpp23, costLimitp23)
             },
             effect(x) {
@@ -1648,7 +1654,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep23 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1685,7 +1691,7 @@ addLayer("p", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypep24 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1779,7 +1785,7 @@ addLayer("mp", {
                 costTypemp11 = "normal"
                 costBasemp11 = new Decimal(1.2)
                 costExpmp11 = new Decimal(1.1)
-                costLimitmp11 = new Decimal('e200')
+                costLimitmp11 = new Decimal('e100')
                 return player.buyablePrice(costTypemp11, new Decimal(x), costBasemp11, costExpmp11, costLimitmp11)
             },
             effect(x) {
@@ -1796,7 +1802,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp11 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1814,7 +1820,7 @@ addLayer("mp", {
                 costTypemp12 = "normal"
                 costBasemp12 = new Decimal(1.4)
                 costExpmp12 = new Decimal(1.2)
-                costLimitmp12 = new Decimal('e200')
+                costLimitmp12 = new Decimal('e100')
                 return player.buyablePrice(costTypemp12, new Decimal(x), costBasemp12, costExpmp12, costLimitmp12)
             },
             effect(x) {
@@ -1831,7 +1837,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp12 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1868,7 +1874,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp13 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1905,7 +1911,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp14 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp14 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1923,7 +1929,7 @@ addLayer("mp", {
                 costTypemp21 = "normal"
                 costBasemp21 = new Decimal(1.3)
                 costExpmp21 = new Decimal(1.08)
-                costLimitmp21 = new Decimal('e200')
+                costLimitmp21 = new Decimal('e100')
                 return player.buyablePrice(costTypemp21, new Decimal(x), costBasemp21, costExpmp21, costLimitmp21)
             },
             effect(x) {
@@ -1940,7 +1946,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp21 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1958,7 +1964,7 @@ addLayer("mp", {
                 costTypemp22 = "normal"
                 costBasemp22 = new Decimal(1.5)
                 costExpmp22 = new Decimal(1.18)
-                costLimitmp22 = new Decimal('e200')
+                costLimitmp22 = new Decimal('e100')
                 return player.buyablePrice(costTypemp22, new Decimal(x), costBasemp22, costExpmp22, costLimitmp22)
             },
             effect(x) {
@@ -1975,7 +1981,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp22 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -1993,7 +1999,7 @@ addLayer("mp", {
                 costTypemp23 = "normal"
                 costBasemp23 = new Decimal(1.7)
                 costExpmp23 = new Decimal(1.38)
-                costLimitmp23 = new Decimal('e200')
+                costLimitmp23 = new Decimal('e100')
                 return player.buyablePrice(costTypemp23, new Decimal(x), costBasemp23, costExpmp23, costLimitmp23)
             },
             effect(x) {
@@ -2010,7 +2016,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp23 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2047,7 +2053,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp24 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2065,7 +2071,7 @@ addLayer("mp", {
                 costTypemp31 = "normal"
                 costBasemp31 = new Decimal(1.5)
                 costExpmp31 = new Decimal(1.08)
-                costLimitmp31 = new Decimal('e200')
+                costLimitmp31 = new Decimal('e100')
                 return player.buyablePrice(costTypemp31, new Decimal(x), costBasemp31, costExpmp31, costLimitmp31)
             },
             effect(x) {
@@ -2082,7 +2088,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp31 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp31 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2100,7 +2106,7 @@ addLayer("mp", {
                 costTypemp32 = "normal"
                 costBasemp32 = new Decimal(1.7)
                 costExpmp32 = new Decimal(1.18)
-                costLimitmp32 = new Decimal('e200')
+                costLimitmp32 = new Decimal('e100')
                 return player.buyablePrice(costTypemp32, new Decimal(x), costBasemp32, costExpmp32, costLimitmp32)
             },
             effect(x) {
@@ -2117,7 +2123,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp32 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp32 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2135,7 +2141,7 @@ addLayer("mp", {
                 costTypemp33 = "normal"
                 costBasemp33 = new Decimal(1.9)
                 costExpmp33 = new Decimal(1.38)
-                costLimitmp33 = new Decimal('e200')
+                costLimitmp33 = new Decimal('e100')
                 return player.buyablePrice(costTypemp33, new Decimal(x), costBasemp33, costExpmp33, costLimitmp33)
             },
             effect(x) {
@@ -2152,7 +2158,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp33 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp33 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2189,7 +2195,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp34 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp34 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2207,7 +2213,7 @@ addLayer("mp", {
                 costTypemp41 = "normal"
                 costBasemp41 = new Decimal(1.55)
                 costExpmp41 = new Decimal(1.08)
-                costLimitmp41 = new Decimal('e200')
+                costLimitmp41 = new Decimal('e100')
                 return player.buyablePrice(costTypemp41, new Decimal(x), costBasemp41, costExpmp41, costLimitmp41)
             },
             effect(x) {
@@ -2224,7 +2230,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp41 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp41 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2242,7 +2248,7 @@ addLayer("mp", {
                 costTypemp42 = "normal"
                 costBasemp42 = new Decimal(1.75)
                 costExpmp42 = new Decimal(1.18)
-                costLimitmp42 = new Decimal('e200')
+                costLimitmp42 = new Decimal('e100')
                 return player.buyablePrice(costTypemp42, new Decimal(x), costBasemp42, costExpmp42, costLimitmp42)
             },
             effect(x) {
@@ -2259,7 +2265,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp42 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp42 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2277,7 +2283,7 @@ addLayer("mp", {
                 costTypemp43 = "normal"
                 costBasemp43 = new Decimal(1.7)
                 costExpmp43 = new Decimal(1.38)
-                costLimitmp43 = new Decimal('e200')
+                costLimitmp43 = new Decimal('e100')
                 return player.buyablePrice(costTypemp43, new Decimal(x), costBasemp43, costExpmp43, costLimitmp43)
             },
             effect(x) {
@@ -2294,7 +2300,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp43 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp43 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2331,7 +2337,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp44 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp44 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2349,7 +2355,7 @@ addLayer("mp", {
                 costTypemp51 = "normal"
                 costBasemp51 = new Decimal(1.6)
                 costExpmp51 = new Decimal(1.08)
-                costLimitmp51 = new Decimal('e200')
+                costLimitmp51 = new Decimal('e100')
                 return player.buyablePrice(costTypemp51, new Decimal(x), costBasemp51, costExpmp51, costLimitmp51)
             },
             effect(x) {
@@ -2366,7 +2372,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp51 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp51 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2384,7 +2390,7 @@ addLayer("mp", {
                 costTypemp52 = "normal"
                 costBasemp52 = new Decimal(1.8)
                 costExpmp52 = new Decimal(1.18)
-                costLimitmp52 = new Decimal('e200')
+                costLimitmp52 = new Decimal('e100')
                 return player.buyablePrice(costTypemp52, new Decimal(x), costBasemp52, costExpmp52, costLimitmp52)
             },
             effect(x) {
@@ -2401,7 +2407,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp52 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp52 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2419,7 +2425,7 @@ addLayer("mp", {
                 costTypemp53 = "normal"
                 costBasemp53 = new Decimal(2)
                 costExpmp53 = new Decimal(1.38)
-                costLimitmp53 = new Decimal('e200')
+                costLimitmp53 = new Decimal('e100')
                 return player.buyablePrice(costTypemp53, new Decimal(x), costBasemp53, costExpmp53, costLimitmp53)
             },
             effect(x) {
@@ -2436,7 +2442,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp53 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp53 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2473,7 +2479,7 @@ addLayer("mp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemp54 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypemp54 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2574,7 +2580,7 @@ addLayer("bp", {
                 costTypebp11 = "normal"
                 costBasebp11 = new Decimal(1.2)
                 costExpbp11 = new Decimal(1.1)
-                costLimitbp11 = new Decimal('e200')
+                costLimitbp11 = new Decimal('e100')
                 return player.buyablePrice(costTypebp11, new Decimal(x), costBasebp11, costExpbp11, costLimitbp11)
             },
             effect(x) {
@@ -2591,7 +2597,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp11 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2609,7 +2615,7 @@ addLayer("bp", {
                 costTypebp12 = "normal"
                 costBasebp12 = new Decimal(1.4)
                 costExpbp12 = new Decimal(1.2)
-                costLimitbp12 = new Decimal('e200')
+                costLimitbp12 = new Decimal('e100')
                 return player.buyablePrice(costTypebp12, new Decimal(x), costBasebp12, costExpbp12, costLimitbp12)
             },
             effect(x) {
@@ -2626,7 +2632,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp12 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2664,7 +2670,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp13 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2701,7 +2707,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp14 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp14 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2719,7 +2725,7 @@ addLayer("bp", {
                 costTypebp21 = "normal"
                 costBasebp21 = new Decimal(1.3)
                 costExpbp21 = new Decimal(1.075)
-                costLimitbp21 = new Decimal('e200')
+                costLimitbp21 = new Decimal('e100')
                 return player.buyablePrice(costTypebp21, new Decimal(x), costBasebp21, costExpbp21, costLimitbp21)
             },
             effect(x) {
@@ -2736,7 +2742,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp21 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2754,7 +2760,7 @@ addLayer("bp", {
                 costTypebp22 = "normal"
                 costBasebp22 = new Decimal(1.5)
                 costExpbp22 = new Decimal(1.175)
-                costLimitbp22 = new Decimal('e200')
+                costLimitbp22 = new Decimal('e100')
                 return player.buyablePrice(costTypebp22, new Decimal(x), costBasebp22, costExpbp22, costLimitbp22)
             },
             effect(x) {
@@ -2771,7 +2777,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp22 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2789,7 +2795,7 @@ addLayer("bp", {
                 costTypebp23 = "normal"
                 costBasebp23 = new Decimal(1.7)
                 costExpbp23 = new Decimal(1.375)
-                costLimitbp23 = new Decimal('e200')
+                costLimitbp23 = new Decimal('e100')
                 return player.buyablePrice(costTypebp23, new Decimal(x), costBasebp23, costExpbp23, costLimitbp23)
             },
             effect(x) {
@@ -2806,7 +2812,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp23 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2843,7 +2849,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp24 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2861,7 +2867,7 @@ addLayer("bp", {
                 costTypebp31 = "normal"
                 costBasebp31 = new Decimal(1.45)
                 costExpbp31 = new Decimal(1.075)
-                costLimitbp31 = new Decimal('e200')
+                costLimitbp31 = new Decimal('e100')
                 return player.buyablePrice(costTypebp31, new Decimal(x), costBasebp31, costExpbp31, costLimitbp31)
             },
             effect(x) {
@@ -2878,7 +2884,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp31 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp31 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2896,7 +2902,7 @@ addLayer("bp", {
                 costTypebp32 = "normal"
                 costBasebp32 = new Decimal(1.65)
                 costExpbp32 = new Decimal(1.175)
-                costLimitbp32 = new Decimal('e200')
+                costLimitbp32 = new Decimal('e100')
                 return player.buyablePrice(costTypebp32, new Decimal(x), costBasebp32, costExpbp32, costLimitbp32)
             },
             effect(x) {
@@ -2913,7 +2919,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp32 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp32 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2931,7 +2937,7 @@ addLayer("bp", {
                 costTypebp33 = "normal"
                 costBasebp33 = new Decimal(1.85)
                 costExpbp33 = new Decimal(1.375)
-                costLimitbp33 = new Decimal('e200')
+                costLimitbp33 = new Decimal('e100')
                 return player.buyablePrice(costTypebp33, new Decimal(x), costBasebp33, costExpbp33, costLimitbp33)
             },
             effect(x) {
@@ -2948,7 +2954,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp33 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp33 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -2985,7 +2991,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp34 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp34 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3003,7 +3009,7 @@ addLayer("bp", {
                 costTypebp41 = "normal"
                 costBasebp41 = new Decimal(1.5)
                 costExpbp41 = new Decimal(1.075)
-                costLimitbp41 = new Decimal('e200')
+                costLimitbp41 = new Decimal('e100')
                 return player.buyablePrice(costTypebp41, new Decimal(x), costBasebp41, costExpbp41, costLimitbp41)
             },
             effect(x) {
@@ -3020,7 +3026,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp41 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp41 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3038,7 +3044,7 @@ addLayer("bp", {
                 costTypebp42 = "normal"
                 costBasebp42 = new Decimal(1.7)
                 costExpbp42 = new Decimal(1.175)
-                costLimitbp42 = new Decimal('e200')
+                costLimitbp42 = new Decimal('e100')
                 return player.buyablePrice(costTypebp42, new Decimal(x), costBasebp42, costExpbp42, costLimitbp42)
             },
             effect(x) {
@@ -3055,7 +3061,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp42 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp42 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3073,7 +3079,7 @@ addLayer("bp", {
                 costTypebp43 = "normal"
                 costBasebp43 = new Decimal(1.9)
                 costExpbp43 = new Decimal(1.375)
-                costLimitbp43 = new Decimal('e200')
+                costLimitbp43 = new Decimal('e100')
                 return player.buyablePrice(costTypebp43, new Decimal(x), costBasebp43, costExpbp43, costLimitbp43)
             },
             effect(x) {
@@ -3090,7 +3096,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp43 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp43 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3127,7 +3133,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp44 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp44 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3145,7 +3151,7 @@ addLayer("bp", {
                 costTypebp51 = "normal"
                 costBasebp51 = new Decimal(1.55)
                 costExpbp51 = new Decimal(1.075)
-                costLimitbp51 = new Decimal('e200')
+                costLimitbp51 = new Decimal('e100')
                 return player.buyablePrice(costTypebp51, new Decimal(x), costBasebp51, costExpbp51, costLimitbp51)
             },
             effect(x) {
@@ -3162,7 +3168,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp51 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp51 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3180,7 +3186,7 @@ addLayer("bp", {
                 costTypebp52 = "normal"
                 costBasebp52 = new Decimal(1.75)
                 costExpbp52 = new Decimal(1.175)
-                costLimitbp52 = new Decimal('e200')
+                costLimitbp52 = new Decimal('e100')
                 return player.buyablePrice(costTypebp52, new Decimal(x), costBasebp52, costExpbp52, costLimitbp52)
             },
             effect(x) {
@@ -3197,7 +3203,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp52 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp52 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3215,7 +3221,7 @@ addLayer("bp", {
                 costTypebp53 = "normal"
                 costBasebp53 = new Decimal(1.95)
                 costExpbp53 = new Decimal(1.375)
-                costLimitbp53 = new Decimal('e200')
+                costLimitbp53 = new Decimal('e100')
                 return player.buyablePrice(costTypebp53, new Decimal(x), costBasebp53, costExpbp53, costLimitbp53)
             },
             effect(x) {
@@ -3232,7 +3238,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp53 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp53 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3269,7 +3275,7 @@ addLayer("bp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypebp54 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypebp54 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3367,7 +3373,7 @@ addLayer("sp", {
                 costTypesp11 = "normal"
                 costBasesp11 = new Decimal(1.2)
                 costExpsp11 = new Decimal(1.1)
-                costLimitsp11 = new Decimal('e200')
+                costLimitsp11 = new Decimal('e100')
                 return player.buyablePrice(costTypesp11, new Decimal(x), costBasesp11, costExpsp11, costLimitsp11)
             },
             effect(x) {
@@ -3384,7 +3390,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp11 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp11 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3402,7 +3408,7 @@ addLayer("sp", {
                 costTypesp12 = "normal"
                 costBasesp12 = new Decimal(1.4)
                 costExpsp12 = new Decimal(1.2)
-                costLimitsp12 = new Decimal('e200')
+                costLimitsp12 = new Decimal('e100')
                 return player.buyablePrice(costTypesp12, new Decimal(x), costBasesp12, costExpsp12, costLimitsp12)
             },
             effect(x) {
@@ -3419,7 +3425,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp12 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp12 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3455,7 +3461,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp13 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp13 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3492,7 +3498,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp14 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp14 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3510,7 +3516,7 @@ addLayer("sp", {
                 costTypesp21 = "normal"
                 costBasesp21 = new Decimal(1.3)
                 costExpsp21 = new Decimal(1.07)
-                costLimitsp21 = new Decimal('e200')
+                costLimitsp21 = new Decimal('e100')
                 return player.buyablePrice(costTypesp21, new Decimal(x), costBasesp21, costExpsp21, costLimitsp21)
             },
             effect(x) {
@@ -3527,7 +3533,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp21 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp21 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3545,7 +3551,7 @@ addLayer("sp", {
                 costTypesp22 = "normal"
                 costBasesp22 = new Decimal(1.5)
                 costExpsp22 = new Decimal(1.17)
-                costLimitsp22 = new Decimal('e200')
+                costLimitsp22 = new Decimal('e100')
                 return player.buyablePrice(costTypesp22, new Decimal(x), costBasesp22, costExpsp22, costLimitsp22)
             },
             effect(x) {
@@ -3562,7 +3568,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp22 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp22 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3580,7 +3586,7 @@ addLayer("sp", {
                 costTypesp23 = "normal"
                 costBasesp23 = new Decimal(1.7)
                 costExpsp23 = new Decimal(1.37)
-                costLimitsp23 = new Decimal('e200')
+                costLimitsp23 = new Decimal('e100')
                 return player.buyablePrice(costTypesp23, new Decimal(x), costBasesp23, costExpsp23, costLimitsp23)
             },
             effect(x) {
@@ -3597,7 +3603,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp23 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp23 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3634,7 +3640,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp24 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp24 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3652,7 +3658,7 @@ addLayer("sp", {
                 costTypesp31 = "normal"
                 costBasesp31 = new Decimal(1.4)
                 costExpsp31 = new Decimal(1.07)
-                costLimitsp31 = new Decimal('e200')
+                costLimitsp31 = new Decimal('e100')
                 return player.buyablePrice(costTypesp31, new Decimal(x), costBasesp31, costExpsp31, costLimitsp31)
             },
             effect(x) {
@@ -3669,7 +3675,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp31 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp31 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3687,7 +3693,7 @@ addLayer("sp", {
                 costTypesp32 = "normal"
                 costBasesp32 = new Decimal(1.6)
                 costExpsp32 = new Decimal(1.17)
-                costLimitsp32 = new Decimal('e200')
+                costLimitsp32 = new Decimal('e100')
                 return player.buyablePrice(costTypesp32, new Decimal(x), costBasesp32, costExpsp32, costLimitsp32)
             },
             effect(x) {
@@ -3704,7 +3710,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp32 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp32 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3722,7 +3728,7 @@ addLayer("sp", {
                 costTypesp33 = "normal"
                 costBasesp33 = new Decimal(1.8)
                 costExpsp33 = new Decimal(1.37)
-                costLimitsp33 = new Decimal('e200')
+                costLimitsp33 = new Decimal('e100')
                 return player.buyablePrice(costTypesp33, new Decimal(x), costBasesp33, costExpsp33, costLimitsp33)
             },
             effect(x) {
@@ -3739,7 +3745,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp33 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp33 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3776,7 +3782,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp34 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp34 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3794,7 +3800,7 @@ addLayer("sp", {
                 costTypesp41 = "normal"
                 costBasesp41 = new Decimal(1.45)
                 costExpsp41 = new Decimal(1.07)
-                costLimitsp41 = new Decimal('e200')
+                costLimitsp41 = new Decimal('e100')
                 return player.buyablePrice(costTypesp41, new Decimal(x), costBasesp41, costExpsp41, costLimitsp41)
             },
             effect(x) {
@@ -3811,7 +3817,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp41 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp41 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3829,7 +3835,7 @@ addLayer("sp", {
                 costTypesp42 = "normal"
                 costBasesp42 = new Decimal(1.65)
                 costExpsp42 = new Decimal(1.17)
-                costLimitsp42 = new Decimal('e200')
+                costLimitsp42 = new Decimal('e100')
                 return player.buyablePrice(costTypesp42, new Decimal(x), costBasesp42, costExpsp42, costLimitsp42)
             },
             effect(x) {
@@ -3846,7 +3852,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp42 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp42 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3864,7 +3870,7 @@ addLayer("sp", {
                 costTypesp43 = "normal"
                 costBasesp43 = new Decimal(1.85)
                 costExpsp43 = new Decimal(1.37)
-                costLimitsp43 = new Decimal('e200')
+                costLimitsp43 = new Decimal('e100')
                 return player.buyablePrice(costTypesp43, new Decimal(x), costBasesp43, costExpsp43, costLimitsp43)
             },
             effect(x) {
@@ -3881,7 +3887,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp43 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp43 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3918,7 +3924,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp44 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp44 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3936,7 +3942,7 @@ addLayer("sp", {
                 costTypesp51 = "normal"
                 costBasesp51 = new Decimal(1.5)
                 costExpsp51 = new Decimal(1.07)
-                costLimitsp51 = new Decimal('e200')
+                costLimitsp51 = new Decimal('e100')
                 return player.buyablePrice(costTypesp51, new Decimal(x), costBasesp51, costExpsp51, costLimitsp51)
             },
             effect(x) {
@@ -3953,7 +3959,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp51 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp51 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -3971,7 +3977,7 @@ addLayer("sp", {
                 costTypesp52 = "normal"
                 costBasesp52 = new Decimal(1.7)
                 costExpsp52 = new Decimal(1.17)
-                costLimitsp52 = new Decimal('e200')
+                costLimitsp52 = new Decimal('e100')
                 return player.buyablePrice(costTypesp52, new Decimal(x), costBasesp52, costExpsp52, costLimitsp52)
             },
             effect(x) {
@@ -3988,7 +3994,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp52 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp52 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -4006,7 +4012,7 @@ addLayer("sp", {
                 costTypesp53 = "normal"
                 costBasesp53 = new Decimal(1.9)
                 costExpsp53 = new Decimal(1.37)
-                costLimitsp53 = new Decimal('e200')
+                costLimitsp53 = new Decimal('e100')
                 return player.buyablePrice(costTypesp53, new Decimal(x), costBasesp53, costExpsp53, costLimitsp53)
             },
             effect(x) {
@@ -4023,7 +4029,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp53 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp53 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -4060,7 +4066,7 @@ addLayer("sp", {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesp54 == "asymptote")||player[this.layer].points.lte(1e30)) {
+                if ((costTypesp54 == "asymptote")||player[this.layer].points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
