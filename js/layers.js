@@ -107,16 +107,19 @@ addLayer("l", {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
                 lootboxseed = Math.random() * 10000
 
-                geartypecoef = lootboxseed.toString().slice(0, 2)
+                geartypecoef = Math.floor(lootboxseed / 100)
                 geartypebounds = [23, 20, 31, 26] //points, bp, prestige, all row 2
+                if (hasMilestone('m', 4)) {geartypebounds = [25, 25, 25, 25]}
                 geartypeboundstotal = [geartypebounds[0], geartypebounds[0]+geartypebounds[1], geartypebounds[0]+geartypebounds[1]+geartypebounds[2], geartypebounds[0]+geartypebounds[1]+geartypebounds[2]+geartypebounds[3]]
                 if (geartypecoef < geartypeboundstotal[0]) {geartype = 0}
                 else if (geartypecoef < geartypeboundstotal[1]) {geartype = 1}
                 else if (geartypecoef < geartypeboundstotal[2]) {geartype = 2}
                 else if (geartypecoef < geartypeboundstotal[3]) {geartype = 3} 
 
-                geartiercoef = lootboxseed.toString().slice(2, 4) 
-                geartierbounds = [42, 35, 15, 8] //+, x, ^/sc1, ^x^/sc2
+                geartiercoef = (Math.floor(lootboxseed / 10000)) % 100
+                geartierbounds = [42, 35, 15, 8] //+, x, ^/sc1, ^x^/sc2#
+                if (hasMilestone('m', 3)) {geartypebounds = [37, 32, 18, 13]}
+                if (hasMilestone('m', 5)) {geartypebounds = [25, 25, 25, 25]}
                 geartierboundstotal = [geartierbounds[0], geartierbounds[0]+geartierbounds[1], geartierbounds[0]+geartierbounds[1]+geartierbounds[2], geartierbounds[0]+geartierbounds[1]+geartierbounds[2]+geartierbounds[3]]
                 if (geartiercoef < geartierboundstotal[0]) {geartier = 0}
                 else if (geartiercoef < geartierboundstotal[1]) {geartier = 1}
@@ -127,7 +130,7 @@ addLayer("l", {
                 gearmultiplier = getBuyableAmount('j', 101).sub(3).times(250).toNumber()
                 gearlevel = Math.min(Math.max(Math.floor((1 + gearlevelcoef) * gearmultiplier), 1), 500)
 
-                textdescription = "you've drawn a "+["common", "uncommon", "rare", "legendary"][geartier]+" "+["points", "bonus points", "prestige", "row 2"][geartype]+" gear."
+                textdescription = "you've drawn a level "+gearlevel.toString()+" "+["common", "uncommon", "rare", "legendary"][geartier]+" "+["points", "bonus points", "prestige", "row 2"][geartype]+" gear."
                 if (getClickableState('l', 11)[geartype][geartier] < gearlevel) {
                     newgeargrid = getClickableState('l', 11)
                     oldgearlevel = newgeargrid[geartype][geartier]
@@ -164,7 +167,7 @@ addLayer("l", {
                 textl += "<br> Prestige: x"+format(gearpower[2][0])+", x"+format(gearpower[2][1])+", +"+format(gearpower[2][2])+" to exp, +"+format(gearpower[2][3])+" to 2nd exp"
                 textl += "<br> 2nd row: x"+format(gearpower[3][0])+", x"+format(gearpower[3][1])+", +"+format(gearpower[3][2])+" to exp, +"+format(gearpower[3][3])+" to 2nd exp"
                 
-                textl += textdescription
+                textl += "<br><br>"+textdescription
                 return textl}
         }
     }, 
@@ -1265,6 +1268,24 @@ addLayer("m", {
             requirementDescription: "3.00 points",
             effectDescription: "prestige doesnt get reset, instant row 2 gets cheaper",
             done() { return player.points.gte(3) },
+
+        },
+        3: {
+            requirementDescription: "3.25 points",
+            effectDescription: "better rarity on lootboxes",
+            done() { return player.points.gte(3.25) },
+
+        },
+        4: {
+            requirementDescription: "3.50 points",
+            effectDescription: "better type on lootboxes",
+            done() { return player.points.gte(3.5) },
+
+        },
+        5: {
+            requirementDescription: "3.75 points",
+            effectDescription: "better rarity on lootboxes",
+            done() { return player.points.gte(3.75) },
 
         },
     },
