@@ -147,7 +147,7 @@ addLayer("l", {
                     textdescription += "this is not better than your old gear, so you sell it for "
                 }
 
-                sellprice = Math.max(oldgearlevel / 100, oldgearlevel ** 2 / 10000) 
+                sellprice = Math.max(oldgearlevel / 100, oldgearlevel ** 2 / 25000) 
                 if (geartier == 3) {sellprice *= 4}
                 if (geartier == 2) {sellprice *= 2}
                 sellprice = Math.floor(sellprice * 100) / 100
