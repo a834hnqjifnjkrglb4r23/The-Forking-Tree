@@ -118,8 +118,8 @@ addLayer("l", {
 
                 geartiercoef = (Math.floor(lootboxseed / 10000)) % 100
                 geartierbounds = [42, 35, 15, 8] //+, x, ^/sc1, ^x^/sc2#
-                if (hasMilestone('m', 3)) {geartypebounds = [37, 32, 18, 13]}
-                if (hasMilestone('m', 5)) {geartypebounds = [25, 25, 25, 25]}
+                if (hasMilestone('m', 3)) {geartierbounds = [37, 32, 18, 13]}
+                if (hasMilestone('m', 5)) {geartierbounds = [25, 25, 25, 25]}
                 geartierboundstotal = [geartierbounds[0], geartierbounds[0]+geartierbounds[1], geartierbounds[0]+geartierbounds[1]+geartierbounds[2], geartierbounds[0]+geartierbounds[1]+geartierbounds[2]+geartierbounds[3]]
                 if (geartiercoef < geartierboundstotal[0]) {geartier = 0}
                 else if (geartiercoef < geartierboundstotal[1]) {geartier = 1}
