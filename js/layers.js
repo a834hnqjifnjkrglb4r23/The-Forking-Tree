@@ -119,7 +119,7 @@ addLayer("l", {
                 geartiercoef = Math.floor(lootboxseed % 100)
                 geartierbounds = [42, 35, 15, 8] //+, x, ^/sc1, ^x^/sc2#
                 if (hasMilestone('m', 3)) {geartierbounds = [37, 32, 18, 13]}
-                if (hasMilestone('m', 5)) {geartierbounds = [25, 25, 25, 25]}
+                if (hasMilestone('m', 5)) {geartierbounds = [32, 29, 21, 18]}
                 geartierboundstotal = [geartierbounds[0], geartierbounds[0]+geartierbounds[1], geartierbounds[0]+geartierbounds[1]+geartierbounds[2], geartierbounds[0]+geartierbounds[1]+geartierbounds[2]+geartierbounds[3]]
                 if (geartiercoef < geartierboundstotal[0]) {geartier = 0}
                 else if (geartiercoef < geartierboundstotal[1]) {geartier = 1}
@@ -192,17 +192,17 @@ addLayer("j", {
     resource: "dollars", // Name of prestige currency
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {
-        if (typeof(lastClickedTime)=="undefined") {lastClickedTime = Date.now()}
-        if (getClickableState('j', 11) == '') {setClickableState('j', 11, 0)}
-        if (typeof(getClickableState('j', 11)) == 'undefined') {setClickableState('j', 11, 0)}
-        if (getClickableState('j', 12) == '') {setClickableState('j', 12, 0)}
-        if (typeof(getClickableState('j', 12)) == 'undefined') {setClickableState('j', 12, 0)}
-        if (getClickableState('j', 13) == '') {setClickableState('j', 13, 0)}
-        if (typeof(getClickableState('j', 13)) == 'undefined') {setClickableState('j', 13, 0)}
-        if (getClickableState('j', 14) == '') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
-        if (typeof(getClickableState('j', 14)) == 'undefined') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
-        if (getClickableState('j', 15) == '') {setClickableState('j', 15, 7.25)}
-        if (typeof(getClickableState('j', 15)) == 'undefined') {setClickableState('j', 15, 7.25)}
+         if (typeof(lastClickedTime)=="undefined") {lastClickedTime = Date.now()}
+        // if (getBuyableAmount('j', 11) == '') {setBuyableAmount('j', 11, 0)}
+        // if (typeof(getBuyableAmount('j', 11)) == 'undefined') {setBuyableAmount('j', 11, 0)}
+        // if (getBuyableAmount('j', 22) == '') {setClickableState('j', 12, 0)}
+        // if (typeof(getBuyableAmount('j', 22)) == 'undefined') {setClickableState('j', 12, 0)}
+        // if (getBuyableAmount('j', 12) == '') {setClickableState('j', 13, 0)}
+        // if (typeof(getBuyableAmount('j', 12)) == 'undefined') {setClickableState('j', 13, 0)}
+        // if (getClickableState('j', 14) == '') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
+        // if (typeof(getClickableState('j', 14)) == 'undefined') {setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))}
+        // if (getClickableState('j', 15) == '') {setClickableState('j', 15, 7.25)}
+        // if (typeof(getClickableState('j', 15)) == 'undefined') {setClickableState('j', 15, 7.25)}
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
@@ -226,32 +226,32 @@ addLayer("j", {
                 return Decimal.dZero
             },
             effect(x) {
-                wages = getClickableState('j', 15)
-                clicksPerHour = 4800
-                owedMoney = Math.floor(getClickableState('j', 11)*wages/clicksPerHour*100)/100
+                wages = getBuyableAmount('j', 25).times(0.25).add(7.25)
+                clicksPerHour = new Decimal(4800)
+                owedMoney = getBuyableAmount('j', 11).times(wages).div(clicksPerHour).times(100).floor().div(100)
                 return Decimal.dZero
             },
             title() { return "get paid for all the work you did"},
-            display() { return "you have clicked "+getClickableState('j', 11)+" times <br> your wages are $"+wages.toFixed(2)+" per "+clicksPerHour+" clicks <br> you are owed $"+owedMoney+"<br> you may get a payday after "+timeUntilPayday+" seconds"},
+            display() { return "you have clicked "+formatWhole(getBuyableAmount('j', 11))+" times <br> your wages are $"+formatMoney(wages)+" per "+formatWhole(clicksPerHour)+" clicks <br> you are owed $"+formatMoney(owedMoney)+"<br> you may get a payday after "+formatWhole(timeUntilPayday)+" seconds"},
             canAfford() { 
-                nextPaydayTime = getClickableState('j', 12) + 21600000
-                timeUntilPayday = Math.ceil(Math.max(nextPaydayTime - Date.now(), 0)/1000)
-                return timeUntilPayday == 0},
+                nextPaydayTime = getBuyableAmount('j', 22).add(21300000 * (hasMilestone('m', 6)+0) + 300000)
+                timeUntilPayday = nextPaydayTime.sub(Date.now()).div(1000).max(0).ceil()
+                return timeUntilPayday.eq(0)},
             buy() {
                 player[this.layer].points = player[this.layer].points.add(owedMoney)
-                clicksToBeTotalled = getClickableState('j', 11)
-                setClickableState('j', 11, 0)
-                setClickableState('j', 12, Date.now())
+                clicksToBeTotalled = getBuyableAmount('j', 11)
+                setBuyableAmount('j', 11, Decimal.dZero)
+                setBuyableAmount('j', 22, new Decimal(Date.now()))
 
-                if (getClickableState('j', 14) == Math.floor((Date.now()-342000000)/604800000)) {setClickableState('j', 13, getClickableState('j', 13)+clicksToBeTotalled)} else {setClickableState('j', 13, clicksToBeTotalled)}
-                setClickableState('j', 14, Math.floor((Date.now()-342000000)/604800000))
+                if (getBuyableAmount('j', 24).eq(Math.floor((Date.now()-342000000)/604800000))) {setBuyableAmount('j', 12, getBuyableAmount('j', 12).add(clicksToBeTotalled))} else {setBuyableAmount('j', 12, clicksToBeTotalled)}
+                setBuyableAmount('j', 24, new Decimal(Math.floor((Date.now()-342000000)/604800000)))
                 
                 //states:
                 //11 is the amount of clicks unpaid
-                //12 is the last time player got paid
-                //13 is the amount of total paid clicks this week
-                //14 is the week number 
-                //15 is the raise
+                //22 is the last time player got paid
+                //12 is the amount of total paid clicks this week
+                //24 is the week number 
+                //25 is the raise
             },
         },
         12: {
@@ -260,19 +260,61 @@ addLayer("j", {
                 return Decimal.dZero
             },
             effect(x) {
-                clicksGoal = getClickableState('j', 15)*2400
-                raiseChance = Math.min(Math.max((getClickableState('j', 13)-clicksGoal)/4800, 0), 1)
+                clicksGoal = getBuyableAmount('j', 25).times(0.25).add(7.25).times(2400)
+                raiseChance = getBuyableAmount('j', 12).sub(clicksGoal).div(2400).tanh().max(0).min(1)
 
                 return Decimal.dZero
             },
             title() { return "apply for a 25c raise"},
-            display() { return "you have clicked "+getClickableState('j', 13)+" times this week <br> your productivity goal is "+clicksGoal+" clicks each week <br> if you apply for a raise now, there's a "+Math.floor(raiseChance*10000)/100+"% chance you'll get it"},
+            display() { return "you have clicked "+formatWhole(getBuyableAmount('j', 12))+" times this week <br> your productivity goal is "+format(clicksGoal)+" clicks each week <br> if you apply for a raise now, there's a "+format(raiseChance.times(100), 2)+"% chance you'll get it"},
             canAfford() { 
-                return true},
+                return raiseChance.gt(0)},
             buy() {
-                if (Math.random() <= raiseChance) {setClickableState('j', 15, getClickableState('j', 15)+0.25)}
-                setClickableState('j', 13, 0)
+                if (raiseChance.gte(Math.random())) {setBuyableAmount('j', 25, getBuyableAmount('j', 25).add(1))}
+                setBuyableAmount('j', 12, Decimal.dZero)
                 
+            },
+        },
+        22: {// last time player got paid
+            unlocked() {return false},
+            cost(x) {
+
+                return Decimal.dOne
+            },
+            effect(x) {
+                return new Decimal(123)
+            },
+            canAfford() { return false},
+            buy() {
+
+            },
+        },
+        24: {// week number
+            unlocked() {return false},
+            cost(x) {
+
+                return Decimal.dOne
+            },
+            effect(x) {
+                return new Decimal(123)
+            },
+            canAfford() { return false},
+            buy() {
+
+            },
+        },
+        25: {// number of raises
+            unlocked() {return false},
+            cost(x) {
+
+                return Decimal.dOne
+            },
+            effect(x) {
+                return new Decimal(123)
+            },
+            canAfford() { return false},
+            buy() {
+
             },
         },
         101: {// best poitns
@@ -296,7 +338,7 @@ addLayer("j", {
             onClick() {
                 
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 0}
         },
@@ -304,7 +346,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 1}
         },
@@ -312,7 +354,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 2}
         },
@@ -320,7 +362,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 3}
         },
@@ -328,7 +370,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 4}
         },
@@ -336,7 +378,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 5}
         },
@@ -344,7 +386,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 6}
         },
@@ -352,7 +394,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 7}
         },
@@ -360,7 +402,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 8}
         },
@@ -368,7 +410,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 9}
         },
@@ -376,7 +418,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 10}
         },
@@ -384,7 +426,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 11}
         },
@@ -392,7 +434,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 12}
         },
@@ -400,7 +442,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 13}
         },
@@ -408,7 +450,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 14}
         },
@@ -416,7 +458,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 15}
         },
@@ -424,7 +466,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 16}
         },
@@ -432,7 +474,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 17}
         },
@@ -440,7 +482,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 18}
         },
@@ -448,7 +490,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 19}
         },
@@ -456,7 +498,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 20}
         },
@@ -464,7 +506,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 21}
         },
@@ -472,7 +514,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 22}
         },
@@ -480,7 +522,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 23}
         },
@@ -488,7 +530,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 24}
         },
@@ -496,7 +538,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 25}
         },
@@ -504,7 +546,7 @@ addLayer("j", {
             display: "click me",
             onClick() {
                 lastClickedTime = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+1)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(1))
             },
             canClick() {return lastClickedTime % 27 == 26}
         },
@@ -545,7 +587,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 0}
         },
@@ -553,7 +595,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 1}
         },
@@ -561,7 +603,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 2}
         },
@@ -569,7 +611,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 3}
         },
@@ -577,7 +619,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 4}
         },
@@ -585,7 +627,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 5}
         },
@@ -593,7 +635,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 6}
         },
@@ -601,7 +643,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 7}
         },
@@ -609,7 +651,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 8}
         },
@@ -617,7 +659,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 9}
         },
@@ -625,7 +667,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 10}
         },
@@ -633,7 +675,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 11}
         },
@@ -641,7 +683,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 12}
         },
@@ -649,7 +691,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 13}
         },
@@ -657,7 +699,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 14}
         },
@@ -665,7 +707,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 15}
         },
@@ -673,7 +715,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 16}
         },
@@ -681,7 +723,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 17}
         },
@@ -689,7 +731,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 18}
         },
@@ -697,7 +739,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 19}
         },
@@ -705,7 +747,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 20}
         },
@@ -713,7 +755,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 21}
         },
@@ -721,7 +763,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 22}
         },
@@ -729,7 +771,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 23}
         },
@@ -737,7 +779,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 24}
         },
@@ -745,7 +787,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 25}
         },
@@ -753,7 +795,7 @@ addLayer("sj", {
             display: "click me",
             onClick() {
                 lastClickedTimeS = Date.now()
-                setClickableState('j', 11, getClickableState('j', 11)+5)
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(5))
             },
             canClick() {return lastClickedTimeS % 27 == 26}
         },
@@ -779,7 +821,211 @@ addLayer("w", {
 
         return;
     },
-    layerShown(){return player.j.points.gte(100)},
+    update(diff) {
+        if (buyableEffect('w', 11).gt(0)) {
+            setBuyableAmount('w', 12, getBuyableAmount('w', 12).add(buyableEffect('w', 11).sub(buyableEffect('w', 16).times(getBuyableAmount('w', 12))).times(diff)))
+        }
+        player.w.points = getBuyableAmount('w', 12).floor()
+        if (player.w.points.gte(0)) {
+            setBuyableAmount('w', 22, getBuyableAmount('w', 22).add(buyableEffect('w', 13).times(buyableEffect('w', 14)).div(86400).times(player.w.points).times(diff)))
+        }
+    },
+    layerShown(){return player.j.points.gte(100)||player.w.total.gte(1)||getBuyableAmount('w', 12).gt(0)},
+    buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                costTypew11 = "normal"
+                costBasew11 = new Decimal(2)
+                costExpw11 = new Decimal(1.5)
+                costLimitw11 = new Decimal('e1e4')
+                return player.buyablePrice(costTypew11, new Decimal(x), costBasew11, costExpw11, costLimitw11).times(50)
+            },
+            effect(x) {
+                effBasew11 = new Decimal(1/600)
+                effStackw11 = new Decimal(x)
+
+                return Decimal.times(effBasew11, effStackw11)
+            },
+            title() { return "run ads for your company"},
+            display() { return "attract "+format(effBasew11)+" workers per second for your company <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackw11)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.j.points.gte(this.cost()) },
+            buy() {
+                player.j.points = player.j.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypew11 == "asymptote")||player.j.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypew11, player.j.points.div(50), costBasew11, costExpw11, costLimitw11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypew11, player.j.points.div(50), costBasew11, costExpw11, costLimitw11))
+                        if (player.j.points.lt('e1000')) {player.j.points = player.j.points.sub(player.buyablePrice(costTypew11, player.buyableMaxPurchaseable(costTypew11, player.j.points.div(50), costBasew11, costExpw11, costLimitw11), costBasew11, costExpw11, costLimitw11).times(50))}
+                    }
+                }
+
+            },
+        },
+        12: { // progress to next worker
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                return Decimal.dZero
+            },
+            display() { return },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+
+            },
+        },
+        13: { // bonus clicks per hour: default 4800
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                clicksPerHourw = new Decimal(4800)
+                clicksPerHourw = clicksPerHourw.add(getBuyableAmount('w', 13).times(300))
+                return clicksPerHourw
+            },
+            display() { return },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+
+            },
+        },
+        14: { // hours per day: default 8, max 24
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                hoursPerDay = new Decimal(8)
+                if (getBuyableAmount('w', 15).lt(0)) {hoursPerDay = hoursPerDay.add(getBuyableAmount('w', 15).times(2))} else {hoursPerDay = hoursPerDay.add(getBuyableAmount('w', 15).times(0.25))}
+                hoursPerDay = hoursPerDay.times(24).div(hoursPerDay.add(16)).max(0)
+                return hoursPerDay
+            },
+            display() { return },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+
+            },
+        },
+        15: { // wages player pays workers
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                wagesw = new Decimal(7.25)
+                wagesw = wagesw.add(getBuyableAmount('w', 15).times(0.25))
+                return wagesw
+            },
+            display() { return },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+
+            },
+        },
+        16: { // rate at which workers leave the job
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                leavejobrate = new Decimal(1/6000).times(getBuyableAmount('w', 13).add(16).pow(2).div(256))
+                return leavejobrate
+            },
+            display() { return },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+
+            },
+        },
+        22: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dZero
+            },
+            effect(x) {
+                wagesw = buyableEffect('w', 15)
+                clicksPerHourw = buyableEffect('w', 13)
+                owingMoney = getBuyableAmount('w', 22).div(clicksPerHourw).times(wagesw).times(100).ceil().div(100)
+                return Decimal.dZero
+            },
+            title() { return "pay your workers for all the work they did"},
+            display() { return "they have clicked "+formatWhole(getBuyableAmount('w', 22))+" times <br> their wages are $"+formatMoney(wagesw)+" per "+formatWhole(clicksPerHourw)+" clicks <br> you owe $"+formatMoney(owingMoney)},
+            canAfford() { 
+                return player.j.points.gte(owingMoney)},
+            buy() {
+                player.j.points = player.j.points.sub(owingMoney)
+
+                setBuyableAmount('j', 11, getBuyableAmount('j', 11).add(getBuyableAmount('w', 22)))
+                setBuyableAmount('w', 22, new Decimal(0))
+
+
+            },
+        },
+    }, 
+    clickables: {
+        11: {
+            display: "decrease wages by 0.25c, also decreases working hours, requires payment for all previous clicks",
+            onClick() {
+                buyBuyable('w', 22)
+                setBuyableAmount('w', 15, getBuyableAmount('w', 15).sub(1).max(-28))
+            },
+            canClick() {return canBuyBuyable('w', 22)&&getBuyableAmount('w', 15).gt(-28)}
+        },
+        12: {
+            display: "increase wages by 0.25c, also increases working hours, requires payment for all previous clicks",
+            onClick() {
+                buyBuyable('w', 22)
+                setBuyableAmount('w', 15, getBuyableAmount('w', 15).add(1))
+            },
+            canClick() {return canBuyBuyable('w', 22)}
+        },
+        21: {
+            display: "decrease click speed requirement by 300 per hour, also decreases quit rate, requires payment for all previous clicks",
+            onClick() {
+                buyBuyable('w', 22)
+                setBuyableAmount('w', 13, getBuyableAmount('w', 13).sub(1).max(-15))
+            },
+            canClick() {return canBuyBuyable('w', 22)&&getBuyableAmount('w', 13).gt(-15)}
+        },
+        22: {
+            display: "increase click speed requirement by 300 per hour, also increases quit rate, requires payment for all previous clicks",
+            onClick() {
+                buyBuyable('w', 22)
+                setBuyableAmount('w', 13, getBuyableAmount('w', 13).add(1))
+            },
+            canClick() {return canBuyBuyable('w', 22)}
+        },
+    },
+    infoboxes: {
+        11: {
+            body() {
+                textw = "Your workers are clicking "+formatWhole(buyableEffect('w', 13))+" times per hour, "+format(buyableEffect('w', 14))+" hours per day"
+                textw += "<br> for an average of "+format(buyableEffect('w', 13).times(buyableEffect('w', 14)).div(86400))+" clicks per second per worker"
+                textw += "<br> or "+format(buyableEffect('w', 13).times(buyableEffect('w', 14)).div(86400).times(player.w.points))+" clicks per second"
+                textw += "<br><br> your workers are leaving the job after "+format(buyableEffect('w', 16).pow(-1))+" seconds on average"
+                textw += "<br>"+format(getBuyableAmount('w', 12).sub(player.w.points).times(100), 2)+"% to the next worker"
+                return textw}
+        }
+    },
 
 })
 addLayer("g", {
@@ -1195,7 +1441,7 @@ addLayer("g", {
             unlocked() {return true},
             cost(x) {
                 cost = new Decimal(25)
-                if (hasMilestone('m', 1)) {cost = new Decimal(5)}
+                if (hasMilestone('m', 1)) {cost = new Decimal(12)}
 
                 return cost
             },
@@ -1216,7 +1462,7 @@ addLayer("g", {
             unlocked() {return true},
             cost(x) {
                 cost = new Decimal(27)
-                if (hasMilestone('m', 1)) {cost = new Decimal(6)}
+                if (hasMilestone('m', 1)) {cost = new Decimal(13)}
 
                 return cost
             },
@@ -1237,7 +1483,7 @@ addLayer("g", {
             unlocked() {return true},
             cost(x) {
                 cost = new Decimal(30)
-                if (hasMilestone('m', 1)) {cost = new Decimal(7)}
+                if (hasMilestone('m', 1)) {cost = new Decimal(14)}
 
                 return cost
             },
@@ -1314,6 +1560,12 @@ addLayer("m", {
             requirementDescription: "3.75 points",
             effectDescription: "better rarity on lootboxes",
             done() { return player.points.gte(3.75) },
+
+        },
+        5: {
+            requirementDescription: "4.00 points",
+            effectDescription: "lowers the maximum frequency of getting paid in the job",
+            done() { return player.points.gte(4) },
 
         },
     },
