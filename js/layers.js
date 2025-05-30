@@ -75,25 +75,36 @@ addLayer("l", {
             },
             effect(x) {
                 gearpower = [[Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero]]
-                gearpower[0][0] = new Decimal(getClickableState('l', 11)[0][0]).add(39.770640859342509633).div(39.770640859342509633).pow(1.5) // ((x+a)/b)^p = 1, 50
-                gearpower[0][1] = new Decimal(getClickableState('l', 11)[0][1]).add(15.060459189213234906).div(15.060459189213234906).pow(1.5) // ((x+a)/b)^p = 1, 200
-                gearpower[0][2] = new Decimal(getClickableState('l', 11)[0][2]).div(62.5) //0, 8
-                gearpower[0][3] = new Decimal(getClickableState('l', 11)[0][3]).div(25) //0, 20
+                effectivegearlevel = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+                gearleveldiscountfactor = [[20, 20, Infinity, Infinity], [10, 10, Infinity, Infinity], [10, 10, 100, Infinity], [10, 10, 100, Infinity]]
+                for (i = 0; i < 4; i++) {
+                    for (j = 0; j < 4; j++) {
+                        if (getClickableState('l', 11)[i][j] > 500) {
+                            effectivegearlevel[i][j] = (getClickableState('l', 11)[i][j] - 500) / gearleveldiscountfactor[i][j] + 500
+                        } else {
+                            effectivegearlevel[i][j] = getClickableState('l', 11)[i][j]
+                        }
+                    }
+                }
+                gearpower[0][0] = new Decimal(effectivegearlevel[0][0]).add(39.770640859342509633).div(39.770640859342509633).pow(1.5) // ((x+a)/b)^p = 1, 50
+                gearpower[0][1] = new Decimal(effectivegearlevel[0][1]).add(15.060459189213234906).div(15.060459189213234906).pow(1.5) // ((x+a)/b)^p = 1, 200
+                gearpower[0][2] = new Decimal(effectivegearlevel[0][2]).div(62.5) //0, 8
+                gearpower[0][3] = new Decimal(effectivegearlevel[0][3]).div(25) //0, 20
 
-                gearpower[1][0] = new Decimal(getClickableState('l', 11)[1][0]).div(36.840314986403866058).pow(1.5)  // 0, 50
-                gearpower[1][1] = new Decimal(getClickableState('l', 11)[1][1]).div(14.620088691064330328).pow(1.5) // 0, 200
-                gearpower[1][2] = new Decimal(getClickableState('l', 11)[1][2]).div(50) //0, 10
-                gearpower[1][3] = new Decimal(getClickableState('l', 11)[1][3]).div(50) //0, 10
+                gearpower[1][0] = new Decimal(effectivegearlevel[1][0]).div(36.840314986403866058).pow(1.5)  // 0, 50
+                gearpower[1][1] = new Decimal(effectivegearlevel[1][1]).div(14.620088691064330328).pow(1.5) // 0, 200
+                gearpower[1][2] = new Decimal(effectivegearlevel[1][2]).div(50) //0, 10
+                gearpower[1][3] = new Decimal(effectivegearlevel[1][3]).div(50) //0, 10
 
-                gearpower[2][0] = new Decimal(getClickableState('l', 11)[2][0]).add(24.337595272607097033).div(24.337595272607097033).pow(6)  // 1, 10^8
-                gearpower[2][1] = new Decimal(getClickableState('l', 11)[2][1]).add(5.0505050505050505051).div(5.0505050505050505051).pow(6)  // 1, 10^12
-                gearpower[2][2] = new Decimal(getClickableState('l', 11)[2][2]).div(921.00787466009665144).pow(1.5) // 0, 0.4
-                gearpower[2][3] = new Decimal(getClickableState('l', 11)[2][3]).div(5000) //0, 0.1
+                gearpower[2][0] = new Decimal(effectivegearlevel[2][0]).add(24.337595272607097033).div(24.337595272607097033).pow(6)  // 1, 10^8
+                gearpower[2][1] = new Decimal(effectivegearlevel[2][1]).add(5.0505050505050505051).div(5.0505050505050505051).pow(6)  // 1, 10^12
+                gearpower[2][2] = new Decimal(effectivegearlevel[2][2]).div(921.00787466009665144).pow(1.5) // 0, 0.4
+                gearpower[2][3] = new Decimal(effectivegearlevel[2][3]).div(5000) //0, 0.1
 
-                gearpower[3][0] = new Decimal(getClickableState('l', 11)[3][0]).add(137.30270572692735409).div(137.30270572692735409).pow(6) // 1, 10^4
-                gearpower[3][1] = new Decimal(getClickableState('l', 11)[3][1]).add(55.555555555555555556).div(55.555555555555555556).pow(6) // 1, 10^6
-                gearpower[3][2] = new Decimal(getClickableState('l', 11)[3][2]).div(1462.0088691064330328).pow(1.5) // 0, 0.2
-                gearpower[3][3] = new Decimal(getClickableState('l', 11)[3][3]).div(5000) //0, 0.1
+                gearpower[3][0] = new Decimal(effectivegearlevel[3][0]).add(137.30270572692735409).div(137.30270572692735409).pow(6) // 1, 10^4
+                gearpower[3][1] = new Decimal(effectivegearlevel[3][1]).add(55.555555555555555556).div(55.555555555555555556).pow(6) // 1, 10^6
+                gearpower[3][2] = new Decimal(effectivegearlevel[3][2]).div(1462.0088691064330328).pow(1.5) // 0, 0.2
+                gearpower[3][3] = new Decimal(effectivegearlevel[3][3]).div(5000) //0, 0.1
 
 
                 return gearpower
@@ -128,7 +139,11 @@ addLayer("l", {
 
                 gearlevelcoef = (lootboxseed % 1)**2
                 gearmultiplier = getBuyableAmount('j', 101).sub(3).times(250).toNumber()
-                gearlevel = Math.min(Math.max(Math.floor((1 + gearlevelcoef) * gearmultiplier), 1), 500)
+                gearlevelraw = (1 + gearlevelcoef) * gearmultiplier
+                if (gearlevelraw > 500) {gearlevelraw = (gearlevelraw / 500) ** 0.875 * 500}
+                maxgearlevel = 500
+                if (hasUpgrade('l', 11)) {maxgearlevel = 700}
+                gearlevel = Math.floor(Math.min(Math.max(gearlevelraw, 1)), maxgearlevel)
 
                 textdescription = "you've drawn a level "+gearlevel.toString()+" "+["common", "uncommon", "rare", "legendary"][geartier]+" "+["points", "bonus points", "prestige", "row 2"][geartype]+" gear."
                 if (getClickableState('l', 11)[geartype][geartier] < gearlevel) {
@@ -159,9 +174,48 @@ addLayer("l", {
 
     },
     upgrades: {
+        11: {
+            title: "lootbox upgrade 11",
+            unlocked() {return hasMilestone('l', 0)},
+            description: "upgrade your lootboxes, giving max gear level +200",
+            cost: new Decimal(100),
+            effect() {
+                eff = new Decimal(200)
 
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" levels"},
+            unlocked() {return true}
+        },
     },
-
+    milestones: {
+        0: {
+            requirementDescription: "obtain a level 500 gear on all 16 slots",
+            effectDescription: "unlock a upgrade",
+            done() {  
+                gearlevel500slots = 0
+                for (i = 0; i < 4; i++) {
+                    for (j = 0; j < 4; j++) {
+                        gearlevel500slots = gearlevel500slots + ((getClickableState('l', 11)[i][j] >= 500)*1)
+                    }
+                }
+                return gearlevel500slots == 16
+            },
+            unlocked() {
+                gearlevel500slots = 0
+                for (i = 0; i < 4; i++) {
+                    for (j = 0; j < 4; j++) {
+                        gearlevel500slots = gearlevel500slots + ((getClickableState('l', 11)[i][j] >= 500)*1)
+                    }
+                }
+                return gearlevel500slots >= 14
+            }
+        },
+    },
     infoboxes: {
         11: {
             body() {
@@ -234,7 +288,7 @@ addLayer("j", {
             title() { return "get paid for all the work you did"},
             display() { return "you have clicked "+formatWhole(getBuyableAmount('j', 11))+" times <br> your wages are $"+formatMoney(wages)+" per "+formatWhole(clicksPerHour)+" clicks <br> you are owed $"+formatMoney(owedMoney)+"<br> you may get a payday after "+formatWhole(timeUntilPayday)+" seconds"},
             canAfford() { 
-                nextPaydayTime = getBuyableAmount('j', 22).add(21300000 * (hasMilestone('m', 6)+0) + 300000)
+                nextPaydayTime = getBuyableAmount('j', 22).add(21600000 * (1-hasMilestone('m', 6)))
                 timeUntilPayday = nextPaydayTime.sub(Date.now()).div(1000).max(0).ceil()
                 return timeUntilPayday.eq(0)},
             buy() {
@@ -260,8 +314,8 @@ addLayer("j", {
                 return Decimal.dZero
             },
             effect(x) {
-                clicksGoal = getBuyableAmount('j', 25).times(0.25).add(7.25).times(2400)
-                raiseChance = getBuyableAmount('j', 12).sub(clicksGoal).div(2400).tanh().max(0).min(1)
+                clicksGoal = getBuyableAmount('j', 25).times(300).add(2400)
+                raiseChance = getBuyableAmount('j', 12).sub(clicksGoal).div(1200).tanh().max(0).min(1)
 
                 return Decimal.dZero
             },
@@ -822,7 +876,7 @@ addLayer("w", {
         return;
     },
     update(diff) {
-        if (buyableEffect('w', 11).gt(0)) {
+        if (buyableEffect('w', 11).gt(0)&&player.w.points.neq(0)) {
             setBuyableAmount('w', 12, getBuyableAmount('w', 12).add(buyableEffect('w', 11).sub(buyableEffect('w', 16).times(getBuyableAmount('w', 12))).times(diff)))
         }
         player.w.points = getBuyableAmount('w', 12).floor()
@@ -832,39 +886,29 @@ addLayer("w", {
     },
     layerShown(){return player.j.points.gte(100)||player.w.total.gte(1)||getBuyableAmount('w', 12).gt(0)},
     buyables: {
-        11: {
-            unlocked() {return true},
+        11: { //rate at which workers join the company in worker/sec
+            unlocked() {return false},
             cost(x) {
-                costTypew11 = "normal"
-                costBasew11 = new Decimal(2)
-                costExpw11 = new Decimal(1.5)
-                costLimitw11 = new Decimal('e1e4')
-                return player.buyablePrice(costTypew11, new Decimal(x), costBasew11, costExpw11, costLimitw11).times(50)
+                return Decimal.dInf
             },
             effect(x) {
-                effBasew11 = new Decimal(1/600)
-                effStackw11 = new Decimal(x)
-
-                return Decimal.times(effBasew11, effStackw11)
+                workerspersec = new Decimal(0)
+                if (hasUpgrade('w', 11)) {workerspersec = workerspersec.add(upgradeEffect('w', 11))}
+                if (hasUpgrade('w', 13)) {workerspersec = workerspersec.add(upgradeEffect('w', 13))}
+                if (hasUpgrade('w', 21)) {workerspersec = workerspersec.add(upgradeEffect('w', 21))}
+                if (hasUpgrade('w', 23)) {workerspersec = workerspersec.add(upgradeEffect('w', 23))}
+                if (hasUpgrade('w', 31)) {workerspersec = workerspersec.add(upgradeEffect('w', 31))}
+                if (hasUpgrade('w', 33)) {workerspersec = workerspersec.add(upgradeEffect('w', 33))}
+                if (hasUpgrade('w', 41)) {workerspersec = workerspersec.add(upgradeEffect('w', 41))}
+                if (hasUpgrade('w', 43)) {workerspersec = workerspersec.add(upgradeEffect('w', 43))}
+                return workerspersec
             },
-            title() { return "run ads for your company"},
-            display() { return "attract "+format(effBasew11)+" workers per second for your company <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackw11)+" <br> effect: "+format(this.effect())},
-            canAfford() { return player.j.points.gte(this.cost()) },
+            title() { return },
+            
+            canAfford() { return false },
             buy() {
-                player.j.points = player.j.points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypew11 == "asymptote")||player.j.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypew11, player.j.points.div(50), costBasew11, costExpw11, costLimitw11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypew11, player.j.points.div(50), costBasew11, costExpw11, costLimitw11))
-                        if (player.j.points.lt('e1000')) {player.j.points = player.j.points.sub(player.buyablePrice(costTypew11, player.buyableMaxPurchaseable(costTypew11, player.j.points.div(50), costBasew11, costExpw11, costLimitw11), costBasew11, costExpw11, costLimitw11).times(50))}
-                    }
-                }
 
             },
         },
@@ -891,6 +935,7 @@ addLayer("w", {
             },
             effect(x) {
                 clicksPerHourw = new Decimal(4800)
+                if (hasUpgrade('w', 32)) {clicksPerHourw = clicksPerHourw.add(upgradeEffect('w', 32))}
                 clicksPerHourw = clicksPerHourw.add(getBuyableAmount('w', 13).times(300))
                 return clicksPerHourw
             },
@@ -909,7 +954,16 @@ addLayer("w", {
             },
             effect(x) {
                 hoursPerDay = new Decimal(8)
-                if (getBuyableAmount('w', 15).lt(0)) {hoursPerDay = hoursPerDay.add(getBuyableAmount('w', 15).times(2))} else {hoursPerDay = hoursPerDay.add(getBuyableAmount('w', 15).times(0.25))}
+                if (hasUpgrade('w', 12)) {hoursPerDay = hoursPerDay.add(upgradeEffect('w', 12))}
+                if (hasUpgrade('w', 34)) {hoursPerDay = hoursPerDay.add(upgradeEffect('w', 34)[0])}
+                if (getBuyableAmount('w', 15).lt(0)) {
+                    hoursPerDay = hoursPerDay.add(getBuyableAmount('w', 15).times(2))
+                } else {
+                    payfactor = new Decimal(1/4)
+                    if (hasUpgrade('w', 24)) {payfactor = payfactor.times(upgradeEffect('w', 24))}
+                    if (hasUpgrade('w', 34)) {payfactor = payfactor.times(upgradeEffect('w', 34)[1])}
+                    hoursPerDay = hoursPerDay.add(getBuyableAmount('w', 15).times(payfactor))
+                }
                 hoursPerDay = hoursPerDay.times(24).div(hoursPerDay.add(16)).max(0)
                 return hoursPerDay
             },
@@ -928,6 +982,7 @@ addLayer("w", {
             },
             effect(x) {
                 wagesw = new Decimal(7.25)
+                if (hasUpgrade('w', 14)) {wagesw = wagesw.sub(upgradeEffect('w', 14))}
                 wagesw = wagesw.add(getBuyableAmount('w', 15).times(0.25))
                 return wagesw
             },
@@ -939,13 +994,14 @@ addLayer("w", {
 
             },
         },
-        16: { // rate at which workers leave the job
+        16: { // rate at which workers leave the job in 1/sec
             unlocked() {return false},
             cost(x) {
                 return Decimal.dInf
             },
             effect(x) {
-                leavejobrate = new Decimal(1/6000).times(getBuyableAmount('w', 13).add(16).pow(2).div(256))
+                leavejobrate = new Decimal(1/6000).times(getBuyableAmount('w', 13).add(16).div(16).pow(4))
+                if (hasUpgrade('w', 22)) {leavejobrate = leavejobrate.times(upgradeEffect('w', 22))}
                 return leavejobrate
             },
             display() { return },
@@ -1015,6 +1071,259 @@ addLayer("w", {
             canClick() {return canBuyBuyable('w', 22)}
         },
     },
+    upgrades: {
+        11: {
+            title: "management upgrade 11",
+            description: "advertise for your company on social media, attracting a worker every 600 seconds",
+            cost: new Decimal(100),
+            effect() {
+                eff = new Decimal(1/600)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },
+        12: {
+            title: "management upgrade 12",
+            description: "encourages workers to work extended hours, increases their base hours by +0.25",
+            cost: new Decimal(200),
+            effect() {
+                eff = new Decimal(1/4)
+                if (hasUpgrade('w', 24)) {eff = eff.times(upgradeEffect('w', 24))}
+                if (hasUpgrade('w', 34)) {eff = eff.times(upgradeEffect('w', 34)[1])}
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            canAfford() {
+                return player.j.points.gte(getBuyableAmount('w', 22).div(buyableEffect('w', 13)).times(buyableEffect('w', 15)).times(100).ceil().div(100).add(200))
+            },
+            pay() {
+                buyBuyable('w', 22)
+                player.j.points = player.j.points.sub(this.cost)
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" base hours"},
+            unlocked() {return true}
+        },
+        13: {
+            title: "management upgrade 13",
+            description: "advertise for your company on social media, attracting a worker every 600 seconds",
+            cost: new Decimal(300),
+            effect() {
+                eff = new Decimal(1/600)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },
+        14: {
+            title: "management upgrade 14",
+            description: "hire disadvantaged workers who don't know/have trouble fighting for their rights, reduces base pay by $1/hr",
+            cost: new Decimal(400),
+            effect() {
+                eff = new Decimal(1)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            canAfford() {
+                return player.j.points.gte(getBuyableAmount('w', 22).div(buyableEffect('w', 13)).times(buyableEffect('w', 15)).times(100).ceil().div(100).add(200))
+            },
+            pay() {
+                buyBuyable('w', 22)
+                player.j.points = player.j.points.sub(this.cost)
+            },
+            effectDisplay() {return "-$"+format(upgradeEffect(this.layer, this.id))+"/hour"},
+            unlocked() {return true}
+        },
+        21: {
+            title: "management upgrade 21",
+            description: "sign up for job seeking websites as an employer, attracting a worker every 300 seconds",
+            cost: new Decimal(600),
+            effect() {
+                eff = new Decimal(1/300)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },
+        22: {
+            title: "management upgrade 22",
+            description: "promote the mentality of dedication in the workplace, reduces quitting rate by 25%",
+            cost: new Decimal(800),
+            effect() {
+                eff = new Decimal(3/4)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            canAfford() {
+                return player.j.points.gte(getBuyableAmount('w', 22).div(buyableEffect('w', 13)).times(buyableEffect('w', 15)).times(100).ceil().div(100).add(200))
+            },
+            pay() {
+                buyBuyable('w', 22)
+                player.j.points = player.j.points.sub(this.cost)
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        23: {
+            title: "management upgrade 23",
+            description: "buy billboards to advertise your company, attracting a worker every 100 seconds",
+            cost: new Decimal(1000),
+            effect() {
+                eff = new Decimal(1/100)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },
+        24: {
+            title: "management upgrade 24",
+            description: "emotionally manipulate workers and defame the competition, increases extra hours by 33%",
+            cost: new Decimal(1200),
+            effect() {
+                eff = new Decimal(4/3)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            canAfford() {
+                return player.j.points.gte(getBuyableAmount('w', 22).div(buyableEffect('w', 13)).times(buyableEffect('w', 15)).times(100).ceil().div(100).add(200))
+            },
+            pay() {
+                buyBuyable('w', 22)
+                player.j.points = player.j.points.sub(this.cost)
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },    
+        31: {
+            title: "management upgrade 31",
+            description: "send flyers to communities by mail, attracting a worker every 60 seconds",
+            cost: new Decimal(2000),
+            effect() {
+                eff = new Decimal(1/60)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },    
+        32: {
+            title: "management upgrade 32",
+            description: "set unrealistic goals for workers, increase base clicks per hour by 600",
+            cost: new Decimal(4000),
+            effect() {
+                eff = new Decimal(600)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            canAfford() {
+                return player.j.points.gte(getBuyableAmount('w', 22).div(buyableEffect('w', 13)).times(buyableEffect('w', 15)).times(100).ceil().div(100).add(200))
+            },
+            pay() {
+                buyBuyable('w', 22)
+                player.j.points = player.j.points.sub(this.cost)
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" clicks/hour"},
+            unlocked() {return true}
+        }, 
+        33: {
+            title: "management upgrade 33",
+            description: "advertise your company on television, attracting a worker every 20 seconds",
+            cost: new Decimal(10000),
+            effect() {
+                eff = new Decimal(1/20)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },
+        34: {
+            title: "management upgrade 34",
+            description: "replace part of lower status workers' income with probabilistic large payments, similar to lotteries. increase base hours by 2 and extra hours by 50%",
+            cost: new Decimal(50000),
+            effect() {
+                eff0 = new Decimal(2)
+                eff1 = new Decimal(1.5)
+
+                return [eff0, eff1]
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            canAfford() {
+                return player.j.points.gte(getBuyableAmount('w', 22).div(buyableEffect('w', 13)).times(buyableEffect('w', 15)).times(100).ceil().div(100).add(200))
+            },
+            pay() {
+                buyBuyable('w', 22)
+                player.j.points = player.j.points.sub(this.cost)
+            },
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id)[0])+" hours/day, x"+format(upgradeEffect(this.layer, this.id)[1])+" extra hours"},
+            unlocked() {return true}
+        },
+        41: {
+            title: "management upgrade 41",
+            description: "hire experts to fake studies on health benefits of prolonged clicking on a screen, attracting a worker every 60 seconds",
+            cost: new Decimal(250000),
+            effect() {
+                eff = new Decimal(1/60)
+
+
+                return eff
+            },
+            currencyInternalName: "points",
+            currencyLayer: "j",
+            currencyDisplayName: " dollars",
+            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))+" workers/sec"},
+            unlocked() {return true}
+        },
+    },
     infoboxes: {
         11: {
             body() {
@@ -1022,7 +1331,7 @@ addLayer("w", {
                 textw += "<br> for an average of "+format(buyableEffect('w', 13).times(buyableEffect('w', 14)).div(86400))+" clicks per second per worker"
                 textw += "<br> or "+format(buyableEffect('w', 13).times(buyableEffect('w', 14)).div(86400).times(player.w.points))+" clicks per second"
                 textw += "<br><br> your workers are leaving the job after "+format(buyableEffect('w', 16).pow(-1))+" seconds on average"
-                textw += "<br>"+format(getBuyableAmount('w', 12).sub(player.w.points).times(100), 2)+"% to the next worker"
+                textw += "<br>"+format(buyableEffect('w', 11), 4)+" workers per second, "+format(getBuyableAmount('w', 12).sub(player.w.points).times(100), 2)+"% to the next worker"
                 return textw}
         }
     },
@@ -1562,7 +1871,7 @@ addLayer("m", {
             done() { return player.points.gte(3.75) },
 
         },
-        5: {
+        6: {
             requirementDescription: "4.00 points",
             effectDescription: "lowers the maximum frequency of getting paid in the job",
             done() { return player.points.gte(4) },
