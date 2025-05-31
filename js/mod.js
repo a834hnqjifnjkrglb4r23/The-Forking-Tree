@@ -64,11 +64,11 @@ function getPointGen() {
 	gainMult = gainMult.add(buyableEffect('bp', 12))
 	gainMult = gainMult.add(buyableEffect('sp', 12))
 
-	gain = baseGain.times(gainMult)
-	gain = gain.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
-	gain = gain.times(player.b.points.add(1).max(1))
+	gainraw = baseGain.times(gainMult)
+	gainraw = gainraw.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
+	gainraw = gainraw.times(player.b.points.add(1).max(1))
 
-
+	gain = gainraw
 	firstSoftcapStrength = new Decimal(16)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
@@ -85,10 +85,15 @@ function getPointGen() {
 
 	thirdSoftcapStrength = new Decimal(60)
 	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 11)[0][3])
+	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('lf', 15))
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
 
 	fourthSoftcapStrength = new Decimal(240)
+	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('lf', 16))
 	if (player.points.gte(4)) {gain = gain.div(player.points.div(4).pow(fourthSoftcapStrength))}
+
+	fifthSoftcapStrength = new Decimal(1200)
+	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(fifthSoftcapStrength))}
 
 
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
@@ -141,12 +146,17 @@ function addedPlayerData() { return {
 				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).log10().log10()
 				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).log10().log10()
 				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
-				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).floor()
+				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).ceil()
 			} else {
 				return currency.max(1).log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
 			}
 		}
 		
+	},
+	row2normalBuyableSoftcap() {
+		capexp = new Decimal(100)
+		capexp = capexp.add(buyableEffect('lf', 101))
+		return Decimal.dTen.pow(capexp)
 	}
 						
 }}
