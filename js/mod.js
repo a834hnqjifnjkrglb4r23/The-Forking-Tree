@@ -181,7 +181,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(1) // Default is 1 hour which is just arbitrarily large
+	return(1) // set to 1 secomdds
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
@@ -189,4 +189,8 @@ function maxTickLength() {
 function fixOldSave(oldVersion){
 
 
+}
+
+function pow2(a){
+	return Decimal.pow(2, a)
 }
