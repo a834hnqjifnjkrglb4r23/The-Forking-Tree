@@ -68,7 +68,10 @@ function getPointGen() {
 	gainraw = gainraw.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
 	gainraw = gainraw.times(player.b.points.add(1).max(1))
 
-	gain = gainraw
+	gainExp = new Decimal(1)
+	gainExp = gainExp.add(buyableEffect('hp', 11))
+
+	gain = gainraw.pow(gainExp)
 	firstSoftcapStrength = new Decimal(16)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
@@ -113,7 +116,7 @@ function getPointGen() {
 function addedPlayerData() { return {
 	buyablePrice(type, amt, base, exp, limit) {
 		if (type == "normal") {
-			if (limit.lte('e100')) {limit = new Decimal('e100')} //limit is softcap, in currency at which scaling change to double exponential : linear
+			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to double exponential : linear
 			if (base.pow(amt.add(1).pow(exp)).gt(limit)) {
 				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
 				limitamtplus1 = limitamt.add(1)
@@ -139,7 +142,7 @@ function addedPlayerData() { return {
 	},
 	buyableMaxPurchaseable(type, currency, base, exp, limit) {
 		if (type == "normal") {
-			if (limit.lte('e100')) {limit = new Decimal('e100')}
+			if (limit.lte('e10')) {limit = new Decimal('e10')}
 			if (currency.gt(limit)) {
 				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
 				limitamtplus1 = limitamt.add(1)

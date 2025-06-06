@@ -20,10 +20,10 @@ addLayer("l", {
     }, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        addl = new Decimal(0)
+        addl = new Decimal(-2.5)
 
 
-        multl = new Decimal(0.333333333333333333)
+        multl = new Decimal(2)
         
 
         return multl
@@ -32,7 +32,7 @@ addLayer("l", {
         expl = new Decimal(1)
 
 
-        exp2l = new Decimal(0.5)
+        exp2l = new Decimal(1)
 
         return expl
     },
@@ -55,6 +55,9 @@ addLayer("l", {
     hotkeys: [
         {key: "l", description: "L: Reset for lootboxes", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
+    update(diff){
+        if (player.points.gte(getBuyableAmount('l', 99))) {setBuyableAmount('l', 99, player.points)}
+    },
     layerShown(){return player.points.gte(3)||player.l.total.gte(1)},
     clickables: {
         11: { //gear level grid, numbers
@@ -76,15 +79,14 @@ addLayer("l", {
             effect(x) {
                 gearpower = [[Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero]]
                 effectivegearlevel = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
-                commongearleveldiscountfactor = 5 - toNumber(buyableEffect('lf', 81))
-                raregearleveldiscountfactor = 10 - toNumber(buyableEffect('lf', 82))
-                gearleveldiscountfactor = [[commongearleveldiscountfactor, commongearleveldiscountfactor, Infinity, Infinity], [commongearleveldiscountfactor, commongearleveldiscountfactor, Infinity, Infinity], [commongearleveldiscountfactor, commongearleveldiscountfactor, raregearleveldiscountfactor, Infinity], [commongearleveldiscountfactor, commongearleveldiscountfactor, raregearleveldiscountfactor, Infinity]]
+                gearleveldiscountfactor = [[5, 5, Infinity, Infinity], [5, 5, Infinity, Infinity], [5, 5, 10, Infinity], [5, 5, 10, Infinity]]
+                gearlevelmultiplier = [buyableEffect('lf', 81).toNumber() + 1, buyableEffect('lf', 82).toNumber() + 1]
                 for (i = 0; i < 4; i++) {
                     for (j = 0; j < 4; j++) {
-                        if (getClickableState('l', 11)[i][j] > 500) {
-                            effectivegearlevel[i][j] = (getClickableState('l', 11)[i][j] - 500) / gearleveldiscountfactor[i][j] + 500
+                        if (getClickableState('l', 11)[i][j] * gearlevelmultiplier[Math.floor(j/2)] > 500) {
+                            effectivegearlevel[i][j] = (getClickableState('l', 11)[i][j] * gearlevelmultiplier[Math.floor(j/2)] - 500) / gearleveldiscountfactor[i][j] + 500
                         } else {
-                            effectivegearlevel[i][j] = getClickableState('l', 11)[i][j]
+                            effectivegearlevel[i][j] = getClickableState('l', 11)[i][j] * gearlevelmultiplier[Math.floor(j/2)]
                         }
                     }
                 }
@@ -140,7 +142,7 @@ addLayer("l", {
                 else if (geartiercoef < geartierboundstotal[3]) {geartier = 3}
 
                 gearlevelcoef = (lootboxseed % 1)**2
-                gearmultiplier = getBuyableAmount('j', 101).sub(3).times(250).toNumber()
+                gearmultiplier = getBuyableAmount('l', 99).sub(3).times(250).toNumber()
                 gearlevelraw = (1 + gearlevelcoef) * gearmultiplier
                 if (gearlevelraw > 500) {gearlevelraw = (gearlevelraw / 500) ** 0.5 * 500}
                 maxgearlevel = 500
@@ -196,7 +198,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = getBuyableAmount('l', 21).times(buyableEffect('lf', 91)).div(400).add(1)
+                eff = getBuyableAmount('l', 21).times(buyableEffect('lf', 91)).div(400).add(1).pow(hasMilestone('l', 0)+0)
                 //if (eff.gte(16)) {eff = eff.div(16).pow(0.5).times(16)}
                 return eff
             },
@@ -212,9 +214,23 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = getBuyableAmount('l', 22).times(buyableEffect('lf', 91)).div(800).add(1).pow(0.5)
+                eff = getBuyableAmount('l', 22).times(buyableEffect('lf', 91)).div(800).add(1).pow(0.5).pow(hasMilestone('l', 0)+0)
                 //if (eff.gte(4)) {eff = eff.div(4).pow(0.5).times(4)}
                 return eff
+            },
+            canAfford() { return false},
+            buy() {
+
+            },
+        },
+        99: {// best points
+            unlocked() {return false},
+            cost(x) {
+
+                return Decimal.dOne
+            },
+            effect(x) {
+                return new Decimal(123)
             },
             canAfford() { return false},
             buy() {
@@ -263,18 +279,18 @@ addLayer("l", {
     infoboxes: {
         11: {
             body() {
-                mingearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('j', 101).sub(3).times(250).toNumber(), 500), 1))
-                maxgearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('j', 101).sub(3).times(250).toNumber() * 2, 500), 1))
+                mingearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('l', 99).sub(3).times(250).toNumber(), 500), 1))
+                maxgearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('l', 99).sub(3).times(250).toNumber() * 2, 500), 1))
                 textl = "Current gear level: "+mingearlevel.toString()+" to "+maxgearlevel.toString()
                 textl += "<br> Points: x"+format(gearpower[0][0])+", x"+format(gearpower[0][1])+", -"+format(gearpower[0][2])+" to 2nd sc, -"+format(gearpower[0][3])+" to 3rd sc"
                 textl += "<br> Bonus points: x"+format(gearpower[1][0])+", x"+format(gearpower[1][1])+", -"+format(gearpower[1][2])+" to 1st sc, -"+format(gearpower[1][3])+" to 2nd sc"
                 textl += "<br> Prestige: x"+format(gearpower[2][0])+", x"+format(gearpower[2][1])+", +"+format(gearpower[2][2])+" to exp, +"+format(gearpower[2][3])+" to 2nd exp"
                 textl += "<br> 2nd row: x"+format(gearpower[3][0])+", x"+format(gearpower[3][1])+", +"+format(gearpower[3][2])+" to exp, +"+format(gearpower[3][3])+" to 2nd exp"
                 
-                if (getBuyableAmount('l', 21).gt(0)) {
+                if (getBuyableAmount('l', 21).gt(0)&&hasMilestone('l', 0)) {
                     textl += " <br><br> You have "+format(getBuyableAmount('l', 21))+" common gear scrap, multiplying buyables ?1/?2 above this effect by "+format(buyableEffect('l', 21))
                 }
-                if (getBuyableAmount('l', 22).gt(0)) {
+                if (getBuyableAmount('l', 22).gt(0)&&hasMilestone('l', 0)) {
                     textl += " <br><br> You have "+format(getBuyableAmount('l', 22))+" rare gear scrap, multiplying buyables ?3  above this except 13 effect by "+format(buyableEffect('l', 22))
                 }
                 textl += "<br><br>"+textdescription
@@ -315,9 +331,6 @@ addLayer("j", {
     layerShown(){return true},
     doReset(resettingLayer) {
         return;
-    },
-    update(diff){
-        if (player.points.gte(getBuyableAmount('j', 101))) {setBuyableAmount('j', 101, player.points)}
     },
     infoboxes: {
         11: {
@@ -366,8 +379,9 @@ addLayer("j", {
             },
             effect(x) {
                 clicksGoal = getBuyableAmount('j', 25).times(300).add(2400)
+                if (getBuyableAmount('j', 25).gte(371)) {clicksGoal = getBuyableAmount('j', 25).sub(100).times(2400).add(113700)}
                 raiseChance = getBuyableAmount('j', 12).sub(clicksGoal).div(1200).tanh().max(0).min(1)
-
+                if (getBuyableAmount('j', 25).gte(371)) {raiseChance = getBuyableAmount('j', 12).sub(clicksGoal).div(getBuyableAmount('j', 25).sub(100).times(1200).add(1200)).tanh().max(0).min(1)}
                 return Decimal.dZero
             },
             title() { return "apply for a 25c raise"},
@@ -409,20 +423,6 @@ addLayer("j", {
             },
         },
         25: {// number of raises
-            unlocked() {return false},
-            cost(x) {
-
-                return Decimal.dOne
-            },
-            effect(x) {
-                return new Decimal(123)
-            },
-            canAfford() { return false},
-            buy() {
-
-            },
-        },
-        101: {// best poitns
             unlocked() {return false},
             cost(x) {
 
@@ -2243,10 +2243,10 @@ addLayer("m", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {return false},
     prestigeNotify() {return true},
-    row: "side", // Row the layer is in on the tree (0 is the first row)
+    row: 4,
+    displayRow: "side", // Row the layer is in on the tree (0 is the first row)
     doReset(resettingLayer) {
-
-        return;
+        layerDataReset('m')
     },
     layerShown(){return true},
     milestones: {
@@ -2416,6 +2416,7 @@ addLayer("p", {
         expp = expp.add(buyableEffect('mp', 23))
         expp = expp.add(buyableEffect('bp', 23))
         expp = expp.add(buyableEffect('sp', 23))
+        expp = expp.times(buyableEffect('hp', 23))
         
 
         exp2p = new Decimal(0.5).add(buyableEffect('l', 11)[2][3])
@@ -2752,7 +2753,7 @@ addLayer("mp", {
         expmp = expmp.add(buyableEffect('mp', 33))
         expmp = expmp.add(buyableEffect('bp', 33))
         expmp = expmp.add(buyableEffect('sp', 33))
-
+        expmp = expmp.times(buyableEffect('hp', 33))
 
         exp2mp = new Decimal(0.5).add(buyableEffect('l', 11)[3][3])
         exp2mp = exp2mp.add(buyableEffect('mp', 34))
@@ -3552,7 +3553,7 @@ addLayer("bp", {
         expbp = expbp.add(buyableEffect('mp', 43))
         expbp = expbp.add(buyableEffect('bp', 43))
         expbp = expbp.add(buyableEffect('sp', 43))
-
+        expbp = expbp.times(buyableEffect('hp', 43))
 
         exp2bp = new Decimal(0.5).add(buyableEffect('l', 11)[3][3])
         exp2bp = exp2bp.add(buyableEffect('mp', 44))
@@ -4349,7 +4350,7 @@ addLayer("sp", {
         expsp = expsp.add(buyableEffect('mp', 53))
         expsp = expsp.add(buyableEffect('bp', 53))
         expsp = expsp.add(buyableEffect('sp', 53))
-
+        expsp = expsp.times(buyableEffect('hp', 53))
 
 
         exp2sp = new Decimal(0.5).add(buyableEffect('l', 11)[3][3])
@@ -5161,7 +5162,8 @@ addLayer("lf", {
     },
     prestigeNotify() {return true},
     prestigeButtonText() {return "You are gaining "+formatWhole(getResetGain('lf'))+" life force per second" },
-    row: 3, // Row the layer is in on the tree (0 is the first row)
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    displayRow: 3,
     hotkeys: [
        
     ],
@@ -5169,7 +5171,7 @@ addLayer("lf", {
     automate() {
     },
     doReset(resettingLayer) {
-       
+      
 
     },
     clickables: {
@@ -5562,10 +5564,10 @@ addLayer("lf", {
         81: {
             unlocked() {return true},
             cost(x) {
-                costTypelf81 = "asymptote"
+                costTypelf81 = "normal"
                 costBaself81 = new Decimal(1.5)
                 costExplf81 = new Decimal(1.3)
-                costLimitlf81 = layers.lf.buyables[81].purchaseLimit.add(1)
+                costLimitlf81 = Decimal.pow(2, 10000)
                 return player.buyablePrice(costTypelf81, new Decimal(x), costBaself81, costExplf81, costLimitlf81).log2()
             },
             effect(x) {
@@ -5574,9 +5576,8 @@ addLayer("lf", {
 
                 return Decimal.times(effBaself81, effStacklf81)
             },
-            purchaseLimit: new Decimal(40),
             title() { return "life force buyable 81"},
-            display() { return "subtract the common gear level discount factor by "+format(effBaself81)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacklf81)+" <br> effect: "+format(this.effect())},
+            display() { return "add common gear level multiplier by "+format(effBaself81)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacklf81)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -5598,10 +5599,10 @@ addLayer("lf", {
         82: {
             unlocked() {return true},
             cost(x) {
-                costTypelf82 = "asymptote"
+                costTypelf82 = "normal"
                 costBaself82 = new Decimal(1.8)
                 costExplf82 = new Decimal(1.3)
-                costLimitlf82 = layers.lf.buyables[82].purchaseLimit.add(1)
+                costLimitlf82 = Decimal.pow(2, 10000)
                 return player.buyablePrice(costTypelf82, new Decimal(x), costBaself82, costExplf82, costLimitlf82).log2()
             },
             effect(x) {
@@ -5610,9 +5611,8 @@ addLayer("lf", {
 
                 return Decimal.times(effBaself82, effStacklf82)
             },
-            purchaseLimit: new Decimal(90),
             title() { return "life force buyable 82"},
-            display() { return "subtrac the rare gear level discount factor by "+format(effBaself82)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacklf82)+" <br> effect: "+format(this.effect())},
+            display() { return "add rare gear level multiplier by "+format(effBaself82)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacklf82)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -5704,6 +5704,252 @@ addLayer("lf", {
     },
 })
 
+addLayer("hp", {
+    name: "hyperprestige points", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "HP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+
+    }},
+    color: "#3ea430",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "hyperprestige points", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        addhp = new Decimal(-4)
+
+
+
+        multhp = new Decimal(1)
+
+        return multhp
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exphp = new Decimal(1)
+
+        
+
+        exp2hp = new Decimal(0.5)
+
+
+        return exphp
+    },
+    getResetGain() {
+        hpp = player.points.add(addhp).times(multhp).pow(exphp)
+        if (hpp.gte(1)) {hpp = hpp.log10().pow(exp2hp).pow10()}
+
+        return hpp.max(0).floor()
+    },
+    getNextAt() {
+        nexthp = getResetGain('hp').add(1)
+        if (nexthp.gte(1)) {nexthp = nexthp.log10().pow(exp2hp.pow(-1)).pow10()}
+        return nexthp.root(exphp).div(multhp).sub(addhp)
+    },
+    canReset() {return getResetGain('hp').gte(1)},
+    passiveGeneration() {
+        if (false) {
+            return Decimal.dOne
+        } else {return Decimal.dZero}
+    },
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('hp'))+" hyperprestige points. Next at "+format(getNextAt("hp"))+" points" },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+       
+    ],
+    layerShown(){return player.points.gte(5)||player.hp.total.gte(1)},
+    automate() {
+    },
+    doReset(resettingLayer) {
+       
+
+    },
+    clickables: {
+
+    },
+    buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp11 = "normal"
+                costBasehp11 = new Decimal(1.3)
+                costExphp11 = new Decimal(1.1)
+                costLimithp11 = new Decimal('e100')
+                return player.buyablePrice(costTypehp11, new Decimal(x), costBasehp11, costExphp11, costLimithp11)
+            },
+            effect(x) {
+                effBasehp11 = new Decimal(0.1)
+                effStackhp11 = new Decimal(x)
+
+                return Decimal.times(effBasehp11, effStackhp11)
+            },
+            title() { return "prestige buyable 11"},
+            display() { return "increase point gain exponent by "+format(effBasehp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp11)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp11 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp11, player[this.layer].points, costBasehp11, costExphp11, costLimithp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp11, player[this.layer].points, costBasehp11, costExphp11, costLimithp11))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp11, player.buyableMaxPurchaseable(costTypehp11, player[this.layer].points, costBasehp11, costExphp11, costLimithp11), costBasehp11, costExphp11, costLimithp11))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp23 = "normal"
+                costBasehp23 = new Decimal(1.5)
+                costExphp23 = new Decimal(1.2)
+                costLimithp23 = new Decimal('e100')
+                return player.buyablePrice(costTypehp23, new Decimal(x), costBasehp23, costExphp23, costLimithp23)
+            },
+            effect(x) {
+                effBasehp23 = new Decimal(2)
+                effStackhp23 = new Decimal(x)
+
+                return Decimal.pow(effBasehp23, effStackhp23)
+            },
+            title() { return "hyperprestige buyable 23"},
+            display() { return "multiply prestige point exponent by "+format(effBasehp23)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp23 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp23, player[this.layer].points, costBasehp23, costExphp23, costLimithp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp23, player[this.layer].points, costBasehp23, costExphp23, costLimithp23))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp23, player.buyableMaxPurchaseable(costTypehp23, player[this.layer].points, costBasehp23, costExphp23, costLimithp23), costBasehp23, costExphp23, costLimithp23))}
+                    }
+                }
+            },
+        },
+        33: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp33 = "normal"
+                costBasehp33 = new Decimal(1.5)
+                costExphp33 = new Decimal(1.24)
+                costLimithp33 = new Decimal('e100')
+                return player.buyablePrice(costTypehp33, new Decimal(x), costBasehp33, costExphp33, costLimithp33)
+            },
+            effect(x) {
+                effBasehp33 = new Decimal(2)
+                effStackhp33 = new Decimal(x)
+
+                return Decimal.pow(effBasehp33, effStackhp33)
+            },
+            title() { return "hyperprestige buyable 33"},
+            display() { return "multiply metaprestige point exponent by "+format(effBasehp33)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp33 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp33, player[this.layer].points, costBasehp33, costExphp33, costLimithp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp33, player[this.layer].points, costBasehp33, costExphp33, costLimithp33))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp33, player.buyableMaxPurchaseable(costTypehp33, player[this.layer].points, costBasehp33, costExphp33, costLimithp33), costBasehp33, costExphp33, costLimithp33))}
+                    }
+                }
+            },
+        },
+        43: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp43 = "normal"
+                costBasehp43 = new Decimal(1.5)
+                costExphp43 = new Decimal(1.25)
+                costLimithp43 = new Decimal('e100')
+                return player.buyablePrice(costTypehp43, new Decimal(x), costBasehp43, costExphp43, costLimithp43)
+            },
+            effect(x) {
+                effBasehp43 = new Decimal(2)
+                effStackhp43 = new Decimal(x)
+
+                return Decimal.pow(effBasehp43, effStackhp43)
+            },
+            title() { return "hyperprestige buyable 43"},
+            display() { return "multiply buyable point exponent by "+format(effBasehp43)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp43)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp43 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp43, player[this.layer].points, costBasehp43, costExphp43, costLimithp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp43, player[this.layer].points, costBasehp43, costExphp43, costLimithp43))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp43, player.buyableMaxPurchaseable(costTypehp43, player[this.layer].points, costBasehp43, costExphp43, costLimithp43), costBasehp43, costExphp43, costLimithp43))}
+                    }
+                }
+            },
+        },   
+        53: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp53 = "normal"
+                costBasehp53 = new Decimal(1.5)
+                costExphp53 = new Decimal(1.26)
+                costLimithp53 = new Decimal('e100')
+                return player.buyablePrice(costTypehp53, new Decimal(x), costBasehp53, costExphp53, costLimithp53)
+            },
+            effect(x) {
+                effBasehp53 = new Decimal(2)
+                effStackhp53 = new Decimal(x)
+
+                return Decimal.pow(effBasehp53, effStackhp53)
+            },
+            title() { return "hyperprestige buyable 53"},
+            display() { return "multiply superprestige point exponent by "+format(effBasehp53)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp53)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp53 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp53, player[this.layer].points, costBasehp53, costExphp53, costLimithp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp53, player[this.layer].points, costBasehp53, costExphp53, costLimithp53))
+                        if (player[this.layer].points.lt('e1000')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp53, player.buyableMaxPurchaseable(costTypehp53, player[this.layer].points, costBasehp53, costExphp53, costLimithp53), costBasehp53, costExphp53, costLimithp53))}
+                    }
+                }
+            },
+        },   
+    },
+})
+
 addLayer("a", {
     name: "Ascension", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "A", // This appears on the layer's node. Default is the id with the first letter capitalized
@@ -5752,7 +5998,7 @@ addLayer("a", {
     canReset() {return getResetGain('a').gte(0)},
     prestigeNotify() {return true},
     prestigeButtonText() {return "Reset to ascend to "+formatWhole(getResetGain('a'))+" higher planes of existence. Next at "+format(getNextAt('a'))+" points" },
-    row: 9, // Row the layer is in on the tree (0 is the first row)
+    row: 10, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
         {key: "A", description: "A: Ascend", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
