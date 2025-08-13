@@ -88,11 +88,11 @@ function getPointGen() {
 
 	thirdSoftcapStrength = new Decimal(60)
 	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 11)[0][3])
-	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('lf', 15))
+
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
 
 	fourthSoftcapStrength = new Decimal(240)
-	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('lf', 16))
+
 	if (player.points.gte(4)) {gain = gain.div(player.points.div(4).pow(fourthSoftcapStrength))}
 
 	fifthSoftcapStrength = new Decimal(1200)
@@ -158,7 +158,7 @@ function addedPlayerData() { return {
 	},
 	row2normalBuyableSoftcap() {
 		capexp = new Decimal(100)
-		capexp = capexp.add(buyableEffect('lf', 101))
+		capexp = capexp.add(buyableEffect('l', 12))
 		return Decimal.dTen.pow(capexp)
 	}
 						
