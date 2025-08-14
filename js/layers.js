@@ -192,12 +192,12 @@ addLayer("l", {
             },
         },
         12: {
-            unlocked() {return true},
+            unlocked() {return player.p.total.gte('e1e5')||getBuyableAmount(this.layer, this.id).gte(1)},
             cost(x) {
                 costTypel12 = "normal"
                 costBasel12 = new Decimal('e1e5')
                 costExpl12 = new Decimal(3)
-                costLimitl12 = new Decimal('e8e8')
+                costLimitl12 = new Decimal('e2.7e9')
                 return player.buyablePrice(costTypel12, new Decimal(x), costBasel12, costExpl12, costLimitl12)
             },
             effect(x) {
@@ -234,7 +234,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.pow(2, getBuyableAmount('l', 21).log(2).pow(1.2).sub(17)).add(1).pow(hasMilestone('l', 0)+0)
+                eff = Decimal.pow(2, getBuyableAmount('l', 21).log(2).pow(11/9).sub(18)).add(1).pow(hasMilestone('l', 0)+0)
                 //if (eff.gte(16)) {eff = eff.div(16).pow(0.5).times(16)}
                 return eff
             },
@@ -250,7 +250,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.pow(2, getBuyableAmount('l', 22).log(2).pow(1.2).div(2).sub(7.5)).add(1).pow(hasMilestone('l', 0)+0)
+                eff = Decimal.pow(2, getBuyableAmount('l', 22).log(2).pow(11/9).div(2).sub(8)).add(1).pow(hasMilestone('l', 0)+0)
                 //if (eff.gte(4)) {eff = eff.div(4).pow(0.5).times(4)}
                 return eff
             },
@@ -1014,7 +1014,7 @@ addLayer("w", {
                 if (hasUpgrade('w', 43)) {workerspersec = workerspersec.add(upgradeEffect('w', 43))}
 
                 populationLimit = new Decimal(25800)
-                workerspersec = workerspersec.times(Decimal.sub(populationLimit, getBuyableAmount('w', 12)).div(populationLimit))
+                workerspersec = workerspersec.times(Decimal.sub(populationLimit, getBuyableAmount('w', 12).sub(getBuyableAmount('w', 19))).div(populationLimit))
                 return workerspersec
             },
             title() { return },
@@ -1160,6 +1160,23 @@ addLayer("w", {
             },
         },
         18: { // number of workers in rare scrap factory
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                return new Decimal(123)
+            },
+            display() { return },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+
+            },
+        },
+        19: { // number of extra workers (e.g. research)
             unlocked() {return false},
             cost(x) {
                 return Decimal.dInf
@@ -2660,7 +2677,7 @@ addLayer("p", {
                 return player.buyablePrice(costTypep21, new Decimal(x), costBasep21, costExpp21, costLimitp21)
             },
             effect(x) {
-                effBasep21 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasep21 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackp21 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasep21, effStackp21)
@@ -2815,7 +2832,7 @@ addLayer("mp", {
         addmp = addmp.add(buyableEffect('bp', 31))
         addmp = addmp.add(buyableEffect('sp', 31))
 
-        multmp = new Decimal(0.01)
+        multmp = new Decimal(0.5)
         multmp = multmp.add(buyableEffect('mp', 32))
         multmp = multmp.add(buyableEffect('bp', 32))
         multmp = multmp.add(buyableEffect('sp', 32))
@@ -2825,7 +2842,7 @@ addLayer("mp", {
         return multmp
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expmp = new Decimal(0.5).times(buyableEffect('l', 11)[3][2].add(1))
+        expmp = new Decimal(2).times(buyableEffect('l', 11)[3][2].add(1))
         expmp = expmp.add(buyableEffect('mp', 33))
         expmp = expmp.add(buyableEffect('bp', 33))
         expmp = expmp.add(buyableEffect('sp', 33))
@@ -2839,7 +2856,7 @@ addLayer("mp", {
         return expmp
     },
     getResetGain() {
-        mpp = player.p.best.add(addmp).times(multmp).pow(expmp)
+        mpp = player.p.best.max(1).log10().add(addmp).times(multmp).pow(expmp)
         if (mpp.gte(1)) {mpp = mpp.log10().pow(exp2mp).pow10()}
 
         return mpp.floor().max(0)
@@ -2847,7 +2864,7 @@ addLayer("mp", {
     getNextAt() {
         nextmp = getResetGain('mp').add(1)
         if (nextmp.gte(1)) {nextmp = nextmp.log10().root(exp2mp).pow10()}
-        return nextmp.root(expmp).div(multmp).sub(addmp)
+        return nextmp.root(expmp).div(multmp).sub(addmp).pow10()
     },
     canReset() {return getResetGain('mp').gte(0)&&(!hasMilestone('m', 4))},
     prestigeNotify() {return true},
@@ -3021,12 +3038,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp21 = "normal"
                 costBasemp21 = new Decimal(1.3)
-                costExpmp21 = new Decimal(1.08)
+                costExpmp21 = new Decimal(1.07)
                 costLimitmp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp21, new Decimal(x), costBasemp21, costExpmp21, costLimitmp21)
             },
             effect(x) {
-                effBasemp21 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasemp21 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackmp21 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp21, effStackmp21)
@@ -3056,7 +3073,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp22 = "normal"
                 costBasemp22 = new Decimal(1.5)
-                costExpmp22 = new Decimal(1.18)
+                costExpmp22 = new Decimal(1.17)
                 costLimitmp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp22, new Decimal(x), costBasemp22, costExpmp22, costLimitmp22)
             },
@@ -3091,7 +3108,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp23 = "normal"
                 costBasemp23 = new Decimal(1.7)
-                costExpmp23 = new Decimal(1.38)
+                costExpmp23 = new Decimal(1.37)
                 costLimitmp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp23, new Decimal(x), costBasemp23, costExpmp23, costLimitmp23)
             },
@@ -3126,7 +3143,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp24 = "asymptote"
                 costBasemp24 = new Decimal(1.9)
-                costExpmp24 = new Decimal(1.58)
+                costExpmp24 = new Decimal(1.57)
                 costLimitmp24 = layers.mp.buyables[24].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypemp24, new Decimal(x), costBasemp24, costExpmp24, costLimitmp24)
@@ -3163,12 +3180,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp31 = "normal"
                 costBasemp31 = new Decimal(1.5)
-                costExpmp31 = new Decimal(1.08)
+                costExpmp31 = new Decimal(1.07)
                 costLimitmp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp31, new Decimal(x), costBasemp31, costExpmp31, costLimitmp31)
             },
             effect(x) {
-                effBasemp31 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasemp31 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackmp31 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp31, effStackmp31)
@@ -3198,12 +3215,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp32 = "normal"
                 costBasemp32 = new Decimal(1.7)
-                costExpmp32 = new Decimal(1.18)
+                costExpmp32 = new Decimal(1.17)
                 costLimitmp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp32, new Decimal(x), costBasemp32, costExpmp32, costLimitmp32)
             },
             effect(x) {
-                effBasemp32 = new Decimal(0.001).times(buyableEffect('l', 21))
+                effBasemp32 = new Decimal(0.05).times(buyableEffect('l', 21))
                 effStackmp32 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp32, effStackmp32)
@@ -3233,12 +3250,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp33 = "normal"
                 costBasemp33 = new Decimal(1.9)
-                costExpmp33 = new Decimal(1.38)
+                costExpmp33 = new Decimal(1.37)
                 costLimitmp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp33, new Decimal(x), costBasemp33, costExpmp33, costLimitmp33)
             },
             effect(x) {
-                effBasemp33 = new Decimal(0.025).times(buyableEffect('l', 22))
+                effBasemp33 = new Decimal(0.1).times(buyableEffect('l', 22))
                 effStackmp33 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp33, effStackmp33)
@@ -3268,7 +3285,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp34 = "asymptote"
                 costBasemp34 = new Decimal(2.1)
-                costExpmp34 = new Decimal(1.58)
+                costExpmp34 = new Decimal(1.57)
                 costLimitmp34 = layers.mp.buyables[34].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypemp34, new Decimal(x), costBasemp34, costExpmp34, costLimitmp34)
@@ -3305,12 +3322,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp41 = "normal"
                 costBasemp41 = new Decimal(1.55)
-                costExpmp41 = new Decimal(1.08)
+                costExpmp41 = new Decimal(1.07)
                 costLimitmp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp41, new Decimal(x), costBasemp41, costExpmp41, costLimitmp41)
             },
             effect(x) {
-                effBasemp41 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasemp41 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackmp41 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp41, effStackmp41)
@@ -3340,12 +3357,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp42 = "normal"
                 costBasemp42 = new Decimal(1.75)
-                costExpmp42 = new Decimal(1.18)
+                costExpmp42 = new Decimal(1.17)
                 costLimitmp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp42, new Decimal(x), costBasemp42, costExpmp42, costLimitmp42)
             },
             effect(x) {
-                effBasemp42 = new Decimal(0.025).times(buyableEffect('l', 21))
+                effBasemp42 = new Decimal(0.0025).times(buyableEffect('l', 21))
                 effStackmp42 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp42, effStackmp42)
@@ -3375,7 +3392,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp43 = "normal"
                 costBasemp43 = new Decimal(1.7)
-                costExpmp43 = new Decimal(1.38)
+                costExpmp43 = new Decimal(1.37)
                 costLimitmp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp43, new Decimal(x), costBasemp43, costExpmp43, costLimitmp43)
             },
@@ -3410,7 +3427,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp44 = "asymptote"
                 costBasemp44 = new Decimal(2.15)
-                costExpmp44 = new Decimal(1.58)
+                costExpmp44 = new Decimal(1.57)
                 costLimitmp44 = layers.mp.buyables[44].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypemp44, new Decimal(x), costBasemp44, costExpmp44, costLimitmp44)
@@ -3447,12 +3464,12 @@ addLayer("mp", {
             cost(x) {
                 costTypemp51 = "normal"
                 costBasemp51 = new Decimal(1.6)
-                costExpmp51 = new Decimal(1.08)
+                costExpmp51 = new Decimal(1.07)
                 costLimitmp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp51, new Decimal(x), costBasemp51, costExpmp51, costLimitmp51)
             },
             effect(x) {
-                effBasemp51 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasemp51 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackmp51 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasemp51, effStackmp51)
@@ -3482,7 +3499,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp52 = "normal"
                 costBasemp52 = new Decimal(1.8)
-                costExpmp52 = new Decimal(1.18)
+                costExpmp52 = new Decimal(1.17)
                 costLimitmp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp52, new Decimal(x), costBasemp52, costExpmp52, costLimitmp52)
             },
@@ -3517,7 +3534,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp53 = "normal"
                 costBasemp53 = new Decimal(2)
-                costExpmp53 = new Decimal(1.38)
+                costExpmp53 = new Decimal(1.37)
                 costLimitmp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp53, new Decimal(x), costBasemp53, costExpmp53, costLimitmp53)
             },
@@ -3552,7 +3569,7 @@ addLayer("mp", {
             cost(x) {
                 costTypemp54 = "asymptote"
                 costBasemp54 = new Decimal(2.2)
-                costExpmp54 = new Decimal(1.58)
+                costExpmp54 = new Decimal(1.57)
                 costLimitmp54 = layers.mp.buyables[54].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypemp54, new Decimal(x), costBasemp54, costExpmp54, costLimitmp54)
@@ -3601,8 +3618,13 @@ addLayer("bp", {
     baseResource: "prestige buyables", // Name of resource prestige is based on
     baseAmount() {
         totalPB = new Decimal(0)
-        for (let i = 11; i < 25; i++) {
-            totalPB = totalPB.add(player.p.buyables[i])
+        for (let i = 11; i < 14; i++) {
+            if (i == 13) {totalPB = totalPB.add(player.p.buyables[i])}
+            else {totalPB = totalPB.add(player.p.buyables[i].pow(buyableEffect('l', 23)))}
+        }
+        for (let j = 21; j < 25; j++) {
+            if (j == 24) {totalPB = totalPB.add(player.p.buyables[j])}
+            else {totalPB = totalPB.add(player.p.buyables[j].pow(buyableEffect('l', 23)))}
         }
         totalPBuyables = totalPB
         return totalPBuyables
@@ -3822,12 +3844,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp21 = "normal"
                 costBasebp21 = new Decimal(1.3)
-                costExpbp21 = new Decimal(1.075)
+                costExpbp21 = new Decimal(1.065)
                 costLimitbp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp21, new Decimal(x), costBasebp21, costExpbp21, costLimitbp21)
             },
             effect(x) {
-                effBasebp21 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasebp21 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackbp21 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp21, effStackbp21)
@@ -3857,7 +3879,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp22 = "normal"
                 costBasebp22 = new Decimal(1.5)
-                costExpbp22 = new Decimal(1.175)
+                costExpbp22 = new Decimal(1.165)
                 costLimitbp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp22, new Decimal(x), costBasebp22, costExpbp22, costLimitbp22)
             },
@@ -3892,7 +3914,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp23 = "normal"
                 costBasebp23 = new Decimal(1.7)
-                costExpbp23 = new Decimal(1.375)
+                costExpbp23 = new Decimal(1.365)
                 costLimitbp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp23, new Decimal(x), costBasebp23, costExpbp23, costLimitbp23)
             },
@@ -3927,7 +3949,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp24 = "asymptote"
                 costBasebp24 = new Decimal(1.9)
-                costExpbp24 = new Decimal(1.575)
+                costExpbp24 = new Decimal(1.565)
                 costLimitbp24 = layers.bp.buyables[24].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypebp24, new Decimal(x), costBasebp24, costExpbp24, costLimitbp24)
@@ -3964,12 +3986,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp31 = "normal"
                 costBasebp31 = new Decimal(1.45)
-                costExpbp31 = new Decimal(1.075)
+                costExpbp31 = new Decimal(1.065)
                 costLimitbp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp31, new Decimal(x), costBasebp31, costExpbp31, costLimitbp31)
             },
             effect(x) {
-                effBasebp31 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasebp31 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackbp31 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp31, effStackbp31)
@@ -3999,12 +4021,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp32 = "normal"
                 costBasebp32 = new Decimal(1.65)
-                costExpbp32 = new Decimal(1.175)
+                costExpbp32 = new Decimal(1.165)
                 costLimitbp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp32, new Decimal(x), costBasebp32, costExpbp32, costLimitbp32)
             },
             effect(x) {
-                effBasebp32 = new Decimal(0.001).times(buyableEffect('l', 21))
+                effBasebp32 = new Decimal(0.05).times(buyableEffect('l', 21))
                 effStackbp32 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp32, effStackbp32)
@@ -4034,12 +4056,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp33 = "normal"
                 costBasebp33 = new Decimal(1.85)
-                costExpbp33 = new Decimal(1.375)
+                costExpbp33 = new Decimal(1.365)
                 costLimitbp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp33, new Decimal(x), costBasebp33, costExpbp33, costLimitbp33)
             },
             effect(x) {
-                effBasebp33 = new Decimal(0.025).times(buyableEffect('l', 22))
+                effBasebp33 = new Decimal(0.1).times(buyableEffect('l', 22))
                 effStackbp33 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp33, effStackbp33)
@@ -4069,7 +4091,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp34 = "asymptote"
                 costBasebp34 = new Decimal(2.05)
-                costExpbp34 = new Decimal(1.575)
+                costExpbp34 = new Decimal(1.565)
                 costLimitbp34 = layers.bp.buyables[34].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypebp34, new Decimal(x), costBasebp34, costExpbp34, costLimitbp34)
@@ -4106,12 +4128,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp41 = "normal"
                 costBasebp41 = new Decimal(1.5)
-                costExpbp41 = new Decimal(1.075)
+                costExpbp41 = new Decimal(1.065)
                 costLimitbp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp41, new Decimal(x), costBasebp41, costExpbp41, costLimitbp41)
             },
             effect(x) {
-                effBasebp41 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasebp41 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackbp41 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp41, effStackbp41)
@@ -4141,12 +4163,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp42 = "normal"
                 costBasebp42 = new Decimal(1.7)
-                costExpbp42 = new Decimal(1.175)
+                costExpbp42 = new Decimal(1.165)
                 costLimitbp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp42, new Decimal(x), costBasebp42, costExpbp42, costLimitbp42)
             },
             effect(x) {
-                effBasebp42 = new Decimal(0.025).times(buyableEffect('l', 21))
+                effBasebp42 = new Decimal(0.0025).times(buyableEffect('l', 21))
                 effStackbp42 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp42, effStackbp42)
@@ -4176,7 +4198,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp43 = "normal"
                 costBasebp43 = new Decimal(1.9)
-                costExpbp43 = new Decimal(1.375)
+                costExpbp43 = new Decimal(1.365)
                 costLimitbp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp43, new Decimal(x), costBasebp43, costExpbp43, costLimitbp43)
             },
@@ -4211,7 +4233,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp44 = "asymptote"
                 costBasebp44 = new Decimal(2.1)
-                costExpbp44 = new Decimal(1.575)
+                costExpbp44 = new Decimal(1.565)
                 costLimitbp44 = layers.bp.buyables[44].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypebp44, new Decimal(x), costBasebp44, costExpbp44, costLimitbp44)
@@ -4248,12 +4270,12 @@ addLayer("bp", {
             cost(x) {
                 costTypebp51 = "normal"
                 costBasebp51 = new Decimal(1.55)
-                costExpbp51 = new Decimal(1.075)
+                costExpbp51 = new Decimal(1.065)
                 costLimitbp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp51, new Decimal(x), costBasebp51, costExpbp51, costLimitbp51)
             },
             effect(x) {
-                effBasebp51 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasebp51 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStackbp51 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasebp51, effStackbp51)
@@ -4283,7 +4305,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp52 = "normal"
                 costBasebp52 = new Decimal(1.75)
-                costExpbp52 = new Decimal(1.175)
+                costExpbp52 = new Decimal(1.165)
                 costLimitbp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp52, new Decimal(x), costBasebp52, costExpbp52, costLimitbp52)
             },
@@ -4318,7 +4340,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp53 = "normal"
                 costBasebp53 = new Decimal(1.95)
-                costExpbp53 = new Decimal(1.375)
+                costExpbp53 = new Decimal(1.365)
                 costLimitbp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp53, new Decimal(x), costBasebp53, costExpbp53, costLimitbp53)
             },
@@ -4353,7 +4375,7 @@ addLayer("bp", {
             cost(x) {
                 costTypebp54 = "asymptote"
                 costBasebp54 = new Decimal(2.15)
-                costExpbp54 = new Decimal(1.575)
+                costExpbp54 = new Decimal(1.565)
                 costLimitbp54 = layers.bp.buyables[54].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypebp54, new Decimal(x), costBasebp54, costExpbp54, costLimitbp54)
@@ -4618,12 +4640,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp21 = "normal"
                 costBasesp21 = new Decimal(1.3)
-                costExpsp21 = new Decimal(1.07)
+                costExpsp21 = new Decimal(1.06)
                 costLimitsp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp21, new Decimal(x), costBasesp21, costExpsp21, costLimitsp21)
             },
             effect(x) {
-                effBasesp21 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasesp21 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStacksp21 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp21, effStacksp21)
@@ -4653,7 +4675,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp22 = "normal"
                 costBasesp22 = new Decimal(1.5)
-                costExpsp22 = new Decimal(1.17)
+                costExpsp22 = new Decimal(1.16)
                 costLimitsp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp22, new Decimal(x), costBasesp22, costExpsp22, costLimitsp22)
             },
@@ -4688,7 +4710,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp23 = "normal"
                 costBasesp23 = new Decimal(1.7)
-                costExpsp23 = new Decimal(1.37)
+                costExpsp23 = new Decimal(1.36)
                 costLimitsp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp23, new Decimal(x), costBasesp23, costExpsp23, costLimitsp23)
             },
@@ -4723,7 +4745,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp24 = "asymptote"
                 costBasesp24 = new Decimal(1.9)
-                costExpsp24 = new Decimal(1.57)
+                costExpsp24 = new Decimal(1.56)
                 costLimitsp24 = layers.sp.buyables[24].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypesp24, new Decimal(x), costBasesp24, costExpsp24, costLimitsp24)
@@ -4760,12 +4782,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp31 = "normal"
                 costBasesp31 = new Decimal(1.4)
-                costExpsp31 = new Decimal(1.07)
+                costExpsp31 = new Decimal(1.06)
                 costLimitsp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp31, new Decimal(x), costBasesp31, costExpsp31, costLimitsp31)
             },
             effect(x) {
-                effBasesp31 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasesp31 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStacksp31 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp31, effStacksp31)
@@ -4795,12 +4817,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp32 = "normal"
                 costBasesp32 = new Decimal(1.6)
-                costExpsp32 = new Decimal(1.17)
+                costExpsp32 = new Decimal(1.16)
                 costLimitsp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp32, new Decimal(x), costBasesp32, costExpsp32, costLimitsp32)
             },
             effect(x) {
-                effBasesp32 = new Decimal(0.001).times(buyableEffect('l', 21))
+                effBasesp32 = new Decimal(0.05).times(buyableEffect('l', 21))
                 effStacksp32 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp32, effStacksp32)
@@ -4830,12 +4852,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp33 = "normal"
                 costBasesp33 = new Decimal(1.8)
-                costExpsp33 = new Decimal(1.37)
+                costExpsp33 = new Decimal(1.36)
                 costLimitsp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp33, new Decimal(x), costBasesp33, costExpsp33, costLimitsp33)
             },
             effect(x) {
-                effBasesp33 = new Decimal(0.025).times(buyableEffect('l', 22))
+                effBasesp33 = new Decimal(0.1).times(buyableEffect('l', 22))
                 effStacksp33 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp33, effStacksp33)
@@ -4865,7 +4887,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp34 = "asymptote"
                 costBasesp34 = new Decimal(2)
-                costExpsp34 = new Decimal(1.57)
+                costExpsp34 = new Decimal(1.56)
                 costLimitsp34 = layers.sp.buyables[34].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypesp34, new Decimal(x), costBasesp34, costExpsp34, costLimitsp34)
@@ -4902,12 +4924,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp41 = "normal"
                 costBasesp41 = new Decimal(1.45)
-                costExpsp41 = new Decimal(1.07)
+                costExpsp41 = new Decimal(1.06)
                 costLimitsp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp41, new Decimal(x), costBasesp41, costExpsp41, costLimitsp41)
             },
             effect(x) {
-                effBasesp41 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasesp41 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStacksp41 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp41, effStacksp41)
@@ -4937,12 +4959,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp42 = "normal"
                 costBasesp42 = new Decimal(1.65)
-                costExpsp42 = new Decimal(1.17)
+                costExpsp42 = new Decimal(1.16)
                 costLimitsp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp42, new Decimal(x), costBasesp42, costExpsp42, costLimitsp42)
             },
             effect(x) {
-                effBasesp42 = new Decimal(0.025).times(buyableEffect('l', 21))
+                effBasesp42 = new Decimal(0.0025).times(buyableEffect('l', 21))
                 effStacksp42 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp42, effStacksp42)
@@ -4972,7 +4994,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp43 = "normal"
                 costBasesp43 = new Decimal(1.85)
-                costExpsp43 = new Decimal(1.37)
+                costExpsp43 = new Decimal(1.36)
                 costLimitsp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp43, new Decimal(x), costBasesp43, costExpsp43, costLimitsp43)
             },
@@ -5007,7 +5029,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp44 = "asymptote"
                 costBasesp44 = new Decimal(2.05)
-                costExpsp44 = new Decimal(1.57)
+                costExpsp44 = new Decimal(1.56)
                 costLimitsp44 = layers.sp.buyables[44].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypesp44, new Decimal(x), costBasesp44, costExpsp44, costLimitsp44)
@@ -5044,12 +5066,12 @@ addLayer("sp", {
             cost(x) {
                 costTypesp51 = "normal"
                 costBasesp51 = new Decimal(1.5)
-                costExpsp51 = new Decimal(1.07)
+                costExpsp51 = new Decimal(1.06)
                 costLimitsp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp51, new Decimal(x), costBasesp51, costExpsp51, costLimitsp51)
             },
             effect(x) {
-                effBasesp51 = new Decimal(0.1).times(buyableEffect('l', 21))
+                effBasesp51 = new Decimal(0.2).times(buyableEffect('l', 21))
                 effStacksp51 = new Decimal(x).pow(buyableEffect('l', 23))
 
                 return Decimal.times(effBasesp51, effStacksp51)
@@ -5079,7 +5101,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp52 = "normal"
                 costBasesp52 = new Decimal(1.7)
-                costExpsp52 = new Decimal(1.17)
+                costExpsp52 = new Decimal(1.16)
                 costLimitsp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp52, new Decimal(x), costBasesp52, costExpsp52, costLimitsp52)
             },
@@ -5114,7 +5136,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp53 = "normal"
                 costBasesp53 = new Decimal(1.9)
-                costExpsp53 = new Decimal(1.37)
+                costExpsp53 = new Decimal(1.36)
                 costLimitsp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp53, new Decimal(x), costBasesp53, costExpsp53, costLimitsp53)
             },
@@ -5149,7 +5171,7 @@ addLayer("sp", {
             cost(x) {
                 costTypesp54 = "asymptote"
                 costBasesp54 = new Decimal(2.1)
-                costExpsp54 = new Decimal(1.57)
+                costExpsp54 = new Decimal(1.56)
                 costLimitsp54 = layers.sp.buyables[54].purchaseLimit.add(1)
 
                 return player.buyablePrice(costTypesp54, new Decimal(x), costBasesp54, costExpsp54, costLimitsp54)
@@ -5279,7 +5301,7 @@ addLayer("lf", {
 })
 
 addLayer("hp", {
-    name: "hyperprestige points", // This is optional, only used in a few places, If absent it just uses the layer id.
+    name: "hyperprestige", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "HP", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -5361,7 +5383,7 @@ addLayer("hp", {
 
                 return Decimal.times(effBasehp11, effStackhp11)
             },
-            title() { return "prestige buyable 11"},
+            title() { return "hyperprestige buyable 11"},
             display() { return "increase point gain exponent by "+format(effBasehp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp11)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -5521,6 +5543,77 @@ addLayer("hp", {
                 }
             },
         },   
+    },
+})
+
+addLayer("rp", {
+    name: "research", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "RP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+
+    }},
+    color: "#9daae0",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "research points", // Name of prestige currency
+    baseResource: "none", // Name of resource prestige is based on
+    baseAmount() {return new Decimal(0)}, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        addrp = new Decimal(0)
+
+
+
+        multrp = new Decimal(1)
+
+        return multrp
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        exprp = new Decimal(1)
+
+        
+
+        exp2rp = new Decimal(1)
+
+
+        return exprp
+    },
+    getResetGain() {
+        rp = new Decimal(0).add(addrp).times(multrp).pow(exprp)
+        if (rp.gte(1)) {rp = rp.log10().pow(exp2rp).pow10()}
+
+        return rp.max(0).floor()
+    },
+    getNextAt() {
+
+        return Decimal.dInf
+    },
+    canReset() {return false},
+    passiveGeneration() {
+        if (false) {
+            return Decimal.dOne
+        } else {return Decimal.dZero}
+    },
+    prestigeNotify() {return false},
+    prestigeButtonText() {return "This layer cannot be reset." },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+       
+    ],
+    layerShown(){return player.hp.total.gte(1)},
+    automate() {
+    },
+    doReset(resettingLayer) {
+       
+
+    },
+    clickables: {
+
+    },
+    buyables: {
+        
     },
 })
 
