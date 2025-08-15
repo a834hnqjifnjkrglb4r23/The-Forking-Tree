@@ -58,9 +58,19 @@ addLayer("l", {
     update(diff){
         if (player.points.gte(getBuyableAmount('l', 99))) {setBuyableAmount('l', 99, player.points)}
     },
+    doReset(resettingLayer) {
+        if ((layers[resettingLayer].row > this.row)) {layerDataReset(this.layer, [])}
+    },
     layerShown(){return player.points.gte(3)||player.l.total.gte(1)},
     clickables: {
         11: { //gear level grid, numbers
+            unlocked: false,
+            onClick() {
+            },
+            canClick() {return false},
+
+        },
+        12: { //maxgearlevel - 500
             unlocked: false,
             onClick() {
             },
@@ -79,7 +89,10 @@ addLayer("l", {
             effect(x) {
                 gearpower = [[Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero], [Decimal.dOne, Decimal.dOne, Decimal.dZero, Decimal.dZero]]
                 effectivegearlevel = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
-                gearleveldiscountfactor = [[5, 5, Infinity, Infinity], [5, 5, Infinity, Infinity], [5, 5, 10, Infinity], [5, 5, 10, Infinity]]
+                gearleveldiscountfactor = [[1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), 1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), Infinity, Infinity], 
+                                           [1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), 1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), Infinity, Infinity], 
+                                           [1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), 1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), 1.58489319246111349**(5 - getBuyableAmount('r', 42).round().toNumber()), Infinity],
+                                           [1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), 1.37972966146121483**(5 - getBuyableAmount('r', 41).round().toNumber()), 1.58489319246111349**(5 - getBuyableAmount('r', 42).round().toNumber()), Infinity]]
                 for (i = 0; i < 4; i++) {
                     for (j = 0; j < 4; j++) {
                         if (getClickableState('l', 11)[i][j]  > 500) {
@@ -143,10 +156,11 @@ addLayer("l", {
                 gearlevelcoef = (lootboxseed % 1)**2
                 gearmultiplier = getBuyableAmount('l', 99).sub(3).times(250).toNumber()
                 gearlevelraw = (1 + gearlevelcoef) * gearmultiplier
-                if (gearlevelraw > 500) {gearlevelraw = (gearlevelraw / 500) ** 0.5 * 500}
-                maxgearlevel = 500
-                if (hasMilestone('l', 0)) {maxgearlevel = 600}
-                gearlevel = Math.floor(Math.min(Math.max(gearlevelraw, 1), maxgearlevel))
+                if (gearlevelraw > 500) {gearlevelraw = (gearlevelraw / 500) ** (0.5 + 0.125 * getBuyableAmount('r', 43).round().toNumber()) * 500}
+
+                if (hasMilestone('l', 0)) {setClickableState('l', 12, 200)}
+                if (hasMilestone('m', 7)) {setClickableState('l', 12, 500)}
+                gearlevel = Math.floor(Math.min(Math.max(gearlevelraw, 1), getClickableState('l', 12) + 500))
 
                 textdescription = "you've drawn a level "+gearlevel.toString()+" "+["common", "uncommon", "rare", "legendary"][geartier]+" "+["points", "bonus points", "prestige", "row 2"][geartype]+" gear."
                 if (getClickableState('l', 11)[geartype][geartier] < gearlevel) {
@@ -331,8 +345,8 @@ addLayer("l", {
     infoboxes: {
         11: {
             body() {
-                mingearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('l', 99).sub(3).times(250).toNumber(), 500), 1))
-                maxgearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('l', 99).sub(3).times(250).toNumber() * 2, 500), 1))
+                mingearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('l', 99).sub(3).times(250).toNumber(), getClickableState('l', 12) + 500), 1))
+                maxgearlevel = Math.floor(Math.max(Math.min(getBuyableAmount('l', 99).sub(3).times(250).toNumber() * 2, getClickableState('l', 12) + 500), 1))
                 textl = "Current gear level: "+mingearlevel.toString()+" to "+maxgearlevel.toString()
                 textl += "<br> Points: x"+format(gearpower[0][0])+", x"+format(gearpower[0][1])+", -"+format(gearpower[0][2])+" to 2nd sc, -"+format(gearpower[0][3])+" to 3rd sc"
                 textl += "<br> Bonus points: x"+format(gearpower[1][0])+", x"+format(gearpower[1][1])+", -"+format(gearpower[1][2])+" to 1st sc, -"+format(gearpower[1][3])+" to 2nd sc"
@@ -1013,7 +1027,7 @@ addLayer("w", {
                 if (hasUpgrade('w', 41)) {workerspersec = workerspersec.add(upgradeEffect('w', 41))}
                 if (hasUpgrade('w', 43)) {workerspersec = workerspersec.add(upgradeEffect('w', 43))}
 
-                populationLimit = new Decimal(25800)
+                populationLimit = buyableEffect('r', 51)
                 workerspersec = workerspersec.times(Decimal.sub(populationLimit, getBuyableAmount('w', 12).sub(getBuyableAmount('w', 19))).div(populationLimit))
                 return workerspersec
             },
@@ -2490,6 +2504,12 @@ addLayer("m", {
 
         },
         7: {
+            requirementDescription: "5.00 points",
+            effectDescription: "lootbox max gear level +300",
+            done() { return player.points.gte(5) },
+
+        },
+        8: {
             requirementDescription: "research buyable 23",
             effectDescription: "do not reset layer 2 on hyperprestige reset",
             done() { return getBuyableAmount('r', 23).gte(1) },
@@ -2528,7 +2548,11 @@ addLayer("b", {
         bgainmult = buyableEffect('l', 11)[1][0]
 
 
-        bgain = Decimal.max(basebgain.times(bgainmult), basebgain.add(bgainmult))
+        bgainraw = Decimal.max(basebgain.times(bgainmult), basebgain.add(bgainmult))
+
+        bgainraw = bgainraw.times(player.points.pow(buyableEffect('b', 11)).times(buyableEffect('b', 11).pow(player.points)).max(1))
+
+        bgain = bgainraw
 
 
         bfirstSoftcapStrength = new Decimal(20)
@@ -2563,14 +2587,33 @@ addLayer("b", {
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     layerShown(){return player.l.total.gte(1)},
+    buyables: {
+        11: { //bonus coefficient (base 1)
+            unlocked() {return false},
+            cost(x) {
+                return Decimal.dOne
+            },
+            effect(x) {
+
+                return Decimal.dOne.add(buyableEffect('r', 32))
+            },
+            canAfford() { return false },
+            buy() {
+
+            },
+        },
+    },
     infoboxes: {
         11: {
 
-            body() {return "you have "+format(player.b.points, 4)+" bonus points, multiplying point gain by "+format(player.b.points.add(1), 4)}
+            body() {
+                textb = "you have "+format(player.points, 4)+" points, multiplying bonus point gain by "+format(player.points.pow(buyableEffect('b', 11)).times(buyableEffect('b', 11).pow(player.points)).max(1), 4)
+                textb += "<br> you have "+format(player.b.points, 4)+" bonus points, multiplying point gain by "+format(player.b.points.pow(buyableEffect('b', 11)).times(buyableEffect('b', 11).pow(player.b.points)).max(1), 4)
+                if (buyableEffect('b', 11).gt(1)) {textb += " <br> the bonus coefficient is "+format(buyableEffect('b', 11))}
+                return textb
+            }
         }
     }, 
-    buyables: {
-    },
 })
 
 addLayer("p", {
@@ -2666,8 +2709,8 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep11 = "normal"
-                costBasep11 = new Decimal(1.3)
-                costExpp11 = new Decimal(1.1)
+                costBasep11 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costExpp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep11, new Decimal(x), costBasep11, costExpp11, costLimitp11)
             },
@@ -2702,8 +2745,8 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep12 = "normal"
-                costBasep12 = new Decimal(1.5)
-                costExpp12 = new Decimal(1.2)
+                costBasep12 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep12, new Decimal(x), costBasep12, costExpp12, costLimitp12)
             },
@@ -2773,8 +2816,8 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep21 = "normal"
-                costBasep21 = new Decimal(1.5)
-                costExpp21 = new Decimal(1.1)
+                costBasep21 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpp21 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep21, new Decimal(x), costBasep21, costExpp21, costLimitp21)
             },
@@ -2808,8 +2851,8 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep22 = "normal"
-                costBasep22 = new Decimal(1.7)
-                costExpp22 = new Decimal(1.2)
+                costBasep22 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpp22 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep22, new Decimal(x), costBasep22, costExpp22, costLimitp22)
             },
@@ -2843,8 +2886,8 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep23 = "normal"
-                costBasep23 = new Decimal(1.9)
-                costExpp23 = new Decimal(1.4)
+                costBasep23 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costExpp23 = new Decimal(1.4).sub(buyableEffect('r', 33))
                 costLimitp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep23, new Decimal(x), costBasep23, costExpp23, costLimitp23)
             },
@@ -2976,7 +3019,7 @@ addLayer("mp", {
         {key: "m", description: "M: Reset for metaprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 7))) {layerDataReset(this.layer, [])}
+        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 8))) {layerDataReset(this.layer, [])}
     },
     passiveGeneration() {
         if (hasMilestone('m', 4)) {
@@ -2998,8 +3041,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp11 = "normal"
-                costBasemp11 = new Decimal(1.2)
-                costExpmp11 = new Decimal(1.1)
+                costBasemp11 = new Decimal(1.2).root(buyableEffect('r', 31))
+                costExpmp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitmp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp11, new Decimal(x), costBasemp11, costExpmp11, costLimitmp11)
             },
@@ -3033,8 +3076,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp12 = "normal"
-                costBasemp12 = new Decimal(1.4)
-                costExpmp12 = new Decimal(1.2)
+                costBasemp12 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costExpmp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitmp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp12, new Decimal(x), costBasemp12, costExpmp12, costLimitmp12)
             },
@@ -3142,8 +3185,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp21 = "normal"
-                costBasemp21 = new Decimal(1.3)
-                costExpmp21 = new Decimal(1.07)
+                costBasemp21 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costExpmp21 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp21, new Decimal(x), costBasemp21, costExpmp21, costLimitmp21)
             },
@@ -3177,8 +3220,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp22 = "normal"
-                costBasemp22 = new Decimal(1.5)
-                costExpmp22 = new Decimal(1.17)
+                costBasemp22 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpmp22 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp22, new Decimal(x), costBasemp22, costExpmp22, costLimitmp22)
             },
@@ -3212,8 +3255,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp23 = "normal"
-                costBasemp23 = new Decimal(1.7)
-                costExpmp23 = new Decimal(1.37)
+                costBasemp23 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpmp23 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp23, new Decimal(x), costBasemp23, costExpmp23, costLimitmp23)
             },
@@ -3284,8 +3327,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp31 = "normal"
-                costBasemp31 = new Decimal(1.5)
-                costExpmp31 = new Decimal(1.07)
+                costBasemp31 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpmp31 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp31, new Decimal(x), costBasemp31, costExpmp31, costLimitmp31)
             },
@@ -3319,8 +3362,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp32 = "normal"
-                costBasemp32 = new Decimal(1.7)
-                costExpmp32 = new Decimal(1.17)
+                costBasemp32 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpmp32 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp32, new Decimal(x), costBasemp32, costExpmp32, costLimitmp32)
             },
@@ -3354,8 +3397,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp33 = "normal"
-                costBasemp33 = new Decimal(1.9)
-                costExpmp33 = new Decimal(1.37)
+                costBasemp33 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costExpmp33 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp33, new Decimal(x), costBasemp33, costExpmp33, costLimitmp33)
             },
@@ -3426,8 +3469,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp41 = "normal"
-                costBasemp41 = new Decimal(1.55)
-                costExpmp41 = new Decimal(1.07)
+                costBasemp41 = new Decimal(1.55).root(buyableEffect('r', 31))
+                costExpmp41 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp41, new Decimal(x), costBasemp41, costExpmp41, costLimitmp41)
             },
@@ -3461,8 +3504,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp42 = "normal"
-                costBasemp42 = new Decimal(1.75)
-                costExpmp42 = new Decimal(1.17)
+                costBasemp42 = new Decimal(1.75).root(buyableEffect('r', 31))
+                costExpmp42 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp42, new Decimal(x), costBasemp42, costExpmp42, costLimitmp42)
             },
@@ -3496,8 +3539,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp43 = "normal"
-                costBasemp43 = new Decimal(1.7)
-                costExpmp43 = new Decimal(1.37)
+                costBasemp43 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpmp43 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp43, new Decimal(x), costBasemp43, costExpmp43, costLimitmp43)
             },
@@ -3568,8 +3611,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp51 = "normal"
-                costBasemp51 = new Decimal(1.6)
-                costExpmp51 = new Decimal(1.07)
+                costBasemp51 = new Decimal(1.6).root(buyableEffect('r', 31))
+                costExpmp51 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp51, new Decimal(x), costBasemp51, costExpmp51, costLimitmp51)
             },
@@ -3603,8 +3646,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp52 = "normal"
-                costBasemp52 = new Decimal(1.8)
-                costExpmp52 = new Decimal(1.17)
+                costBasemp52 = new Decimal(1.8).root(buyableEffect('r', 31))
+                costExpmp52 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp52, new Decimal(x), costBasemp52, costExpmp52, costLimitmp52)
             },
@@ -3638,8 +3681,8 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp53 = "normal"
-                costBasemp53 = new Decimal(2)
-                costExpmp53 = new Decimal(1.37)
+                costBasemp53 = new Decimal(2).root(buyableEffect('r', 31))
+                costExpmp53 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp53, new Decimal(x), costBasemp53, costExpmp53, costLimitmp53)
             },
@@ -3784,7 +3827,7 @@ addLayer("bp", {
         {key: "b", description: "B: Reset for buyable points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 7))) {layerDataReset(this.layer, [])}
+        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 8))) {layerDataReset(this.layer, [])}
     },
     passiveGeneration() {
         if (hasMilestone('m', 4)) {
@@ -3806,8 +3849,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp11 = "normal"
-                costBasebp11 = new Decimal(1.2)
-                costExpbp11 = new Decimal(1.1)
+                costBasebp11 = new Decimal(1.2).root(buyableEffect('r', 31))
+                costExpbp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitbp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp11, new Decimal(x), costBasebp11, costExpbp11, costLimitbp11)
             },
@@ -3841,8 +3884,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp12 = "normal"
-                costBasebp12 = new Decimal(1.4)
-                costExpbp12 = new Decimal(1.2)
+                costBasebp12 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costExpbp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitbp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp12, new Decimal(x), costBasebp12, costExpbp12, costLimitbp12)
             },
@@ -3951,8 +3994,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp21 = "normal"
-                costBasebp21 = new Decimal(1.3)
-                costExpbp21 = new Decimal(1.065)
+                costBasebp21 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costExpbp21 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp21, new Decimal(x), costBasebp21, costExpbp21, costLimitbp21)
             },
@@ -3986,8 +4029,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp22 = "normal"
-                costBasebp22 = new Decimal(1.5)
-                costExpbp22 = new Decimal(1.165)
+                costBasebp22 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpbp22 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp22, new Decimal(x), costBasebp22, costExpbp22, costLimitbp22)
             },
@@ -4021,8 +4064,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp23 = "normal"
-                costBasebp23 = new Decimal(1.7)
-                costExpbp23 = new Decimal(1.365)
+                costBasebp23 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpbp23 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp23, new Decimal(x), costBasebp23, costExpbp23, costLimitbp23)
             },
@@ -4093,8 +4136,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp31 = "normal"
-                costBasebp31 = new Decimal(1.45)
-                costExpbp31 = new Decimal(1.065)
+                costBasebp31 = new Decimal(1.45).root(buyableEffect('r', 31))
+                costExpbp31 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp31, new Decimal(x), costBasebp31, costExpbp31, costLimitbp31)
             },
@@ -4128,8 +4171,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp32 = "normal"
-                costBasebp32 = new Decimal(1.65)
-                costExpbp32 = new Decimal(1.165)
+                costBasebp32 = new Decimal(1.65).root(buyableEffect('r', 31))
+                costExpbp32 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp32, new Decimal(x), costBasebp32, costExpbp32, costLimitbp32)
             },
@@ -4163,8 +4206,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp33 = "normal"
-                costBasebp33 = new Decimal(1.85)
-                costExpbp33 = new Decimal(1.365)
+                costBasebp33 = new Decimal(1.85).root(buyableEffect('r', 31))
+                costExpbp33 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp33, new Decimal(x), costBasebp33, costExpbp33, costLimitbp33)
             },
@@ -4235,8 +4278,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp41 = "normal"
-                costBasebp41 = new Decimal(1.5)
-                costExpbp41 = new Decimal(1.065)
+                costBasebp41 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpbp41 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp41, new Decimal(x), costBasebp41, costExpbp41, costLimitbp41)
             },
@@ -4270,8 +4313,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp42 = "normal"
-                costBasebp42 = new Decimal(1.7)
-                costExpbp42 = new Decimal(1.165)
+                costBasebp42 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpbp42 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp42, new Decimal(x), costBasebp42, costExpbp42, costLimitbp42)
             },
@@ -4305,8 +4348,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp43 = "normal"
-                costBasebp43 = new Decimal(1.9)
-                costExpbp43 = new Decimal(1.365)
+                costBasebp43 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costExpbp43 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp43, new Decimal(x), costBasebp43, costExpbp43, costLimitbp43)
             },
@@ -4377,8 +4420,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp51 = "normal"
-                costBasebp51 = new Decimal(1.55)
-                costExpbp51 = new Decimal(1.065)
+                costBasebp51 = new Decimal(1.55).root(buyableEffect('r', 31))
+                costExpbp51 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp51, new Decimal(x), costBasebp51, costExpbp51, costLimitbp51)
             },
@@ -4412,8 +4455,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp52 = "normal"
-                costBasebp52 = new Decimal(1.75)
-                costExpbp52 = new Decimal(1.165)
+                costBasebp52 = new Decimal(1.75).root(buyableEffect('r', 31))
+                costExpbp52 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp52, new Decimal(x), costBasebp52, costExpbp52, costLimitbp52)
             },
@@ -4447,8 +4490,8 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp53 = "normal"
-                costBasebp53 = new Decimal(1.95)
-                costExpbp53 = new Decimal(1.365)
+                costBasebp53 = new Decimal(1.95).root(buyableEffect('r', 31))
+                costExpbp53 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp53, new Decimal(x), costBasebp53, costExpbp53, costLimitbp53)
             },
@@ -4599,7 +4642,7 @@ addLayer("sp", {
         }
     },
     doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 7))) {layerDataReset(this.layer, [])}
+        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 8))) {layerDataReset(this.layer, [])}
     },
     layerShown(){return (player.points.gte(2)||player.sp.total.gte(1))},
     buyables: {
@@ -4607,8 +4650,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp11 = "normal"
-                costBasesp11 = new Decimal(1.2)
-                costExpsp11 = new Decimal(1.1)
+                costBasesp11 = new Decimal(1.2).root(buyableEffect('r', 31))
+                costExpsp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitsp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp11, new Decimal(x), costBasesp11, costExpsp11, costLimitsp11)
             },
@@ -4642,8 +4685,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp12 = "normal"
-                costBasesp12 = new Decimal(1.4)
-                costExpsp12 = new Decimal(1.2)
+                costBasesp12 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costExpsp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitsp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp12, new Decimal(x), costBasesp12, costExpsp12, costLimitsp12)
             },
@@ -4750,8 +4793,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp21 = "normal"
-                costBasesp21 = new Decimal(1.3)
-                costExpsp21 = new Decimal(1.06)
+                costBasesp21 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costExpsp21 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp21, new Decimal(x), costBasesp21, costExpsp21, costLimitsp21)
             },
@@ -4785,8 +4828,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp22 = "normal"
-                costBasesp22 = new Decimal(1.5)
-                costExpsp22 = new Decimal(1.16)
+                costBasesp22 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpsp22 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp22, new Decimal(x), costBasesp22, costExpsp22, costLimitsp22)
             },
@@ -4820,8 +4863,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp23 = "normal"
-                costBasesp23 = new Decimal(1.7)
-                costExpsp23 = new Decimal(1.36)
+                costBasesp23 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpsp23 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp23, new Decimal(x), costBasesp23, costExpsp23, costLimitsp23)
             },
@@ -4892,8 +4935,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp31 = "normal"
-                costBasesp31 = new Decimal(1.4)
-                costExpsp31 = new Decimal(1.06)
+                costBasesp31 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costExpsp31 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp31, new Decimal(x), costBasesp31, costExpsp31, costLimitsp31)
             },
@@ -4927,8 +4970,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp32 = "normal"
-                costBasesp32 = new Decimal(1.6)
-                costExpsp32 = new Decimal(1.16)
+                costBasesp32 = new Decimal(1.6).root(buyableEffect('r', 31))
+                costExpsp32 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp32, new Decimal(x), costBasesp32, costExpsp32, costLimitsp32)
             },
@@ -4962,8 +5005,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp33 = "normal"
-                costBasesp33 = new Decimal(1.8)
-                costExpsp33 = new Decimal(1.36)
+                costBasesp33 = new Decimal(1.8).root(buyableEffect('r', 31))
+                costExpsp33 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp33, new Decimal(x), costBasesp33, costExpsp33, costLimitsp33)
             },
@@ -5034,8 +5077,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp41 = "normal"
-                costBasesp41 = new Decimal(1.45)
-                costExpsp41 = new Decimal(1.06)
+                costBasesp41 = new Decimal(1.45).root(buyableEffect('r', 31))
+                costExpsp41 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp41, new Decimal(x), costBasesp41, costExpsp41, costLimitsp41)
             },
@@ -5069,8 +5112,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp42 = "normal"
-                costBasesp42 = new Decimal(1.65)
-                costExpsp42 = new Decimal(1.16)
+                costBasesp42 = new Decimal(1.65).root(buyableEffect('r', 31))
+                costExpsp42 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp42, new Decimal(x), costBasesp42, costExpsp42, costLimitsp42)
             },
@@ -5104,8 +5147,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp43 = "normal"
-                costBasesp43 = new Decimal(1.85)
-                costExpsp43 = new Decimal(1.36)
+                costBasesp43 = new Decimal(1.85).root(buyableEffect('r', 31))
+                costExpsp43 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp43, new Decimal(x), costBasesp43, costExpsp43, costLimitsp43)
             },
@@ -5176,8 +5219,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp51 = "normal"
-                costBasesp51 = new Decimal(1.5)
-                costExpsp51 = new Decimal(1.06)
+                costBasesp51 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costExpsp51 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp51, new Decimal(x), costBasesp51, costExpsp51, costLimitsp51)
             },
@@ -5211,8 +5254,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp52 = "normal"
-                costBasesp52 = new Decimal(1.7)
-                costExpsp52 = new Decimal(1.16)
+                costBasesp52 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costExpsp52 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp52, new Decimal(x), costBasesp52, costExpsp52, costLimitsp52)
             },
@@ -5246,8 +5289,8 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp53 = "normal"
-                costBasesp53 = new Decimal(1.9)
-                costExpsp53 = new Decimal(1.36)
+                costBasesp53 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costExpsp53 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp53, new Decimal(x), costBasesp53, costExpsp53, costLimitsp53)
             },
@@ -5418,7 +5461,7 @@ addLayer("hp", {
     startData() { return {
         unlocked: true,
 		points: new Decimal(0),
-
+        total: new Decimal(0),
     }},
     color: "#3ea430",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
@@ -5753,31 +5796,18 @@ addLayer("r", {
                 return Decimal.times(effBaser11, effStackr11)
             },
             title() { return "research buyable 11"},
-            display() { return "obtain "+format(effBaser11)+" research points <br> cost: "+format(this.cost())+" workers, $"+format(this.cost().times(100000))+" <br> requirement: "+format(getBuyableAmount([this.layer], [this.id]).add(1))+" hyperprestige points <br> owned: "+format(effStackr11)+" <br> effect: "+format(this.effect())},
+            display() { return "obtain "+format(effBaser11)+" research points <br> cost: "+format(this.cost())+" workers, $"+format(this.cost().times(100000))+" <br> requirement: "+format(getBuyableAmount([this.layer], [this.id]).add(1))+" total hyperprestige points <br> owned: "+format(effStackr11)+" <br> effect: "+format(this.effect())},
             canAfford() { return (player.w.points.gte(this.cost())&&player.j.points.gte(this.cost().times(100000))&&player.hp.total.gte(getBuyableAmount([this.layer], [this.id]).add(1))) },
             buy() {
                 player.w.points = player.w.points.sub(this.cost())
                 player.j.points = player.j.points.sub(this.cost().times(100000))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-                setBuyableAmount('w', 19, Decimal.pow(costBaser11, getBuyableAmount(this.layer, this.id)).div(Decimal.sub(1, costBaser11)).sub(Decimal.dOne.div(Decimal.sub(1, costBaser11))).times(-1))
+                setBuyableAmount('w', 19, getBuyableAmount('w', 19).sub(this.cost()))
                 addPoints('r', 1)
             },
             buyMax() {
-                if ((costTyper11 == "asymptote")||player.w.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    actualMaxPurchaseabler11 = Decimal.min(player.w.points.max(1).log(costBaser11), player.j.points.div(100000).max(1).log(costBaser11))
-                    if (actualMaxPurchaseabler11.lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        addPoints('r', actualMaxPurchaseabler11.sub(getBuyableAmount(this.layer, this.id)))
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTyper11, player[this.layer].points, costBaser11, costExpr11, costLimitr11))
-                        setBuyableAmount('w', 19, Decimal.pow(costBaser11, getBuyableAmount(this.layer, this.id)).div(Decimal.sub(1, costBaser11)).sub(Decimal.dOne.div(Decimal.sub(1, costBaser11))).times(-1))
-                        if (player.w.points.lt('e200')) {
-                            player.w.points = player.w.points.sub(Decimal.pow(costBaser11, getBuyableAmount(this.layer, this.id)).div(Decimal.sub(1, costBaser11)).sub(Decimal.dOne.div(Decimal.sub(1, costBaser11))).times(-1))
-                            player.j.points = player.j.points.sub(Decimal.pow(costBaser11, getBuyableAmount(this.layer, this.id)).div(Decimal.sub(1, costBaser11)).sub(Decimal.dOne.div(Decimal.sub(1, costBaser11))).times(-100000))
-                        }
-                    }
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
                 }
             },
         },
@@ -5848,7 +5878,7 @@ addLayer("r", {
                 return Decimal.times(effBaser22, effStackr22)
             },
             title() { return "research buyable 22"},
-            display() { return "do not reset milestones on hyperprestige reset <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr22)+" <br> effect: "+format(this.effect())},
+            display() { return "do not reset milestones on hyperprestige reset <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr22)+"/1.00 <br> effect: "+format(this.effect())},
             canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))},
             buy() {
                 player.j.points = player.j.points.sub(this.cost()[1])
@@ -5872,8 +5902,8 @@ addLayer("r", {
                 return Decimal.times(effBaser23, effStackr23)
             },
             title() { return "research buyable 23"},
-            display() { return "do not reset layer 2 on hyperprestige reset <br> barrier: "+formatWhole(reqRPr23)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr22)+" <br> effect: "+format(this.effect())},
-            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))},
+            display() { return "do not reset layer 2 on hyperprestige reset <br> barrier: "+formatWhole(reqRPr23)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr23)+"/1.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(3)},
             buy() {
                 player.j.points = player.j.points.sub(this.cost()[1])
                 setClickableState([this.layer], 11, this.id)
@@ -5881,6 +5911,187 @@ addLayer("r", {
                 setBuyableAmount([this.layer], 13, this.cost()[2])
             },
         },  
+        31: {
+            unlocked() {return true},
+            purchaseLimit: new Decimal(20),
+            cost(x) {
+                costBaser31 = new Decimal(2)
+                costMultRMinr31 = new Decimal(15)
+                costMultMoneyr31 = new Decimal(25000)
+                return [costBaser31.pow(x).times(costMultRMinr31), costBaser31.pow(x).times(costMultMoneyr31)]
+            },
+            effect(x) {
+                effBaser31 = new Decimal(10)
+                effStackr31 = new Decimal(x).div(20)
+
+                return Decimal.pow(effBaser31, effStackr31)
+            },
+            title() { return "research buyable 31"},
+            display() { return "root row 1 to 2 unlimited buyable cost by "+format(effBaser31.pow(1/20))+" <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr31.times(20))+"/20.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        32: {
+            unlocked() {return true},
+            purchaseLimit: new Decimal(20),
+            cost(x) {
+                costBaser32 = new Decimal(3)
+                costMultRMinr32 = new Decimal(5)
+                costMultMoneyr32 = new Decimal(5000)
+                return [costBaser32.pow(x).times(costMultRMinr32), costBaser32.pow(x).times(costMultMoneyr32)]
+            },
+            effect(x) {
+                effBaser32 = new Decimal(0.1)
+                effStackr32 = new Decimal(x)
+
+                return Decimal.times(effBaser32, effStackr32)
+            },
+            title() { return "research buyable 32"},
+            display() { return "increase bonus point boost coefficient by "+format(effBaser32)+" <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr32)+"/20.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        33: {
+            unlocked() {return player[this.layer].points.gte(5)},
+            purchaseLimit: new Decimal(8),
+            cost(x) {
+                costBaser33 = new Decimal(2)
+                costMultRMinr33 = new Decimal(15)
+                costMultMoneyr33 = new Decimal(100000)
+                reqRPr33 = new Decimal(4)
+                return [costBaser33.pow(x).times(costMultRMinr33), costBaser33.pow(x).times(costMultMoneyr33)]
+            },
+            effect(x) {
+                effBaser33 = new Decimal(0.0025)
+                effStackr33 = new Decimal(x)
+
+                return Decimal.times(effBaser33, effStackr33)
+            },
+            title() { return "research buyable 33"},
+            display() { return "subtract row 1 to 2 unlimited buyable exponent by "+format(effBaser33)+"<br> barrier: "+formatWhole(reqRPr33)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr33)+"/8.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        },
+        41: {
+            unlocked() {return player[this.layer].points.gte(2)},
+            purchaseLimit: new Decimal(5),
+            cost(x) {
+                costBaser41 = new Decimal(2)
+                costMultRMinr41 = new Decimal(5)
+                costMultMoneyr41 = new Decimal(10000)
+                reqRPr41 = new Decimal(x)
+                return [costBaser41.pow(x).times(costMultRMinr41), costBaser41.pow(x).times(costMultMoneyr41), reqRPr41]
+            },
+            effect(x) {
+                effBaser41 = new Decimal(1.37972966146121483)
+                effStackr41 = new Decimal(x)
+
+                return Decimal.pow(effBaser41, effStackr41)
+            },
+            title() { return "research buyable 41"},
+            display() { return "divide common gear effective level softcap by "+format(effBaser41)+"<br> barrier: "+formatWhole(reqRPr41)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr41)+"/5.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr41.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        42: {
+            unlocked() {return player[this.layer].points.gte(2)},
+            purchaseLimit: new Decimal(5),
+            cost(x) {
+                costBaser42 = new Decimal(2)
+                costMultRMinr42 = new Decimal(10)
+                costMultMoneyr42 = new Decimal(20000)
+                reqRPr42 = new Decimal(x)
+                return [costBaser42.pow(x).times(costMultRMinr42), costBaser42.pow(x).times(costMultMoneyr42), reqRPr42]
+            },
+            effect(x) {
+                effBaser42 = new Decimal(1.58489319246111349)
+                effStackr42 = new Decimal(x)
+
+                return Decimal.pow(effBaser42, effStackr42)
+            },
+            title() { return "research buyable 42"},
+            display() { return "divide common gear effective level softcap by "+format(effBaser42)+"<br> barrier: "+formatWhole(reqRPr42)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr42)+"/5.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr42.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        43: {
+            unlocked() {return player[this.layer].points.gte(4)},
+            purchaseLimit: new Decimal(4),
+            cost(x) {
+                costBaser43 = new Decimal(3)
+                costMultRMinr43 = new Decimal(20)
+                costMultMoneyr43 = new Decimal(50000)
+                reqRPr43 = new Decimal(x).times(2)
+                return [costBaser43.pow(x).times(costMultRMinr43), costBaser43.pow(x).times(costMultMoneyr43), reqRPr43]
+            },
+            effect(x) {
+                effBaser43 = new Decimal(0.125)
+                effStackr43 = new Decimal(x)
+
+                return Decimal.times(effBaser43, effStackr43)
+            },
+            title() { return "research buyable 43"},
+            display() { return "subtract gear gain level softcap by "+format(effBaser43)+" <br> barrier: "+formatWhole(reqRPr43)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr43)+"/4.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr43.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        51: {
+            unlocked() {return player[this.layer].points.gte(6)},
+            purchaseLimit: new Decimal(5),
+            cost(x) {
+                costBaser51 = new Decimal(4)
+                costMultRMinr51 = new Decimal(60)
+                costMultMoneyr51 = new Decimal(500000)
+                reqRPr51 = Decimal.times(2, x).add(5)
+                return [costBaser51.pow(x).times(costMultRMinr51), costBaser51.pow(x).times(costMultMoneyr51), reqRPr51]
+            },
+            effect(x) {
+
+                effr51 = [new Decimal(25800), new Decimal(132000), new Decimal(582000), new Decimal(1950000), new Decimal(4650000), new Decimal(8250000), new Decimal(8250000)]
+                         //0                        1                      2                       3                   4                    5                    5+1  // note these numbers are all arbitrarily decided and there is no formula
+                effStackr51number = x.toNumber()
+                return effr51[effStackr51number]
+            },
+            title() { return "research buyable 51"},
+            display() { return "travel to a new world to hire more workers. this world has "+format(effr51[effStackr51number+1].sub(this.effect()))+" inhabitants <br> barrier: "+formatWhole(reqRPr51)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+effStackr51number.toString()+".00/5.00 <br> your current world has "+format(this.effect())+" inhabitants"},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr51.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
     },
     infoboxes: {
         11: {

@@ -66,7 +66,7 @@ function getPointGen() {
 
 	gainraw = baseGain.times(gainMult)
 	gainraw = gainraw.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
-	gainraw = gainraw.times(player.b.points.add(1).max(1))
+	gainraw = gainraw.times(player.b.points.pow(buyableEffect('b', 11)).times(buyableEffect('b', 11).pow(player.b.points)).max(1))
 
 	gainExp = new Decimal(1)
 	gainExp = gainExp.add(buyableEffect('hp', 11))
