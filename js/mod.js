@@ -98,6 +98,8 @@ function getPointGen() {
 	fifthSoftcapStrength = new Decimal(1200)
 	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(fifthSoftcapStrength))}
 
+	sixthSoftcapStrength = new Decimal(7200)
+	if (player.points.gte(6)) {gain = gain.div(player.points.div(6).pow(sixthSoftcapStrength))}
 
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
 

@@ -57,11 +57,43 @@ addLayer("l", {
     ],
     update(diff){
         if (player.points.gte(getBuyableAmount('l', 99))) {setBuyableAmount('l', 99, player.points)}
+        if (getBuyableAmount('r', 53).gte(1)) {setBuyableAmount('l', 24, getBuyableAmount('l', 24).add(buyableEffect('r', 53).times(diff)))}
     },
-    doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)) {layerDataReset(this.layer, [])}
+    doReset(resettingLayer) { //lootbox        
+        if (layers[resettingLayer].row > 4.5) {layerDataReset(this.layer, [])}
+        if (layers[resettingLayer].row = 4) {
+            if (hasMilestone('m', 10)) {}
+            else {
+            listkeep = []
+            if (buyableEffect('r', 34).gt(0.9999)) {listkeep.push("clickables")}
+                else {
+                    gearlevelkeep = buyableEffect('r', 34).toNumber()
+                    newgearlevel = getClickableState('l', 11)
+                    for (i = 0; i < 4; i++) {
+                        for (j = 0; j < 4; j++) {
+                            newgearlevel[i][j] = Math.floor(newgearlevel[i][j] * gearlevelkeep)
+                        }
+                    }
+                }
+                if (buyableEffect('r', 44).gt(0.9999)) {listkeep.push("buyables")}
+                else {
+                    scrapkeep = buyableEffect('r', 44)
+                    newscrap = []
+                    for (i = 21; i < 24; i++) {
+                        newscrap[i] = getBuyableAmount('l', i).times(scrapkeep).floor()
+                    }
+                }
+                layerDataReset(this.layer, listkeep)
+                if (buyableEffect('r', 34).lt(0.9999)) {setClickableState('l', 11, newgearlevel)}
+                if (buyableEffect('r', 44).lt(0.9999)) {
+                    for (i = 21; i < 24; i++) {
+                        setBuyableAmount('l', i, newscrap[i])
+                    }
+                }
+            }
+        }
     },
-    layerShown(){return player.points.gte(3)||player.l.total.gte(1)},
+    layerShown() {return player.points.gte(3)||player.l.total.gte(1)||player.hp.total.gte(1)},
     clickables: {
         11: { //gear level grid, numbers
             unlocked: false,
@@ -248,7 +280,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.pow(2, getBuyableAmount('l', 21).add(1).log(2).pow(1.3333333333333333).sub(23.41344561179871)).add(0.9999999104943257).pow(hasMilestone('l', 0)+0) //(log(1600)/log(2))^1.33, 1-2^-23.4
+                eff = Decimal.pow(2, getBuyableAmount('l', 21).times(buyableEffect('l', 24)[2]).add(1).log(2).pow(1.3333333333333333).sub(23.41344561179871)).add(0.9999999104943257).pow(hasMilestone('l', 0)+0) //(log(1600)/log(2))^1.33, 1-2^-23.4
                 //if (eff.gte(16)) {eff = eff.div(16).pow(0.5).times(16)}
                 return eff
             },
@@ -264,7 +296,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.pow(2, getBuyableAmount('l', 22).add(1).log(2).pow(1.3333333333333333).div(2).sub(10.263708402767985)).add(0.999186578019176).pow(hasMilestone('l', 0)+0) //(log(800)/log(2))^1.33/2, 1-2^-10.2
+                eff = Decimal.pow(2, getBuyableAmount('l', 22).times(buyableEffect('l', 24)[2]).add(1).log(2).pow(1.3333333333333333).div(2).sub(10.263708402767985)).add(0.999186578019176).pow(hasMilestone('l', 0)+0) //(log(800)/log(2))^1.33/2, 1-2^-10.2
                 //if (eff.gte(4)) {eff = eff.div(4).pow(0.5).times(4)}
                 return eff
             },
@@ -280,9 +312,26 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.min(getBuyableAmount('l', 23).add(4).log(2).log(2).pow(0.25).pow(hasMilestone('l', 0)+0), getBuyableAmount('l', 23).div(100).add(1))
+                eff = Decimal.min(getBuyableAmount('l', 23).times(buyableEffect('l', 24)[2]).add(4).log(2).log(2).pow(0.25).pow(hasMilestone('l', 0)+0), getBuyableAmount('l', 23).div(100).add(1).pow(hasMilestone('l', 0)+0))
                 //if (eff.gte(4)) {eff = eff.div(4).pow(0.5).times(4)}
                 return eff
+            },
+            canAfford() { return false},
+            buy() {
+
+            },
+        },
+        24: {// superscrap
+            unlocked() {return false},
+            cost(x) {
+
+                return Decimal.dOne
+            },
+            effect(x) {
+                eff0 = getBuyableAmount('l', 24).add(2).log(2).pow(1.75).sub(1).times(1.25).add(1).pow(getBuyableAmount('r', 53).add(3).div(4))
+                eff1 = getBuyableAmount('l', 24).add(2).log(2).pow(1.5).sub(1).times(1).add(1).pow(getBuyableAmount('r', 53).add(3).div(4))
+                eff2 = getBuyableAmount('l', 24).add(2).log(2).pow(1.25).sub(1).times(0.75).add(1).pow(getBuyableAmount('r', 53).add(3).div(4))
+                return [eff0, eff1, eff2]
             },
             canAfford() { return false},
             buy() {
@@ -317,7 +366,7 @@ addLayer("l", {
                         gearlevel500slots = gearlevel500slots + ((getClickableState('l', 11)[i][j] >= 500)*1)
                     }
                 }
-                return gearlevel500slots == 16
+                return (gearlevel500slots == 16||hasMilestone('m', 7))
             },
             unlocked() {
                 gearlevel500slots = 0
@@ -353,14 +402,17 @@ addLayer("l", {
                 textl += "<br> Prestige: x"+format(gearpower[2][0])+", x"+format(gearpower[2][1])+", +"+format(gearpower[2][2])+" to exp, +"+format(gearpower[2][3])+" to 2nd exp"
                 textl += "<br> 2nd row: x"+format(gearpower[3][0])+", x"+format(gearpower[3][1])+", +"+format(gearpower[3][2])+" to exp, +"+format(gearpower[3][3])+" to 2nd exp"
                 
-                if (getBuyableAmount('l', 21).gt(0)&&hasMilestone('l', 0)) {
+                if (getBuyableAmount('l', 21).gt(0)||hasMilestone('l', 0)) {
                     textl += " <br><br> You have "+format(getBuyableAmount('l', 21))+" common gear scrap, multiplying buyables ?1/?2 above this effect by "+format(buyableEffect('l', 21))
                 }
-                if (getBuyableAmount('l', 22).gt(0)&&hasMilestone('l', 0)) {
+                if (getBuyableAmount('l', 22).gt(0)||hasMilestone('l', 0)) {
                     textl += " <br><br> You have "+format(getBuyableAmount('l', 22))+" rare gear scrap, multiplying buyables ?3  above this except 13 effect by "+format(buyableEffect('l', 22))
                 }
-                if (getBuyableAmount('l', 23).gt(0)&&hasMilestone('l', 0)) {
+                if (getBuyableAmount('l', 23).gt(0)||hasMilestone('l', 0)) {
                     textl += " <br><br> You have "+format(getBuyableAmount('l', 23))+" legendary gear scrap, raising all buyables affected by previous scraps' effective count by "+format(buyableEffect('l', 23))
+                }
+                if (getBuyableAmount('l', 24).gt(0)) {
+                    textl += " <br><br> You have "+format(getBuyableAmount('l', 24))+" superscrap, multiplying the value of clicks by "+format(buyableEffect('l', 24)[0])+", research speed by "+format(buyableEffect('l', 24)[1])+", and your effective count of other scraps by "+format(buyableEffect('l', 24)[2])
                 }
                 textl += "<br><br>"+textdescription
                 return textl}
@@ -396,9 +448,10 @@ addLayer("j", {
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
-    row: "side", // Row the layer is in on the tree (0 is the first row)
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+    displayRow: "side",
     layerShown(){return true},
-    doReset(resettingLayer) {
+    doReset(resettingLayer) { //job
         return;
     },
     infoboxes: {
@@ -413,7 +466,7 @@ addLayer("j", {
                 return Decimal.dZero
             },
             effect(x) {
-                wages = getBuyableAmount('j', 25).times(0.25).add(7.25)
+                wages = getBuyableAmount('j', 25).times(0.25).add(7.25).times(buyableEffect('l', 24)[0])
                 clicksPerHour = new Decimal(4800)
                 owedMoney = getBuyableAmount('j', 11).times(wages).div(clicksPerHour).times(100).floor().div(100)
                 return Decimal.dZero
@@ -744,9 +797,10 @@ addLayer("sj", {
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
-    row: "side", // Row the layer is in on the tree (0 is the first row)
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+    displayRow: "side",
     layerShown(){return true},
-    doReset(resettingLayer) {
+    doReset(resettingLayer) { //superjob
         return;
     },
     infoboxes: {
@@ -990,8 +1044,9 @@ addLayer("w", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {return false},
     prestigeNotify() {return true},
-    row: "side", // Row the layer is in on the tree (0 is the first row)
-    doReset(resettingLayer) {
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+    displayRow: "side",
+    doReset(resettingLayer) { //workers
 
         return;
     },
@@ -1028,7 +1083,8 @@ addLayer("w", {
                 if (hasUpgrade('w', 43)) {workerspersec = workerspersec.add(upgradeEffect('w', 43))}
 
                 populationLimit = buyableEffect('r', 51)
-                workerspersec = workerspersec.times(Decimal.sub(populationLimit, getBuyableAmount('w', 12).sub(getBuyableAmount('w', 19))).div(populationLimit))
+                effectiveworkers = getBuyableAmount('w', 12).sub(getBuyableAmount('w', 19))
+                workerspersec = workerspersec.times(Decimal.sub(populationLimit, effectiveworkers).div(populationLimit))
                 return workerspersec
             },
             title() { return },
@@ -1927,7 +1983,7 @@ addLayer("g", {
     canReset() {return false},
     prestigeNotify() {return true},
     row: "side", // Row the layer is in on the tree (0 is the first row)
-    doReset(resettingLayer) {
+    doReset(resettingLayer) { //gems
 
         return;
     },
@@ -2372,7 +2428,7 @@ addLayer("g", {
             cost(x) {
                 cost = new Decimal(25)
                 if (hasMilestone('m', 1)) {cost = new Decimal(12)}
-
+                if (hasMilestone('m', 8)) {cost = new Decimal(5)}
                 return cost
             },
             effect(x) {
@@ -2393,7 +2449,7 @@ addLayer("g", {
             cost(x) {
                 cost = new Decimal(27)
                 if (hasMilestone('m', 1)) {cost = new Decimal(13)}
-
+                if (hasMilestone('m', 8)) {cost = new Decimal(6)}
                 return cost
             },
             effect(x) {
@@ -2414,7 +2470,7 @@ addLayer("g", {
             cost(x) {
                 cost = new Decimal(30)
                 if (hasMilestone('m', 1)) {cost = new Decimal(14)}
-
+                if (hasMilestone('m', 8)) {cost = new Decimal(7)}
                 return cost
             },
             effect(x) {
@@ -2453,7 +2509,7 @@ addLayer("m", {
         else {return 4}
     },
     displayRow: "side", // Row the layer is in on the tree (0 is the first row)
-    doReset(resettingLayer) {
+    doReset(resettingLayer) { //milestones
         layerDataReset('m')
     },
     layerShown(){return true},
@@ -2505,7 +2561,7 @@ addLayer("m", {
         },
         7: {
             requirementDescription: "5.00 points",
-            effectDescription: "lootbox max gear level +300",
+            effectDescription: "lootbox max gear level +300, always unlock gear scrap",
             done() { return player.points.gte(5) },
 
         },
@@ -2513,6 +2569,18 @@ addLayer("m", {
             requirementDescription: "research buyable 23",
             effectDescription: "do not reset layer 2 on hyperprestige reset",
             done() { return getBuyableAmount('r', 23).gte(1) },
+
+        },
+        9: {
+            requirementDescription: "research buyable 24",
+            effectDescription: "do not reset bonus points on hyperprestige reset",
+            done() { return getBuyableAmount('r', 24).gte(1) },
+
+        },
+        10: {
+            requirementDescription: "research buyable 34 and 44 all complete",
+            effectDescription: "do not reset lootboxes on hyperprestige reset",
+            done() { return getBuyableAmount('r', 34).gte(4)&&getBuyableAmount('r', 44).gte(6) },
 
         },
     },
@@ -2557,10 +2625,12 @@ addLayer("b", {
 
         bfirstSoftcapStrength = new Decimal(20)
         bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('l', 11)[1][2])
+        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('hp', 12))
         if (player.b.points.gte(1)) {bgain = bgain.div(player.b.points.pow(bfirstSoftcapStrength))}
 
         bsecondSoftcapStrength = new Decimal(20)
         bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('l', 11)[1][3])
+        bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('hp', 13))
         if (player.b.points.gte(2)) {bgain = bgain.div(player.b.points.div(2).pow(bsecondSoftcapStrength))}
 
         bthirdSoftcapStrength = new Decimal(60)
@@ -2570,7 +2640,10 @@ addLayer("b", {
         if (player.b.points.gte(4)) {bgain = bgain.div(player.b.points.div(4).pow(bfourthSoftcapStrength))}
 
         bfifthSoftcapStrength = new Decimal(1200)
-        if (player.b.points.gte(4)) {bgain = bgain.div(player.b.points.div(4).pow(bfifthSoftcapStrength))}
+        if (player.b.points.gte(5)) {bgain = bgain.div(player.b.points.div(5).pow(bfifthSoftcapStrength))}
+
+        bsixthSoftcapStrength = new Decimal(7200)
+	    if (player.b.points.gte(6)) {gain = gain.div(player.b.points.div(6).pow(bsixthSoftcapStrength))}
         
         if (player.b.points.gte(9)) {bgain = bgain.times(player.b.points.sub(10).times(-1))} //***** */
         return bgain.min(1)
@@ -2586,7 +2659,12 @@ addLayer("b", {
         return Decimal.dOne
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return player.l.total.gte(1)},
+    layerShown(){return player.l.total.gte(1)||player.b.points.gte(0.0001)},
+    doReset(resettingLayer) { //bonus points
+        actualRow = 0
+        if (hasMilestone('m', 9)) {actualRow = 4}
+        if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
+    },
     buyables: {
         11: { //bonus coefficient (base 1)
             unlocked() {return false},
@@ -2701,8 +2779,10 @@ addLayer("p", {
             }
         }
     },
-    doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 2))) {layerDataReset(this.layer, [])}
+    doReset(resettingLayer) { //prestige
+        actualRow = 1
+        if (hasMilestone('m', 2)) {actualRow = 4}
+        if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
     buyables: {
         11: {
@@ -3018,8 +3098,10 @@ addLayer("mp", {
     hotkeys: [
         {key: "m", description: "M: Reset for metaprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 8))) {layerDataReset(this.layer, [])}
+    doReset(resettingLayer) { //metaprestige
+        actualRow = 2
+        if (hasMilestone('m', 8)) {actualRow = 4}
+        if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
     passiveGeneration() {
         if (hasMilestone('m', 4)) {
@@ -3826,10 +3908,12 @@ addLayer("bp", {
     hotkeys: [
         {key: "b", description: "B: Reset for buyable points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 8))) {layerDataReset(this.layer, [])}
+    doReset(resettingLayer) {//buyable
+        actualRow = 2
+        if (hasMilestone('m', 8)) {actualRow = 4}
+        if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
-    passiveGeneration() {
+    passiveGeneration() { 
         if (hasMilestone('m', 4)) {
             if (player.bp.autoGain) {return new Decimal(0.2)} else {return Decimal.dZero}
         } else {return Decimal.dZero}
@@ -4627,7 +4711,7 @@ addLayer("sp", {
     hotkeys: [
         {key: "s", description: "S: Reset for superprestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    passiveGeneration() {
+    passiveGeneration() { 
         if (hasMilestone('m', 4)) {
             if (player.bp.autoGain) {return new Decimal(0.2)} else {return Decimal.dZero}
         } else {return Decimal.dZero}
@@ -4641,8 +4725,10 @@ addLayer("sp", {
             }
         }
     },
-    doReset(resettingLayer) {
-        if ((layers[resettingLayer].row > this.row)&&(!hasMilestone('m', 8))) {layerDataReset(this.layer, [])}
+    doReset(resettingLayer) { //superprsetige
+        actualRow = 2
+        if (hasMilestone('m', 8)) {actualRow = 4}
+        if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
     layerShown(){return (player.points.gte(2)||player.sp.total.gte(1))},
     buyables: {
@@ -5413,8 +5499,7 @@ addLayer("lf", {
     },
     prestigeNotify() {return true},
     prestigeButtonText() {return "You are gaining "+formatWhole(getResetGain('lf'))+" life force per second" },
-    row: 4, // Row the layer is in on the tree (0 is the first row)
-    displayRow: 3,
+    row: 7, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
        
     ],
@@ -5514,7 +5599,7 @@ addLayer("hp", {
     layerShown(){return player.points.gte(5)||player.hp.total.gte(1)},
     automate() {
     },
-    doReset(resettingLayer) {
+    doReset(resettingLayer) { //hyperprestige
        
 
     },
@@ -5532,7 +5617,7 @@ addLayer("hp", {
                 return player.buyablePrice(costTypehp11, new Decimal(x), costBasehp11, costExphp11, costLimithp11)
             },
             effect(x) {
-                effBasehp11 = new Decimal(0.1)
+                effBasehp11 = new Decimal(0.05)
                 effStackhp11 = new Decimal(x)
 
                 return Decimal.times(effBasehp11, effStackhp11)
@@ -5553,6 +5638,78 @@ addLayer("hp", {
                     if (player.buyableMaxPurchaseable(costTypehp11, player[this.layer].points, costBasehp11, costExphp11, costLimithp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp11, player[this.layer].points, costBasehp11, costExphp11, costLimithp11))
                         if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp11, player.buyableMaxPurchaseable(costTypehp11, player[this.layer].points, costBasehp11, costExphp11, costLimithp11), costBasehp11, costExphp11, costLimithp11))}
+                    }
+                }
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp12 = "asymptote"
+                costBasehp12 = new Decimal(1.3)
+                costExphp12 = new Decimal(1.1)
+                costLimithp12 = layers.hp.buyables[12].purchaseLimit.add(1)
+                return player.buyablePrice(costTypehp12, new Decimal(x), costBasehp12, costExphp12, costLimithp12)
+            },
+            effect(x) {
+                effBasehp12 = new Decimal(0.25)
+                effStackhp12 = new Decimal(x)
+
+                return Decimal.times(effBasehp12, effStackhp12)
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "hyperprestige buyable 12"},
+            display() { return "subtract first bonus point softcap by "+format(effBasehp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp12)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp12 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp12, player[this.layer].points, costBasehp12, costExphp12, costLimithp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp12, player[this.layer].points, costBasehp12, costExphp12, costLimithp12))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp12, player.buyableMaxPurchaseable(costTypehp12, player[this.layer].points, costBasehp12, costExphp12, costLimithp12), costBasehp12, costExphp12, costLimithp12))}
+                    }
+                }
+            },
+        },
+        13: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp13 = "asymptote"
+                costBasehp13 = new Decimal(1.4)
+                costExphp13 = new Decimal(1.2)
+                costLimithp13 = layers.hp.buyables[13].purchaseLimit.add(1)
+                return player.buyablePrice(costTypehp13, new Decimal(x), costBasehp13, costExphp13, costLimithp13)
+            },
+            effect(x) {
+                effBasehp13 = new Decimal(0.25)
+                effStackhp13 = new Decimal(x)
+
+                return Decimal.times(effBasehp13, effStackhp13)
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "hyperprestige buyable 13"},
+            display() { return "subtract second bonus point softcap by "+format(effBasehp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp12)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp13 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp13, player[this.layer].points, costBasehp13, costExphp13, costLimithp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp13, player[this.layer].points, costBasehp13, costExphp13, costLimithp13))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp13, player.buyableMaxPurchaseable(costTypehp13, player[this.layer].points, costBasehp13, costExphp13, costLimithp13), costBasehp13, costExphp13, costLimithp13))}
                     }
                 }
             },
@@ -5596,8 +5753,8 @@ addLayer("hp", {
             unlocked() {return true},
             cost(x) {
                 costTypehp33 = "normal"
-                costBasehp33 = new Decimal(1.5)
-                costExphp33 = new Decimal(1.24)
+                costBasehp33 = new Decimal(1.7)
+                costExphp33 = new Decimal(1.2)
                 costLimithp33 = new Decimal('e100')
                 return player.buyablePrice(costTypehp33, new Decimal(x), costBasehp33, costExphp33, costLimithp33)
             },
@@ -5631,8 +5788,8 @@ addLayer("hp", {
             unlocked() {return true},
             cost(x) {
                 costTypehp43 = "normal"
-                costBasehp43 = new Decimal(1.5)
-                costExphp43 = new Decimal(1.25)
+                costBasehp43 = new Decimal(1.75)
+                costExphp43 = new Decimal(1.2)
                 costLimithp43 = new Decimal('e100')
                 return player.buyablePrice(costTypehp43, new Decimal(x), costBasehp43, costExphp43, costLimithp43)
             },
@@ -5666,8 +5823,8 @@ addLayer("hp", {
             unlocked() {return true},
             cost(x) {
                 costTypehp53 = "normal"
-                costBasehp53 = new Decimal(1.5)
-                costExphp53 = new Decimal(1.26)
+                costBasehp53 = new Decimal(1.8)
+                costExphp53 = new Decimal(1.2)
                 costLimithp53 = new Decimal('e100')
                 return player.buyablePrice(costTypehp53, new Decimal(x), costBasehp53, costExphp53, costLimithp53)
             },
@@ -5765,7 +5922,7 @@ addLayer("r", {
     },
     update(diff){
         if (getBuyableAmount([this.layer], 12).gt(0)) {
-            setBuyableAmount([this.layer], 12, getBuyableAmount([this.layer], 12).sub(player[this.layer].points.sub(getBuyableAmount([this.layer], 13)).times(diff)))
+            setBuyableAmount([this.layer], 12, getBuyableAmount([this.layer], 12).sub(player[this.layer].points.sub(getBuyableAmount([this.layer], 13)).times(buyableEffect('l', 24)[1]).times(diff)))
         }
         if (getBuyableAmount([this.layer], 12).lte(1e-4)&&getClickableState([this.layer], 11)!=0) {
             setBuyableAmount([this.layer], getClickableState([this.layer], 11), getBuyableAmount([this.layer], getClickableState([this.layer], 11)).add(1))
@@ -5787,6 +5944,7 @@ addLayer("r", {
             unlocked() {return true},
             cost(x) {
                 costBaser11 = new Decimal(2)
+                costMultMoneyr11 = new Decimal(50000)
                 return Decimal.pow(costBaser11, x)
             },
             effect(x) {
@@ -5796,11 +5954,11 @@ addLayer("r", {
                 return Decimal.times(effBaser11, effStackr11)
             },
             title() { return "research buyable 11"},
-            display() { return "obtain "+format(effBaser11)+" research points <br> cost: "+format(this.cost())+" workers, $"+format(this.cost().times(100000))+" <br> requirement: "+format(getBuyableAmount([this.layer], [this.id]).add(1))+" total hyperprestige points <br> owned: "+format(effStackr11)+" <br> effect: "+format(this.effect())},
-            canAfford() { return (player.w.points.gte(this.cost())&&player.j.points.gte(this.cost().times(100000))&&player.hp.total.gte(getBuyableAmount([this.layer], [this.id]).add(1))) },
+            display() { return "obtain "+format(effBaser11)+" research points <br> cost: "+format(this.cost())+" workers, $"+format(this.cost().times(costMultMoneyr11))+" <br> requirement: "+format(getBuyableAmount([this.layer], [this.id]).add(1))+" total hyperprestige points <br> owned: "+format(effStackr11)+" <br> effect: "+format(this.effect())},
+            canAfford() { return (player.w.points.gte(this.cost())&&player.j.points.gte(this.cost().times(costMultMoneyr11))&&player.hp.total.gte(getBuyableAmount([this.layer], [this.id]).add(1))) },
             buy() {
-                player.w.points = player.w.points.sub(this.cost())
-                player.j.points = player.j.points.sub(this.cost().times(100000))
+                setBuyableAmount('w', 12, getBuyableAmount('w', 12).sub(this.cost()))
+                player.j.points = player.j.points.sub(this.cost().times(costMultMoneyr11))
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
                 setBuyableAmount('w', 19, getBuyableAmount('w', 19).sub(this.cost()))
                 addPoints('r', 1)
@@ -5842,11 +6000,11 @@ addLayer("r", {
         21: {
             unlocked() {return true},
             cost(x) {
-                costBaser21 = new Decimal(2)
+                costBaser21 = new Decimal(1.5)
                 costMultRMinr21 = new Decimal(5)
-                costMoneyr21f =[new Decimal(x).div(3).floor().add(3), new Decimal(x).sub(new Decimal(x).div(3).floor().times(3))]
-                costMoneyr21 = Decimal.dTen.pow(costMoneyr21f[0]).times(Decimal.dTwo.pow(costMoneyr21f[1]))
-                return [Decimal.pow(costBaser21, x).times(costMultRMinr21), costMoneyr21]
+                costMoneyr21f =[new Decimal(x).div(3).round().add(3), new Decimal(x).sub(new Decimal(x).div(3).round().times(3))]
+                costMoneyr21 = Decimal.dTen.pow(costMoneyr21f[0]).times(Decimal.dTwo.pow(costMoneyr21f[1])).sub(0.02)
+                return [Decimal.pow(costBaser21, x).times(costMultRMinr21).round(), costMoneyr21]
             },
             effect(x) {
                 effBaser21 = new Decimal(1)
@@ -5893,7 +6051,7 @@ addLayer("r", {
                 costRMinr23 = new Decimal(30)
                 costMoneyr23 = new Decimal(50000)
                 reqRPr23 = new Decimal(2)
-                return [costRMinr23, costMoneyr22, reqRPr23]
+                return [costRMinr23, costMoneyr23, reqRPr23]
             },
             effect(x) {
                 effBaser23 = new Decimal(1)
@@ -5911,14 +6069,40 @@ addLayer("r", {
                 setBuyableAmount([this.layer], 13, this.cost()[2])
             },
         },  
+        24: {
+            unlocked() {return player[this.layer].points.gte(5)},
+            purchaseLimit: Decimal.dOne,
+            cost(x) {
+                costRMinr24 = new Decimal(5)
+                costMoneyr24 = new Decimal(10000)
+                reqRPr24 = new Decimal(4)
+                return [costRMinr24, costMoneyr24, reqRPr24]
+            },
+            effect(x) {
+                effBaser24 = new Decimal(1)
+                effStackr24 = new Decimal(x)
+
+                return Decimal.times(effBaser24, effStackr24)
+            },
+            title() { return "research buyable 24"},
+            display() { return "do not reset bonus points on hyperprestige reset <br> barrier: "+formatWhole(reqRPr24)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr24)+"/1.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(5)},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        },  
         31: {
             unlocked() {return true},
             purchaseLimit: new Decimal(20),
             cost(x) {
-                costBaser31 = new Decimal(2)
+                costBaseTimer31 = new Decimal(1.5)
+                costBaseMoneyr31 = new Decimal(2)
                 costMultRMinr31 = new Decimal(15)
                 costMultMoneyr31 = new Decimal(25000)
-                return [costBaser31.pow(x).times(costMultRMinr31), costBaser31.pow(x).times(costMultMoneyr31)]
+                return [costBaseTimer31.pow(x).times(costMultRMinr31).round(), costBaseMoneyr31.pow(x).times(costMultMoneyr31).round()]
             },
             effect(x) {
                 effBaser31 = new Decimal(10)
@@ -5940,10 +6124,11 @@ addLayer("r", {
             unlocked() {return true},
             purchaseLimit: new Decimal(20),
             cost(x) {
-                costBaser32 = new Decimal(3)
+                costBaseTimer32 = new Decimal(1.5)
+                costBaseMoneyr32 = new Decimal(2)
                 costMultRMinr32 = new Decimal(5)
                 costMultMoneyr32 = new Decimal(5000)
-                return [costBaser32.pow(x).times(costMultRMinr32), costBaser32.pow(x).times(costMultMoneyr32)]
+                return [costBaseTimer32.pow(x).times(costMultRMinr32).round(), costBaseMoneyr32.pow(x).times(costMultMoneyr32).round()]
             },
             effect(x) {
                 effBaser32 = new Decimal(0.1)
@@ -5965,11 +6150,12 @@ addLayer("r", {
             unlocked() {return player[this.layer].points.gte(5)},
             purchaseLimit: new Decimal(8),
             cost(x) {
-                costBaser33 = new Decimal(2)
-                costMultRMinr33 = new Decimal(15)
+                costBaseTimer33 = new Decimal(1.5)
+                costBaseMoneyr33 = new Decimal(2)
+                costMultRMinr33 = new Decimal(20)
                 costMultMoneyr33 = new Decimal(100000)
                 reqRPr33 = new Decimal(4)
-                return [costBaser33.pow(x).times(costMultRMinr33), costBaser33.pow(x).times(costMultMoneyr33)]
+                return [costBaseTimer33.pow(x).times(costMultRMinr33).round(), costBaseMoneyr33.pow(x).times(costMultMoneyr33).round(), reqRPr33]
             },
             effect(x) {
                 effBaser33 = new Decimal(0.0025)
@@ -5987,15 +6173,43 @@ addLayer("r", {
                 setBuyableAmount([this.layer], 13, this.cost()[2])
             },
         },
+        34: {
+            unlocked() {return player[this.layer].points.gte(5)},
+            purchaseLimit: new Decimal(4),
+            cost(x) {
+                costBaseTimer34 = new Decimal(1.5)
+                costBaseMoneyr34 = new Decimal(2)
+                costMultRMinr34 = new Decimal(40)
+                costMultMoneyr34 = new Decimal(100000)
+                reqRPr34 = new Decimal(4)
+                return [costBaseTimer34.pow(x).times(costMultRMinr34).round(), costBaseMoneyr34.pow(x).times(costMultMoneyr34).round(), reqRPr34]
+            },
+            effect(x) {
+                effBaser34 = new Decimal(0.25)
+                effStackr34 = new Decimal(x)
+
+                return Decimal.times(effBaser34, effStackr34)
+            },
+            title() { return "research buyable 34"},
+            display() { return "keep "+format(effBaser34)+" of your lootbox gear level on hyperprestige reset <br> barrier: "+formatWhole(reqRPr34)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr34)+"/4.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr34.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        },
         41: {
             unlocked() {return player[this.layer].points.gte(2)},
             purchaseLimit: new Decimal(5),
             cost(x) {
-                costBaser41 = new Decimal(2)
+                costBaseTimer41 = new Decimal(2)
+                costBaseMoneyr41 = new Decimal(2.5)
                 costMultRMinr41 = new Decimal(5)
-                costMultMoneyr41 = new Decimal(10000)
+                costMultMoneyr41 = new Decimal(8000)
                 reqRPr41 = new Decimal(x)
-                return [costBaser41.pow(x).times(costMultRMinr41), costBaser41.pow(x).times(costMultMoneyr41), reqRPr41]
+                return [costBaseTimer41.pow(x).times(costMultRMinr41).round(), costBaseMoneyr41.pow(x).times(costMultMoneyr41).round(), reqRPr41]
             },
             effect(x) {
                 effBaser41 = new Decimal(1.37972966146121483)
@@ -6017,11 +6231,12 @@ addLayer("r", {
             unlocked() {return player[this.layer].points.gte(2)},
             purchaseLimit: new Decimal(5),
             cost(x) {
-                costBaser42 = new Decimal(2)
+                costBaseTimer42 = new Decimal(2)
+                costBaseMoneyr42 = new Decimal(2.5)
                 costMultRMinr42 = new Decimal(10)
                 costMultMoneyr42 = new Decimal(20000)
                 reqRPr42 = new Decimal(x)
-                return [costBaser42.pow(x).times(costMultRMinr42), costBaser42.pow(x).times(costMultMoneyr42), reqRPr42]
+                return [costBaseTimer42.pow(x).times(costMultRMinr42).round(), costBaseMoneyr42.pow(x).times(costMultMoneyr42).round(), reqRPr42]
             },
             effect(x) {
                 effBaser42 = new Decimal(1.58489319246111349)
@@ -6043,11 +6258,12 @@ addLayer("r", {
             unlocked() {return player[this.layer].points.gte(4)},
             purchaseLimit: new Decimal(4),
             cost(x) {
-                costBaser43 = new Decimal(3)
-                costMultRMinr43 = new Decimal(20)
+                costBaseTimer43 = new Decimal(2)
+                costBaseMoneyr43 = new Decimal(3)
+                costMultRMinr43 = new Decimal(30)
                 costMultMoneyr43 = new Decimal(50000)
                 reqRPr43 = new Decimal(x).times(2)
-                return [costBaser43.pow(x).times(costMultRMinr43), costBaser43.pow(x).times(costMultMoneyr43), reqRPr43]
+                return [costBaseTimer43.pow(x).times(costMultRMinr43).round(), costBaseMoneyr43.pow(x).times(costMultMoneyr43).round(), reqRPr43]
             },
             effect(x) {
                 effBaser43 = new Decimal(0.125)
@@ -6065,19 +6281,47 @@ addLayer("r", {
                 setBuyableAmount([this.layer], 13, this.cost()[2])
             },
         }, 
+        44: {
+            unlocked() {return player[this.layer].points.gte(5)},
+            purchaseLimit: new Decimal(6),
+            cost(x) {
+                costBaseTimer44 = new Decimal(2)
+                costBaseMoneyr44 = new Decimal(3)
+                costMultRMinr44 = new Decimal(60)
+                costMultMoneyr44 = new Decimal(100000)
+                reqRPr44 = new Decimal(x).add(5)
+                return [costBaseTimer44.pow(x).times(costMultRMinr44).round(), costBaseMoneyr44.pow(x).times(costMultMoneyr44).round(), reqRPr44]
+            },
+            effect(x) {
+                effBaser44 = new Decimal(1/6)
+                effStackr44 = new Decimal(x)
+
+                return Decimal.times(effBaser44, effStackr44)
+            },
+            title() { return "research buyable 44"},
+            display() { return "keep "+format(effBaser44)+" of your gear scrap on hyperprestige reset <br> barrier: "+formatWhole(reqRPr44)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr44)+"/6.00 <br> effect: "+format(this.effect())},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr44.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        },
         51: {
-            unlocked() {return player[this.layer].points.gte(6)},
+            unlocked() {return player[this.layer].points.gte(5)&&getBuyableAmount([this.layer], [this.id]).lt(4.99)},
             purchaseLimit: new Decimal(5),
             cost(x) {
-                costBaser51 = new Decimal(4)
+                costBaseTimer51 = new Decimal(2)
+                costBaseMoneyr51 = new Decimal(4)
                 costMultRMinr51 = new Decimal(60)
-                costMultMoneyr51 = new Decimal(500000)
-                reqRPr51 = Decimal.times(2, x).add(5)
-                return [costBaser51.pow(x).times(costMultRMinr51), costBaser51.pow(x).times(costMultMoneyr51), reqRPr51]
+                costMultMoneyr51 = new Decimal(1000000)
+                reqRPr51 = Decimal.add(x, 4)
+                return [costBaseTimer51.pow(x).times(costMultRMinr51).round(), costBaseMoneyr51.pow(x).times(costMultMoneyr51).round(), reqRPr51]
             },
             effect(x) {
 
-                effr51 = [new Decimal(25800), new Decimal(132000), new Decimal(582000), new Decimal(1950000), new Decimal(4650000), new Decimal(8250000), new Decimal(8250000)]
+                effr51 = [new Decimal(25800), new Decimal(132000), new Decimal(582000), new Decimal(2310000), new Decimal(6450000), new Decimal(14700000), new Decimal(14700000)]
                          //0                        1                      2                       3                   4                    5                    5+1  // note these numbers are all arbitrarily decided and there is no formula
                 effStackr51number = x.toNumber()
                 return effr51[effStackr51number]
@@ -6092,13 +6336,78 @@ addLayer("r", {
                 setBuyableAmount([this.layer], 13, this.cost()[2])
             },
         }, 
+        52: {
+            unlocked() {return player[this.layer].points.gte(15)&&getBuyableAmount([this.layer], 51).gte(4.99)&&getBuyableAmount([this.layer], 52).lt(2.99)},
+            purchaseLimit: new Decimal(3),
+            cost(x) {
+                costBaseTimer52 = new Decimal(1.5)
+                costBaseMoneyr52 = new Decimal(2.5)
+                costMultRMinr52 = new Decimal(1920)
+                costMultMoneyr52 = new Decimal(1024000000)
+                reqRPr52 = new Decimal(9)
+                return [costBaseTimer52.pow(x).times(costMultRMinr52).round(), costBaseMoneyr52.pow(x).times(costMultMoneyr52).round(), reqRPr52]
+            },
+            effect(x) {
+
+
+                return Decimal.dOne
+            },
+            title() { return "research buyable 52"},
+            display() {  
+                if (getBuyableAmount([this.layer], [this.id]).eq(0)) {textr52 = "somehow, there are no signs of the next world... improve your detectors"}
+                else if (getBuyableAmount([this.layer], [this.id]).eq(1)) {textr52 = "the next world is found. it has 2,575,000,000,000 inhabitants, but its location is yet unknown. improve your spaceships"}                
+                else if (getBuyableAmount([this.layer], [this.id]).eq(2)) {textr52 = "the next world is found. it has 2,575,000,000,000 inhabitants, but its location seems to be in a field of magic... looks like you cannot get there with only spaceships. find alternative ways to arrive"} 
+                                               
+                return textr52+"<br> barrier: "+formatWhole(reqRPr52)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(getBuyableAmount([this.layer], [this.id]))+"/?.?? "},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr52.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        53: {
+            unlocked() {return player[this.layer].points.gte(15)&&getBuyableAmount([this.layer], 52).gte(2.99)&&getBuyableAmount([this.layer], [this.id]).lt(4.99)},
+            purchaseLimit: new Decimal(5),
+            cost(x) {
+                costBaseTimer53 = new Decimal(2)
+                costBaseMoneyr53 = new Decimal(5)
+                costMultRMinr53 = new Decimal(6480)
+                costMultMoneyr53 = new Decimal(1.6e10)
+                reqRPr53 = Decimal.times(2, x).add(14)
+                return [costBaseTimer53.pow(x).times(costMultRMinr53).round(), costBaseMoneyr53.pow(x).times(costMultMoneyr53).round(), reqRPr53]
+            },
+            effect(x) {
+                effBaser53 = new Decimal(1)
+                effStackr53 = new Decimal(x)
+
+                return Decimal.pow(effStackr53, 2).times(Decimal.pow(2, effStackr53)).times(20).round()
+            },
+            title() { return "research buyable 53"},
+            display() { 
+                textr53a = "turns out, the only way to transport yourself to the new world is to let a size 5 magical truck run through you. "
+                if (getBuyableAmount([this.layer], [this.id]).eq(0)) {textr53b = "however, you don't have magical trucks. "}
+                if (getBuyableAmount([this.layer], [this.id]).gt(0.1)) {textr53b = "in addition, you have discovered that you can take apart the magical truck infinitely and it will remain the same size. "}
+                return textr53a+textr53b+"build a magical truck of size "+formatWhole(getBuyableAmount('r', 53).add(1))+" <br> barrier: "+formatWhole(reqRPr53)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> you currently have a magical truck of size "+formatWhole(getBuyableAmount('r', 53))},
+            canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr53.add(1))},
+            buy() {
+                player.j.points = player.j.points.sub(this.cost()[1])
+                setClickableState([this.layer], 11, this.id)
+                setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
+                setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
     },
     infoboxes: {
         11: {
             body() {
                 textr = ""
+                if (getBuyableAmount('r', 53).gte(0.999)) {
+                    textr += "you are currently gaining "+format(buyableEffect('r', 53))+" superscraps per second"
+                }
                 if (getClickableState('r', 11)!=0) {
-                    textr += "currently researching: "+getClickableState('r', 11).toString()
+                    textr += "<br> currently researching: "+getClickableState('r', 11).toString()
                     textr += "<br> time left: "+formatTime(getBuyableAmount('r', 12))
 
                 }
@@ -6107,6 +6416,7 @@ addLayer("r", {
         }
     }, 
 })
+
 
 addLayer("a", {
     name: "Ascension", // This is optional, only used in a few places, If absent it just uses the layer id.
