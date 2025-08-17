@@ -117,7 +117,7 @@ function getPointGen() {
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 	buyablePrice(type, amt, base, exp, limit) {
-		if (type == "normal") {
+		if (type == "normal") { //normal = base^(x+1)^pow
 			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to double exponential : linear
 			if (base.pow(amt.add(1).pow(exp)).gt(limit)) {
 				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
@@ -130,16 +130,24 @@ function addedPlayerData() { return {
 				return base.pow(amt.add(1).pow(exp)).floor()
 			}
 		}
+		if (type == "small") { //small = base*(x+1)^pow
+			if (limit.lte('10')) {limit = new Decimal('10')} //limit is softcap, in currency at which scaling change to exponential : linear
+			if (base.times(amt.add(1).pow(exp)).gt(limit)) {
+				limitamt = limit.div(base).root(exp).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpricelog = base.times(limitamt.add(1).pow(exp)).log10()
+				limitplus1pricelog = base.times(limitamtplus1.add(1).pow(exp)).log10()
+				newpricescalinglog = limitplus1pricelog.sub(limitpricelog)
+				return amt.sub(limitamt).times(newpricescalinglog).add(limitpricelog).pow10()
+			} else {
+				return base.times(amt.add(1).pow(exp)).floor()
+			}
+		}
 
 		if (type == "asymptote") {
 			return base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
-		// if (type == "double") {
-		// 	return base.pow(exp.pow(amt.add(1)))
-		// }
-		// if (type == "tetrate") {
-		// 	return base.tetrate(amt.add(1).pow(exp))
-		// }
+
 
 	},
 	buyableMaxPurchaseable(type, currency, base, exp, limit) {
@@ -154,6 +162,19 @@ function addedPlayerData() { return {
 				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).ceil()
 			} else {
 				return currency.max(1).log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+			}
+		}
+		if (type == "small") {
+			if (limit.lte('10')) {limit = new Decimal('10')}
+			if (currency.gt(limit)) {
+				limitamt = limit.div(base).root(exp).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpricelog = base.times(limitamt.add(1).pow(exp)).log10()
+				limitplus1pricelog = base.times(limitamtplus1.add(1).pow(exp)).log10()
+				newpricescalinglog = limitplus1pricelog.sub(limitpricelog)	
+				return currency.log10().sub(limitpricelog).div(newpricescalinglog).add(limitamt).ceil()			
+			} else {
+				return currency.max(0).div(base).root(exp).sub(1).floor()
 			}
 		}
 		
