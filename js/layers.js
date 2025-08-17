@@ -93,7 +93,10 @@ addLayer("l", {
             }
         }
     },
-    layerShown() {return player.points.gte(3)||player.l.total.gte(1)||player.hp.total.gte(1)},
+    layerShown() {
+        realcondition = (player.points.gte(3)||player.l.total.gte(1)||player.hp.total.gte(1))
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)
+    },
     clickables: {
         11: { //gear level grid, numbers
             unlocked: false,
@@ -188,7 +191,7 @@ addLayer("l", {
                 gearlevelcoef = (lootboxseed % 1)**2
                 gearmultiplier = getBuyableAmount('l', 99).sub(3).times(250).toNumber()
                 gearlevelraw = (1 + gearlevelcoef) * gearmultiplier
-                if (gearlevelraw > 500) {gearlevelraw = (gearlevelraw / 500) ** (0.5 + 0.125 * getBuyableAmount('r', 43).round().toNumber()) * 500}
+                if ((gearlevelraw > 500)&&(getBuyableAmount('r', 43).lt(4.999))) {gearlevelraw = (gearlevelraw / 500) ** (0.5 + 0.1 * getBuyableAmount('r', 43).round().toNumber()) * 500}
 
                 if (hasMilestone('l', 0)) {setClickableState('l', 12, 200)}
                 if (hasMilestone('m', 7)) {setClickableState('l', 12, 500)}
@@ -244,7 +247,9 @@ addLayer("l", {
                 costBasel12 = new Decimal('e1e5')
                 costExpl12 = new Decimal(3)
                 costLimitl12 = new Decimal('e2.7e9')
-                return player.buyablePrice(costTypel12, new Decimal(x), costBasel12, costExpl12, costLimitl12)
+                costStackl12 = new Decimal(x)
+                if (costStackl12.gte(60)) {costStackl12 = costStackl12.div(60).pow(1.25).times(60)}
+                return player.buyablePrice(costTypel12, costStackl12, costBasel12, costExpl12, costLimitl12)
             },
             effect(x) {
                 effBasel12 = new Decimal(100)
@@ -266,8 +271,10 @@ addLayer("l", {
                     }
                 } else {
                     if (player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12))
-                        if (player.p.points.lt('e200')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypel12, player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12), costBasel12, costExpl12, costLimitl12))}
+                        actualMaxPurchaseablel12 = player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12)
+                        if (actualMaxPurchaseablel12.gte(60)) {actualMaxPurchaseablel12 = actualMaxPurchaseablel12.div(60).root(1.25).times(60).floor()}
+                        setBuyableAmount(this.layer, this.id, actualMaxPurchaseablel12)
+                        
                     }
                 }
 
@@ -280,7 +287,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.pow(2, getBuyableAmount('l', 21).times(buyableEffect('mtp', 13)).add(1).log(2).pow(1.3333333333333333).sub(23.41344561179871)).add(0.9999999104943257).pow(hasMilestone('l', 0)+0) //(log(1600)/log(2))^1.33, 1-2^-23.4
+                eff = Decimal.pow(2, getBuyableAmount('l', 21).times(buyableEffect('mtp', 33)).add(1).log(2).pow(1.3333333333333333).sub(23.41344561179871)).add(0.9999999104943257).pow(hasMilestone('l', 0)+0) //(log(1600)/log(2))^1.33, 1-2^-23.4
                 //if (eff.gte(16)) {eff = eff.div(16).pow(0.5).times(16)}
                 return eff
             },
@@ -296,7 +303,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.pow(2, getBuyableAmount('l', 22).times(buyableEffect('mtp', 13)).add(1).log(2).pow(1.3333333333333333).div(2).sub(10.263708402767985)).add(0.999186578019176).pow(hasMilestone('l', 0)+0) //(log(800)/log(2))^1.33/2, 1-2^-10.2
+                eff = Decimal.pow(2, getBuyableAmount('l', 22).times(buyableEffect('mtp', 33)).add(1).log(2).pow(1.3333333333333333).div(2).sub(10.263708402767985)).add(0.999186578019176).pow(hasMilestone('l', 0)+0) //(log(800)/log(2))^1.33/2, 1-2^-10.2
                 //if (eff.gte(4)) {eff = eff.div(4).pow(0.5).times(4)}
                 return eff
             },
@@ -312,7 +319,7 @@ addLayer("l", {
                 return Decimal.dOne
             },
             effect(x) {
-                eff = Decimal.min(getBuyableAmount('l', 23).times(buyableEffect('mtp', 13)).add(4).log(2).log(2).pow(0.25).pow(hasMilestone('l', 0)+0), getBuyableAmount('l', 23).div(100).add(1).pow(hasMilestone('l', 0)+0))
+                eff = Decimal.min(getBuyableAmount('l', 23).times(buyableEffect('mtp', 33)).add(4).log(2).log(2).pow(0.25).pow(hasMilestone('l', 0)+0), getBuyableAmount('l', 23).div(100).add(1).pow(hasMilestone('l', 0)+0))
                 //if (eff.gte(4)) {eff = eff.div(4).pow(0.5).times(4)}
                 return eff
             },
@@ -428,11 +435,11 @@ addLayer("j", {
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
-    row: 5, // Row the layer is in on the tree (0 is the first row)
+    row: 4, // Row the layer is in on the tree (0 is the first row)
     displayRow: "side",
-    layerShown(){return true},
+    layerShown(){return getBuyableAmount('r', 54).lte(0.999)},
     doReset(resettingLayer) { //job
-        return;
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
     infoboxes: {
         11: {
@@ -777,11 +784,11 @@ addLayer("sj", {
         return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "This layer cannot be reset" },
-    row: 5, // Row the layer is in on the tree (0 is the first row)
+    row: 4, // Row the layer is in on the tree (0 is the first row)
     displayRow: "side",
-    layerShown(){return true},
+    layerShown(){return getBuyableAmount('r', 54).lte(0.999)},
     doReset(resettingLayer) { //superjob
-        return;
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
     infoboxes: {
         11: {
@@ -1024,11 +1031,11 @@ addLayer("w", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {return false},
     prestigeNotify() {return true},
-    row: 5, // Row the layer is in on the tree (0 is the first row)
+    row: 4, // Row the layer is in on the tree (0 is the first row)
     displayRow: "side",
     doReset(resettingLayer) { //workers
 
-        return;
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
     update(diff) {
         if (buyableEffect('w', 11).gt(0)) {
@@ -1044,7 +1051,10 @@ addLayer("w", {
         if (buyableEffect('w', 24).gt(0)) {setBuyableAmount('w', 24, getBuyableAmount('w', 24).add(buyableEffect('w', 24).times(diff)))} else {setBuyableAmount('w', 24, Decimal.dZero)}
 
     },
-    layerShown(){return player.j.points.gte(100)||player.w.total.gte(1)||getBuyableAmount('w', 12).gt(0)},
+    layerShown(){
+        realcondition = player.j.points.gte(100)||player.w.total.gte(1)||getBuyableAmount('w', 12).gt(0)
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)
+    },
     buyables: {
         11: { //rate at which workers join the company in worker/sec
             unlocked() {return false},
@@ -1965,7 +1975,7 @@ addLayer("g", {
     row: "side", // Row the layer is in on the tree (0 is the first row)
     doReset(resettingLayer) { //gems
 
-        return;
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
     update(diff){
         setBuyableAmount('g', 41, getBuyableAmount('g', 41).sub(diff).max(0))
@@ -1985,7 +1995,7 @@ addLayer("g", {
             }
         }
     }, 
-    layerShown(){return true},
+    layerShown(){return getBuyableAmount('r', 54).lte(0.999)},
     clickables: {        
         11: {
             unlocked() {return getBuyableAmount('r', 21).gte(1)}, 
@@ -2484,15 +2494,14 @@ addLayer("m", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     canReset() {return false},
     prestigeNotify() {return true},
-    row() {
-        if (getBuyableAmount('r', 22).gte(1)) {return 5}
-        else {return 4}
-    },
+    row: 3,
     displayRow: "side", // Row the layer is in on the tree (0 is the first row)
     doReset(resettingLayer) { //milestones
-        layerDataReset('m')
+        actualRow = 3
+        if (getBuyableAmount('r', 22).gte(1)) {actualRow = 4}
+        if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
-    layerShown(){return true},
+    layerShown(){return getBuyableAmount('r', 54).lte(0.999)},
     milestones: {
         0: {
             requirementDescription: "2.00 points",
@@ -2639,7 +2648,9 @@ addLayer("b", {
         return Decimal.dOne
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){return player.l.total.gte(1)||player.b.points.gte(0.0001)},
+    layerShown(){
+        realcondition = player.l.total.gte(1)||player.b.points.gte(0.0001)
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999) },
     doReset(resettingLayer) { //bonus points
         actualRow = 0
         if (hasMilestone('m', 9)) {actualRow = 4}
@@ -2653,7 +2664,7 @@ addLayer("b", {
             },
             effect(x) {
 
-                return Decimal.dOne.add(buyableEffect('r', 32))
+                return Decimal.dOne.add(buyableEffect('r', 32)).add(buyableEffect('mtp', 32))
             },
             canAfford() { return false },
             buy() {
@@ -2748,7 +2759,7 @@ addLayer("p", {
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){return true},
+    layerShown(){return getBuyableAmount('r', 54).lte(0.999)},
     automate() {
         if (hasMilestone('m', 0)&&player.p.autoBuy) {
             for (let i = 11; i < 14; i++) {
@@ -2776,7 +2787,7 @@ addLayer("p", {
             },
             effect(x) {
                 effBasep11 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackp11 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackp11 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasep11, effStackp11)
             },
@@ -2812,7 +2823,7 @@ addLayer("p", {
             },
             effect(x) {
                 effBasep12 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackp12 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackp12 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasep12, effStackp12)
             },
@@ -2883,7 +2894,7 @@ addLayer("p", {
             },
             effect(x) {
                 effBasep21 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackp21 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackp21 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasep21, effStackp21)
             },
@@ -2918,7 +2929,7 @@ addLayer("p", {
             },
             effect(x) {
                 effBasep22 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackp22 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackp22 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasep22, effStackp22)
             },
@@ -2953,7 +2964,7 @@ addLayer("p", {
             },
             effect(x) {
                 effBasep23 = new Decimal(0.2).times(buyableEffect('l', 22))
-                effStackp23 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackp23 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasep23, effStackp23)
             },
@@ -3088,7 +3099,9 @@ addLayer("mp", {
             if (player.bp.autoGain) {return new Decimal(0.2)} else {return Decimal.dZero}
         } else {return Decimal.dZero}
     },
-    layerShown(){return (player.p.best.gte(100)||player.mp.total.gte(1))},
+    layerShown(){ 
+        realcondition = (player.p.best.gte(100)||player.mp.total.gte(1))
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)},
     automate() {
         if (hasMilestone('m', 1)&&player.bp.autoBuy) {
             for (let i = 1; i < 6; i++) {
@@ -3110,7 +3123,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp11 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackmp11 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp11 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp11, effStackmp11)
             },
@@ -3145,7 +3158,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp12 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackmp12 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp12 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp12, effStackmp12)
             },
@@ -3254,7 +3267,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp21 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackmp21 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp21 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp21, effStackmp21)
             },
@@ -3289,7 +3302,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp22 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackmp22 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp22 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp22, effStackmp22)
             },
@@ -3324,7 +3337,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp23 = new Decimal(0.2).times(buyableEffect('l', 22))
-                effStackmp23 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp23 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp23, effStackmp23)
             },
@@ -3396,7 +3409,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp31 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackmp31 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp31 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp31, effStackmp31)
             },
@@ -3431,7 +3444,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp32 = new Decimal(0.05).times(buyableEffect('l', 21))
-                effStackmp32 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp32 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp32, effStackmp32)
             },
@@ -3466,7 +3479,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp33 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStackmp33 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp33 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp33, effStackmp33)
             },
@@ -3538,7 +3551,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp41 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackmp41 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp41 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp41, effStackmp41)
             },
@@ -3573,7 +3586,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp42 = new Decimal(0.0025).times(buyableEffect('l', 21))
-                effStackmp42 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp42 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp42, effStackmp42)
             },
@@ -3608,7 +3621,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp43 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStackmp43 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp43 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp43, effStackmp43)
             },
@@ -3680,7 +3693,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp51 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackmp51 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp51 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp51, effStackmp51)
             },
@@ -3715,7 +3728,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp52 = new Decimal(0.05).times(buyableEffect('l', 21))
-                effStackmp52 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp52 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp52, effStackmp52)
             },
@@ -3750,7 +3763,7 @@ addLayer("mp", {
             },
             effect(x) {
                 effBasemp53 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStackmp53 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackmp53 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasemp53, effStackmp53)
             },
@@ -3830,11 +3843,11 @@ addLayer("bp", {
         totalPB = new Decimal(0)
         for (let i = 11; i < 14; i++) {
             if (i == 13) {totalPB = totalPB.add(player.p.buyables[i])}
-            else {totalPB = totalPB.add(player.p.buyables[i].pow(buyableEffect('l', 23)))}
+            else {totalPB = totalPB.add(player.p.buyables[i].pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23)))}
         }
         for (let j = 21; j < 25; j++) {
             if (j == 24) {totalPB = totalPB.add(player.p.buyables[j])}
-            else {totalPB = totalPB.add(player.p.buyables[j].pow(buyableEffect('l', 23)))}
+            else {totalPB = totalPB.add(player.p.buyables[j].pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23)))}
         }
         totalPBuyables = totalPB
         return totalPBuyables
@@ -3907,7 +3920,10 @@ addLayer("bp", {
             }
         }
     },
-    layerShown(){return (totalPBuyables.gte(40)||player.bp.total.gte(1))},
+    layerShown(){
+        realcondition = (totalPBuyables.gte(40)||player.bp.total.gte(1))
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)
+    },
     buyables: {
         11: {
             unlocked() {return true},
@@ -3920,7 +3936,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp11 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackbp11 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp11 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp11, effStackbp11)
             },
@@ -3955,7 +3971,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp12 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackbp12 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp12 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp12, effStackbp12)
             },
@@ -4065,7 +4081,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp21 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackbp21 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp21 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp21, effStackbp21)
             },
@@ -4100,7 +4116,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp22 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStackbp22 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp22 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp22, effStackbp22)
             },
@@ -4135,7 +4151,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp23 = new Decimal(0.2).times(buyableEffect('l', 22))
-                effStackbp23 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp23 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp23, effStackbp23)
             },
@@ -4207,7 +4223,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp31 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackbp31 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp31 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp31, effStackbp31)
             },
@@ -4242,7 +4258,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp32 = new Decimal(0.05).times(buyableEffect('l', 21))
-                effStackbp32 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp32 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp32, effStackbp32)
             },
@@ -4277,7 +4293,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp33 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStackbp33 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp33 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp33, effStackbp33)
             },
@@ -4349,7 +4365,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp41 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackbp41 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp41 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp41, effStackbp41)
             },
@@ -4384,7 +4400,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp42 = new Decimal(0.0025).times(buyableEffect('l', 21))
-                effStackbp42 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp42 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp42, effStackbp42)
             },
@@ -4419,7 +4435,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp43 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStackbp43 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp43 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp43, effStackbp43)
             },
@@ -4491,7 +4507,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp51 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStackbp51 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp51 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp51, effStackbp51)
             },
@@ -4526,7 +4542,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp52 = new Decimal(0.05).times(buyableEffect('l', 21))
-                effStackbp52 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp52 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp52, effStackbp52)
             },
@@ -4561,7 +4577,7 @@ addLayer("bp", {
             },
             effect(x) {
                 effBasebp53 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStackbp53 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStackbp53 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasebp53, effStackbp53)
             },
@@ -4710,7 +4726,10 @@ addLayer("sp", {
         if (hasMilestone('m', 8)) {actualRow = 4}
         if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
-    layerShown(){return (player.points.gte(2)||player.sp.total.gte(1))},
+    layerShown(){
+        realcondition = (player.points.gte(2)||player.sp.total.gte(1))
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)
+    },
     buyables: {
         11: {
             unlocked() {return true},
@@ -4723,7 +4742,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp11 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStacksp11 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp11 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp11, effStacksp11)
             },
@@ -4758,7 +4777,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp12 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStacksp12 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp12 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp12, effStacksp12)
             },
@@ -4866,7 +4885,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp21 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStacksp21 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp21 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp21, effStacksp21)
             },
@@ -4901,7 +4920,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp22 = new Decimal(0.1).times(buyableEffect('l', 21))
-                effStacksp22 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp22 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp22, effStacksp22)
             },
@@ -4936,7 +4955,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp23 = new Decimal(0.2).times(buyableEffect('l', 22))
-                effStacksp23 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp23 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp23, effStacksp23)
             },
@@ -5008,7 +5027,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp31 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStacksp31 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp31 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp31, effStacksp31)
             },
@@ -5043,7 +5062,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp32 = new Decimal(0.05).times(buyableEffect('l', 21))
-                effStacksp32 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp32 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp32, effStacksp32)
             },
@@ -5078,7 +5097,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp33 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStacksp33 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp33 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp33, effStacksp33)
             },
@@ -5150,7 +5169,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp41 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStacksp41 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp41 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp41, effStacksp41)
             },
@@ -5185,7 +5204,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp42 = new Decimal(0.0025).times(buyableEffect('l', 21))
-                effStacksp42 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp42 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp42, effStacksp42)
             },
@@ -5220,7 +5239,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp43 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStacksp43 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp43 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp43, effStacksp43)
             },
@@ -5292,7 +5311,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp51 = new Decimal(0.2).times(buyableEffect('l', 21))
-                effStacksp51 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp51 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp51, effStacksp51)
             },
@@ -5327,7 +5346,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp52 = new Decimal(0.05).times(buyableEffect('l', 21))
-                effStacksp52 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp52 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp52, effStacksp52)
             },
@@ -5362,7 +5381,7 @@ addLayer("sp", {
             },
             effect(x) {
                 effBasesp53 = new Decimal(0.1).times(buyableEffect('l', 22))
-                effStacksp53 = new Decimal(x).pow(buyableEffect('l', 23))
+                effStacksp53 = new Decimal(x).pow(buyableEffect('l', 23)).pow(buyableEffect('mtp', 23))
 
                 return Decimal.times(effBasesp53, effStacksp53)
             },
@@ -5486,7 +5505,7 @@ addLayer("lf", {
     layerShown(){return hasUpgrade('w', 55)},
     automate() {
     },
-    doReset(resettingLayer) {
+    doReset(resettingLayer) { //life force
       
 
     },
@@ -5536,10 +5555,11 @@ addLayer("hp", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
         addhp = new Decimal(-4)
-
+        addhp = addhp.add(buyableEffect('mtp', 21))
 
 
         multhp = new Decimal(1)
+        multhp = multhp.add(buyableEffect('mtp', 22))
 
         return multhp
     },
@@ -5576,12 +5596,15 @@ addLayer("hp", {
     hotkeys: [
        
     ],
-    layerShown(){return player.points.gte(5)||player.hp.total.gte(1)},
+    layerShown(){
+        realcondition = player.points.gte(5)||player.hp.total.gte(1)
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)
+    },
     automate() {
     },
     doReset(resettingLayer) { //hyperprestige
        
-
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
     clickables: {
 
@@ -5893,11 +5916,13 @@ addLayer("r", {
     hotkeys: [
        
     ],
-    layerShown(){return player.hp.total.gte(1)},
+    layerShown(){
+        realcondition = player.hp.total.gte(1)
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)},
     automate() {
     },
     doReset(resettingLayer) {
-       
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
 
     },
     update(diff){
@@ -5935,7 +5960,7 @@ addLayer("r", {
             },
             title() { return "research buyable 11"},
             display() { return "obtain "+format(effBaser11)+" research points <br> cost: "+format(this.cost())+" workers, $"+format(this.cost().times(costMultMoneyr11))+" <br> requirement: "+format(getBuyableAmount([this.layer], [this.id]).add(1))+" total hyperprestige points <br> owned: "+format(effStackr11)+" <br> effect: "+format(this.effect())},
-            canAfford() { return (player.w.points.gte(this.cost())&&player.j.points.gte(this.cost().times(costMultMoneyr11))&&player.hp.total.gte(getBuyableAmount([this.layer], [this.id]).add(1))) },
+            canAfford() { return (getBuyableAmount('w', 12).gte(this.cost())&&player.j.points.gte(this.cost().times(costMultMoneyr11))&&player.hp.total.gte(getBuyableAmount([this.layer], [this.id]).add(1))) },
             buy() {
                 setBuyableAmount('w', 12, getBuyableAmount('w', 12).sub(this.cost()))
                 player.j.points = player.j.points.sub(this.cost().times(costMultMoneyr11))
@@ -5982,7 +6007,7 @@ addLayer("r", {
             cost(x) {
                 costBaser21 = new Decimal(1.5)
                 costMultRMinr21 = new Decimal(5)
-                costMoneyr21f =[new Decimal(x).div(3).round().add(3), new Decimal(x).sub(new Decimal(x).div(3).round().times(3))]
+                costMoneyr21f =[getBuyableAmount('r', 21).div(3).floor().add(3), getBuyableAmount('r', 21).sub(getBuyableAmount('r', 21).div(3).floor().times(3))]
                 costMoneyr21 = Decimal.dTen.pow(costMoneyr21f[0]).times(Decimal.dTwo.pow(costMoneyr21f[1])).sub(0.02)
                 return [Decimal.pow(costBaser21, x).times(costMultRMinr21).round(), costMoneyr21]
             },
@@ -6236,7 +6261,7 @@ addLayer("r", {
         }, 
         43: {
             unlocked() {return player[this.layer].points.gte(4)},
-            purchaseLimit: new Decimal(4),
+            purchaseLimit: new Decimal(5),
             cost(x) {
                 costBaseTimer43 = new Decimal(2)
                 costBaseMoneyr43 = new Decimal(3)
@@ -6246,13 +6271,13 @@ addLayer("r", {
                 return [costBaseTimer43.pow(x).times(costMultRMinr43).round(), costBaseMoneyr43.pow(x).times(costMultMoneyr43).round(), reqRPr43]
             },
             effect(x) {
-                effBaser43 = new Decimal(0.125)
+                effBaser43 = new Decimal(0.1)
                 effStackr43 = new Decimal(x)
 
                 return Decimal.times(effBaser43, effStackr43)
             },
             title() { return "research buyable 43"},
-            display() { return "subtract gear gain level softcap by "+format(effBaser43)+" <br> barrier: "+formatWhole(reqRPr43)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr43)+"/4.00 <br> effect: "+format(this.effect())},
+            display() { return "subtract gear gain level softcap by "+format(effBaser43)+" <br> barrier: "+formatWhole(reqRPr43)+" research points <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr43)+"/5.00 <br> effect: "+format(this.effect())},
             canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))&&player[this.layer].points.gte(reqRPr43.add(1))},
             buy() {
                 player.j.points = player.j.points.sub(this.cost()[1])
@@ -6362,7 +6387,7 @@ addLayer("r", {
                 effBaser53 = new Decimal(1)
                 effStackr53 = new Decimal(x)
 
-                return Decimal.pow(effStackr53, 5).times(Decimal.pow(5, effStackr53)).round()
+                return Decimal.pow(effStackr53, 10).times(Decimal.pow(10, effStackr53)).round()
             },
             title() { return "research buyable 53"},
             display() { 
@@ -6376,6 +6401,26 @@ addLayer("r", {
                 setClickableState([this.layer], 11, this.id)
                 setBuyableAmount([this.layer], 12, this.cost()[0].times(60))
                 setBuyableAmount([this.layer], 13, this.cost()[2])
+            },
+        }, 
+        54: {
+            unlocked() {return getBuyableAmount('r', 53).gte(4.99)&&getBuyableAmount('r', 54).lt(0.99)},
+            purchaseLimit: Decimal.dOne,
+            cost(x) {
+
+                return Decimal.dOne
+            },
+            effect(x) {
+
+
+                return Decimal.dOne
+            },
+            title() { return "research buyable 54"},
+            display() { return " <br><br>let's go.<br><br><br> requires: 6.00 points"},
+            canAfford() { return player.points.gte(6)},
+            buy() {
+                setBuyableAmount([this.layer], [this.id], getBuyableAmount([this.layer], [this.id]).add(1))
+
             },
         }, 
     },
@@ -6454,12 +6499,15 @@ addLayer("mtp", {
     hotkeys: [
        
     ],
-    layerShown(){return getBuyableAmount('r', 53).gte(1)},
+    layerShown(){
+        realcondition = getBuyableAmount('r', 53).gte(1)
+        return realcondition&&getBuyableAmount('r', 54).lte(0.999)
+    },
     automate() {
     },
     doReset(resettingLayer) { //magical truck parts
        
-
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
     clickables: {
 
@@ -6468,20 +6516,20 @@ addLayer("mtp", {
         11: {
             unlocked() {return true},
             cost(x) {
-                costTypemtp11 = "small"
-                costBasemtp11 = new Decimal(1.6)
-                costExpmtp11 = new Decimal(0.572)
+                costTypemtp11 = "normal"
+                costBasemtp11 = new Decimal(4)
+                costExpmtp11 = new Decimal(1.25)
                 costLimitmtp11 = new Decimal('e100')
                 return player.buyablePrice(costTypemtp11, new Decimal(x), costBasemtp11, costExpmtp11, costLimitmtp11)
             },
             effect(x) {
-                effBasemtp11 = new Decimal(1)
+                effBasemtp11 = new Decimal(2)
                 effStackmtp11 = new Decimal(x)
 
-                return Decimal.add(effBasemtp11, effStackmtp11).add(1)
+                return Decimal.pow(effBasemtp11, effStackmtp11)
             },
             title() { return "magical truck parts buyable 11"},
-            display() { return "add the click value multiple by "+format(effBasemtp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp11)+" <br> effect: "+format(this.effect())},
+            display() { return "multiply the click value multiple by "+format(effBasemtp11)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp11)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -6503,20 +6551,20 @@ addLayer("mtp", {
         12: {
             unlocked() {return true},
             cost(x) {
-                costTypemtp12 = "small"
-                costBasemtp12 = new Decimal(2.667)
-                costExpmtp12 = new Decimal(0.801)
+                costTypemtp12 = "normal"
+                costBasemtp12 = new Decimal(3.5)
+                costExpmtp12 = new Decimal(1.5)
                 costLimitmtp12 = new Decimal('e100')
                 return player.buyablePrice(costTypemtp12, new Decimal(x), costBasemtp12, costExpmtp12, costLimitmtp12)
             },
             effect(x) {
-                effBasemtp12 = new Decimal(1)
+                effBasemtp12 = new Decimal(2)
                 effStackmtp12 = new Decimal(x)
 
-                return Decimal.add(effBasemtp12, effStackmtp12).add(1)
+                return Decimal.pow(effBasemtp12, effStackmtp12)
             },
             title() { return "magical truck parts buyable 12"},
-            display() { return "add the research speed multiple by "+format(effBasemtp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp12)+" <br> effect: "+format(this.effect())},
+            display() { return "multiply the research speed multiple by "+format(effBasemtp12)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp12)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -6538,20 +6586,21 @@ addLayer("mtp", {
         13: {
             unlocked() {return true},
             cost(x) {
-                costTypemtp13 = "small"
-                costBasemtp13 = new Decimal(8.05)
-                costExpmtp13 = new Decimal(1.334)
-                costLimitmtp13 = new Decimal('e100')
+                costTypemtp13 = "asymptote"
+                costBasemtp13 = new Decimal(4)
+                costExpmtp13 = new Decimal(1.75)
+                costLimitmtp13 = layers.mtp.buyables[13].purchaseLimit.add(1)
                 return player.buyablePrice(costTypemtp13, new Decimal(x), costBasemtp13, costExpmtp13, costLimitmtp13)
             },
             effect(x) {
                 effBasemtp13 = new Decimal(1)
                 effStackmtp13 = new Decimal(x)
 
-                return Decimal.add(effBasemtp13, effStackmtp13).add(1)
+                return Decimal.times(effBasemtp13, effStackmtp13)
             },
+            purchaseLimit: new Decimal(40),
             title() { return "magical truck parts buyable 13"},
-            display() { return "add the effective scrap count multiple by "+format(effBasemtp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp13)+" <br> effect: "+format(this.effect())},
+            display() { return "reduce the third point gain softcap by "+format(effBasemtp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp13)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -6570,7 +6619,275 @@ addLayer("mtp", {
                 }
             },
         },
+        21: {
+            unlocked() {return true},
+            cost(x) {
+                costTypemtp21 = "normal"
+                costBasemtp21 = new Decimal(2.2)
+                costExpmtp21 = new Decimal(1.25)
+                costLimitmtp21 = new Decimal('e100')
+                return player.buyablePrice(costTypemtp21, new Decimal(x), costBasemtp21, costExpmtp21, costLimitmtp21)
+            },
+            effect(x) {
+                effBasemtp21 = new Decimal(0.2)
+                effStackmtp21 = new Decimal(x)
+
+                return Decimal.times(effBasemtp21, effStackmtp21)
+            },
+            title() { return "magical truck parts buyable 21"},
+            display() { return "add base hyperprestige gain by "+format(effBasemtp21)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp21)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypemtp21 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemtp21, player[this.layer].points, costBasemtp21, costExpmtp21, costLimitmtp21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemtp21, player[this.layer].points, costBasemtp21, costExpmtp21, costLimitmtp21))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemtp21, player.buyableMaxPurchaseable(costTypemtp21, player[this.layer].points, costBasemtp21, costExpmtp21, costLimitmtp21), costBasemtp21, costExpmtp21, costLimitmtp21))}
+                    }
+                }
+            },
+        },
+        22: {
+            unlocked() {return true},
+            cost(x) {
+                costTypemtp22 = "normal"
+                costBasemtp22 = new Decimal(3.4)
+                costExpmtp22 = new Decimal(1.5)
+                costLimitmtp22 = new Decimal('e100')
+                return player.buyablePrice(costTypemtp22, new Decimal(x), costBasemtp22, costExpmtp22, costLimitmtp22)
+            },
+            effect(x) {
+                effBasemtp22 = new Decimal(0.1)
+                effStackmtp22 = new Decimal(x)
+
+                return Decimal.times(effBasemtp22, effStackmtp22)
+            },
+            title() { return "magical truck parts buyable 22"},
+            display() { return "add the hyperprestige point mult by "+format(effBasemtp22)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp22)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypemtp22 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemtp22, player[this.layer].points, costBasemtp22, costExpmtp22, costLimitmtp22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemtp22, player[this.layer].points, costBasemtp22, costExpmtp22, costLimitmtp22))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemtp22, player.buyableMaxPurchaseable(costTypemtp22, player[this.layer].points, costBasemtp22, costExpmtp22, costLimitmtp22), costBasemtp22, costExpmtp22, costLimitmtp22))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costTypemtp23 = "normal"
+                costBasemtp23 = new Decimal(8)
+                costExpmtp23 = new Decimal(1.75)
+                costLimitmtp23 = new Decimal('e100')
+                return player.buyablePrice(costTypemtp23, new Decimal(x), costBasemtp23, costExpmtp23, costLimitmtp23)
+            },
+            effect(x) {
+                effBasemtp23 = new Decimal(0.1)
+                effStackmtp23 = new Decimal(x)
+
+                return Decimal.times(effBasemtp23, effStackmtp23).add(1)
+            },
+            title() { return "magical truck parts buyable 23"},
+            display() { return "add the row 1 to 2 unlimited buyable exponent by "+format(effBasemtp23)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypemtp23 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemtp23, player[this.layer].points, costBasemtp23, costExpmtp23, costLimitmtp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemtp23, player[this.layer].points, costBasemtp23, costExpmtp23, costLimitmtp23))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemtp23, player.buyableMaxPurchaseable(costTypemtp23, player[this.layer].points, costBasemtp23, costExpmtp23, costLimitmtp23), costBasemtp23, costExpmtp23, costLimitmtp23))}
+                    }
+                }
+            },
+        },
+        31: {
+            unlocked() {return true},
+            cost(x) {
+                costTypemtp31 = "normal"
+                costBasemtp31 = new Decimal(2.4)
+                costExpmtp31 = new Decimal(1.25)
+                costLimitmtp31 = new Decimal('e100')
+                return player.buyablePrice(costTypemtp31, new Decimal(x), costBasemtp31, costExpmtp31, costLimitmtp31)
+            },
+            effect(x) {
+                effBasemtp31 = new Decimal(1)
+                effStackmtp31 = new Decimal(x)
+
+                return Decimal.times(effBasemtp31, effStackmtp31).add(1)
+            },
+            title() { return "magical truck parts buyable 31"},
+            display() { return "add the row 1 to 2 unlimited buyable softcap threshold multiple by "+format(effBasemtp31)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp31)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypemtp31 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemtp31, player[this.layer].points, costBasemtp31, costExpmtp31, costLimitmtp31).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemtp31, player[this.layer].points, costBasemtp31, costExpmtp31, costLimitmtp31))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemtp31, player.buyableMaxPurchaseable(costTypemtp31, player[this.layer].points, costBasemtp31, costExpmtp31, costLimitmtp31), costBasemtp31, costExpmtp31, costLimitmtp31))}
+                    }
+                }
+            },
+        },
+        32: {
+            unlocked() {return true},
+            cost(x) {
+                costTypemtp32 = "normal"
+                costBasemtp32 = new Decimal(3.8)
+                costExpmtp32 = new Decimal(1.5)
+                costLimitmtp32 = new Decimal('e100')
+                return player.buyablePrice(costTypemtp32, new Decimal(x), costBasemtp32, costExpmtp32, costLimitmtp32)
+            },
+            effect(x) {
+                effBasemtp32 = new Decimal(0.2)
+                effStackmtp32 = new Decimal(x)
+
+                return Decimal.times(effBasemtp32, effStackmtp32)
+            },
+            title() { return "magical truck parts buyable 32"},
+            display() { return "add bonus points coefficient by "+format(effBasemtp32)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp32)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypemtp32 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemtp32, player[this.layer].points, costBasemtp32, costExpmtp32, costLimitmtp32).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemtp32, player[this.layer].points, costBasemtp32, costExpmtp32, costLimitmtp32))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemtp32, player.buyableMaxPurchaseable(costTypemtp32, player[this.layer].points, costBasemtp32, costExpmtp32, costLimitmtp32), costBasemtp32, costExpmtp32, costLimitmtp32))}
+                    }
+                }
+            },
+        },
+        33: {
+            unlocked() {return true},
+            cost(x) {
+                costTypemtp33 = "normal"
+                costBasemtp33 = new Decimal(11)
+                costExpmtp33 = new Decimal(1.75)
+                costLimitmtp33 = new Decimal('e100')
+                return player.buyablePrice(costTypemtp33, new Decimal(x), costBasemtp33, costExpmtp33, costLimitmtp33)
+            },
+            effect(x) {
+                effBasemtp33 = new Decimal(2)
+                effStackmtp33 = new Decimal(x)
+
+                return Decimal.pow(effBasemtp33, effStackmtp33)
+            },
+            title() { return "magical truck parts buyable 33"},
+            display() { return "multiply the effective scrap count multiple by "+format(effBasemtp33)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypemtp33 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypemtp33, player[this.layer].points, costBasemtp33, costExpmtp33, costLimitmtp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemtp33, player[this.layer].points, costBasemtp33, costExpmtp33, costLimitmtp33))
+                        if (player[this.layer].points.lt('e200')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypemtp33, player.buyableMaxPurchaseable(costTypemtp33, player[this.layer].points, costBasemtp33, costExpmtp33, costLimitmtp33), costBasemtp33, costExpmtp33, costLimitmtp33))}
+                    }
+                }
+            },
+        },
     },
+})
+
+addLayer("lv", {
+    name: "world", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "LV", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#ef7575",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "levels", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {
+
+        return player.points
+    }, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        addlv = new Decimal(-5)
+
+
+        multlv = new Decimal(1)
+        
+
+        return multlv
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        explv = new Decimal(1)
+
+
+        exp2lv = new Decimal(0.5)
+
+        return explv
+    },
+    getResetGain() {
+        lvp = player.points.add(addlv).times(multlv).pow(explv)
+        if (lvp.gte(1)) {lvp = lvp.log10().pow(exp2lv).pow10()}
+
+        return lvp.floor().max(0)
+    },
+    getNextAt() {
+        nextlv = getResetGain('lv').add(1)
+        if (nextlv.gte(1)) {nextlv = nextlv.log10().root(exp2lv).pow10()}
+        return nextlv.root(explv).div(multlv).sub(addlv)
+    },
+    canReset() {return getResetGain('lv').gte(0)},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset to level up "+formatWhole(getResetGain('lv'))+" times. Next at "+format(getNextAt('lv'))+" points" },
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+
+    layerShown(){return getBuyableAmount('r', 54).gte(1)||player.lv.total.gte(1)},
+    buyables: {
+    },
+    upgrades: {
+    },
+
 })
 
 addLayer("a", {

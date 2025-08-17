@@ -14,19 +14,27 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3",
+	num: "0.5",
 	name: "Literally nothing",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.3</h3><br>
+	<h3>v0.5</h3><br>
+		- Added hyperprestige. <br>
+		- Added research. <br>
+		- Added more lore. <br>
+		- Changed some technical parts on buyable pricing. <br>
+	<h3>v0.4</h3><br>
 		- Uninflated gems.<br>
 		- Changed some coefficients.<br>
-		- Changed lootbox mechanic. <br>
+		- Changed lootbox mechanic, extended lootbox content. <br>
 		- Changed milestone. <br>
-	<h3>v0.2</h3><br>
+		- Added some lore. <br>
+	<h3>v0.3</h3><br>
 		- Overhaul on some structure.<br>
 		- Added lootboxes.<br>
+	<h3>v0.2</h3><br>
+		- Restructured buyables. <br>
 	<h3>v0.1</h3><br>
 		- Gems inflation update.<br>
 	<h3>v0.0</h3><br>
@@ -88,6 +96,7 @@ function getPointGen() {
 
 	thirdSoftcapStrength = new Decimal(60)
 	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 11)[0][3])
+	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('mtp', 13))
 
 	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
 
@@ -117,6 +126,19 @@ function getPointGen() {
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 	buyablePrice(type, amt, base, exp, limit) {
+		if (type == "large") { //large = base^base^(x+1)^pow
+			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
+			if (base.pow(base.pow(amt.add(1).pow(exp))).floor().gt(limit)) {
+				limitamt = limit.log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpricetriplelog = base.pow(base.pow(limitamt.add(1).pow(exp))).log10().log10().log10()
+				limitplus1pricetriplelog = base.pow(base.pow(limitamtplus1.add(1).pow(exp))).log10().log10().log10()
+				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
+				return amt.sub(limitamt).times(newpricescalingtriplelog).add(limitpricetriplelog).pow10().pow10().pow10()
+			} else {
+				return base.pow(base.pow(amt.add(1).pow(exp))).floor()
+			}
+		}
 		if (type == "normal") { //normal = base^(x+1)^pow
 			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to double exponential : linear
 			if (base.pow(amt.add(1).pow(exp)).gt(limit)) {
@@ -151,6 +173,18 @@ function addedPlayerData() { return {
 
 	},
 	buyableMaxPurchaseable(type, currency, base, exp, limit) {
+		if (type == "large") {
+			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
+			if (currency.gt(limit)) {
+				limitamt = limit.log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1).floor()
+				limitamtplus1 = limitamt.add(1)
+				limitpricetriplelog = base.pow(base.pow(limitamt.add(1).pow(exp))).log10().log10().log10()
+				limitplus1pricetriplelog = base.pow(base.pow(limitamtplus1.add(1).pow(exp))).log10().log10().log10()
+				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
+				return currency.log10().log10().log10().sub(limitpricetriplelog).div(newpricescalingtriplelog).add(limitamt).ceil()
+			}
+			else return currency.max(10).log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1)
+		}
 		if (type == "normal") {
 			if (limit.lte('e10')) {limit = new Decimal('e10')}
 			if (currency.gt(limit)) {
@@ -182,6 +216,7 @@ function addedPlayerData() { return {
 	row2normalBuyableSoftcap() {
 		capexp = new Decimal(100)
 		capexp = capexp.add(buyableEffect('l', 12))
+		capexp = capexp.times(buyableEffect('mtp', 31))
 		return Decimal.dTen.pow(capexp)
 	}
 						
@@ -217,6 +252,3 @@ function fixOldSave(oldVersion){
 
 }
 
-function pow2(a){
-	return Decimal.pow(2, a)
-}
