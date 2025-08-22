@@ -60,8 +60,8 @@ addLayer("l", {
 
     },
     doReset(resettingLayer) { //lootbox        
-        if (layers[resettingLayer].row > 4.5) {layerDataReset(this.layer, [])}
-        if (layers[resettingLayer].row = 4) {
+        if ((layers[resettingLayer].row > 4.5)||layers[resettingLayer] == "wr") {layerDataReset(this.layer, [])}
+        if (layers[resettingLayer].row == 4) {
             if (hasMilestone('m', 10)) {}
             else {
             listkeep = []
@@ -2296,9 +2296,9 @@ temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&g
             },
             title() { return "gems pack "+formatWhole(gempacktier)},
             display() { 
-                text = "gives "+format(baseGemsN, 0)+" gems "
-                if (gemMultiplierN.gt(1)) {text += "with "+format(gemMultiplierN.sub(1).times(100), 1)+"% free gems, boosted to "+format(this.effect(), 0)+" gems"}
-                text += "<br> also gives "+format(vipPointsN, 0)+" vip points"
+                text = "gives "+formatWhole(baseGemsN)+" gems "
+                if (gemMultiplierN.gt(1)) {text += "with "+format(gemMultiplierN.sub(1).times(100), 1)+"% free gems, boosted to "+formatWhole(this.effect())+" gems"}
+                text += "<br> also gives "+formatWhole(vipPointsN)+" vip points"
                 text +=" <br> cost: $"+format(this.cost())
                 return text},
             canAfford() { return player.j.points.gte(this.cost()) },
@@ -2524,7 +2524,7 @@ addLayer("m", {
     },
     layerShown(){
         realcondition = true
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
         return realcondition&&(!temporaryhidewr)},
     milestones: {
         0: {
@@ -6869,7 +6869,7 @@ temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&g
 
 addLayer("wr", {
     name: "world resets", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "wr", // This appears on the layer's node. Default is the id with the first letter capitalized
+    symbol: "WR", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -6911,6 +6911,13 @@ addLayer("wr", {
         nextwr = getResetGain('wr').add(1)
         if (nextwr.gte(1)) {nextwr = nextwr.log10().root(exp2wr).pow10()}
         return nextwr.root(expwr).div(multwr).sub(addwr)
+    },
+    effect() {
+        effwr = player.wr.points.pow(3)
+        return effwr
+    },
+    effectDescription() {
+        return "multiplying experience point gain by "+format(layers.wr.effect())
     },
     canReset() {return getResetGain('wr').gte(0)},
     prestigeNotify() {return true},
@@ -6965,9 +6972,12 @@ addLayer("wr", {
     infoboxes: {
         11: {
             body() {
-                textwr = "you have "+format(buyableEffect('wr', 11).floor())+" levels"
-                textwr += "you have "+format(getBuyableAmount('wr', 11))+" experience points, "+format(buyableEffect('wr', 11).subtract(buyableEffect('wr', 11).floor()).times(100))+"% to the next level"
+                textwr = "you have "+formatWhole(buyableEffect('wr', 11).floor())+" levels"
+                textwr += "<br> you have "+formatWhole(getBuyableAmount('wr', 11))+" experience points, "+format(buyableEffect('wr', 11).subtract(buyableEffect('wr', 11).floor()).times(100))+"% to the next level"
                 return textwr
+            },
+            unlocked() {
+                return player.wr.total.gte(1)
             }
         }
     }, 
