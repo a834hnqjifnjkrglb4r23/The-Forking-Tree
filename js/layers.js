@@ -95,8 +95,8 @@ addLayer("l", {
     },
     layerShown(){
         realcondition = (player.points.gte(3)||player.l.total.gte(1)||player.hp.total.gte(1))
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     clickables: {
         11: { //gear level grid, numbers
@@ -449,8 +449,8 @@ addLayer("j", {
     displayRow: "side",
     layerShown(){
         realcondition = true
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     doReset(resettingLayer) { //job
         if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
@@ -802,8 +802,8 @@ addLayer("sj", {
     displayRow: "side",
     layerShown(){
         realcondition = true
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)},
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)},
     doReset(resettingLayer) { //superjob
         if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
     },
@@ -1070,8 +1070,8 @@ addLayer("w", {
     },
     layerShown(){
         realcondition = player.j.points.gte(100)||player.w.total.gte(1)||getBuyableAmount('w', 12).gt(0)
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     buyables: {
         11: { //rate at which workers join the company in worker/sec
@@ -2015,8 +2015,8 @@ addLayer("g", {
     }, 
     layerShown(){
         realcondition = true
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)},
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)},
     clickables: {        
         11: {
             unlocked() {return getBuyableAmount('r', 21).gte(1)}, 
@@ -2524,8 +2524,8 @@ addLayer("m", {
     },
     layerShown(){
         realcondition = true
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)},
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)},
     milestones: {
         0: {
             requirementDescription: "2.00 points",
@@ -2674,8 +2674,8 @@ addLayer("b", {
     row: 0, // Row the layer is in on the tree (0 is the first row)
     layerShown(){
         realcondition = player.l.total.gte(1)||player.b.points.gte(0.0001)
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv) },
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr) },
     doReset(resettingLayer) { //bonus points
         actualRow = 0
         if (hasMilestone('m', 9)) {actualRow = 4}
@@ -2786,8 +2786,8 @@ addLayer("p", {
     ],
     layerShown(){
         realcondition = true
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)},
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)},
     automate() {
         if (hasMilestone('m', 0)&&player.p.autoBuy) {
             for (let i = 11; i < 14; i++) {
@@ -3129,8 +3129,8 @@ addLayer("mp", {
     },
     layerShown(){ 
         realcondition = (player.p.best.gte(100)||player.mp.total.gte(1))
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)},
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)},
     automate() {
         if (hasMilestone('m', 1)&&player.bp.autoBuy) {
             for (let i = 1; i < 6; i++) {
@@ -3951,8 +3951,8 @@ addLayer("bp", {
     },
     layerShown(){
         realcondition = (totalPBuyables.gte(40)||player.bp.total.gte(1))
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     buyables: {
         11: {
@@ -4758,8 +4758,8 @@ addLayer("sp", {
     },
     layerShown(){
         realcondition = (player.points.gte(2)||player.sp.total.gte(1))
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     buyables: {
         11: {
@@ -5629,8 +5629,8 @@ addLayer("hp", {
     ],
     layerShown(){
         realcondition = player.points.gte(5)||player.hp.total.gte(1)
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     automate() {
     },
@@ -5950,8 +5950,8 @@ addLayer("r", {
     ],
     layerShown(){
         realcondition = player.hp.total.gte(1)
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)},
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)},
     automate() {
     },
     doReset(resettingLayer) {
@@ -6535,8 +6535,8 @@ addLayer("mtp", {
     ],
     layerShown(){
         realcondition = getBuyableAmount('r', 53).gte(1)
-        temporaryhidelv = getBuyableAmount('r', 54).gte(1)||getBuyableAmount('lv', 21).lte(0.99)
-        return realcondition&&(!temporaryhidelv)
+temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lte(0.99))
+        return realcondition&&(!temporaryhidewr)
     },
     automate() {
     },
@@ -6867,9 +6867,9 @@ addLayer("mtp", {
     },
 })
 
-addLayer("lv", {
-    name: "levels", // This is optional, only used in a few places, If absent it just uses the layer id.
-    symbol: "LV", // This appears on the layer's node. Default is the id with the first letter capitalized
+addLayer("wr", {
+    name: "world resets", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "wr", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked: true,
@@ -6877,7 +6877,7 @@ addLayer("lv", {
     }},
     color: "#ef7575",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
-    resource: "levels", // Name of prestige currency
+    resource: "world resets", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {
 
@@ -6885,54 +6885,72 @@ addLayer("lv", {
     }, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        addlv = new Decimal(-5)
+        addwr = new Decimal(-5)
 
 
-        multlv = new Decimal(1)
+        multwr = new Decimal(1)
         
 
-        return multlv
+        return multwr
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        explv = new Decimal(1)
+        expwr = new Decimal(1)
 
 
-        exp2lv = new Decimal(0.5)
+        exp2wr = new Decimal(0.5)
 
-        return explv
+        return expwr
     },
     getResetGain() {
-        lvp = player.points.add(addlv).times(multlv).pow(explv)
-        if (lvp.gte(1)) {lvp = lvp.log10().pow(exp2lv).pow10()}
+        wrp = player.points.add(addwr).times(multwr).pow(expwr)
+        if (wrp.gte(1)) {wrp = wrp.log10().pow(exp2wr).pow10()}
 
-        return lvp.floor().max(0)
+        return wrp.floor().max(0)
     },
     getNextAt() {
-        nextlv = getResetGain('lv').add(1)
-        if (nextlv.gte(1)) {nextlv = nextlv.log10().root(exp2lv).pow10()}
-        return nextlv.root(explv).div(multlv).sub(addlv)
+        nextwr = getResetGain('wr').add(1)
+        if (nextwr.gte(1)) {nextwr = nextwr.log10().root(exp2wr).pow10()}
+        return nextwr.root(expwr).div(multwr).sub(addwr)
     },
-    canReset() {return getResetGain('lv').gte(0)},
+    canReset() {return getResetGain('wr').gte(0)},
     prestigeNotify() {return true},
-    prestigeButtonText() {return "Reset to level up "+formatWhole(getResetGain('lv'))+" times. Next at "+format(getNextAt('lv'))+" points" },
+    prestigeButtonText() {return "Reset to world reset up "+formatWhole(getResetGain('wr'))+" times. Next at "+format(getNextAt('wr'))+" points" },
     row: 5, // Row the layer is in on the tree (0 is the first row)
 
-    layerShown(){return getBuyableAmount('r', 54).gte(1)||player.lv.total.gte(1)},
+    layerShown(){return getBuyableAmount('r', 54).gte(1)||player.wr.total.gte(1)},
     buyables: {
+        11: {
+            unlocked() {return false}, //amt: xp points, eff: world reset
+            cost(x) {
+                return new Decimal(1)
+            },
+            effect(x) {
+                effStackwr11 = new Decimal(x)
+                if (effStackwr11.gte(14300)) {return new Decimal(1.1916666666666667).pow(effStackwr11.sub(10)).times(14300)} //softcap: exponential
+                else {return effStackwr11.div(100).add(1).pow(0.5)} // f(x) = (x-1)(x+1)
+
+                return Decimal.times(effBasewr21, effStackwr21)
+            },
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+            },
+            buyMax() {
+            },
+        },
         21: {
             unlocked() {return true},
             cost(x) {
                 return new Decimal(5).div(Decimal.dOne.sub(x))
             },
             effect(x) {
-                effBaselv21 = new Decimal(1)
-                effStacklv21 = new Decimal(x)
+                effBasewr21 = new Decimal(1)
+                effStackwr21 = new Decimal(x)
 
-                return Decimal.times(effBaselv21, effStacklv21)
+                return Decimal.times(effBasewr21, effStackwr21)
             },
             purchaseLimit: Decimal.dOne,
-            title() { return "levels buyable 21"},
-            display() { return "create a portal back to your original world <br> req: "+format(this.cost())+" <br> owned: "+format(effStacklv21.gte(1))},
+            title() { return "world resets buyable 21"},
+            display() { return "create a portal back to your original world <br> req: "+format(this.cost())+" levels <br> owned: "+format(effStackwr21.gte(1))},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -6944,6 +6962,15 @@ addLayer("lv", {
     upgrades: {
 
     },
+    infoboxes: {
+        11: {
+            body() {
+                textwr = "you have "+format(buyableEffect('wr', 11).floor())+" levels"
+                textwr += "you have "+format(getBuyableAmount('wr', 11))+" experience points, "+format(buyableEffect('wr', 11).subtract(buyableEffect('wr', 11).floor()).times(100))+"% to the next level"
+                return textwr
+            }
+        }
+    }, 
 
 })
 

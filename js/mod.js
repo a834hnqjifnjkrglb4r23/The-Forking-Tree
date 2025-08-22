@@ -53,9 +53,9 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	temporaryhidelv = player.lv.total.gte(1)||getBuyableAmount('lv', 21).lt(0.5)
+	temporaryhidewr = player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lt(0.5)
 
-	return !temporaryhidelv
+	return !temporaryhidewr
 }
 
 // Calculate points/sec!
