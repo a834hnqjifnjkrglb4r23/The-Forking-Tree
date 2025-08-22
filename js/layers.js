@@ -6921,13 +6921,13 @@ addLayer("wr", {
     },
     canReset() {return getResetGain('wr').gte(0)},
     prestigeNotify() {return true},
-    prestigeButtonText() {return "Reset to world reset up "+formatWhole(getResetGain('wr'))+" times. Next at "+format(getNextAt('wr'))+" points" },
+    prestigeButtonText() {return "Reset to get "+formatWhole(getResetGain('wr'))+" worlds. Next at "+format(getNextAt('wr'))+" points" },
     row: 5, // Row the layer is in on the tree (0 is the first row)
 
     layerShown(){return getBuyableAmount('r', 54).gte(1)||player.wr.total.gte(1)},
     buyables: {
         11: {
-            unlocked() {return false}, //amt: xp points, eff: world reset
+            unlocked() {return false}, //amt: xp points, eff: level
             cost(x) {
                 return new Decimal(1)
             },
