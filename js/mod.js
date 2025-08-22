@@ -53,7 +53,9 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	return true
+	temporaryhidelv = player.lv.total.gte(1)||getBuyableAmount('lv', 21).lt(0.5)
+
+	return !temporaryhidelv
 }
 
 // Calculate points/sec!
@@ -211,7 +213,20 @@ function addedPlayerData() { return {
 				return currency.max(0).div(base).root(exp).sub(1).floor()
 			}
 		}
-		
+	},
+	roundTime(minutes) {
+		if (minutes.lte(60)) {floorminutes = Decimal.dOne} //120 = 2*60
+		else if (minutes.lte(120)) {floorminutes = Decimal.dTwo} //360 = 6*60
+		else if (minutes.lte(360)) {floorminutes = new Decimal(5)} //720 = 12*60
+		else if (minutes.lte(720)) {floorminutes = Decimal.dTen} //1440 = 24*60	
+		else if (minutes.lte(1440)) {floorminutes = new Decimal(15)} //2880 = 2*1440	
+		else if (minutes.lte(2880)) {floorminutes = new Decimal(30)} //5760 = 4*1440
+		else if (minutes.lte(5760)) {floorminutes = new Decimal(60)} //10080 = 7*1440
+		else if (minutes.lte(10080)) {floorminutes = new Decimal(120)} //21600 = 15*1440
+		else if (minutes.lte(21600)) {floorminutes = new Decimal(360)} //43200 = 30*1440
+		else if (minutes.lte(43200)) {floorminutes = new Decimal(720)} 
+		else {floorminutes = new Decimal(1440)}
+		return minutes.div(floorminutes).round().times(floorminutes)
 	},
 	row2normalBuyableSoftcap() {
 		capexp = new Decimal(100)
