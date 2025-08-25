@@ -45,7 +45,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -53,7 +53,7 @@ function getStartPoints(){
 
 // Determines if it should show points/sec
 function canGenPoints(){
-	temporaryhidewr = player.wr.total.gte(1)&&getBuyableAmount('wr', 21).lt(0.5)
+	temporaryhidewr = player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lt(0.5)
 
 	return !temporaryhidewr
 }
@@ -233,8 +233,8 @@ function addedPlayerData() { return {
 		capexp = capexp.add(buyableEffect('l', 12))
 		capexp = capexp.times(buyableEffect('mtp', 31))
 		return Decimal.dTen.pow(capexp)
-	}
-						
+	},
+	
 }}
 
 // Display extra things at the top of the page
