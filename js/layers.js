@@ -93,9 +93,9 @@ addLayer("l", {
             }
         }
     },
-    layerShown(){
+    layerShown(){ //lootbox
         realcondition = (player.points.gte(3)||player.l.total.gte(1)||player.hp.total.gte(1))
-        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(2.99))
         return realcondition&&(!temporaryhidewr)
     },
     clickables: {
@@ -447,9 +447,9 @@ addLayer("j", {
     prestigeButtonText() {return "This layer cannot be reset" },
     row: 4, // Row the layer is in on the tree (0 is the first row)
     displayRow: "side",
-    layerShown(){
+    layerShown(){ //job
         realcondition = true
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(2.99))
         return realcondition&&(!temporaryhidewr)
     },
     doReset(resettingLayer) { //job
@@ -800,9 +800,9 @@ addLayer("sj", {
     prestigeButtonText() {return "This layer cannot be reset" },
     row: 4, // Row the layer is in on the tree (0 is the first row)
     displayRow: "side",
-    layerShown(){
+    layerShown(){ //superjob
         realcondition = true
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(2.99))
         return realcondition&&(!temporaryhidewr)},
     doReset(resettingLayer) { //superjob
         if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
@@ -1068,9 +1068,9 @@ addLayer("w", {
         if (buyableEffect('w', 24).gt(0)) {setBuyableAmount('w', 24, getBuyableAmount('w', 24).add(buyableEffect('w', 24).times(diff)))} else {setBuyableAmount('w', 24, Decimal.dZero)}
 
     },
-    layerShown(){
+    layerShown(){ //workers
         realcondition = player.j.points.gte(100)||player.w.total.gte(1)||getBuyableAmount('w', 12).gt(0)
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(3.99))
         return realcondition&&(!temporaryhidewr)
     },
     buyables: {
@@ -2013,9 +2013,9 @@ addLayer("g", {
             }
         }
     }, 
-    layerShown(){
+    layerShown(){ //gems
         realcondition = true
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(2.99))
         return realcondition&&(!temporaryhidewr)},
     clickables: {        
         11: {
@@ -2522,9 +2522,9 @@ addLayer("m", {
         if (getBuyableAmount('r', 22).gte(1)) {actualRow = 4}
         if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
-    layerShown(){
+    layerShown(){ //milestones
         realcondition = true
-        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(1.99))
         return realcondition&&(!temporaryhidewr)},
     milestones: {
         0: {
@@ -2672,7 +2672,7 @@ addLayer("b", {
         return Decimal.dOne
     },
     row: 0, // Row the layer is in on the tree (0 is the first row)
-    layerShown(){
+    layerShown(){ //bonus points
         realcondition = player.l.total.gte(1)||player.b.points.gte(0.0001)
 temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
         return realcondition&&(!temporaryhidewr) },
@@ -2784,9 +2784,9 @@ addLayer("p", {
     hotkeys: [
         {key: "p", description: "P: Reset for prestige points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
-    layerShown(){
+    layerShown(){ //prestige
         realcondition = true
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
         return realcondition&&(!temporaryhidewr)},
     automate() {
         if (hasMilestone('m', 0)&&player.p.autoBuy) {
@@ -3127,9 +3127,9 @@ addLayer("mp", {
             if (player.bp.autoGain) {return new Decimal(0.2)} else {return Decimal.dZero}
         } else {return Decimal.dZero}
     },
-    layerShown(){ 
+    layerShown(){  //metaprestige
         realcondition = (player.p.best.gte(100)||player.mp.total.gte(1))
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(1.99))
         return realcondition&&(!temporaryhidewr)},
     automate() {
         if (hasMilestone('m', 1)&&player.bp.autoBuy) {
@@ -3949,9 +3949,9 @@ addLayer("bp", {
             }
         }
     },
-    layerShown(){
+    layerShown(){ //buyable
         realcondition = (totalPBuyables.gte(40)||player.bp.total.gte(1))
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(1.99))
         return realcondition&&(!temporaryhidewr)
     },
     buyables: {
@@ -4756,9 +4756,9 @@ addLayer("sp", {
         if (hasMilestone('m', 8)) {actualRow = 4}
         if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
-    layerShown(){
+    layerShown(){//superprestige
         realcondition = (player.points.gte(2)||player.sp.total.gte(1))
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(1.99))
         return realcondition&&(!temporaryhidewr)
     },
     buyables: {
@@ -5627,9 +5627,9 @@ addLayer("hp", {
     hotkeys: [
        
     ],
-    layerShown(){
+    layerShown(){ //hyperprest
         realcondition = player.points.gte(5)||player.hp.total.gte(1)
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(4.99))
         return realcondition&&(!temporaryhidewr)
     },
     automate() {
@@ -5948,9 +5948,9 @@ addLayer("r", {
     hotkeys: [
        
     ],
-    layerShown(){
+    layerShown(){ //reesearc
         realcondition = player.hp.total.gte(1)
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(4.99))
         return realcondition&&(!temporaryhidewr)},
     automate() {
     },
@@ -5958,7 +5958,7 @@ temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&g
         if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
 
     },
-    update(diff){
+    update(diff){ 
         if (getBuyableAmount([this.layer], 12).gt(0)) {
             setBuyableAmount([this.layer], 12, getBuyableAmount([this.layer], 12).sub(player[this.layer].points.sub(getBuyableAmount([this.layer], 13)).times(diff).times(buyableEffect('mtp', 12))))
         }
@@ -6533,9 +6533,9 @@ addLayer("mtp", {
     hotkeys: [
        
     ],
-    layerShown(){
+    layerShown(){ //mtp
         realcondition = getBuyableAmount('r', 53).gte(1)
-temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(0.99))
+        temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(4.99))
         return realcondition&&(!temporaryhidewr)
     },
     automate() {
@@ -6875,7 +6875,7 @@ addLayer("wr", {
         unlocked: true,
 		points: new Decimal(0),
     }},
-    color: "#ef75c0",
+    color: "#ef8375",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "world resets", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
@@ -6935,7 +6935,7 @@ addLayer("wr", {
         if (gain.gte(1)) {setBuyableAmount('wr', 91, buyableEffect('wr', 91))}
     },
     damageCalc(strength, fortility, multiplier = new Decimal(1)) {
-        basedamage = Decimal.pow(1.15, strength.sub(fortility)).times(strength).times(9)
+        basedamage = Decimal.pow(1.035, strength.sub(fortility)).times(strength).times(9)
         return basedamage.times(multiplier).add(0.5).round()
     },
     unlockedStats(level) {
@@ -6980,33 +6980,81 @@ addLayer("wr", {
     experienceCalc(level, extrafree, multiplier = new Decimal(1)) {
         numberofstats = layers.wr.unlockedStats(level)[0].filter(element => (element != undefined)&&(element != "free")).length
         effectivelevel = level.add(extrafree.times(0.6666666666666666).div(numberofstats))
-        baseexp = effectivelevel.pow(3).times(4).add(effectivelevel.pow(2).times(2)).add(effectivelevel).div(effectivelevel.times(5).add(15)).times(130)
+        baseexp = effectivelevel.pow(3).times(2).add(effectivelevel.pow(2).times(5)).add(effectivelevel.times(4)).add(3).times(effectivelevel.pow(2)).times(3).div(effectivelevel.times(5).add(15)).times(100)
 
 
         return baseexp.times(multiplier).floor()
     },
     mobDict() {
-        mobdictionary = []  // name             hp mult       dmg mult           xp mult          freestat mult   [item index, probability]
-        mobdictionary.push(["",            Decimal.dZero,    Decimal.dZero,   Decimal.dZero,     Decimal.dZero,  []])
-        mobdictionary.push(["Unknown mob", new Decimal(15), new Decimal(0.3), new Decimal(1),    new Decimal(1), [[1, 0.25], [2, 0.08]]]) //0
-        mobdictionary.push(["Unknown mob", new Decimal(15), new Decimal(0.5), new Decimal(1.25), new Decimal(1), [[1, 0.35], [2, 0.2]]]) //0
-        mobdictionary.push(["Unknown mob", new Decimal(30), new Decimal(0.3), new Decimal(1.35), new Decimal(1), [[1, 0.4], [2, 0.35], [3, 0.25]]]) //0
+        mobdictionary = [ 
+        //  name             hp mult           dmg mult          xp mult                freestat mult      [item index, probability]
+            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //0
+            ["Unknown mob",  new Decimal(15),  new Decimal(0.3), new Decimal(0.62),     new Decimal(1),    [[1,  0.2  ], [2,  0.075]              ]], //1
+            ["Unknown mob",  new Decimal(15),  new Decimal(0.5), new Decimal(0.713),    new Decimal(1),    [[1,  0.25 ], [2,  0.15 ]              ]], //2
+            ["Unknown mob",  new Decimal(30),  new Decimal(0.3), new Decimal(0.744),    new Decimal(1),    [[1,  0.325], [2,  0.225], [3,   0.075]]], //3
+            ["Unknown mob+", new Decimal(30),  new Decimal(0.6), new Decimal(0.8804),   new Decimal(1.05), [[2,  0.35 ], [3,  0.25 ], [4,   0.125]]], //4
+            ["Unknown mob+", new Decimal(30),  new Decimal(0.8), new Decimal(0.94643),  new Decimal(1.05), [[2,  0.35 ], [3,  0.25 ], [4,   0.25 ]]], //5
+            ["Unknown mob+", new Decimal(45),  new Decimal(0.6), new Decimal(0.96844),  new Decimal(1.05), [[2,  0.35 ], [3,  0.25 ], [4,   0.375]]], //6
+            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //7
+            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //8
+            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //9
+            ["Small Dog",    new Decimal(30),  new Decimal(1),   new Decimal(1),        new Decimal(1),    [[3,  0.25 ], [21, 0.275], [22,  0.175]]], // 10
+        ] 
         return mobdictionary
     },
     itemDict() {
-        itemdictionary = []  // name                  index   eff
-        itemdictionary.push(["", 0, Decimal.dZero])
-        itemdictionary.push(["Small Healing Potion", 1, new Decimal(5)]) //1
-        itemdictionary.push(["Small Healing Potion+", 1, new Decimal(10)]) //2
-        itemdictionary.push(["Small Healing Potion++", 1, new Decimal(20)]) //3
-        itemdictionary.push(["Medium Healing Potion", 1, new Decimal(50)]) //4
-        itemdictionary.push(["Medium Healing Potion+", 1, new Decimal(100)]) //5
+        itemdictionary = [  // name                       index   eff //each 10nth element must be empty beccause equippables use different function
+            ["",                                    0, Decimal.dZero    ],
+            ["Small Healing Potion",                1, new Decimal(5)   ], //1
+            ["Small Healing Potion+",               1, new Decimal(10)  ], //2
+            ["Small Healing Potion++",              1, new Decimal(20)  ], //3
+            ["Medium Healing Potion",               1, new Decimal(50)  ], //4
+            ["Medium Healing Potion+",              1, new Decimal(100) ], //5
+            ["Medium Healing Potion++",             1, new Decimal(200) ], //6
+            ["Large Healing Potion",                1, new Decimal(500) ], //7
+            ["Large Healing Potion+",               1, new Decimal(1000)], //8
+            ["Large Healing Potion++",              1, new Decimal(2000)], //9 level 99 player has 2970 hp max
+            ["",                                    0, Decimal.dZero    ], //10
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ], //15
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ],
+            ["",                                    0, Decimal.dZero    ], //20
+            ["Small Round Copper Coin",             2, new Decimal(1)   ], //21
+            ["Small Triangular Copper Coin",        2, new Decimal(3)   ], //22
+            ["Small Pentagonal Copper Coin",        2, new Decimal(5)   ], //23
+            ["Medium Round Copper Coin",            2, new Decimal(10)  ], //24
+            ["Medium Triangular Copper Coin",       2, new Decimal(30)  ], //25
+            ["Medium Pentagonal Copper Coin",       2, new Decimal(50)  ], //26
+            ["Large Round Copper Coin",             2, new Decimal(100) ], //24
+            ["Large Triangular Copper Coin",        2, new Decimal(300) ], //25
+            ["Large Pentagonal Copper Coin",        2, new Decimal(500) ], //26
+            //Silver:Copper approx 800, Gold:Silver approx 80
+        ]
         return itemdictionary
     },
     consumableEffect(index, eff) {
         if (index == 0) {}
         if (index == 1) {
             setBuyableAmount('wr', 92, getBuyableAmount('wr', 92).add(eff))
+        }
+        if (index == 2) {
+            setBuyableAmount('wr', 81, getBuyableAmount('wr', 81).add(eff))
+        }
+    },
+    chooseEnemy(level) {
+        enemyseed = Math.random() * 100
+        if (level.eq(1)) {
+            return Math.max(Math.floor((enemyseed - 55) / 15), 0) + 1
+        } else if (level.eq(2)) {
+            return Math.max(Math.floor((enemyseed - 32.5) / 22.5), 0) + 1
+        } else {
+            return Math.max(Math.floor((enemyseed - 20) / 25), 0) + 1
         }
     },
     buyables: {
@@ -7016,11 +7064,15 @@ addLayer("wr", {
                 return new Decimal(1)
             },
             effect(x) {
-                effStackwr11 = new Decimal(x)
-                effwr21 = effStackwr11.div(100).pow(0.5).add(1).pow(0.5) //f(x) = (x^2-1)^2, net degree 4
-                if (effwr21.gte(30)) {effwr21 = effwr21.div(30).root(1.25).times(30)} //^1.25 net degree 5
-                if (effwr21.gte(60)) {effwr21 = effwr21.div(60).root(1.2).times(60)} //^1.5 net degree 6
-                return effwr21
+                effStackwr11 = new Decimal(x).div(100)
+                if (effStackwr11.lte(0.1)) {return Decimal.dOne}
+                constantwr11 = effStackwr11.times(effStackwr11.times(27).sub(4)).root(2).times(5.196152422706632).add(effStackwr11.times(27)).sub(2).root(3)
+                effwr11 = Decimal.div(2.5198420997897464, constantwr11).add(constantwr11.times(1.5874010519681994)).add(4).div(5.99999999999999).root(2) //5.99: 6 would cause issues with floating point
+                
+                if (effwr11.gte(30)) {effwr11 = effwr11.div(30).pow(6).root(7).times(30)}
+                if (effwr11.gte(60)) {effwr11 = effwr11.div(60).pow(7).root(8).times(60)}
+
+                return effwr11
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -7038,7 +7090,8 @@ addLayer("wr", {
                 return totalspentfreestats
             },
             effect(x) {
-                return new Decimal(1)
+                totalfreestatsavailable =  buyableEffect('wr', 11).sub(1).floor()
+                return totalfreestatsavailable.sub(totalspentfreestats)
 
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
@@ -7058,9 +7111,9 @@ addLayer("wr", {
 
             },
             display() { return "assign one point into strength. increases damage dealt"},
-            canAfford() { return getBuyableAmount('wr', 12).gte(this.cost()) },
+            canAfford() { return buyableEffect('wr', 12).gte(this.cost()) },
             buy() {
-                setBuyableAmount('wr', 12, getBuyableAmount('wr', 12).sub(1))
+                setBuyableAmount('wr', 12, getBuyableAmount('wr', 12).add(1))
                 setBuyableAmount('wr', this.id, getBuyableAmount('wr', this.id).add(1))
             },
             buyMax() {
@@ -7079,15 +7132,31 @@ addLayer("wr", {
 
             },
             display() { return "assign one point into fortility. increases maximum health and decreases damage taken"},
-            canAfford() { return getBuyableAmount('wr', 12).gte(this.cost()) },
+            canAfford() { return buyableEffect('wr', 12).gte(this.cost()) },
             buy() {
-                setBuyableAmount('wr', 12, getBuyableAmount('wr', 12).sub(1))
+                setBuyableAmount('wr', 12, getBuyableAmount('wr', 12).add(1))
                 setBuyableAmount('wr', this.id, getBuyableAmount('wr', this.id).add(1))
             },
             buyMax() {
             },
             style() {const size = {width: "120px", height: "120px"}
             return size},
+        },
+        81: {
+            unlocked() {return false}, //amt: current copper coins
+            cost(x) {
+                return new Decimal(1)
+            },
+            effect(x) {
+                return new Decimal(1)
+            },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+            style() {const sizehidden = {width: "1px", height: "1px"}
+            return sizehidden},
         },
         91: {
             unlocked() {return false}, //amt: current health, eff: maximum health
@@ -7097,7 +7166,6 @@ addLayer("wr", {
             effect(x) {
                 levelstats = buyableEffect('wr', 14).times(30)
                 return levelstats
-
             },
             canAfford() { return false },
             buy() {
@@ -7153,7 +7221,7 @@ addLayer("wr", {
                 return new Decimal(1)
             },
             effect(x) {
-                return new Decimal(x).add(1)
+                return new Decimal(x).add(1).min(buyableEffect('wr', 11).floor())
 
             },
             canAfford() { return false },
@@ -7257,7 +7325,7 @@ addLayer("wr", {
             },
             purchaseLimit: new Decimal(5),
             title() { return "world resets buyable 211"},
-            display() { return "create a portal back to your original world to unlock row "+formatWhole(this.effect().add(effBasewr211))+"<br> req: "+formatWhole(this.cost())+" levels <br> unlocked: row "+formatWhole(effStackwr211.gte(1))},
+            display() { return "create a portal back to your original world to unlock layers "+formatWhole(this.effect().add(effBasewr211))+"<br> req: "+formatWhole(this.cost())+" levels <br> unlocked: "+formatWhole(effStackwr211.gte(1))+"/5"},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -7275,9 +7343,9 @@ addLayer("wr", {
             unlocked() {return player.wr.total.gte(1)},
             onClick() {
                 if (getClickableState('wr', 111) == 0) { //generate mod
-                    enemyIndex = Math.floor(Math.random() ** 1.5 * 2.999) + 1 //put enemy index decision method here
+                    enemyIndex = layers.wr.chooseEnemy(buyableEffect('wr', 102))
                     setClickableState('wr', 111, enemyIndex)//mob dict: name, hp, dmg, xp
-                    randomLevel = buyableEffect('wr', 102).div(5).sub(25).max(0).min(5).times(Math.random())
+                    randomLevel = buyableEffect('wr', 102).div(5).sub(1).max(0).root(1.5).min(5).times(Math.random())
                     randomFree = buyableEffect('wr', 11).add(buyableEffect('wr', 102)).div(2).sub(2).max(0).min(10).times(Math.random()).times(layers.wr.mobDict()[enemyIndex][4])
                     deterministicLevel = buyableEffect('wr', 102)
                     deterministicFree = buyableEffect('wr', 102).sub(1).max(0)
@@ -7286,8 +7354,8 @@ addLayer("wr", {
                     totalFree = randomFree.add(deterministicFree).floor()
                     generatedEnemy = layers.wr.generateEnemy(totalLevel, totalFree)
                     //setting different buyables amt to the enemy stats
-                    setBuyableAmount('wr', 112, totalLevel)
-                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, totalFree, layers.wr.mobDict()[getClickableState('wr', 111)][3]).times(layers.wr.effect()))
+                    setBuyableAmount('wr', 112, totalLevel)  //                                bonus free                                            mob xp mult                           random xp mult                 world effect xp mult            
+                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, totalFree.sub(totalLevel).add(1), layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 0.875).times(layers.wr.effect())))
                     for (i = 13; i < 15; i++) {
                         setBuyableAmount('wr', 100+i, generatedEnemy[i])
                     }
@@ -7312,13 +7380,14 @@ addLayer("wr", {
                                 break;                                    
                             }
                         } // i have no fucking idea why it doesnt work the other way around
-                        if (getBuyableAmount('wr', 101).eq(3)) {droppeditem = 4}
+                        if (getBuyableAmount('wr', 101).eq(5)) {droppeditem = 4} //early antideath
                         else if (getBuyableAmount('wr', 101).eq(10)) {droppeditem = 3}
-                        else if (getBuyableAmount('wr', 101).eq(20)) {droppeditem = 5}
+                        else if (getBuyableAmount('wr', 101).eq(20)) {droppeditem = 3}
+                        else if (getBuyableAmount('wr', 101).eq(50)) {droppeditem = 5}
 
                         if (droppeditem != 0) {
                             display += "<br>"+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" dropped "+layers.wr.itemDict()[droppeditem][0]
-                                if (droppeditem % 10 == 9) {
+                                if (droppeditem % 10 == 0) { //each 10th item is a equippable, e.g. weapon
                                     //put the equipable effects here
                                 }
                                 else {
@@ -7341,9 +7410,9 @@ addLayer("wr", {
                             if (buyableEffect('wr', 11).lt(2)) {layerDataReset('wr', [])} //yeah uh, go ahead and restart the entire section for me please
                             else { //halve player levels and reset stuff such as assigned points and killcount
                                 newlevels = buyableEffect('wr', 11).div(2)
-                                newexperience = newlevels.pow(2).sub(1).pow(2).times(100)
-                                if (newexperience.gte(1295280100)) {newexperience = newexperience.div(1295280100).pow(1.2).times(1295280100)} //lvl 60 sc
-                                if (newexperience.gte(80820100)) {newexperience = newexperience.div(80820100).pow(1.25).times(80820100)} //lvl 30 sc
+                                if (newlevels.gte(60)) {newlevels = newlevels.div(60).pow(8).root(7).times(60)}
+                                if (newlevels.gte(30)) {newlevels = newlevels.div(30).pow(7).root(6).times(30)}
+                                newexperience = newlevels.pow(2).sub(1).times(newlevels).pow(2).times(100)
                                 setBuyableAmount('wr', 11, newexperience.floor().max(0))
                                 for (i = 13; i < 101; i++) {
                                     setBuyableAmount('wr', i, new Decimal(0))
@@ -7371,7 +7440,7 @@ addLayer("wr", {
             onClick() {
                 setBuyableAmount('wr', 102, getBuyableAmount('wr', 102).sub(1))
             },
-            canClick() {return getBuyableAmount('wr', 102).gt(0.1)},
+            canClick() {return getBuyableAmount('wr', 102).gt(0.1)&&getClickableState('wr', 111) == 0},
             style() {
                 if (tmp[this.layer].clickables[this.id].canClick) {return { background: "#18ec0d"}} else {return {}}
             },
@@ -7382,7 +7451,7 @@ addLayer("wr", {
             onClick() {
                 setBuyableAmount('wr', 102, getBuyableAmount('wr', 102).add(1))
             },
-            canClick() {return getBuyableAmount('wr', 102).lt(buyableEffect('wr', 11).sub(2))},
+            canClick() {return getBuyableAmount('wr', 102).lt(buyableEffect('wr', 11).sub(2))&&getClickableState('wr', 111) == 0},
             style() {
                 if (tmp[this.layer].clickables[this.id].canClick) {return { background: "#ec5b0d"}} else {return {}}
             },
@@ -7399,26 +7468,29 @@ addLayer("wr", {
         11: {
             body() {
                 textwr = "you are level "+formatWhole(buyableEffect('wr', 11).floor())
-                textwr += "<br> you have "+formatWhole(getBuyableAmount('wr', 11))+" experience points, "+format(buyableEffect('wr', 11).subtract(buyableEffect('wr', 11).floor()).times(100))+"% to the next level"
+                textwr += "<br> you have "+formatWhole(getBuyableAmount('wr', 11))+" experience points, "+format(buyableEffect('wr', 11).subtract(buyableEffect('wr', 11).floor()).times(10000).floor().div(100))+"% to the next level"
 
                 textwr += "<br> <br> "+formatWhole(buyableEffect('wr', 13).round())+" strength, "+formatWhole(buyableEffect('wr', 14).round())+" fortility"
                 if (getBuyableAmount('wr', 12).gte(0.1)) {
-                    textwr += ", "+formatWhole(getBuyableAmount('wr', 12))+" free"
+                    textwr += ", "+formatWhole(buyableEffect('wr', 12))+" free"
                 }
 
-                textwr += "<br> <br> "+formatWhole(getBuyableAmount('wr', 91).round())+"/"+formatWhole(buyableEffect('wr', 91).round())+" hitpoints."
+                textwr += "<br> <br> "+formatWhole(getBuyableAmount('wr', 91).round())+"/"+formatWhole(buyableEffect('wr', 91).round())+" health points."
                 if (buyableEffect('wr', 11).lt(2)) {
-                    textwr += " running out of hitpoints will reset the entire layer and all layers below it!"
+                    textwr += " running out of health points will reset the entire layer and all layers below it!"
                 } else {
-                    textwr += " running out of hitpoints will multiply your levels by 0.5"
+                    textwr += " running out of health points will multiply your levels by 0.5"
                 }
                 if (getBuyableAmount('wr', 92).gte(0.1)) {
-                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 92))+" spare health points. you may need to scroll down to use them, and you can only do so outside battle"
+                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 92).round())+" spare health points. you may need to scroll down to use them, and you can only do so outside battle"
+                }
+                if (getBuyableAmount('wr', 81).gte(0.1)) {
+                    textwr += "<br><br> "+formatWhole(getBuyableAmount('wr', 81).round())+" copper coins. these are useful for trade in this world"
                 }
                 if (getBuyableAmount('wr', 112).gt(0.1)) {
                     textwr += "<br> <br> <br> level "+formatWhole(getBuyableAmount('wr', 112).round())+" "+layers.wr.mobDict()[getClickableState('wr', 111)][0]
                     textwr += "<br> "+formatWhole(getBuyableAmount('wr', 113).round())+" strength, "+formatWhole(getBuyableAmount('wr', 114).round())+" fortility"
-                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 191).round())+" hitpoints"
+                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 191).round())+" health points"
                 }
                 textwr += "<br>"+getClickableState('wr', 12)
                 return textwr
