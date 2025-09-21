@@ -6880,7 +6880,7 @@ addLayer("wr", {
     resource: "world resets", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {
-
+        if (typeof(player.worldInventory) == "undefined") { player.worldInventory = []}
         return player.points
     }, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -6935,8 +6935,18 @@ addLayer("wr", {
         if (gain.gte(1)) {setBuyableAmount('wr', 91, buyableEffect('wr', 91))}
     },
     damageCalc(strength, fortility, multiplier = new Decimal(1)) {
-        basedamage = Decimal.pow(1.035, strength.sub(fortility)).times(strength).times(9)
+        basedamage = Decimal.pow(layers.wr.levelScale(), strength.sub(fortility)).times(strength).times(9)
         return basedamage.times(multiplier).add(0.5).round()
+    },
+    hitcountCalc(agility, evasion) {
+        if (Math.random() > layers.wr.levelScale().pow(evasion.times(-1)).toNumber()) {
+            return new Decimal(0)
+        } else {
+            probabilityMiss = layers.wr.levelScale().pow(agility.times(-1))
+            if (probabilityMiss.eq(1)) {hitCount = Decimal.dOne}
+            else {hitCount = new Decimal(Math.log(Math.random())).div(probabilityMiss.times(-1).add(1).ln()).floor().add(1)}
+            return hitCount
+        }
     },
     unlockedStats(level) {
         stats = []
@@ -6950,6 +6960,12 @@ addLayer("wr", {
         if (level.gte(2)) {
             stats[12] = "free" 
             residueLevel[12] = level.sub(1)
+        }
+        if (level.gte(3)) {
+            stats[15] = "agility" 
+            residueLevel[15] = level.sub(2)
+            stats[16] = "evasion" 
+            residueLevel[16] = level.sub(2)
         }
         return [stats, residueLevel]
     },
@@ -6987,23 +7003,30 @@ addLayer("wr", {
     },
     mobDict() {
         mobdictionary = [ 
-        //  name             hp mult           dmg mult          xp mult                freestat mult      [item index, probability]
-            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //0
-            ["Unknown mob",  new Decimal(15),  new Decimal(0.3), new Decimal(0.62),     new Decimal(1),    [[1,  0.2  ], [2,  0.075]              ]], //1
-            ["Unknown mob",  new Decimal(15),  new Decimal(0.5), new Decimal(0.713),    new Decimal(1),    [[1,  0.25 ], [2,  0.15 ]              ]], //2
-            ["Unknown mob",  new Decimal(30),  new Decimal(0.3), new Decimal(0.744),    new Decimal(1),    [[1,  0.325], [2,  0.225], [3,   0.075]]], //3
-            ["Unknown mob+", new Decimal(30),  new Decimal(0.6), new Decimal(0.8804),   new Decimal(1.05), [[2,  0.35 ], [3,  0.25 ], [4,   0.125]]], //4
-            ["Unknown mob+", new Decimal(30),  new Decimal(0.8), new Decimal(0.94643),  new Decimal(1.05), [[2,  0.35 ], [3,  0.25 ], [4,   0.25 ]]], //5
-            ["Unknown mob+", new Decimal(45),  new Decimal(0.6), new Decimal(0.96844),  new Decimal(1.05), [[2,  0.35 ], [3,  0.25 ], [4,   0.375]]], //6
-            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //7
-            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //8
-            ["",             Decimal.dZero,    Decimal.dZero,    Decimal.dZero,         Decimal.dZero,     [                                      ]], //9
-            ["Small Dog",    new Decimal(30),  new Decimal(1),   new Decimal(1),        new Decimal(1),    [[3,  0.25 ], [21, 0.275], [22,  0.175]]], // 10
+        //  name                hp mult           dmg mult           xp mult                freestat mult      [item index, probability]
+            ["",                Decimal.dZero,    Decimal.dZero,     Decimal.dZero,         Decimal.dZero,     [                                                        ]], // 0
+            ["Unknown mob",     new Decimal(15),  new Decimal(0.3),  new Decimal(0.62),     new Decimal(1),    [[1,   0.175], [2,   0.075]                              ]], // 1
+            ["Unknown mob",     new Decimal(15),  new Decimal(0.45), new Decimal(0.682),    new Decimal(1),    [[1,   0.225], [2,   0.15 ], [3,    0.075]               ]], // 2
+            ["Unknown mob",     new Decimal(30),  new Decimal(0.3),  new Decimal(0.744),    new Decimal(1),    [[1,   0.3  ], [2,   0.225], [3,    0.075]               ]], // 3
+            ["Unknown mob+",    new Decimal(30),  new Decimal(0.6),  new Decimal(0.89),     new Decimal(1.05), [[3,   0.35 ], [4,   0.35 ], [5,    0.125]               ]], // 4
+            ["Unknown mob+",    new Decimal(30),  new Decimal(0.9),  new Decimal(0.979),    new Decimal(1.05), [[3,   0.35 ], [4,   0.4  ], [5,    0.25 ], [6,    0.225]]], // 5
+            ["Unknown mob+",    new Decimal(45),  new Decimal(0.6),  new Decimal(1.068),    new Decimal(1.05), [[3,   0.35 ], [4,   0.45 ], [5,    0.5  ], [6,    0.225]]], // 6
+            ["Unknown mob++",   new Decimal(60),  new Decimal(1.2),  new Decimal(2.64),     new Decimal(1.1),  [[4,   0.375], [5,   0.275], [6,    0.15 ]               ]], // 7
+            ["Unknown mob++",   new Decimal(60),  new Decimal(1.8),  new Decimal(3.96),     new Decimal(1.1),  [[4,   0.375], [5,   0.3  ], [6,    0.3  ], [7,    0.25 ]]], // 8
+            ["Unknown mob++",   new Decimal(90),  new Decimal(1.2),  new Decimal(3.96),     new Decimal(1.1),  [[4,   0.375], [5,   0.325], [6,    0.45 ], [7,    0.25 ]]], // 9
+            ["Small Rat",       new Decimal(25),  new Decimal(0.85), new Decimal(0.92),     new Decimal(1),    [[10,  0.25 ], [4,   0.325], [21,   0.25 ], [22,   0.175]]], // 10 carrying equippable
+            ["Small Rat",       new Decimal(25),  new Decimal(0.85), new Decimal(0.92),     new Decimal(1),    [[4,   0.35 ], [21,  0.275], [22,   0.175]               ]], // 11
+            ["Small Rat",       new Decimal(25),  new Decimal(1),    new Decimal(0.966),    new Decimal(1),    [[4,   0.4  ], [21,  0.325], [22,   0.2  ]               ]], // 12
+            ["Small Rat",       new Decimal(37),  new Decimal(0.85), new Decimal(1.104),    new Decimal(1),    [[4,   0.45 ], [21,  0.4  ], [22,   0.3  ], [23,   0.125]]], // 13
+            ["Small Rabbit",    new Decimal(35),  new Decimal(1),    new Decimal(1.28),     new Decimal(1.1),  [[5,   0.35 ], [22,  0.2  ], [23,   0.175]               ]], // 14
+            ["Small Rabbit",    new Decimal(35),  new Decimal(1.15), new Decimal(1.472),    new Decimal(1.1),  [[5,   0.35 ], [22,  0.25 ], [23,   0.25 ]               ]], // 15
+            ["Small Rabbit",    new Decimal(53),  new Decimal(1.15), new Decimal(2.208),    new Decimal(1.1),  [[5,   0.375], [22,  0.375], [23,   0.35 ], [24,   0.125]]], // 16
         ] 
         return mobdictionary
     },
     itemDict() {
-        itemdictionary = [  // name                       index   eff //each 10nth element must be empty beccause equippables use different function
+        itemdictionary = [  
+            // name                               index      eff           //each 10th element must be empty beccause equippables use different function
             ["",                                    0, Decimal.dZero    ],
             ["Small Healing Potion",                1, new Decimal(5)   ], //1
             ["Small Healing Potion+",               1, new Decimal(10)  ], //2
@@ -7031,12 +7054,49 @@ addLayer("wr", {
             ["Medium Round Copper Coin",            2, new Decimal(10)  ], //24
             ["Medium Triangular Copper Coin",       2, new Decimal(30)  ], //25
             ["Medium Pentagonal Copper Coin",       2, new Decimal(50)  ], //26
-            ["Large Round Copper Coin",             2, new Decimal(100) ], //24
-            ["Large Triangular Copper Coin",        2, new Decimal(300) ], //25
-            ["Large Pentagonal Copper Coin",        2, new Decimal(500) ], //26
+            ["Large Round Copper Coin",             2, new Decimal(100) ], //27
+            ["Large Triangular Copper Coin",        2, new Decimal(300) ], //28
+            ["Large Pentagonal Copper Coin",        2, new Decimal(500) ], //29
             //Silver:Copper approx 800, Gold:Silver approx 80
         ]
         return itemdictionary
+    },
+    equippableDict() {
+        equippabledictionary = [
+            // name      does nothing currently//                free strength      free fortility    free agility      free evasion
+            // 0                                                 13                 14                15                16
+            // ending number = equippable slot, 1 and 2 interchangable, 4 and 5 interchangable
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 0
+            ["Wooden Stick",                        ,,,,,,,,,,,, new Decimal(0.8),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 1
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 2
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 3
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 4
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 5
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 6
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 7
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 8
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 9
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 10
+            ["Wooden Stick+",                       ,,,,,,,,,,,, new Decimal(1.6),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 11
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 2
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 3
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 4
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 5
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 6
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 7
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 8
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 9
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 10
+            ["Wooden Stick++",                      ,,,,,,,,,,,, new Decimal(3.2),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 11
+
+
+
+
+
+
+
+        ]
+        return equippabledictionary
     },
     consumableEffect(index, eff) {
         if (index == 0) {}
@@ -7047,14 +7107,70 @@ addLayer("wr", {
             setBuyableAmount('wr', 81, getBuyableAmount('wr', 81).add(eff))
         }
     },
+    levelScale() {
+        return new Decimal(1.0579)
+    },
     chooseEnemy(level) {
-        enemyseed = Math.random() * 100
+        enemyseed = Math.floor(Math.random() * 99999.999999999998) || 0 //1000 = 1%
         if (level.eq(1)) {
-            return Math.max(Math.floor((enemyseed - 55) / 15), 0) + 1
+            return Math.max(Math.floor((enemyseed - 55000) / 15000), 0) + 1 //mostly 1 with 2 or 3
         } else if (level.eq(2)) {
-            return Math.max(Math.floor((enemyseed - 32.5) / 22.5), 0) + 1
-        } else {
-            return Math.max(Math.floor((enemyseed - 20) / 25), 0) + 1
+            return Math.max(Math.floor((enemyseed - 26875) / 22500), 0) + 1 //more 2 or 3, adds 1/4 weight of 4
+        } else if (level.eq(3)) {
+            if (enemyseed < 2000) {
+                return 10
+            } else if (enemyseed < 35000) {
+                return Math.max(Math.floor((enemyseed - 8450) / 8250), 0) + 11 //mostly 11 with 12 or 13
+            } else {
+                return Math.max(Math.floor((enemyseed - 48850) / 14620), 0) + 3 //1/2 weight 7 instead
+            }
+        } else if (level.eq(4)) {
+             if (enemyseed < 2500) {
+                return 10
+            } else if (enemyseed < 35000) {
+                return Math.max(Math.floor((enemyseed - 7950) / 8250), 0) + 11 //mostly 11 with 12 or 13
+            } else {
+                return Math.max(Math.floor((enemyseed - 47025) / 14620), 0) + 3 //3/4 weight 7 instead
+            }
+        }
+    },
+    guaranteedLevelDropsDict() {
+        guaranteedleveldropsdictionary = [
+            // index      
+          //0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
+            0,  0,  0,  10, 0,  0,  0,  0,  0,  0, 
+            0,  0,  0,  0,  0,  0,  0,  0,  0,  0
+            
+
+
+
+
+
+
+
+        ]
+        return guaranteedleveldropsdictionary
+    },
+    equipEquippable(index) {
+        if (player.worldInventory[index] == 0) {return;}
+        if (getClickableState('wr', 50 + index % 10) == 0) {
+            player.worldInventory[index] -= 1
+            setClickableState('wr', 50 + index % 10, index)
+        } else {return;}
+    },
+    unequipEquippable(index) {
+        if (getClickableState('wr', 50 + index % 10) == 0) {return; }
+        else {
+            player.worldInventory[index] += 1
+            setClickableState('wr', 50 + index % 10, 0)
+        }
+    },
+    elementalDict() {return ["none", "water", "wood", "fire", "earth", "metal"]},
+    elementalDamageMultiplier(attackerElementIndex, receiverElementIndex) {
+        if (attackerElementIndex == 0 || receiverElementIndex == 0) {return Decimal.dOne} 
+        else {
+            cycleType = ((receiverElementIndex - attackerElementIndex + 5) % 5) || 0
+            return [Decimal.dOne, Decimal.dNegOne, new Decimal(3), new Decimal(1.5), new Decimal(0.5)][cycleType]
         }
     },
     buyables: {
@@ -7066,7 +7182,7 @@ addLayer("wr", {
             effect(x) {
                 effStackwr11 = new Decimal(x).div(100)
                 if (effStackwr11.lte(0.1)) {return Decimal.dOne}
-                constantwr11 = effStackwr11.times(effStackwr11.times(27).sub(4)).root(2).times(5.196152422706632).add(effStackwr11.times(27)).sub(2).root(3)
+                constantwr11 = effStackwr11.times(effStackwr11.times(27).sub(4)).root(2).times(5.196152422706632).add(effStackwr11.times(27)).sub(2).root(3) //inverse function of f(x) = ((x-1)(x)(x+1))^2
                 effwr11 = Decimal.div(2.5198420997897464, constantwr11).add(constantwr11.times(1.5874010519681994)).add(4).div(5.99999999999999).root(2) //5.99: 6 would cause issues with floating point
                 
                 if (effwr11.gte(30)) {effwr11 = effwr11.div(30).pow(6).root(7).times(30)}
@@ -7106,8 +7222,13 @@ addLayer("wr", {
                 return new Decimal(1)
             },
             effect(x) {
-                levelstats = buyableEffect('wr', 11).floor()
-                return levelstats.add(x)
+                if  (layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id] == undefined) {levelstats = new Decimal(0)}
+                else {levelstats = layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id]}
+                gearstats = new Decimal(0)
+                for (i = 51; i < 60; i++) {
+                    gearstats = gearstats.add(layers.wr.equippableDict()[getClickableState('wr', i) ^ 0][this.id])
+                }
+                return levelstats.add(x).add(gearstats)
 
             },
             display() { return "assign one point into strength. increases damage dealt"},
@@ -7127,8 +7248,13 @@ addLayer("wr", {
                 return new Decimal(1)
             },
             effect(x) {
-                levelstats = buyableEffect('wr', 11).floor()
-                return levelstats.add(x)
+                if  (layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id] == undefined) {levelstats = new Decimal(0)}
+                else {levelstats = layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id]}
+                gearstats = new Decimal(0)
+                for (i = 51; i < 60; i++) {
+                    gearstats = gearstats.add(layers.wr.equippableDict()[getClickableState('wr', i) ^ 0][this.id])
+                }
+                return levelstats.add(x).add(gearstats)
 
             },
             display() { return "assign one point into fortility. increases maximum health and decreases damage taken"},
@@ -7142,6 +7268,59 @@ addLayer("wr", {
             style() {const size = {width: "120px", height: "120px"}
             return size},
         },
+        15: {
+            unlocked() {return layers.wr.unlockedStats(buyableEffect('wr', 11))[0][this.id] == "agility"}, //amt: assigned agility, eff: total agtility
+            cost(x) {
+                return new Decimal(1)
+            },
+            effect(x) {
+                if  (layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id] == undefined) {levelstats = new Decimal(0)}
+                else {levelstats = layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id]}
+                gearstats = new Decimal(0)
+                for (i = 51; i < 60; i++) {
+                    gearstats = gearstats.add(layers.wr.equippableDict()[getClickableState('wr', i) ^ 0][this.id])
+                }
+                return levelstats.add(x).add(gearstats)
+
+            },
+            display() { return "assign one point into agility. increases consecutive hits to the opponent"},
+            canAfford() { return buyableEffect('wr', 12).gte(this.cost()) },
+            buy() {
+                setBuyableAmount('wr', 12, getBuyableAmount('wr', 12).add(1))
+                setBuyableAmount('wr', this.id, getBuyableAmount('wr', this.id).add(1))
+            },
+            buyMax() {
+            },
+            style() {const size = {width: "120px", height: "120px"}
+            return size},
+        },   
+        16: {
+            unlocked() {return layers.wr.unlockedStats(buyableEffect('wr', 11))[0][this.id] == "evasion"}, //amt: assigned evasion, eff: total evasion
+            cost(x) {
+                return new Decimal(1)
+            },
+            effect(x) {
+                if  (layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id] == undefined) {levelstats = new Decimal(0)}
+                else {levelstats = layers.wr.unlockedStats(buyableEffect('wr', 11).floor())[1][this.id]}
+                gearstats = new Decimal(0)
+                for (i = 51; i < 60; i++) {
+                    gearstats = gearstats.add(layers.wr.equippableDict()[getClickableState('wr', i) ^ 0][this.id])
+                }
+                return levelstats.add(x).add(gearstats)
+
+            },
+            display() { return "assign one point into evasion. increases chance to dodge the opponent's hits"},
+            canAfford() { return buyableEffect('wr', 12).gte(this.cost()) },
+            buy() {
+                setBuyableAmount('wr', 12, getBuyableAmount('wr', 12).add(1))
+                setBuyableAmount('wr', this.id, getBuyableAmount('wr', this.id).add(1))
+            },
+            buyMax() {
+            },
+            style() {const size = {width: "120px", height: "120px"}
+            return size},
+        },
+     
         81: {
             unlocked() {return false}, //amt: current copper coins
             cost(x) {
@@ -7164,7 +7343,7 @@ addLayer("wr", {
                 return new Decimal(1)
             },
             effect(x) {
-                levelstats = buyableEffect('wr', 14).times(30)
+                levelstats = buyableEffect('wr', 14).floor().times(30)
                 return levelstats
             },
             canAfford() { return false },
@@ -7296,6 +7475,38 @@ addLayer("wr", {
             style() {const sizehidden = {width: "1px", height: "1px"}
             return sizehidden},
         },
+        115: {
+            unlocked() {return false}, //amt: enemy agility
+            cost(x) {
+                return new Decimal(1)
+            },
+            effect(x) {
+                return new Decimal(x)
+            },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+            style() {const sizehidden = {width: "1px", height: "1px"}
+            return sizehidden},
+        },
+        116: {
+            unlocked() {return false}, //amt: enemy evasion
+            cost(x) {
+                return new Decimal(1)
+            },
+            effect(x) {
+                return new Decimal(x)
+            },
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+            style() {const sizehidden = {width: "1px", height: "1px"}
+            return sizehidden},
+        },
         191: {
             unlocked() {return false}, //amt: enemy hp
             cost(x) {
@@ -7342,55 +7553,99 @@ addLayer("wr", {
             display: "take a turn<br>or<br>encounter a mob",
             unlocked() {return player.wr.total.gte(1)},
             onClick() {
-                if (getClickableState('wr', 111) == 0) { //generate mod
-                    enemyIndex = layers.wr.chooseEnemy(buyableEffect('wr', 102))
+                if (getClickableState('wr', 111) == 0) { //generate mob
+                    enemyIndex = layers.wr.chooseEnemy(buyableEffect('wr', 11).floor())
                     setClickableState('wr', 111, enemyIndex)//mob dict: name, hp, dmg, xp
-                    randomLevel = buyableEffect('wr', 102).div(5).sub(1).max(0).root(1.5).min(5).times(Math.random())
-                    randomFree = buyableEffect('wr', 11).add(buyableEffect('wr', 102)).div(2).sub(2).max(0).min(10).times(Math.random()).times(layers.wr.mobDict()[enemyIndex][4])
+                    randomLevel = buyableEffect('wr', 102).div(5).sub(1).max(0).min(5).times(Math.random() - 0.5)
+                    randomFree = buyableEffect('wr', 11).add(buyableEffect('wr', 102)).div(2).sub(2).max(0).min(10).times(Math.random() - 0.5).times(layers.wr.mobDict()[enemyIndex][4]).floor().max(0)
                     deterministicLevel = buyableEffect('wr', 102)
                     deterministicFree = buyableEffect('wr', 102).sub(1).max(0)
 
-                    totalLevel = randomLevel.add(deterministicLevel).floor()
-                    totalFree = randomFree.add(deterministicFree).floor()
-                    generatedEnemy = layers.wr.generateEnemy(totalLevel, totalFree)
+                    totalLevel = randomLevel.add(deterministicLevel).max(1).floor()
+                    generatedEnemy = layers.wr.generateEnemy(totalLevel, randomFree)
                     //setting different buyables amt to the enemy stats
-                    setBuyableAmount('wr', 112, totalLevel)  //                                bonus free                                            mob xp mult                           random xp mult                 world effect xp mult            
-                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, totalFree.sub(totalLevel).add(1), layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 0.875).times(layers.wr.effect())))
-                    for (i = 13; i < 15; i++) {
-                        setBuyableAmount('wr', 100+i, generatedEnemy[i])
+                    setBuyableAmount('wr', 112, totalLevel)  //                      bonus free                                            mob xp mult                           random xp mult                 world effect xp mult            
+                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, randomFree, layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 1).times(layers.wr.effect())))
+                    for (i = 13; i < 99; i++) { //calculate level stat + gear stat
+                        if (generatedEnemy[i] != undefined) {enemyStat = generatedEnemy[i]} else {enemyStat = new Decimal(0)}
+                        if (layers.wr.mobDict()[enemyIndex][5][0] % 10 == 0){
+                            enemyEquippable = (layers.wr.mobDict()[enemyIndex][5][0] / 10 ) ^ 0
+                            enemyGearStat = layers.wr.equippableDict()[enemyEquippable][i]
+                            enemyStat = enemyStat.add(enemyGearStat)
+                        }    
+                        setBuyableAmount('wr', 100+i, enemyStat)
                     }
-                    setBuyableAmount('wr', 191, buyableEffect('wr', 114).times(layers.wr.mobDict()[getClickableState('wr', 111)][1]))
+                    setBuyableAmount('wr', 191, buyableEffect('wr', 112).times(layers.wr.mobDict()[getClickableState('wr', 111)][1]).times(totalLevel))
 
                     display = ""
 
                 } else { //take turn
-                    playertoenemydamage = layers.wr.damageCalc(buyableEffect('wr', 13), buyableEffect('wr', 114))
-                    display = "<br> You hit "+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" and deal "+formatWhole(playertoenemydamage)+" damage"
-                    setBuyableAmount('wr', 191, getBuyableAmount('wr', 191).sub(playertoenemydamage.max(0)))
+                    playertoenemydamage = layers.wr.damageCalc(buyableEffect('wr', 13), buyableEffect('wr', 114), new Decimal(1))
+                    playertoenemyhits = layers.wr.hitcountCalc(buyableEffect('wr', 15), buyableEffect('wr', 116))
 
-                    if (getBuyableAmount('wr', 191).lte(0.1)) { //enemy killed
+                    if (playertoenemyhits.lte(0.01)) {display = "<br> You missed "+layers.wr.mobDict()[getClickableState('wr', 111)][0]}
+                    else if (playertoenemyhits.eq(1)) {display = "<br> You hit "+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" and deal "+formatWhole(playertoenemydamage)+" damage"}
+                    else {display = "<br> You hit "+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" "+formatWhole(playertoenemyhits)+" times and deal "+formatWhole(playertoenemydamage.times(playertoenemyhits))+" damage"}
+
+                    setBuyableAmount('wr', 191, getBuyableAmount('wr', 191).sub(playertoenemydamage.times(playertoenemyhits).max(0)))
+
+                    if (getBuyableAmount('wr', 191).lte(0.5)) { //enemy killed
                         display += "<br> You killed "+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" and got "+formatWhole(getBuyableAmount('wr', 111))+" experience points"
                         itemtable = layers.wr.mobDict()[getClickableState('wr', 111)][5]
 
                         droppeditem = 0
-                        for (i = 0; i < itemtable.length; i++) {
-                            if (itemtable[i][1] > Math.random()) {
-                                droppeditem = itemtable[i][0]
+                        dropratemultiplier = Decimal.pow(layers.wr.levelScale().pow(4), buyableEffect('wr', 11).floor().sub(getBuyableAmount('wr', 112))).times(buyableEffect('wr', 11).floor()).div(getBuyableAmount('wr', 112)).toNumber()
+                        if (1 / dropratemultiplier > Math.random()) {
+                            for (i = 0; i < itemtable.length; i++) {
+                                if (itemtable[i][1] > Math.random()) {
+                                    droppeditem = itemtable[i][0]
 
-                                break;                                    
+                                    break;                                    
+                                }
+                            } // i have no fucking idea why it doesnt work the other way around
+                        }
+                        forcedkillcountitem = 0
+                        if (getBuyableAmount('wr', 101).eq(5)) { //if reached killcount, drop this item
+                            droppeditem = 4
+                            forcedkillcountitem = 1
+                        } //early antideath
+                        else if (getBuyableAmount('wr', 101).eq(10)) {
+                            droppeditem = 3
+                            forcedkillcountitem = 1
+                        }
+                        else if (getBuyableAmount('wr', 101).eq(20)) {
+                            droppeditem = 3
+                            forcedkillcountitem = 1
+                        }
+                        else if (getBuyableAmount('wr', 101).eq(50)) {
+                            droppeditem = 5
+                            forcedkillcountitem = 1
+                        }
+                        else if (getBuyableAmount('wr', 101).eq(100)) {
+                            droppeditem = 4
+                            forcedkillcountitem = 1
+                        }
+                        else if (getBuyableAmount('wr', 101).eq(250)) {
+                            droppeditem = 6
+                            forcedkillcountitem = 1
+                        }
+
+                        floorlevelnumber = buyableEffect('wr', 11).floor().toNumber()
+                        if (floorlevelnumber == getClickableState('wr', 31) && forcedkillcountitem == 0) {} else { //if reached level and item not overrided by killcount drop, drop this item
+                            setClickableState('wr', 31, floorlevelnumber)
+                            guaranteedleveldrop = layers.wr.guaranteedLevelDropsDict()[floorlevelnumber]
+                            if (guaranteedleveldrop == 0) {} else {
+                                droppeditem = guaranteedleveldrop
                             }
-                        } // i have no fucking idea why it doesnt work the other way around
-                        if (getBuyableAmount('wr', 101).eq(5)) {droppeditem = 4} //early antideath
-                        else if (getBuyableAmount('wr', 101).eq(10)) {droppeditem = 3}
-                        else if (getBuyableAmount('wr', 101).eq(20)) {droppeditem = 3}
-                        else if (getBuyableAmount('wr', 101).eq(50)) {droppeditem = 5}
+                        }
 
                         if (droppeditem != 0) {
-                            display += "<br>"+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" dropped "+layers.wr.itemDict()[droppeditem][0]
                                 if (droppeditem % 10 == 0) { //each 10th item is a equippable, e.g. weapon
-                                    //put the equipable effects here
-                                }
-                                else {
+                                    droppedequippable = (droppeditem / 10) ^ 0
+                                    display += "<br>"+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" dropped "+layers.wr.equippableDict()[droppedequippable][0]
+                                    if (typeof(player.worldInventory[droppedequippable]) == "undefined") {player.worldInventory[droppedequippable] = 1} else {player.worldInventory[droppedequippable] += 1}                                    
+                                } else {
+                                    display += "<br>"+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" dropped "+layers.wr.itemDict()[droppeditem][0]
                                     layers.wr.consumableEffect(layers.wr.itemDict()[droppeditem][1], layers.wr.itemDict()[droppeditem][2])
                                 }
                         }
@@ -7402,10 +7657,11 @@ addLayer("wr", {
 
                     } else { //enemy not killed, will hit you now
                         enemytoplayerdamage = layers.wr.damageCalc(buyableEffect('wr', 113), buyableEffect('wr', 14), layers.wr.mobDict()[getClickableState('wr', 111)][2])
+                        enemytoplayerhits = layers.wr.hitcountCalc(buyableEffect('wr', 115), buyableEffect('wr', 16))
                         display += "<br> "+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" hit you and deal "+formatWhole(enemytoplayerdamage)+" damage"
                         setBuyableAmount('wr', 91, getBuyableAmount('wr', 91).sub(enemytoplayerdamage.max(0)))
 
-                        if (getBuyableAmount('wr', 91).lte(0.001)) { //you killed
+                        if (getBuyableAmount('wr', 91).lte(0.001)) { //you are killed
                             display += "<br> You were killed by "+layers.wr.mobDict()[getClickableState('wr', 111)][0]
                             if (buyableEffect('wr', 11).lt(2)) {layerDataReset('wr', [])} //yeah uh, go ahead and restart the entire section for me please
                             else { //halve player levels and reset stuff such as assigned points and killcount
@@ -7419,6 +7675,7 @@ addLayer("wr", {
                                 }
                                 setClickableState('wr', 111, 0)
                                 setBuyableAmount('wr', 91, buyableEffect('wr', 91))
+                                setBuyableAmount('wr', 101, new Decimal(0))
                             }
                         }
                     }
@@ -7456,6 +7713,160 @@ addLayer("wr", {
                 if (tmp[this.layer].clickables[this.id].canClick) {return { background: "#ec5b0d"}} else {return {}}
             },
         },
+        31: {
+            display: "guaranteed level drops; already given",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        41: {
+            display: "unequip equippable at currently selected equippable's slot",
+            unlocked() {return getClickableState('wr', 31) >= 3},
+            onClick() {
+                layers.wr.unequipEquippable(getClickableState('wr', 42))
+            },
+            canClick() {return true},
+        },
+        42: {
+            display: "select previous equippable at the same slot",
+            unlocked() {return getClickableState('wr', 31) >= 3},
+            onClick() {
+                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                else {
+                    currentType = getClickableState('wr', 42) % 10
+                    currentIndex = ((getClickableState('wr', 42) - currentType) / 10) ^ 0
+                    totalIndex = player.worldInventorysublist(currentType).length
+                    if (totalIndex < 2) {return;}
+                    do {
+                        currentIndex -= 1
+                        if (currentIndex < 0) {currentIndex += totalIndex}
+                    } while (player.worldInventorysublist(currentType)[currentIndex] ^ 0 < 1)
+                }
+            },
+            canClick() {return true},
+        },
+        43: {
+            display: "select equippable at the previous slot",
+            unlocked() {return getClickableState('wr', 31) >= 3},
+            onClick() {
+                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                if (player.worldInventory.length <= 2) {return;}
+                else {
+                    currentIndex = getClickableState('wr', 42)
+                    do {
+                        currentIndex -= 1
+                        if (currentIndex < 0) {currentIndex += player.worldInventory.length}
+                    } while (player.worldInventory[currentIndex] ^ 0 < 1)
+                }
+            },
+            canClick() {return true},
+        },
+        44: {
+            display: "select equippable at the next slot",
+            unlocked() {return getClickableState('wr', 31) >= 3},
+            onClick() {
+                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                if (player.worldInventory.length <= 2) {return;}
+                else {
+                    currentIndex = getClickableState('wr', 42)
+                    do {
+                        currentIndex += 1
+                        if (currentIndex < player.worldInventory.length) {currentIndex -= player.worldInventory.length}
+                    } while (player.worldInventory[currentIndex] ^ 0 < 1)
+                }
+            },
+            canClick() {return true},
+        },
+        45: {
+            display: "select next equippable at the same slot",
+            unlocked() {return getClickableState('wr', 31) >= 3},
+            onClick() {
+                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                else {
+                    currentType = getClickableState('wr', 42) % 10
+                    currentIndex = ((getClickableState('wr', 42) - currentType) / 10) ^ 0
+                    totalIndex = player.worldInventorysublist(currentType).length
+                    if (totalIndex < 2) {return;}
+                    do {
+                        currentIndex += 1
+                        if (currentIndex > totalIndex) {currentIndex -= totalIndex}
+                    } while (player.worldInventorysublist(currentType)[currentIndex] ^ 0 < 1)
+                }
+            },
+            canClick() {return true},
+        },
+        46: {
+            display: "equip selected equippable",
+            unlocked() {return getClickableState('wr', 31) >= 3},
+            onClick() {
+                layers.wr.equipEquippable(getClickableState('wr', 42))
+            },
+            canClick() {return true},
+        },
+        51: {
+            display: "current wear, hand a",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        52: {
+            display: "current wear, hand b",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        53: {
+            display: "current wear, upper body",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        54: {
+            display: "current wear, leg a",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        55: {
+            display: "current wear, leg b",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        56: {
+            display: "current wear, lower body",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        57: {
+            display: "current wear, head",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        58: {
+            display: "current wear, neck",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
+        59: {
+            display: "current wear, soul",
+            unlocked() {return false},
+            onClick() {
+            },
+            canClick() {return false}
+        },
         111: {
             display: "enemy index",
             unlocked() {return false},
@@ -7464,33 +7875,67 @@ addLayer("wr", {
             canClick() {return false}
         },
     },
+
     infoboxes: {
         11: {
             body() {
                 textwr = "you are level "+formatWhole(buyableEffect('wr', 11).floor())
                 textwr += "<br> you have "+formatWhole(getBuyableAmount('wr', 11))+" experience points, "+format(buyableEffect('wr', 11).subtract(buyableEffect('wr', 11).floor()).times(10000).floor().div(100))+"% to the next level"
 
-                textwr += "<br> <br> "+formatWhole(buyableEffect('wr', 13).round())+" strength, "+formatWhole(buyableEffect('wr', 14).round())+" fortility"
+                textwr += "<br> <br> "+formatStat(buyableEffect('wr', 13))+" strength, "+formatStat(buyableEffect('wr', 14))+" fortility"
+                if (buyableEffect('wr', 15).gte(0.1)) {
+                    textwr += ", "+formatStat(buyableEffect('wr', 15))+" agility, "+formatStat(buyableEffect('wr', 16))+" evasion"
+                }
                 if (getBuyableAmount('wr', 12).gte(0.1)) {
                     textwr += ", "+formatWhole(buyableEffect('wr', 12))+" free"
                 }
 
-                textwr += "<br> <br> "+formatWhole(getBuyableAmount('wr', 91).round())+"/"+formatWhole(buyableEffect('wr', 91).round())+" health points."
+                if (getClickableState('wr', 31) >= 3) {
+                    textwr += "<br> <br> you have equipped the following: "
+                    if (getClickableState('wr', 57) == 0) {textwr += " <br> head "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 57)][0]}
+                    if (getClickableState('wr', 58) == 0) {textwr += " <br> neck "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 58)][0]}
+                    if (getClickableState('wr', 53) == 0) {textwr += " <br> upper body "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 53)][0]}
+                    if (getClickableState('wr', 52) == 0) {textwr += " <br> left hand "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 52)][0]}
+                    if (getClickableState('wr', 51) == 0) {textwr += " | right hand "} else {textwr += " | "+layers.wr.equippableDict()[getClickableState('wr', 51)][0]}
+                    if (getClickableState('wr', 59) == 0) {textwr += " <br> soul "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 59)][0]}
+                    if (getClickableState('wr', 56) == 0) {textwr += " <br> lower body "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 56)][0]}
+                    if (getClickableState('wr', 55) == 0) {textwr += " <br> left leg "} else {textwr += " <br> "+layers.wr.equippableDict()[getClickableState('wr', 55)][0]}
+                    if (getClickableState('wr', 54) == 0) {textwr += " | right leg "} else {textwr += " | "+layers.wr.equippableDict()[getClickableState('wr', 54)][0]}
+                }
+                
+                if (getClickableState('wr', 31) >= 3) {
+                    textwrinv = "you have "
+                    for (i = 1; i < player.worldInventory.length; i++) {
+                        textwrinv += "<br> "+player.worldInventory[i]+" "+layers.wr.equippableDict()[i][0]
+                    }
+                    textwrinv += "<br> in your inventory"
+                    textwr += "<br> <br> "+textwrinv
+
+                    if (player.worldInventory[getClickableState('wr', 42)]) {textwr += "<br> <br> you are currently selecting "+layers.wr.equippableDict()[getClickableState('wr', 42)][0]}
+                }
+                
+                textwr += "<br> <br> "+formatWhole(getBuyableAmount('wr', 91))+"/"+formatWhole(buyableEffect('wr', 91))+" health points."
                 if (buyableEffect('wr', 11).lt(2)) {
                     textwr += " running out of health points will reset the entire layer and all layers below it!"
                 } else {
                     textwr += " running out of health points will multiply your levels by 0.5"
                 }
                 if (getBuyableAmount('wr', 92).gte(0.1)) {
-                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 92).round())+" spare health points. you may need to scroll down to use them, and you can only do so outside battle"
+                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 92))+" spare health points. you may need to scroll down to use them, and you can only do so outside battle"
+                }
+                if (getBuyableAmount('wr', 101).gte(0.1)) {
+                    textwr += "<br> you have killed "+formatWhole(getBuyableAmount('wr', 101))+" enemies"
                 }
                 if (getBuyableAmount('wr', 81).gte(0.1)) {
-                    textwr += "<br><br> "+formatWhole(getBuyableAmount('wr', 81).round())+" copper coins. these are useful for trade in this world"
+                    textwr += "<br><br> "+formatWhole(getBuyableAmount('wr', 81))+" copper coins. these are useful for trade in this world"
                 }
                 if (getBuyableAmount('wr', 112).gt(0.1)) {
-                    textwr += "<br> <br> <br> level "+formatWhole(getBuyableAmount('wr', 112).round())+" "+layers.wr.mobDict()[getClickableState('wr', 111)][0]
-                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 113).round())+" strength, "+formatWhole(getBuyableAmount('wr', 114).round())+" fortility"
-                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 191).round())+" health points"
+                    textwr += "<br> <br> <br> level "+formatWhole(getBuyableAmount('wr', 112))+" "+layers.wr.mobDict()[getClickableState('wr', 111)][0]
+                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 113))+" strength, "+formatWhole(getBuyableAmount('wr', 114))+" fortility"
+                    if (getBuyableAmount('wr', 115).gt(0.1)) {
+                        textwr += ", "+formatWhole(getBuyableAmount('wr', 115))+" agility, "+formatWhole(getBuyableAmount('wr', 116))+" evasion"
+                    }
+                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 191))+" health points"
                 }
                 textwr += "<br>"+getClickableState('wr', 12)
                 return textwr

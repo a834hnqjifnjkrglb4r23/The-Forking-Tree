@@ -86,6 +86,11 @@ function formatMoney(decimal) {
     return commaFormat(decimal, 2)
 }
 
+function formatStat(decimal) {
+    decimal = new Decimal(decimal)
+    if (decimal.eq(decimal.floor())) {return formatWhole(decimal)} else {return format(decimal)}
+}
+
 function formatTime(s) {
     if (s < 60) return format(s) + "s"
     else if (s < 3600) return formatWhole(Math.floor(s / 60)) + "m " + format(s % 60) + "s"

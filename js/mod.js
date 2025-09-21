@@ -2,7 +2,7 @@ let modInfo = {
 	name: "The Trolling Tree",
 	id: "jacorb90timewallbelikeU2FtcGxlQm",
 	author: "nobody",
-	pointsName: "points. It is recommended to play at 80% zoom",
+	pointsName: "points",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -45,7 +45,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect", "chooseEnemy"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect", "chooseEnemy", "hitcountCalc", "equipEquippable", "unequipEquippable", "elementalDict", "elementalDamageMultiplier"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -131,9 +131,9 @@ function addedPlayerData() { return {
 		if (type == "large") { //large = base^base^(x+1)^pow
 			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (base.pow(base.pow(amt.add(1).pow(exp))).floor().gt(limit)) {
-				limitamt = limit.log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1).floor()
+				limitamt = limit.log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
-				limitpricetriplelog = base.pow(base.pow(limitamt.add(1).pow(exp))).log10().log10().log10()
+				limitpricetriplelog = limit.log10().log10().log10()
 				limitplus1pricetriplelog = base.pow(base.pow(limitamtplus1.add(1).pow(exp))).log10().log10().log10()
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
 				return amt.sub(limitamt).times(newpricescalingtriplelog).add(limitpricetriplelog).pow10().pow10().pow10()
@@ -144,9 +144,9 @@ function addedPlayerData() { return {
 		if (type == "normal") { //normal = base^(x+1)^pow
 			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to double exponential : linear
 			if (base.pow(amt.add(1).pow(exp)).gt(limit)) {
-				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1).floor()
+				limitamt = limit.log10().div(base.log10()).pow(exp.pow(-1)).sub(1)
 				limitamtplus1 = limitamt.add(1)
-				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).log10().log10()
+				limitpriceloglog = limit.log10().log10()
 				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).log10().log10()
 				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
 				return amt.sub(limitamt).times(newpricescalingloglog).add(limitpriceloglog).pow10().pow10()
@@ -157,9 +157,9 @@ function addedPlayerData() { return {
 		if (type == "small") { //small = base*(x+1)^pow
 			if (limit.lte('10')) {limit = new Decimal('10')} //limit is softcap, in currency at which scaling change to exponential : linear
 			if (base.times(amt.add(1).pow(exp)).gt(limit)) {
-				limitamt = limit.div(base).root(exp).sub(1).floor()
+				limitamt = limit.div(base).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
-				limitpricelog = base.times(limitamt.add(1).pow(exp)).log10()
+				limitpricelog = limit.log10()
 				limitplus1pricelog = base.times(limitamtplus1.add(1).pow(exp)).log10()
 				newpricescalinglog = limitplus1pricelog.sub(limitpricelog)
 				return amt.sub(limitamt).times(newpricescalinglog).add(limitpricelog).pow10()
@@ -171,7 +171,7 @@ function addedPlayerData() { return {
 		if (type == "asymptote") {
 			return base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
-
+		
 
 	},
 	buyableMaxPurchaseable(type, currency, base, exp, limit) {
@@ -234,7 +234,14 @@ function addedPlayerData() { return {
 		capexp = capexp.times(buyableEffect('mtp', 31))
 		return Decimal.dTen.pow(capexp)
 	},
-	
+	worldInventory: [],
+	worldInventorysublist(type) {
+		sublist = []
+		for (i = 0; i < player.worldInventory.length / 10 ; i++) {
+			sublist[i] = player.worldInventory[10 * i + type]
+		}
+		return sublist
+	}
 }}
 
 // Display extra things at the top of the page
