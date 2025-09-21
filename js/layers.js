@@ -6880,7 +6880,6 @@ addLayer("wr", {
     resource: "world resets", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {
-        if (typeof(player.worldInventory) == "undefined") { player.worldInventory = []}
         return player.points
     }, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -6930,6 +6929,7 @@ addLayer("wr", {
     row: 5, // Row the layer is in on the tree (0 is the first row)
     update(diff) {
         setBuyableAmount('wr', 12, buyableEffect('wr', 11).floor().sub(1).sub(layers.wr.buyables[12].cost()))
+        
     },
     onPrestige(gain) {
         if (gain.gte(1)) {setBuyableAmount('wr', 91, buyableEffect('wr', 91))}
@@ -6969,7 +6969,9 @@ addLayer("wr", {
         }
         return [stats, residueLevel]
     },
-    layerShown(){return getBuyableAmount('r', 54).gte(1)||player.wr.total.gte(1)},
+    layerShown(){ // world
+        return getBuyableAmount('r', 54).gte(1)||player.wr.total.gte(1)
+    },
     generateEnemy(level, extrafree){
         enemyFreeStats = layers.wr.unlockedStats(level)[1]
         enemyFree = enemyFreeStats[12] //gets the number of free points
@@ -7002,25 +7004,32 @@ addLayer("wr", {
         return baseexp.times(multiplier).floor()
     },
     mobDict() {
-        mobdictionary = [ 
-        //  name                hp mult           dmg mult           xp mult                freestat mult      [item index, probability]
-            ["",                Decimal.dZero,    Decimal.dZero,     Decimal.dZero,         Decimal.dZero,     [                                                        ]], // 0
-            ["Unknown mob",     new Decimal(15),  new Decimal(0.3),  new Decimal(0.62),     new Decimal(1),    [[1,   0.175], [2,   0.075]                              ]], // 1
-            ["Unknown mob",     new Decimal(15),  new Decimal(0.45), new Decimal(0.682),    new Decimal(1),    [[1,   0.225], [2,   0.15 ], [3,    0.075]               ]], // 2
-            ["Unknown mob",     new Decimal(30),  new Decimal(0.3),  new Decimal(0.744),    new Decimal(1),    [[1,   0.3  ], [2,   0.225], [3,    0.075]               ]], // 3
-            ["Unknown mob+",    new Decimal(30),  new Decimal(0.6),  new Decimal(0.89),     new Decimal(1.05), [[3,   0.35 ], [4,   0.35 ], [5,    0.125]               ]], // 4
-            ["Unknown mob+",    new Decimal(30),  new Decimal(0.9),  new Decimal(0.979),    new Decimal(1.05), [[3,   0.35 ], [4,   0.4  ], [5,    0.25 ], [6,    0.225]]], // 5
-            ["Unknown mob+",    new Decimal(45),  new Decimal(0.6),  new Decimal(1.068),    new Decimal(1.05), [[3,   0.35 ], [4,   0.45 ], [5,    0.5  ], [6,    0.225]]], // 6
-            ["Unknown mob++",   new Decimal(60),  new Decimal(1.2),  new Decimal(2.64),     new Decimal(1.1),  [[4,   0.375], [5,   0.275], [6,    0.15 ]               ]], // 7
-            ["Unknown mob++",   new Decimal(60),  new Decimal(1.8),  new Decimal(3.96),     new Decimal(1.1),  [[4,   0.375], [5,   0.3  ], [6,    0.3  ], [7,    0.25 ]]], // 8
-            ["Unknown mob++",   new Decimal(90),  new Decimal(1.2),  new Decimal(3.96),     new Decimal(1.1),  [[4,   0.375], [5,   0.325], [6,    0.45 ], [7,    0.25 ]]], // 9
-            ["Small Rat",       new Decimal(25),  new Decimal(0.85), new Decimal(0.92),     new Decimal(1),    [[10,  0.25 ], [4,   0.325], [21,   0.25 ], [22,   0.175]]], // 10 carrying equippable
-            ["Small Rat",       new Decimal(25),  new Decimal(0.85), new Decimal(0.92),     new Decimal(1),    [[4,   0.35 ], [21,  0.275], [22,   0.175]               ]], // 11
-            ["Small Rat",       new Decimal(25),  new Decimal(1),    new Decimal(0.966),    new Decimal(1),    [[4,   0.4  ], [21,  0.325], [22,   0.2  ]               ]], // 12
-            ["Small Rat",       new Decimal(37),  new Decimal(0.85), new Decimal(1.104),    new Decimal(1),    [[4,   0.45 ], [21,  0.4  ], [22,   0.3  ], [23,   0.125]]], // 13
-            ["Small Rabbit",    new Decimal(35),  new Decimal(1),    new Decimal(1.28),     new Decimal(1.1),  [[5,   0.35 ], [22,  0.2  ], [23,   0.175]               ]], // 14
-            ["Small Rabbit",    new Decimal(35),  new Decimal(1.15), new Decimal(1.472),    new Decimal(1.1),  [[5,   0.35 ], [22,  0.25 ], [23,   0.25 ]               ]], // 15
-            ["Small Rabbit",    new Decimal(53),  new Decimal(1.15), new Decimal(2.208),    new Decimal(1.1),  [[5,   0.375], [22,  0.375], [23,   0.35 ], [24,   0.125]]], // 16
+        mobdictionary = [  
+        //  name                hp mult            dmg mult            xp mult                freestat mult      [item index, probability]
+            ["",                Decimal.dZero,     Decimal.dZero,      Decimal.dZero,         Decimal.dZero,     [                                                        ]], // 0
+            ["Unknown mob",     new Decimal(15),   new Decimal(0.3),   new Decimal(0.62),     new Decimal(1),    [[1,   0.175], [2,   0.075]                              ]], // 1
+            ["Unknown mob",     new Decimal(15),   new Decimal(0.45),  new Decimal(0.682),    new Decimal(1),    [[1,   0.225], [2,   0.15 ], [3,    0.075]               ]], // 2
+            ["Unknown mob",     new Decimal(30),   new Decimal(0.3),   new Decimal(0.744),    new Decimal(1),    [[1,   0.3  ], [2,   0.225], [3,    0.075]               ]], // 3
+            ["Unknown mob+",    new Decimal(30),   new Decimal(0.6),   new Decimal(0.89),     new Decimal(1.05), [[3,   0.35 ], [4,   0.35 ], [5,    0.125]               ]], // 4
+            ["Unknown mob+",    new Decimal(30),   new Decimal(0.9),   new Decimal(0.979),    new Decimal(1.05), [[3,   0.35 ], [4,   0.4  ], [5,    0.25 ], [6,    0.225]]], // 5
+            ["Unknown mob+",    new Decimal(45),   new Decimal(0.6),   new Decimal(1.068),    new Decimal(1.05), [[3,   0.35 ], [4,   0.45 ], [5,    0.5  ], [6,    0.225]]], // 6
+            ["Unknown mob++",   new Decimal(60),   new Decimal(1.2),   new Decimal(2.64),     new Decimal(1.1),  [[5,   0.375], [6,   0.275], [7,    0.15 ]               ]], // 7
+            ["Unknown mob++",   new Decimal(60),   new Decimal(1.8),   new Decimal(3.96),     new Decimal(1.1),  [[5,   0.375], [6,   0.3  ], [7,    0.3  ], [8,    0.25 ]]], // 8
+            ["Unknown mob++",   new Decimal(90),   new Decimal(1.2),   new Decimal(3.96),     new Decimal(1.1),  [[5,   0.375], [6,   0.325], [7,    0.45 ], [8,    0.25 ]]], // 9
+            ["Small Rat",       new Decimal(24),   new Decimal(0.85),  new Decimal(0.9),      new Decimal(1),    [[10,  0.25 ], [4,   0.325], [21,   0.25 ], [22,   0.175]]], // 10 carrying equippable
+            ["Small Rat",       new Decimal(24),   new Decimal(0.85),  new Decimal(0.9),      new Decimal(1),    [[4,   0.35 ], [21,  0.275], [22,   0.175]               ]], // 11
+            ["Small Rat",       new Decimal(24),   new Decimal(1.02),  new Decimal(0.945),    new Decimal(1),    [[4,   0.4  ], [21,  0.325], [22,   0.2  ]               ]], // 12
+            ["Small Rat",       new Decimal(36),   new Decimal(0.85),  new Decimal(0.99),     new Decimal(1),    [[4,   0.45 ], [21,  0.4  ], [22,   0.3  ], [23,   0.125]]], // 13
+            ["Small Rat+",      new Decimal(48),   new Decimal(1.275), new Decimal(2.15),     new Decimal(1.05), [[6,   0.35 ], [22,  0.275], [23,   0.175]               ]], // 14
+            ["Small Rat+",      new Decimal(48),   new Decimal(1.53),  new Decimal(2.58),     new Decimal(1.05), [[6,   0.4  ], [22,  0.325], [23,   0.2  ]               ]], // 15
+            ["Small Rat+",      new Decimal(72),   new Decimal(1.275), new Decimal(3.225),    new Decimal(1.05), [[6,   0.45 ], [22,  0.4  ], [23,   0.3  ], [24,   0.125]]], // 16
+            ["Small Rat++",     new Decimal(96),   new Decimal(1.7),   new Decimal(6),        new Decimal(1.1),  [[8,   0.35 ], [23,  0.275], [24,   0.175]               ]], // 17
+            ["Small Rat++",     new Decimal(96),   new Decimal(2.04),  new Decimal(7.2),      new Decimal(1.1),  [[8,   0.4  ], [23,  0.325], [24,   0.2  ]               ]], // 18
+            ["Small Rat++",     new Decimal(144),  new Decimal(1.7),   new Decimal(9),        new Decimal(1.1),  [[8,   0.45 ], [23,  0.4  ], [24,   0.3  ], [25,   0.125]]], // 19
+            ["Small Rabbit",    new Decimal(44),   new Decimal(1),     new Decimal(1.76),     new Decimal(1.15), [[20,  0.25 ], [5,   0.35 ], [22,   0.2  ], [23,   0.175]]], // 20
+            ["Small Rabbit",    new Decimal(44),   new Decimal(1),     new Decimal(1.76),     new Decimal(1.15), [[5,   0.35 ], [22,  0.2  ], [23,   0.175]               ]], // 21
+            ["Small Rabbit",    new Decimal(44),   new Decimal(1.15),  new Decimal(2.024),    new Decimal(1.15), [[5,   0.35 ], [22,  0.25 ], [23,   0.25 ]               ]], // 22
+            ["Small Rabbit",    new Decimal(66),   new Decimal(1.15),  new Decimal(3.036),    new Decimal(1.15), [[5,   0.375], [22,  0.375], [23,   0.35 ], [24,   0.125]]], // 23
         ] 
         return mobdictionary
     },
@@ -7068,7 +7077,7 @@ addLayer("wr", {
             // ending number = equippable slot, 1 and 2 interchangable, 4 and 5 interchangable
             ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 0
             ["Wooden Stick",                        ,,,,,,,,,,,, new Decimal(0.8),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 1
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 2
+            ["Wooden Plank",                        ,,,,,,,,,,,, Decimal.dZero,     new Decimal(1.2), Decimal.dZero,    Decimal.dZero ], // 2
             ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 3
             ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 4
             ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 5
@@ -7078,16 +7087,95 @@ addLayer("wr", {
             ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 9
             ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 10
             ["Wooden Stick+",                       ,,,,,,,,,,,, new Decimal(1.6),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 11
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 2
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 3
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 4
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 5
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 6
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 7
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 8
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 9
-            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 10
-            ["Wooden Stick++",                      ,,,,,,,,,,,, new Decimal(3.2),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 11
+            ["Wooden Plank+",                       ,,,,,,,,,,,, Decimal.dZero,     new Decimal(2.4), Decimal.dZero,    Decimal.dZero ], // 12
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 13
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 14
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 15
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 16
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 17
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 18
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 19
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 20
+            ["Wooden Stick++",                      ,,,,,,,,,,,, new Decimal(3.2),  new Decimal(0),   new Decimal(0),   new Decimal(0)], // 21
+            ["Wooden Plank++",                      ,,,,,,,,,,,, Decimal.dZero,     new Decimal(4.8), Decimal.dZero,    Decimal.dZero ], // 22
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 23
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 24
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 25
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 26
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 27
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 28
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 29
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 30
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 31
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 32
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 33
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 34
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 35
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 36
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 37
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 38
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 39
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 40
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 41
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 42
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 43
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 44
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 45
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 46
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 47
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 48
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 49
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 50
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 51
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 52
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 53
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 54
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 55
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 56
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 57
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 58
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 59
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 60
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 61
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 62
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 63
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 64
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 65
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 66
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 67
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 68
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 69
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 70
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 71
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 72
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 73
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 74
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 75
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 76
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 77
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 78
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 79
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 80
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 81
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 82
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 83
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 84
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 85
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 86
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 87
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 88
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 89
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 90
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 91
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 92
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 93
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 94
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 95
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 96
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 97
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 98
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 99
+            ["",                                    ,,,,,,,,,,,, Decimal.dZero,     Decimal.dZero,    Decimal.dZero,    Decimal.dZero ], // 100
 
 
 
@@ -7122,23 +7210,27 @@ addLayer("wr", {
             } else if (enemyseed < 35000) {
                 return Math.max(Math.floor((enemyseed - 8450) / 8250), 0) + 11 //mostly 11 with 12 or 13
             } else {
-                return Math.max(Math.floor((enemyseed - 48850) / 14620), 0) + 3 //1/2 weight 7 instead
+                return Math.max(Math.floor((enemyseed - 48850) / 14620), 0) + 3 //4, 5, 6, with 1/2 weight 7
             }
         } else if (level.eq(4)) {
-             if (enemyseed < 2500) {
-                return 10
-            } else if (enemyseed < 35000) {
-                return Math.max(Math.floor((enemyseed - 7950) / 8250), 0) + 11 //mostly 11 with 12 or 13
+            if (enemyseed < 34986) {
+                return Math.max(Math.floor((enemyseed ) / 8232), 0) + 10 //10, 11, 12, or 13 with 1/4 weight 14
             } else {
-                return Math.max(Math.floor((enemyseed - 47025) / 14620), 0) + 3 //3/4 weight 7 instead
+                return Math.max(Math.floor((enemyseed - 47051) / 14620), 0) + 3 //3/4 weight 7 instead
             }
+        } else if (level.gte(5)) {
+            if (enemyseed < 42460) {
+                return enemyseed % 6 + 4 //4 to 9
+            } else {
+                return enemyseed % 7 + 10 //10 to 16
+            }            
         }
     },
     guaranteedLevelDropsDict() {
         guaranteedleveldropsdictionary = [
             // index      
           //0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 
-            0,  0,  0,  10, 0,  0,  0,  0,  0,  0, 
+            0,  0,  0,  10, 0,  0,  20, 0,  0,  0, 
             0,  0,  0,  0,  0,  0,  0,  0,  0,  0
             
 
@@ -7152,16 +7244,16 @@ addLayer("wr", {
         return guaranteedleveldropsdictionary
     },
     equipEquippable(index) {
-        if (player.worldInventory[index] == 0) {return;}
+        if (player.worldInventory[index].eq(0)) {return;}
         if (getClickableState('wr', 50 + index % 10) == 0) {
-            player.worldInventory[index] -= 1
+            player.worldInventory[index] = player.worldInventory[index].sub(1)
             setClickableState('wr', 50 + index % 10, index)
         } else {return;}
     },
     unequipEquippable(index) {
         if (getClickableState('wr', 50 + index % 10) == 0) {return; }
         else {
-            player.worldInventory[index] += 1
+            player.worldInventory[index] = player.worldInventory[index].add(1)
             setClickableState('wr', 50 + index % 10, 0)
         }
     },
@@ -7564,8 +7656,11 @@ addLayer("wr", {
                     totalLevel = randomLevel.add(deterministicLevel).max(1).floor()
                     generatedEnemy = layers.wr.generateEnemy(totalLevel, randomFree)
                     //setting different buyables amt to the enemy stats
-                    setBuyableAmount('wr', 112, totalLevel)  //                      bonus free                                            mob xp mult                           random xp mult                 world effect xp mult            
-                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, randomFree, layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 1).times(layers.wr.effect())))
+
+                    setBuyableAmount('wr', 112, totalLevel)                        
+                    dropratemultiplier = Decimal.pow(layers.wr.levelScale().pow(4), buyableEffect('wr', 11).floor().sub(getBuyableAmount('wr', 112))).times(buyableEffect('wr', 11).floor()).div(getBuyableAmount('wr', 112)) 
+                    //                                          mob xp mult         bonus free        random xp mult                 world effect xp mult            
+                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, randomFree, layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 1).times(layers.wr.effect()).div(dropratemultiplier)))
                     for (i = 13; i < 99; i++) { //calculate level stat + gear stat
                         if (generatedEnemy[i] != undefined) {enemyStat = generatedEnemy[i]} else {enemyStat = new Decimal(0)}
                         if (layers.wr.mobDict()[enemyIndex][5][0] % 10 == 0){
@@ -7575,6 +7670,7 @@ addLayer("wr", {
                         }    
                         setBuyableAmount('wr', 100+i, enemyStat)
                     }
+
                     setBuyableAmount('wr', 191, buyableEffect('wr', 112).times(layers.wr.mobDict()[getClickableState('wr', 111)][1]).times(totalLevel))
 
                     display = ""
@@ -7594,8 +7690,8 @@ addLayer("wr", {
                         itemtable = layers.wr.mobDict()[getClickableState('wr', 111)][5]
 
                         droppeditem = 0
-                        dropratemultiplier = Decimal.pow(layers.wr.levelScale().pow(4), buyableEffect('wr', 11).floor().sub(getBuyableAmount('wr', 112))).times(buyableEffect('wr', 11).floor()).div(getBuyableAmount('wr', 112)).toNumber()
-                        if (1 / dropratemultiplier > Math.random()) {
+                        
+                        if (1 / dropratemultiplier.toNumber() > Math.random()) {
                             for (i = 0; i < itemtable.length; i++) {
                                 if (itemtable[i][1] > Math.random()) {
                                     droppeditem = itemtable[i][0]
@@ -7643,7 +7739,7 @@ addLayer("wr", {
                                 if (droppeditem % 10 == 0) { //each 10th item is a equippable, e.g. weapon
                                     droppedequippable = (droppeditem / 10) ^ 0
                                     display += "<br>"+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" dropped "+layers.wr.equippableDict()[droppedequippable][0]
-                                    if (typeof(player.worldInventory[droppedequippable]) == "undefined") {player.worldInventory[droppedequippable] = 1} else {player.worldInventory[droppedequippable] += 1}                                    
+                                    if (typeof(player.worldInventory[droppedequippable]) != "object") {player.worldInventory[droppedequippable] = new Decimal(player.worldInventory[droppedequippable]).add(1)} else {player.worldInventory[droppedequippable] = player.worldInventory[droppedequippable].add(1)}                                    
                                 } else {
                                     display += "<br>"+layers.wr.mobDict()[getClickableState('wr', 111)][0]+" dropped "+layers.wr.itemDict()[droppeditem][0]
                                     layers.wr.consumableEffect(layers.wr.itemDict()[droppeditem][1], layers.wr.itemDict()[droppeditem][2])
@@ -7724,7 +7820,7 @@ addLayer("wr", {
             display: "unequip equippable at currently selected equippable's slot",
             unlocked() {return getClickableState('wr', 31) >= 3},
             onClick() {
-                layers.wr.unequipEquippable(getClickableState('wr', 42))
+                layers.wr.unequipEquippable((getClickableState('wr', 42) ^ 0))
             },
             canClick() {return true},
         },
@@ -7732,16 +7828,17 @@ addLayer("wr", {
             display: "select previous equippable at the same slot",
             unlocked() {return getClickableState('wr', 31) >= 3},
             onClick() {
-                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                if ((getClickableState('wr', 42) ^ 0) == 0) {setClickableState('wr', 42, 1)}
                 else {
-                    currentType = getClickableState('wr', 42) % 10
-                    currentIndex = ((getClickableState('wr', 42) - currentType) / 10) ^ 0
+                    currentType = (getClickableState('wr', 42) ^ 0) % 10
+                    currentIndex = (((getClickableState('wr', 42) ^ 0) - currentType) / 10) ^ 0
                     totalIndex = player.worldInventorysublist(currentType).length
                     if (totalIndex < 2) {return;}
                     do {
                         currentIndex -= 1
                         if (currentIndex < 0) {currentIndex += totalIndex}
-                    } while (player.worldInventorysublist(currentType)[currentIndex] ^ 0 < 1)
+                        if (typeof(player.worldInventory[currentIndex * 10 + currentType]) != "object" ) {player.worldInventory[currentIndex * 10 + currentType] = new Decimal(player.worldInventory[currentIndex * 10 + currentType])}
+                    } while (player.worldInventorysublist(currentType)[currentIndex].lt(1))
                 }
             },
             canClick() {return true},
@@ -7750,14 +7847,15 @@ addLayer("wr", {
             display: "select equippable at the previous slot",
             unlocked() {return getClickableState('wr', 31) >= 3},
             onClick() {
-                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                if ((getClickableState('wr', 42) ^ 0) == 0) {setClickableState('wr', 42, 1)}
                 if (player.worldInventory.length <= 2) {return;}
                 else {
-                    currentIndex = getClickableState('wr', 42)
+                    currentIndex = (getClickableState('wr', 42) ^ 0)
                     do {
                         currentIndex -= 1
                         if (currentIndex < 0) {currentIndex += player.worldInventory.length}
-                    } while (player.worldInventory[currentIndex] ^ 0 < 1)
+                        if (typeof(player.worldInventory[currentIndex]) != "object" ) {player.worldInventory[currentIndex] = new Decimal(player.worldInventory[currentIndex])}
+                    } while (player.worldInventorysublist(currentType)[currentIndex].lt(1))
                 }
             },
             canClick() {return true},
@@ -7766,14 +7864,15 @@ addLayer("wr", {
             display: "select equippable at the next slot",
             unlocked() {return getClickableState('wr', 31) >= 3},
             onClick() {
-                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                if ((getClickableState('wr', 42) ^ 0) == 0) {setClickableState('wr', 42, 1)}
                 if (player.worldInventory.length <= 2) {return;}
                 else {
-                    currentIndex = getClickableState('wr', 42)
+                    currentIndex = (getClickableState('wr', 42) ^ 0)
                     do {
                         currentIndex += 1
                         if (currentIndex < player.worldInventory.length) {currentIndex -= player.worldInventory.length}
-                    } while (player.worldInventory[currentIndex] ^ 0 < 1)
+                        if (typeof(player.worldInventory[currentIndex]) != "object" ) {player.worldInventory[currentIndex] = new Decimal(player.worldInventory[currentIndex])}
+                    } while (player.worldInventorysublist(currentType)[currentIndex].lt(1))
                 }
             },
             canClick() {return true},
@@ -7782,16 +7881,16 @@ addLayer("wr", {
             display: "select next equippable at the same slot",
             unlocked() {return getClickableState('wr', 31) >= 3},
             onClick() {
-                if (getClickableState('wr', 42) == 0) {setClickableState('wr', 42, 1)}
+                if ((getClickableState('wr', 42) ^ 0) == 0) {setClickableState('wr', 42, 1)}
                 else {
-                    currentType = getClickableState('wr', 42) % 10
-                    currentIndex = ((getClickableState('wr', 42) - currentType) / 10) ^ 0
+                    currentType = (getClickableState('wr', 42) ^ 0) % 10
+                    currentIndex = (((getClickableState('wr', 42) ^ 0) - currentType) / 10) ^ 0
                     totalIndex = player.worldInventorysublist(currentType).length
                     if (totalIndex < 2) {return;}
                     do {
                         currentIndex += 1
-                        if (currentIndex > totalIndex) {currentIndex -= totalIndex}
-                    } while (player.worldInventorysublist(currentType)[currentIndex] ^ 0 < 1)
+                        if (typeof(player.worldInventory[currentIndex * 10 + currentType]) != "object" ) {player.worldInventory[currentIndex * 10 + currentType] = new Decimal(player.worldInventory[currentIndex * 10 + currentType])}
+                    } while (player.worldInventorysublist(currentType)[currentIndex].lt(1))
                 }
             },
             canClick() {return true},
@@ -7800,7 +7899,7 @@ addLayer("wr", {
             display: "equip selected equippable",
             unlocked() {return getClickableState('wr', 31) >= 3},
             onClick() {
-                layers.wr.equipEquippable(getClickableState('wr', 42))
+                layers.wr.equipEquippable((getClickableState('wr', 42) ^ 0))
             },
             canClick() {return true},
         },
@@ -7905,13 +8004,16 @@ addLayer("wr", {
                 
                 if (getClickableState('wr', 31) >= 3) {
                     textwrinv = "you have "
+                    textwrinv1 = ""
                     for (i = 1; i < player.worldInventory.length; i++) {
-                        textwrinv += "<br> "+player.worldInventory[i]+" "+layers.wr.equippableDict()[i][0]
+                        if (player.worldInventory[i].gte(1)) {textwrinv1 += "<br> "+formatWhole(player.worldInventory[i])+" "+layers.wr.equippableDict()[i][0]}
                     }
+                    if (textwrinv1 == "") {textwrinv1 = "<br> nothing"}
+                    textwrinv += textwrinv1
                     textwrinv += "<br> in your inventory"
                     textwr += "<br> <br> "+textwrinv
 
-                    if (player.worldInventory[getClickableState('wr', 42)]) {textwr += "<br> <br> you are currently selecting "+layers.wr.equippableDict()[getClickableState('wr', 42)][0]}
+                    if (player.worldInventory[(getClickableState('wr', 42) ^ 0)].gte(1)) {textwr += "<br> <br> you are currently selecting "+layers.wr.equippableDict()[(getClickableState('wr', 42) ^ 0)][0]}
                 }
                 
                 textwr += "<br> <br> "+formatWhole(getBuyableAmount('wr', 91))+"/"+formatWhole(buyableEffect('wr', 91))+" health points."
@@ -7947,6 +8049,99 @@ addLayer("wr", {
     }, 
 
 })
+
+addLayer("wt", {
+    name: "world trade", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "WT", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#ef8375",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "portal efficiency", // Name of prestige currency
+    type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    canReset() {
+        return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "This layer cannot be reset" },
+    row: 5, // Row the layer is in on the tree (0 is the first row)
+    displayRow: "side",
+    layerShown(){  //world trade
+        return getClickableState('wr', 31) >= 3
+    },
+    typecostCoefficient(type) {return [Decimal.dOne, Decimal.dOne, new Decimal(3), Decimal.dOne, Decimal.dOne, new Decimal(3), new Decimal(9), new Decimal(5), new Decimal(45)][type]},
+    indexcostCoefficient(index) {return new Decimal(index).add(1)},
+    doReset(resettingLayer) { 
+        if (layers[resettingLayer].row > this.row) {layerDataReset(this.layer, [])}
+    },
+    infoboxes: {
+        11: {
+            body() {
+                textwt = "" 
+                textwt += "you have "+formatWhole(getBuyableAmount('wr', 81))+" copper coins"
+                if (getClickableState('wr', 31) >= 3) {
+                    textwrinv = "you have "
+                    for (i = 1; i < player.worldInventory.length; i++) {
+                        textwrinv += "<br> "+formatWhole(player.worldInventory[i])+" "+layers.wr.equippableDict()[i][0]
+                    }
+                    textwrinv += "<br> in your inventory"
+                    textwt += "<br> <br> "+textwrinv
+
+                    if (player.worldInventory[(getClickableState('wr', 42) ^ 0)].gte(0)) {textwt += "<br> <br> you are currently selecting "+layers.wr.equippableDict()[(getClickableState('wr', 42) ^ 0)][0]}
+                }
+                return textwt
+            }
+        }
+    }, 
+    buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) {
+                return layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0))
+            },
+            effect(x) {
+
+
+                return new Decimal(1)
+            },
+            title() { return "sell one of the currently selected equippable"},
+            display() { return "you will gain "+formatWhole(this.cost())+" coins <br> and lose one "+layers.wr.equippableDict()[(getClickableState('wr', 42) ^ 0)][0]},
+            canAfford() { return player.worldInventory[(getClickableState('wr', 42) ^ 0)].gte(1) },
+            buy() {
+                player.worldInventory[(getClickableState('wr', 42) ^ 0)] = player.worldInventory[(getClickableState('wr', 42) ^ 0)].sub(1)
+                setBuyableAmount('wr', 81, getBuyableAmount('wr', 81).add(this.cost()))
+            },
+            buyMax() {
+            },
+        },
+        12: {
+            unlocked() {return true},
+            cost(x) {
+                return layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0))
+            },
+            effect(x) {
+
+
+                return player.worldInventory[(getClickableState('wr', 42) ^ 0)].div(2).floor()
+            },
+            title() { return "sell half of what you have of the currently selected equippable"},
+            display() { return "you will gain "+formatWhole(this.cost().times(this.effect()))+" coins <br> and lose "+this.effect()+" "+layers.wr.equippableDict()[(getClickableState('wr', 42) ^ 0)][0]},
+            canAfford() { return player.worldInventory[(getClickableState('wr', 42) ^ 0)].gte(2) },
+            buy() {
+                setBuyableAmount('wr', 81, getBuyableAmount('wr', 81).add(this.cost().times(this.effect())))
+                player.worldInventory[(getClickableState('wr', 42) ^ 0)] = player.worldInventory[(getClickableState('wr', 42) ^ 0)].sub(this.effect())
+            },
+            buyMax() {
+            },
+        },
+
+    },
+    clickables: {
+    },
+})
+
 
 addLayer("a", {
     name: "Ascension", // This is optional, only used in a few places, If absent it just uses the layer id.
