@@ -6884,10 +6884,10 @@ addLayer("wr", {
     }, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        addwr = new Decimal(-5)
+        addwr = new Decimal(0)
 
 
-        multwr = new Decimal(1)
+        multwr = new Decimal(1/6)
         
 
         return multwr
@@ -6896,7 +6896,7 @@ addLayer("wr", {
         expwr = new Decimal(1)
 
 
-        exp2wr = new Decimal(0.5)
+        exp2wr = new Decimal(1)
 
         return expwr
     },
@@ -6918,7 +6918,7 @@ addLayer("wr", {
     effectDescription() {
         return "multiplying experience point gain by "+format(layers.wr.effect())
     },
-    canReset() {return getResetGain('wr').gte(0)},
+    canReset() {return getResetGain('wr').gte(0) && player.wr.points.lt(1)},
     doReset(resettingLayer) { //world reset
         if (layers[resettingLayer].row > this.row) {
             layerDataReset(this.layer, [])
@@ -6928,7 +6928,12 @@ addLayer("wr", {
     prestigeButtonText() {return "Reset to get "+formatWhole(getResetGain('wr'))+" worlds. Next at "+format(getNextAt('wr'))+" points" },
     row: 5, // Row the layer is in on the tree (0 is the first row)
     update(diff) {
-        setBuyableAmount('wr', 12, buyableEffect('wr', 11).floor().sub(1).sub(layers.wr.buyables[12].cost()))
+        setBuyableAmount('wr', 12, buyableEffect('wr', 11).floor().sub(1).sub(layers.wr.buyables[12].cost()).add(buyableEffect('wr', 212)))
+        if (getBuyableAmount('wr', 91).gt(buyableEffect('wr', 91))) {
+            unrecoverHealth = getBuyableAmount('wr', 91).sub(buyableEffect('wr', 91)) 
+            setBuyableAmount('wr', 91, buyableEffect('wr', 91)) 
+            setBuyableAmount('wr', 92, getBuyableAmount('wr', 92).add(unrecoverHealth))
+        }
         
     },
     onPrestige(gain) {
@@ -7009,7 +7014,7 @@ addLayer("wr", {
     experienceCalc(level, extrafree, multiplier = new Decimal(1)) {
         numberofstats = layers.wr.unlockedStats(level)[0].filter(element => (element != undefined)&&(element != "free")).length
         effectivelevel = level.add(extrafree.times(0.6666666666666666).div(numberofstats))
-        baseexp = effectivelevel.pow(3).times(2).add(effectivelevel.pow(2).times(5)).add(effectivelevel.times(4)).add(3).times(effectivelevel.pow(2)).times(3).div(effectivelevel.times(5).add(15)).times(100)
+        baseexp = effectivelevel.pow(3).times(2).add(effectivelevel.pow(2).times(5)).add(effectivelevel.times(4)).add(3).times(effectivelevel.pow(2)).times(3).div(effectivelevel.times(4.5).add(15.5)).times(100)
 
 
         return baseexp.times(multiplier).floor()
@@ -7226,7 +7231,7 @@ addLayer("wr", {
             if (enemyseed < 42460) {
                 return enemyseed % 6 + 4 //4 to 9
             } else {
-                return enemyseed % 7 + 10 //10 to 16
+                return enemyseed % 5 + 10 //10 to 14
             }            
         }
     },
@@ -7321,7 +7326,7 @@ addLayer("wr", {
                 return totalspentfreestats
             },
             effect(x) {
-                totalfreestatsavailable =  buyableEffect('wr', 11).sub(1).floor()
+                totalfreestatsavailable =  buyableEffect('wr', 11).sub(1).floor().add(buyableEffect('wr', 212))
                 return totalfreestatsavailable.sub(totalspentfreestats)
 
             },
@@ -7638,7 +7643,7 @@ addLayer("wr", {
             style() {const sizehidden = {width: "1px", height: "1px"}
             return sizehidden},
         },
-        192: {
+        202: {
             unlocked() {return false}, //amt: droprate multiplier
             cost(x) {
                 return new Decimal(1)
@@ -7667,12 +7672,47 @@ addLayer("wr", {
             },
             purchaseLimit: new Decimal(5),
             title() { return "world resets buyable 211"},
-            display() { return "create a portal back to your original world to unlock layers "+formatWhole(this.effect().add(effBasewr211))+"<br> req: "+formatWhole(this.cost())+" levels <br> unlocked: "+formatWhole(effStackwr211.gte(1))+"/5"},
-            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            display() { return "create a portal back to your original world to unlock layers on row "+formatWhole(this.effect().add(effBasewr211))+"<br> req: "+formatWhole(this.cost())+" levels <br> unlocked: "+formatWhole(effStackwr211)+"/5"},
+            canAfford() { return buyableEffect('wr', 11).gte(this.cost()) },
             buy() {
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
+            },
+        },
+        212: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewr212 = "large"
+                costBasewr212 = new Decimal(10)
+                costExpwr212 = new Decimal(2)
+                costLimitwr212 = new Decimal('ee100')
+                return player.buyablePrice(costTypewr212, new Decimal(x).sub(1), costBasewr212, costExpwr212, costLimitwr212)
+            },
+            effect(x) {
+                effBasewr212 = new Decimal(1)
+                effStackwr212 = new Decimal(x)
+
+                return Decimal.times(effBasewr212, effStackwr212)
+            },
+            title() { return "world buyable 212"},
+            display() { return "get "+format(effBasewr212)+" free stat points <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwr212)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr212 == "asymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr212, player.p.points, costBasewr212, costExpwr212, costLimitwr212).add(1).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr212, player.p.points, costBasewr212, costExpwr212, costLimitwr212).add(1))
+                        if (player.p.points.lt('e200')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewr212, player.buyableMaxPurchaseable(costTypewr212, player.p.points, costBasewr212, costExpwr212, costLimitwr212), costBasewr212, costExpwr212, costLimitwr212))}
+                    }
+                }
             },
         },
     },
@@ -7687,22 +7727,22 @@ addLayer("wr", {
                 if (getClickableState('wr', 111) == 0) { //generate mob
                     enemyIndex = layers.wr.chooseEnemy(buyableEffect('wr', 11).floor())
                     setClickableState('wr', 111, enemyIndex)//mob dict: name, hp, dmg, xp
-                    randomLevel = buyableEffect('wr', 102).div(5).sub(1).max(0).min(5).times(Math.random() - 0.5)
-                    randomFree = buyableEffect('wr', 11).add(buyableEffect('wr', 102)).div(2).sub(2).max(0).min(10).times(Math.random() - 0.5).times(layers.wr.mobDict()[enemyIndex][4]).floor().max(0)
+                    randomLevel = buyableEffect('wr', 102).div(5).sub(1).max(0).min(5).times(Math.random())
+                    randomFree = buyableEffect('wr', 11).floor().add(buyableEffect('wr', 102)).div(4).sub(2).max(0).min(20).times(Math.random()).times(layers.wr.mobDict()[enemyIndex][4]).floor().max(0)
                     deterministicLevel = buyableEffect('wr', 102)
-                    deterministicFree = buyableEffect('wr', 102).sub(1).max(0)
+                    deterministicBonusFree = buyableEffect('wr', 102).sub(9).div(2).max(0)
 
                     totalLevel = randomLevel.add(deterministicLevel).max(1).floor()
-                    generatedEnemy = layers.wr.generateEnemy(totalLevel, randomFree)
+                    generatedEnemy = layers.wr.generateEnemy(totalLevel, randomFree.add(deterministicBonusFree))
                     //setting different buyables amt to the enemy stats
 
                     setBuyableAmount('wr', 112, totalLevel)                        
                     dropratecoeff1 = buyableEffect('wr', 11).floor().div(getBuyableAmount('wr', 112)).pow(2)
-                    dropratecoeff2 = layers.wr.levelScale().pow(buyableEffect('wr', 11).floor().div(getBuyableAmount('wr', 112)).times(8))
+                    dropratecoeff2 = layers.wr.levelScale().pow(buyableEffect('wr', 11).floor().sub(getBuyableAmount('wr', 112)).times(8))
                     dropratedivider = dropratecoeff1.times(dropratecoeff2)
-                    setBuyableAmount('wr', 192, dropratedivider)
+                    setBuyableAmount('wr', 202, dropratedivider)
                     //                                          mob xp mult         bonus free        random xp mult                 world effect xp mult            
-                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, randomFree, layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 1).times(layers.wr.effect()).div(getBuyableAmount('wr', 192))))
+                    setBuyableAmount('wr', 111, layers.wr.experienceCalc(totalLevel, randomFree, layers.wr.mobDict()[getClickableState('wr', 111)][3].times((Math.random() - 0.5) ** 3 + 1).times(layers.wr.effect()).div(getBuyableAmount('wr', 202))))
                     for (i = 13; i < 99; i++) { //calculate level stat + gear stat
                         if (generatedEnemy[i] != undefined) {enemyStat = generatedEnemy[i]} else {enemyStat = new Decimal(0)}
                         if (layers.wr.mobDict()[enemyIndex][5][0] % 10 == 0){
@@ -7733,7 +7773,7 @@ addLayer("wr", {
 
                         droppeditem = 0
                         
-                        if (1 / getBuyableAmount('wr', 192).toNumber() > Math.random()) {
+                        if (1 / getBuyableAmount('wr', 202).toNumber() > Math.random()) {
                             for (i = 0; i < itemtable.length; i++) {
                                 if (itemtable[i][1] > Math.random()) {
                                     droppeditem = itemtable[i][0]

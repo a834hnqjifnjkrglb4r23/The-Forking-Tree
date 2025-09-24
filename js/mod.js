@@ -14,11 +14,18 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.5",
+	num: "0.6.1",
 	name: "Literally nothing",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+	<h3>v0.6.1</h3><br>
+		- more of technical stuff. <br>
+		- Added up to level 4 content. <br>
+	<h3>v0.6.0</h3><br>
+		- Added worlds. <br>
+		- lots and lots of technical stuff. <br>
+		- basic concept written up. <br>
 	<h3>v0.5</h3><br>
 		- Added hyperprestige. <br>
 		- Added research. <br>
@@ -42,6 +49,8 @@ let changelog = `<h1>Changelog:</h1><br>
 		- Added advertisements.`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
+
+
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
@@ -272,6 +281,7 @@ function addedPlayerData() { return {
 }}
 // Display extra things at the top of the page
 var displayThings = [
+	function() { return "It is recommended to play at 80% zoom."},
 ]
 
 // Determines when the game "ends"
