@@ -45,7 +45,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect", "chooseEnemy", "hitcountCalc", "equipEquippable", "unequipEquippable", "elementalDict", "elementalDamageMultiplier", "indexcostCoefficient", "typecostCoefficient"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "healthCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect", "chooseEnemy", "hitcountCalc", "equipEquippable", "unequipEquippable", "elementalDict", "elementalDamageMultiplier", "indexcostCoefficient", "typecostCoefficient"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -248,12 +248,27 @@ function addedPlayerData() { return {
 		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
 	],
 	worldInventorysublist(type) {
-		sublist = []
+		sublist = [Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero]
 		for (i = 0; i < player.worldInventory.length / 10 ; i++) {
 			sublist[i] = player.worldInventory[10 * i + type]
 		}
 		return sublist
-	}
+	},
+	worldInventoryTotal() {
+		total = new Decimal(0)
+		for (i = 0; i < player.worldInventory.length; i++) {
+			total = total.add(player.worldInventory[i])
+		}
+		return total
+	},
+	worldInventorysublistTotal(type) {
+		total = new Decimal(0)
+		sublist = player.worldInventorysublist(type)
+		for (i = 0; i < sublist.length; i++) {
+			total = total.add(sublist[i])
+		}
+		return total
+	},
 }}
 // Display extra things at the top of the page
 var displayThings = [
