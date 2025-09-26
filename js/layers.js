@@ -7021,67 +7021,67 @@ addLayer("wr", {
     },
     mobDict() {
         mobdictionary = [  
-        //  name                hp mult            dmg mult            xp mult                freestat mult      [item index, probability]
-            ["",                Decimal.dZero,     Decimal.dZero,      Decimal.dZero,         Decimal.dZero,     [                                                        ]], // 0
-            ["Unknown mob",     new Decimal(14),   new Decimal(0.25),  new Decimal(0.59),     new Decimal(1),    [[1,   0.175], [2,   0.075]                              ]], // 1
-            ["Unknown mob",     new Decimal(14),   new Decimal(0.375), new Decimal(0.649),    new Decimal(1),    [[1,   0.225], [2,   0.15 ], [3,    0.075]               ]], // 2
-            ["Unknown mob",     new Decimal(28),   new Decimal(0.25),  new Decimal(0.708),    new Decimal(1),    [[1,   0.3  ], [2,   0.225], [3,    0.075]               ]], // 3
-            ["Unknown mob+",    new Decimal(28),   new Decimal(0.5),   new Decimal(0.8555),   new Decimal(1.05), [[3,   0.35 ], [4,   0.35 ], [5,    0.125]               ]], // 4
-            ["Unknown mob+",    new Decimal(28),   new Decimal(0.75),  new Decimal(0.94105),  new Decimal(1.05), [[3,   0.35 ], [4,   0.4  ], [5,    0.25 ], [6,    0.225]]], // 5
-            ["Unknown mob+",    new Decimal(42),   new Decimal(0.5),   new Decimal(0.94105),  new Decimal(1.05), [[3,   0.35 ], [4,   0.45 ], [5,    0.5  ], [6,    0.225]]], // 6
-            ["Unknown mob++",   new Decimal(56),   new Decimal(1),     new Decimal(2.242),    new Decimal(1.1),  [[5,   0.375], [6,   0.275], [7,    0.15 ]               ]], // 7
-            ["Unknown mob++",   new Decimal(56),   new Decimal(1.5),   new Decimal(3.363),    new Decimal(1.1),  [[5,   0.375], [6,   0.3  ], [7,    0.3  ], [8,    0.25 ]]], // 8
-            ["Unknown mob++",   new Decimal(84),   new Decimal(1),     new Decimal(3.363),    new Decimal(1.1),  [[5,   0.375], [6,   0.325], [7,    0.45 ], [8,    0.25 ]]], // 9
-            ["Small Rat",       new Decimal(24),   new Decimal(0.85),  new Decimal(0.9),      new Decimal(1),    [[10,  0.25 ], [4,   0.325], [21,   0.25 ], [22,   0.175]]], // 10 carrying equippable
-            ["Small Rat",       new Decimal(24),   new Decimal(0.85),  new Decimal(0.9),      new Decimal(1),    [[4,   0.35 ], [21,  0.275], [22,   0.175]               ]], // 11
-            ["Small Rat",       new Decimal(24),   new Decimal(1.02),  new Decimal(0.945),    new Decimal(1),    [[4,   0.4  ], [21,  0.325], [22,   0.2  ]               ]], // 12
-            ["Small Rat",       new Decimal(36),   new Decimal(0.85),  new Decimal(0.99),     new Decimal(1),    [[4,   0.45 ], [21,  0.4  ], [22,   0.3  ], [23,   0.125]]], // 13
-            ["Small Rat+",      new Decimal(48),   new Decimal(1.275), new Decimal(2.16),     new Decimal(1.05), [[6,   0.35 ], [22,  0.275], [23,   0.175]               ]], // 14
-            ["Small Rat+",      new Decimal(48),   new Decimal(1.53),  new Decimal(2.592),    new Decimal(1.05), [[6,   0.4  ], [22,  0.325], [23,   0.2  ]               ]], // 15
-            ["Small Rat+",      new Decimal(72),   new Decimal(1.275), new Decimal(3.24),     new Decimal(1.05), [[6,   0.45 ], [22,  0.4  ], [23,   0.3  ], [24,   0.125]]], // 16
-            ["Small Rat++",     new Decimal(96),   new Decimal(1.7),   new Decimal(5.985),    new Decimal(1.1),  [[8,   0.35 ], [23,  0.275], [24,   0.175]               ]], // 17
-            ["Small Rat++",     new Decimal(96),   new Decimal(2.04),  new Decimal(7.182),    new Decimal(1.1),  [[8,   0.4  ], [23,  0.325], [24,   0.2  ]               ]], // 18
-            ["Small Rat++",     new Decimal(144),  new Decimal(1.7),   new Decimal(8.9775),   new Decimal(1.1),  [[8,   0.45 ], [23,  0.4  ], [24,   0.3  ], [25,   0.125]]], // 19
-            ["Small Rabbit",    new Decimal(44),   new Decimal(1.15),  new Decimal(1.94),     new Decimal(1.15), [[20,  0.25 ], [5,   0.35 ], [22,   0.2  ], [23,   0.175]]], // 20
-            ["Small Rabbit",    new Decimal(44),   new Decimal(1.15),  new Decimal(1.94),     new Decimal(1.15), [[5,   0.35 ], [22,  0.2  ], [23,   0.175]               ]], // 21
-            ["Small Rabbit",    new Decimal(44),   new Decimal(1.38),  new Decimal(2.328),    new Decimal(1.15), [[5,   0.35 ], [22,  0.25 ], [23,   0.25 ]               ]], // 22
-            ["Small Rabbit",    new Decimal(66),   new Decimal(1.38),  new Decimal(3.492),    new Decimal(1.15), [[5,   0.375], [22,  0.375], [23,   0.35 ], [24,   0.125]]], // 23
+        //  name                hp mult               dmg mult              xp mult                  freestat mult      [item index, probability]
+            ["",                Decimal.dZero,        Decimal.dZero,        Decimal.dZero,           Decimal.dZero,     [                                                        ]], // 0
+            ["Unknown mob",     new Decimal(14),      new Decimal(0.2),     new Decimal(0.6),        new Decimal(1),    [[1,   0.175], [2,   0.075]                              ]], // 1
+            ["Unknown mob",     new Decimal(14),      new Decimal(0.3),     new Decimal(0.66),       new Decimal(1),    [[1,   0.225], [2,   0.15 ], [3,    0.075]               ]], // 2
+            ["Unknown mob",     new Decimal(21),      new Decimal(0.2),     new Decimal(0.66),       new Decimal(1),    [[1,   0.3  ], [2,   0.225], [3,    0.075]               ]], // 3
+            ["Unknown mob+",    new Decimal(21),      new Decimal(0.3),     new Decimal(0.75),       new Decimal(1.05), [[2,   0.35 ], [3,   0.35 ], [4,    0.125]               ]], // 4
+            ["Unknown mob+",    new Decimal(31.5),    new Decimal(0.45),    new Decimal(0.825),      new Decimal(1.05), [[2,   0.375], [3,   0.4  ], [4,    0.25 ], [5,    0.225]]], // 5
+            ["Unknown mob+",    new Decimal(21),      new Decimal(0.3),     new Decimal(0.825),      new Decimal(1.05), [[2,   0.4  ], [3,   0.45 ], [4,    0.5  ], [5,    0.225]]], // 6
+            ["Unknown mob++",   new Decimal(31.5),    new Decimal(0.45),    new Decimal(1.30125),    new Decimal(1.1),  [[3,   0.375], [4,   0.3  ], [5,    0.15 ]               ]], // 7
+            ["Unknown mob++",   new Decimal(46.75),   new Decimal(0.675),   new Decimal(1.134375),   new Decimal(1.1),  [[3,   0.4  ], [4,   0.325], [5,    0.3  ], [6,    0.25 ]]], // 8
+            ["Unknown mob++",   new Decimal(31.5),    new Decimal(0.45),    new Decimal(1.134375),   new Decimal(1.1),  [[3,   0.425], [4,   0.35 ], [5,    0.45 ], [6,    0.275]]], // 9
+            ["Small Rat",       new Decimal(24),      new Decimal(0.85),    new Decimal(0.9),        new Decimal(1),    [[10,  0.25 ], [4,   0.375], [21,   0.25 ], [22,   0.175]]], // 10 carrying equippable
+            ["Small Rat",       new Decimal(24),      new Decimal(0.85),    new Decimal(0.9),        new Decimal(1),    [[5,   0.35 ], [21,  0.1  ], [22,   0.05 ]               ]], // 11
+            ["Small Rat",       new Decimal(24),      new Decimal(1.19),    new Decimal(0.99),       new Decimal(1),    [[5,   0.4  ], [21,  0.105], [22,   0.055], [6,    0.375]]], // 12
+            ["Small Rat",       new Decimal(36),      new Decimal(0.85),    new Decimal(0.99),       new Decimal(1),    [[5,   0.45 ], [21,  0.11 ], [22,   0.06 ], [6,    0.4  ]]], // 13
+            ["Small Rat+",      new Decimal(36),      new Decimal(1.19),    new Decimal(1.62),       new Decimal(1.05), [[6,   0.3  ], [22,  0.07 ], [23,   0.075]               ]], // 14
+            ["Small Rat+",      new Decimal(54),      new Decimal(1.666),   new Decimal(2.43),       new Decimal(1.05), [[6,   0.375], [22,  0.075], [23,   0.08 ], [7,    0.375]]], // 15
+            ["Small Rat+",      new Decimal(36),      new Decimal(1.19),    new Decimal(2.43),       new Decimal(1.05), [[6,   0.45 ], [22,  0.08 ], [23,   0.085], [7,    0.4  ]]], // 16
+            ["Small Rat++",     new Decimal(54),      new Decimal(1.666),   new Decimal(3.645),      new Decimal(1.1),  [[7,   0.35 ], [23,  0.11 ], [24,   0.11 ]               ]], // 17
+            ["Small Rat++",     new Decimal(54),      new Decimal(2.3324),  new Decimal(5.4675),     new Decimal(1.1),  [[7,   0.4  ], [23,  0.115], [24,   0.115]               ]], // 18
+            ["Small Rat++",     new Decimal(81),      new Decimal(1.666),   new Decimal(5.4675),     new Decimal(1.1),  [[7,   0.45 ], [23,  0.12 ], [24,   0.125], [8,    0.4  ]]], // 19
+            ["Small Rabbit",    new Decimal(44),      new Decimal(1.15),    new Decimal(1.94),       new Decimal(1.15), [[20,  0.25 ], [7,   0.35 ], [22,   0.125], [8,    0.4  ]]], // 20
+            ["Small Rabbit",    new Decimal(44),      new Decimal(1.15),    new Decimal(1.94),       new Decimal(1.15), [[7,   0.35 ], [22,  0.125], [23,   0.065]               ]], // 21
+            ["Small Rabbit",    new Decimal(44),      new Decimal(1.61),    new Decimal(2.716),      new Decimal(1.15), [[7,   0.375], [22,  0.13 ], [23,   0.07 ]               ]], // 22
+            ["Small Rabbit",    new Decimal(66),      new Decimal(1.61),    new Decimal(2.716),      new Decimal(1.15), [[7,   0.4  ], [22,  0.135], [23,   0.075], [8,    0.35 ]]], // 23
         ] 
         return mobdictionary
     },
     itemDict() {
         itemdictionary = [  
-            // name                               index      eff           //each 10th element must be empty beccause equippables use different function
-            ["",                                    0, Decimal.dZero    ],
-            ["Small Healing Potion",                1, new Decimal(5)   ], //1
-            ["Small Healing Potion+",               1, new Decimal(10)  ], //2
-            ["Small Healing Potion++",              1, new Decimal(20)  ], //3
-            ["Medium Healing Potion",               1, new Decimal(50)  ], //4
-            ["Medium Healing Potion+",              1, new Decimal(100) ], //5
-            ["Medium Healing Potion++",             1, new Decimal(200) ], //6
-            ["Large Healing Potion",                1, new Decimal(500) ], //7
-            ["Large Healing Potion+",               1, new Decimal(1000)], //8
-            ["Large Healing Potion++",              1, new Decimal(2000)], //9 level 99 player has 2970 hp max
-            ["",                                    0, Decimal.dZero    ], //10
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ], //15
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ],
-            ["",                                    0, Decimal.dZero    ], //20
-            ["Small Round Copper Coin",             2, new Decimal(1)   ], //21
-            ["Small Triangular Copper Coin",        2, new Decimal(3)   ], //22
-            ["Small Pentagonal Copper Coin",        2, new Decimal(5)   ], //23
-            ["Medium Round Copper Coin",            2, new Decimal(10)  ], //24
-            ["Medium Triangular Copper Coin",       2, new Decimal(30)  ], //25
-            ["Medium Pentagonal Copper Coin",       2, new Decimal(50)  ], //26
-            ["Large Round Copper Coin",             2, new Decimal(100) ], //27
-            ["Large Triangular Copper Coin",        2, new Decimal(300) ], //28
-            ["Large Pentagonal Copper Coin",        2, new Decimal(500) ], //29
+            // name                                   index      eff            //each 10th element must be empty because equippables use different function, see below
+            ["",                                        0, Decimal.dZero        ],
+            ["Small Healing Potion",                    1, new Decimal(5)       ], //1
+            ["Small Healing Potion+",                   1, new Decimal(10)      ], //2
+            ["Small Healing Potion++",                  1, new Decimal(20)      ], //3
+            ["Medium Healing Potion",                   1, new Decimal(50)      ], //4
+            ["Medium Healing Potion+",                  1, new Decimal(100)     ], //5
+            ["Medium Healing Potion++",                 1, new Decimal(200)     ], //6
+            ["Large Healing Potion",                    1, new Decimal(500)     ], //7
+            ["Large Healing Potion+",                   1, new Decimal(1000)    ], //8
+            ["Large Healing Potion++",                  1, new Decimal(2000)    ], //9 
+            ["",                                        0, Decimal.dZero        ], //10
+            ["Small Concentrated Healing Potion",       1, new Decimal(5000)    ], //11
+            ["Small Concentrated Healing Potion+",      1, new Decimal(10000)   ], //12
+            ["Small Concentrated Healing Potion++",     1, new Decimal(20000)   ], //13
+            ["Medium Concentrated Healing Potion",      1, new Decimal(50000)   ], //14
+            ["Medium Concentrated Healing Potion+",     1, new Decimal(100000)  ], //15
+            ["Medium Concentrated Healing Potion++",    1, new Decimal(200000)  ], //16
+            ["Large Concentrated Healing Potion",       1, new Decimal(500000)  ], //17
+            ["Large Concentrated Healing Potion+",      1, new Decimal(1000000) ], //18
+            ["Large Concentrated Healing Potion++",     1, new Decimal(2000000) ], //19 
+            ["",                                        0, Decimal.dZero        ], //20
+            ["Small Round Copper Coin",                 2, new Decimal(1)       ], //21
+            ["Small Triangular Copper Coin",            2, new Decimal(3)       ], //22
+            ["Small Pentagonal Copper Coin",            2, new Decimal(5)       ], //23
+            ["Medium Round Copper Coin",                2, new Decimal(10)      ], //24
+            ["Medium Triangular Copper Coin",           2, new Decimal(30)      ], //25
+            ["Medium Pentagonal Copper Coin",           2, new Decimal(50)      ], //26
+            ["Large Round Copper Coin",                 2, new Decimal(100)     ], //27
+            ["Large Triangular Copper Coin",            2, new Decimal(300)     ], //28
+            ["Large Pentagonal Copper Coin",            2, new Decimal(500)     ], //29
             //Silver:Copper approx 800, Gold:Silver approx 80
         ]
         return itemdictionary
@@ -7212,26 +7212,34 @@ addLayer("wr", {
         if (level.eq(1)) {
             return Math.max(Math.floor((enemyseed - 55000) / 15000), 0) + 1 //mostly 1 with 2 or 3
         } else if (level.eq(2)) {
-            return Math.max(Math.floor((enemyseed - 26875) / 22500), 0) + 1 //more 2 or 3, adds 1/4 weight of 4
+            return Math.max(Math.floor((enemyseed - 21250) / 22500), 0) + 1 //more 2 or 3, adds 1/4 weight of 4
         } else if (level.eq(3)) {
             if (enemyseed < 2000) {
                 return 10
             } else if (enemyseed < 35000) {
-                return Math.max(Math.floor((enemyseed - 8450) / 8250), 0) + 11 //mostly 11 with 12 or 13
+                return Math.max(Math.floor((enemyseed - 10250) / 8250), 0) + 11 //mostly 11 with 12 or 13
             } else {
-                return Math.max(Math.floor((enemyseed - 48850) / 14620), 0) + 3 //4, 5, 6, with 1/2 weight 7
+                return Math.max(Math.floor((enemyseed - 35000) / 16250), 0) + 2 //2, 3, 4, or 5
             }
         } else if (level.eq(4)) {
-            if (enemyseed < 34986) {
-                return Math.max(Math.floor((enemyseed ) / 8232), 0) + 10 //10, 11, 12, or 13 with 1/4 weight 14
+            if (enemyseed < 35000) {
+                return Math.max(Math.floor((enemyseed ) / 8250), 0) + 10 //10, 11, 12, or 13 with 1/4 weight 14
             } else {
-                return Math.max(Math.floor((enemyseed - 47051) / 14620), 0) + 3 //3/4 weight 7 instead
+                return Math.max(Math.floor((enemyseed - 35000) / 16250), 0) + 3 //3, 4, 5, or 6
             }
-        } else if (level.gte(5)) {
-            if (enemyseed < 42460) {
-                return enemyseed % 6 + 4 //4 to 9
+        } else if (level.eq(5)) {
+            if (enemyseed < 42500) {
+                return Math.max(Math.floor((enemyseed ) / 8500), 0) + 10 //10 to 14
             } else {
-                return enemyseed % 5 + 10 //10 to 14
+                return Math.max(Math.floor((enemyseed - 42500) / 12778), 0) + 4 //4, 5, 6, 7, or 1/2 8
+            }            
+        } else if (level.gte(6)) {
+            if (enemyseed < 7000) {
+                return 20
+            } else if (enemyseed < 39525) {
+                return Math.max(Math.floor((enemyseed ) / 7905), 0) + 10 //10 to 14
+            } else {
+                return Math.max(Math.floor((enemyseed - 39525) / 12732), 0) + 4 //4, 5, 6, 7, or 3/4 8
             }            
         }
     },
@@ -7811,7 +7819,7 @@ addLayer("wr", {
                         if (killcountnumber != getClickableState('wr', 32) && droppeditem == 0) { //if reached level and no item dropped, drop this item
                             setClickableState('wr', 32, killcountnumber)
                             guaranteedkillcountdrop = layers.wr.guaranteedKillcountDropsDict()[killcountnumber]
-                            if (guaranteedkillcountdrop == 0) {} else {
+                            if (guaranteedkillcountdrop == 0 || guaranteedkillcountdrop == undefined) {} else {
                                 droppeditem = guaranteedkillcountdrop
                             }
                         }
@@ -7820,7 +7828,7 @@ addLayer("wr", {
                         if (floorlevelnumber != getClickableState('wr', 31) && droppeditem == 0) { //if reached level and no item dropped, drop this item
                             setClickableState('wr', 31, floorlevelnumber)
                             guaranteedleveldrop = layers.wr.guaranteedLevelDropsDict()[floorlevelnumber]
-                            if (guaranteedleveldrop == 0) {} else {
+                            if (guaranteedleveldrop == 0 || guaranteedleveldrop == undefined) {} else {
                                 droppeditem = guaranteedleveldrop
                             }
                         }
@@ -7957,7 +7965,7 @@ addLayer("wr", {
                         currentIndex -= 1
                         if (currentIndex < 0) {currentIndex += player.worldInventory.length}
                         if (typeof(player.worldInventory[currentIndex]) != "object" ) {player.worldInventory[currentIndex] = new Decimal(player.worldInventory[currentIndex])}
-                    } while (player.worldInventorysublist(currentType)[currentIndex].lt(1))
+                    } while (player.worldInventory[currentIndex].lt(1))
                     setClickableState('wr', 42, currentIndex)
                 }
             },
@@ -7976,7 +7984,7 @@ addLayer("wr", {
                         currentIndex += 1
                         if (currentIndex >= player.worldInventory.length) {currentIndex -= player.worldInventory.length}
                         if (typeof(player.worldInventory[currentIndex]) != "object" ) {player.worldInventory[currentIndex] = new Decimal(player.worldInventory[currentIndex])}
-                    } while (player.worldInventorysublist(currentType)[currentIndex].lt(1))
+                    } while (player.worldInventory[currentIndex].lt(1))
                     setClickableState('wr', 42, currentIndex )
                 }
             },
@@ -8143,9 +8151,9 @@ addLayer("wr", {
                 }
                 if (getBuyableAmount('wr', 112).gt(0.1)) {
                     textwr += "<br> <br> <br> level "+formatWhole(getBuyableAmount('wr', 112))+" "+layers.wr.mobDict()[getClickableState('wr', 111)][0]
-                    textwr += "<br> "+formatWhole(getBuyableAmount('wr', 113))+" strength, "+formatWhole(getBuyableAmount('wr', 114))+" fortility"
+                    textwr += "<br> "+formatStat(getBuyableAmount('wr', 113))+" strength, "+formatStat(getBuyableAmount('wr', 114))+" fortility"
                     if (getBuyableAmount('wr', 115).gt(0.1)) {
-                        textwr += ", "+formatWhole(getBuyableAmount('wr', 115))+" agility, "+formatWhole(getBuyableAmount('wr', 116))+" evasion"
+                        textwr += ", "+formatStat(getBuyableAmount('wr', 115))+" agility, "+formatStat(getBuyableAmount('wr', 116))+" evasion"
                     }
                     textwr += "<br> "+formatWhole(getBuyableAmount('wr', 191))+" health points"
                 }
@@ -8181,7 +8189,7 @@ addLayer("wt", {
     layerShown(){  //world trade
         return getClickableState('wr', 31) >= 3
     },
-    typecostCoefficient(type) {return [Decimal.dOne, Decimal.dOne, new Decimal(3), Decimal.dOne, Decimal.dOne, new Decimal(3), new Decimal(9), new Decimal(5), new Decimal(45)][type]},
+    typecostCoefficient(type) {return [Decimal.dZero, Decimal.dOne, Decimal.dOne, new Decimal(3), Decimal.dOne, Decimal.dOne, new Decimal(3), new Decimal(9), new Decimal(5), new Decimal(45)][type]},
     indexcostCoefficient(index) {
         indexcostCoefficientdictionary = 
           // 0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   
@@ -8216,7 +8224,7 @@ addLayer("wt", {
         11: {
             unlocked() {return true},
             cost(x) {
-                return layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0)).times(10)
+                return layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0))
             },
             effect(x) {
 
@@ -8236,7 +8244,7 @@ addLayer("wt", {
         12: {
             unlocked() {return true},
             cost(x) {
-                return layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0)).times(10)
+                return layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0))
             },
             effect(x) {
 
@@ -8256,7 +8264,7 @@ addLayer("wt", {
         13: {
             unlocked() {return true},
             cost(x) {
-                return {coins: layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10 + 1)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0)).times(10), equippables: layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10 + 1))}
+                return {coins: layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10 + 1)).times(layers.wt.typecostCoefficient(((getClickableState('wr', 42) ^ 0) % 10) ^ 0)), equippables: layers.wt.indexcostCoefficient(Math.floor((getClickableState('wr', 42) ^ 0) / 10 + 1))}
             },
             effect(x) {
 
