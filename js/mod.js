@@ -54,7 +54,7 @@ let winText = `Congratulations! You have reached the end and beaten this game, b
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
-var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "healthCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect", "chooseEnemy", "hitcountCalc", "equipEquippable", "unequipEquippable", "elementalDict", "elementalDamageMultiplier", "indexcostCoefficient", "typecostCoefficient"]
+var doNotCallTheseFunctionsEveryTick = ["blowUpEverything", "damageCalc", "healthCalc", "generateEnemy", "unlockedStats", "experienceCalc", "mobDict", "itemDict", "consumableEffect", "chooseEnemy", "hitcountCalc", "equipEquippable", "unequipEquippable", "elementalDict", "elementalDamageMultiplier", "indexcostCoefficient", "typecostCoefficient", "xorshift3"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -278,6 +278,7 @@ function addedPlayerData() { return {
 		}
 		return total
 	},
+	currentDate: 0,
 }}
 // Display extra things at the top of the page
 var displayThings = [
@@ -288,7 +289,6 @@ var displayThings = [
 function isEndgame() {
 	return player.a.points.gte(1)
 }
-
 
 
 // Less important things beyond this point!
@@ -310,3 +310,72 @@ function fixOldSave(oldVersion){
 
 }
 
+function totits(int) {
+		int = int % 7625597484987
+		trinary = int.toString(3).padStart(27, '0')		
+		return trinary
+	}
+function toint(tint) {
+		int = parseInt(tint, 3)
+		return int
+	}
+function titshift(tintq, titsq) {
+		titsq = titsq % 27
+		if (titsq < 0) {titsq += 27}
+		tint1q = tintq.slice(0, titsq)
+		tint2q = tintq.slice(titsq, 27)
+		resultq = tint2q + tint1q
+		return resultq
+	}
+function titshiftsmall(tintw, titsw) {
+		titsw = titsw % 3
+		if (titsw < 0) {titsw += 3}
+		tint1w = tintw.slice(0, titsw)
+		tint2w = tintw.slice(titsw, 3)
+		resultw = tint2w + tint1w
+		return resultw
+	}
+function titshuffle(tinta, titsa) {
+		titsa = titsa % 3
+		resulta = ""
+		for (i0 = 0; i0 < 27; i0++) {
+			numbera = parseInt(titshiftsmall(i0.toString(3).padStart(3, '0'), titsa), 3)
+			digita = tinta[numbera]
+			resulta += digita.padStart(1, '0')
+		} return resulta
+	}
+function xorshift(tints) {
+		a1s = titshift(tints, 5)
+		a2s = titshift(tints, 7)
+		a3s = titshuffle(tints, 1)
+		a4s = titshuffle(tints, 2)
+		results = ""
+		for (i1 = 0; i1 < 27; i1++) {
+			numbers = parseInt(a1s[i1]) + parseInt(a2s[i1]) + parseInt(a3s[i1]) + parseInt(a4s[i1])
+			//console.log(numbers)
+			numbers = numbers % 3
+			numbers = numbers.toString()
+			results += numbers
+		}
+		return results
+	}
+function xorshift3(int) {
+		tint = totits(int)
+		turn = xorshift(tint)
+		tables = xorshift(turn)
+		around = xorshift(tables)
+		result = toint(around)
+		return result
+	}
+function determineprice(baseprice, volatility, ticks, ticklength, offset) {
+	latestdate = Math.floor(Date.now() / ticklength) + offset
+	earliestdate = latestdate - ticks + 1
+	pricedrift = 1
+	for (i2 = earliestdate; i2 <= latestdate; i2++) {
+		randomnumber = parseInt(xorshift(i2.toString(3).padStart(27, '0')), 3)
+		action = (randomnumber - 3812798742493.5) / 3812798742493.5
+		multiplier = (i2 - earliestdate + 1) / (latestdate - earliestdate + 1) * (1 - 1 / (latestdate - earliestdate + 1)) ** (latestdate - i2)
+		pricedrift *= (action ** 3 * multiplier * volatility + 1)
+	} 
+	return baseprice * pricedrift
+}
