@@ -81,7 +81,7 @@ function addedPlayerData() { return {
 		return clickgain
 	},
 	effBasesy() {
-		eff = new Decimal(1.08)
+		eff = new Decimal(1.02)
 		if (hasUpgrade('c', 13)) {eff = eff.add(upgradeEffect('c', 13))}
 		return eff
 	}
