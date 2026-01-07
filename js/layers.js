@@ -2547,8 +2547,13 @@ addLayer("h", {
     },
     clickables: {
         11: {
-            display() { return "building 11, assigned "+getClickableState('h', 11)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 11)
+                }
+                return "building 11, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 11, getClickableState('h', 11)* 1 + getClickableState('h', 23))
             },
@@ -2558,17 +2563,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 11)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 11)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         12: {
-            display() { return "building 21, assigned "+getClickableState('h', 12)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 12)
+                }
+                return "building 21, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 12, getClickableState('h', 12)* 1 + getClickableState('h', 23))
             },
@@ -2578,17 +2592,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 12)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 12)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         13: {
-            display() { return "building 31, assigned "+getClickableState('h', 13)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 13)
+                }
+                return "building 31, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 13, getClickableState('h', 13)* 1 + getClickableState('h', 23))
             },
@@ -2598,17 +2621,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 13)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 13)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         14: {
-            display() { return "building 41, assigned "+getClickableState('h', 14)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 14)
+                }
+                return "building 41, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 14, getClickableState('h', 14)* 1 + getClickableState('h', 23))
             },
@@ -2618,17 +2650,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 14)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 14)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         15: {
-            display() { return "building 51, assigned "+getClickableState('h', 15)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 15)
+                }
+                return "building 51, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 15, getClickableState('h', 15)* 1 + getClickableState('h', 23))
             },
@@ -2638,17 +2679,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 15)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 15)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         16: {
-            display() { return "building 61, assigned "+getClickableState('h', 16)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 16)
+                }
+                return "building 61, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 16, getClickableState('h', 16)* 1 + getClickableState('h', 23))
             },
@@ -2658,17 +2708,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 16)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 16)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         17: {
-            display() { return "building 71, assigned "+getClickableState('h', 17)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 17)
+                }
+                return "building 71, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 17, getClickableState('h', 17) * 1 + getClickableState('h', 23))
             },
@@ -2678,17 +2737,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 17)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 17)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         18: {
-            display() { return "building 81, assigned "+getClickableState('h', 18)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 18)
+                }
+                return "building 81, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 18, getClickableState('h', 18)* 1 + getClickableState('h', 23))
             },
@@ -2698,17 +2766,26 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 18)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 18)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         19: {
-            display() { return "building 91, assigned "+getClickableState('h', 19)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[12].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 19)
+                }
+                return "building 91, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 19, getClickableState('h', 19)* 1 + getClickableState('h', 23))
             },
@@ -2718,17 +2795,21 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 19)).pow(clickableEffect('h', 22)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 21).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 22)))
+                } else {
+                    return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 19)).pow(clickableEffect('h', 22)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         21: {
             display() { return "resets your building ?2"},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 for (let i = 1; i < 10; i++ ) {
                     setBuyableAmount('b', i*10+1, buyableEffect('b', i*10+2).spent.add(getBuyableAmount('b', i*10+1)))
@@ -2748,7 +2829,7 @@ addLayer("h", {
         },
         22: {
             display() { if (hasMilestone('c', 1)) {return "respec choices"} else return "respec choices, requires zero building ?2s"},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 for (let i = 11; i < 20; i++ ) {
                     setClickableState('h', i, 0)
@@ -2770,7 +2851,7 @@ addLayer("h", {
         },
         23: {
             display() { return "increase the amount of choices at once, currently "+getClickableState('h', 23)},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 23, Math.round(Math.min(getClickableState('h', 23) * 10, 10000)))
             },
@@ -2780,7 +2861,7 @@ addLayer("h", {
         },
         24: {
             display() { return "decrease the amount of choices at once"},
-            unlocked() {return buyableEffect('h', 12).gte(1)},
+            unlocked() {return buyableEffect('h', 12).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 23, Math.round(Math.max(getClickableState('h', 23) / 10, 1)))
             },
@@ -2789,8 +2870,13 @@ addLayer("h", {
             },
         },
         31: {
-            display() { return "building 12, assigned "+getClickableState('h', 31)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 31)
+                }
+                return "building 12, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 31, getClickableState('h', 31)* 1 + getClickableState('h', 23))
             },
@@ -2800,17 +2886,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 31)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 31)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         32: {
-            display() { return "building 22, assigned "+getClickableState('h', 32)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 32)
+                }
+                return "building 22, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 32, getClickableState('h', 32)* 1 + getClickableState('h', 23))
             },
@@ -2820,17 +2915,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 32)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 32)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         33: {
-            display() { return "building 32, assigned "+getClickableState('h', 33)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 33)
+                }
+                return "building 32, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 33, getClickableState('h', 33)* 1 + getClickableState('h', 23))
             },
@@ -2840,17 +2944,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 33)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 33)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         34: {
-            display() { return "building 42, assigned "+getClickableState('h', 34)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 34)
+                }
+                return "building 42, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 34, getClickableState('h', 34)* 1 + getClickableState('h', 23))
             },
@@ -2860,17 +2973,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 34)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 34)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         35: {
-            display() { return "building 52, assigned "+getClickableState('h', 35)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 35)
+                }
+                return "building 52, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 35, getClickableState('h', 35)* 1 + getClickableState('h', 23))
             },
@@ -2880,17 +3002,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 35)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 35)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         36: {
-            display() { return "building 62, assigned "+getClickableState('h', 36)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 36)
+                }
+                return "building 62, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 36, getClickableState('h', 36)* 1 + getClickableState('h', 23))
             },
@@ -2900,17 +3031,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 36)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 36)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         37: {
-            display() { return "building 72, assigned "+getClickableState('h', 37)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 37)
+                }
+                return "building 72, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 37, getClickableState('h', 37)* 1 + getClickableState('h', 23))
             },
@@ -2920,17 +3060,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 37)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 37)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         38: {
-            display() { return "building 82, assigned "+getClickableState('h', 38)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 38)
+                }
+                return "building 82, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 38, getClickableState('h', 38)* 1 + getClickableState('h', 23))
             },
@@ -2940,17 +3089,26 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 38)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 38)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         39: {
-            display() { return "building 92, assigned "+getClickableState('h', 39)+" times, scaling divided by "+formatShort(this.effect())},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            display() { if (hasMilestone('m', 0)) {
+                    textassigned = format(layers.h.buyables[13].cost().continuum)
+                } else {
+                    textassigned = getClickableState('h', 39)
+                }
+                return "building 92, assigned "+textassigned+" times, scaling divided by "+formatShort(this.effect())},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 setClickableState('h', 39, getClickableState('h', 39)* 1 + getClickableState('h', 23))
             },
@@ -2960,17 +3118,21 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))&&!hasMilestone('m', 0)
             },
             effect() {
-                return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 39)).pow(clickableEffect('h', 42)))
+                if (hasMilestone('m', 0)) {
+                    return clickableEffect('h', 41).pow(layers.h.buyables[12].cost().continuum.pow(clickableEffect('h', 42)))
+                } else {
+                    return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 39)).pow(clickableEffect('h', 42)))
+                }
             },
             style() {const size1 = {width: "65px", height: "90px"}
             return size1},
         },
         41: {
             display() { return "resets your building ?2"},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 for (let i = 1; i < 10; i++ ) {
                     setBuyableAmount('b', i*10+1, buyableEffect('b', i*10+2).spent.add(getBuyableAmount('b', i*10+1)))
@@ -2989,7 +3151,7 @@ addLayer("h", {
         },
         42: {
             display() { if (hasMilestone('c', 1)) {return "respec choices "} else return "respec choices, requires zero building ?2s"},
-            unlocked() {return buyableEffect('h', 13).gte(1)},
+            unlocked() {return buyableEffect('h', 13).gte(1)||!hasMilestone('m', 0)},
             onClick() {
                 for (let i = 31; i < 40; i++ ) {
                     setClickableState('h', i, 0)
@@ -6855,9 +7017,9 @@ addLayer("m", {
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        addm = new Decimal(-5.69897000433601880478626110527550697323181011853789145868957253877289181073) //-5-ln5/ln10
+        addm = new Decimal(0) //
 
-        multm = new Decimal(3.32192809488736234787031942948939017586483139302458061205475639581593477660) //ln10/ln4
+        multm = new Decimal(1/6) //
 
         return multm
     },
