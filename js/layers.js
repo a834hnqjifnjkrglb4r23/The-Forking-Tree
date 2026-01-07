@@ -2550,7 +2550,7 @@ addLayer("h", {
             display() { return "building 11, assigned "+getClickableState('h', 11)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 11, getClickableState('h', 11)*1+1)
+                setClickableState('h', 11, getClickableState('h', 11)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2558,7 +2558,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 11)).pow(clickableEffect('h', 22)))
@@ -2570,7 +2570,7 @@ addLayer("h", {
             display() { return "building 21, assigned "+getClickableState('h', 12)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 12, getClickableState('h', 12)*1+1)
+                setClickableState('h', 12, getClickableState('h', 12)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2578,7 +2578,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 12)).pow(clickableEffect('h', 22)))
@@ -2590,7 +2590,7 @@ addLayer("h", {
             display() { return "building 31, assigned "+getClickableState('h', 13)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 13, getClickableState('h', 13)*1+1)
+                setClickableState('h', 13, getClickableState('h', 13)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2598,7 +2598,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 13)).pow(clickableEffect('h', 22)))
@@ -2610,7 +2610,7 @@ addLayer("h", {
             display() { return "building 41, assigned "+getClickableState('h', 14)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 14, getClickableState('h', 14)*1+1)
+                setClickableState('h', 14, getClickableState('h', 14)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2618,7 +2618,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 14)).pow(clickableEffect('h', 22)))
@@ -2630,7 +2630,7 @@ addLayer("h", {
             display() { return "building 51, assigned "+getClickableState('h', 15)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 15, getClickableState('h', 15)*1+1)
+                setClickableState('h', 15, getClickableState('h', 15)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2638,7 +2638,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 15)).pow(clickableEffect('h', 22)))
@@ -2650,7 +2650,7 @@ addLayer("h", {
             display() { return "building 61, assigned "+getClickableState('h', 16)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 16, getClickableState('h', 16)*1+1)
+                setClickableState('h', 16, getClickableState('h', 16)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2658,7 +2658,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 16)).pow(clickableEffect('h', 22)))
@@ -2670,7 +2670,7 @@ addLayer("h", {
             display() { return "building 71, assigned "+getClickableState('h', 17)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 17, getClickableState('h', 17)*1+1)
+                setClickableState('h', 17, getClickableState('h', 17) * 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2678,7 +2678,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 17)).pow(clickableEffect('h', 22)))
@@ -2690,7 +2690,7 @@ addLayer("h", {
             display() { return "building 81, assigned "+getClickableState('h', 18)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 18, getClickableState('h', 18)*1+1)
+                setClickableState('h', 18, getClickableState('h', 18)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2698,7 +2698,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 18)).pow(clickableEffect('h', 22)))
@@ -2710,7 +2710,7 @@ addLayer("h", {
             display() { return "building 91, assigned "+getClickableState('h', 19)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
-                setClickableState('h', 19, getClickableState('h', 19)*1+1)
+                setClickableState('h', 19, getClickableState('h', 19)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned = 0
@@ -2718,7 +2718,7 @@ addLayer("h", {
                     alreadyAssigned += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned).lt(buyableEffect('h', 12))
+                return new Decimal(alreadyAssigned).lte(buyableEffect('h', 12).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 21).pow(new Decimal(getClickableState('h', 19)).pow(clickableEffect('h', 22)))
@@ -2747,7 +2747,7 @@ addLayer("h", {
             canClick() {return true},
         },
         22: {
-            display() { if (hasMilestone('c', 1)) {return "unassign all building ?1s from cost group"} else return "unassign all buildings from cost group, requires zero building ?2s"},
+            display() { if (hasMilestone('c', 1)) {return "respec choices"} else return "respec choices, requires zero building ?2s"},
             unlocked() {return buyableEffect('h', 12).gte(1)},
             onClick() {
                 for (let i = 11; i < 20; i++ ) {
@@ -2768,11 +2768,31 @@ addLayer("h", {
                 return canClickh22
             },
         },
+        23: {
+            display() { return "increase the amount of choices at once, currently "+getClickableState('h', 23)},
+            unlocked() {return buyableEffect('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 23, Math.round(Math.min(getClickableState('h', 23) * 10, 10000)))
+            },
+            canClick() {
+                return true
+            },
+        },
+        24: {
+            display() { return "decrease the amount of choices at once"},
+            unlocked() {return buyableEffect('h', 12).gte(1)},
+            onClick() {
+                setClickableState('h', 23, Math.round(Math.max(getClickableState('h', 23) / 10, 1)))
+            },
+            canClick() {
+                return true
+            },
+        },
         31: {
             display() { return "building 12, assigned "+getClickableState('h', 31)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 31, getClickableState('h', 31)*1+1)
+                setClickableState('h', 31, getClickableState('h', 31)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2780,7 +2800,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 31)).pow(clickableEffect('h', 42)))
@@ -2792,7 +2812,7 @@ addLayer("h", {
             display() { return "building 22, assigned "+getClickableState('h', 32)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 32, getClickableState('h', 32)*1+1)
+                setClickableState('h', 32, getClickableState('h', 32)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2800,7 +2820,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 32)).pow(clickableEffect('h', 42)))
@@ -2812,7 +2832,7 @@ addLayer("h", {
             display() { return "building 32, assigned "+getClickableState('h', 33)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 33, getClickableState('h', 33)*1+1)
+                setClickableState('h', 33, getClickableState('h', 33)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2820,7 +2840,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 33)).pow(clickableEffect('h', 42)))
@@ -2832,7 +2852,7 @@ addLayer("h", {
             display() { return "building 42, assigned "+getClickableState('h', 34)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 34, getClickableState('h', 34)*1+1)
+                setClickableState('h', 34, getClickableState('h', 34)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2840,7 +2860,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 34)).pow(clickableEffect('h', 42)))
@@ -2852,7 +2872,7 @@ addLayer("h", {
             display() { return "building 52, assigned "+getClickableState('h', 35)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 35, getClickableState('h', 35)*1+1)
+                setClickableState('h', 35, getClickableState('h', 35)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2860,7 +2880,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 35)).pow(clickableEffect('h', 42)))
@@ -2872,7 +2892,7 @@ addLayer("h", {
             display() { return "building 62, assigned "+getClickableState('h', 36)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 36, getClickableState('h', 36)*1+1)
+                setClickableState('h', 36, getClickableState('h', 36)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2880,7 +2900,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 36)).pow(clickableEffect('h', 42)))
@@ -2892,7 +2912,7 @@ addLayer("h", {
             display() { return "building 72, assigned "+getClickableState('h', 37)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 37, getClickableState('h', 37)*1+1)
+                setClickableState('h', 37, getClickableState('h', 37)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2900,7 +2920,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 37)).pow(clickableEffect('h', 42)))
@@ -2912,7 +2932,7 @@ addLayer("h", {
             display() { return "building 82, assigned "+getClickableState('h', 38)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 38, getClickableState('h', 38)*1+1)
+                setClickableState('h', 38, getClickableState('h', 38)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2920,7 +2940,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 38)).pow(clickableEffect('h', 42)))
@@ -2932,7 +2952,7 @@ addLayer("h", {
             display() { return "building 92, assigned "+getClickableState('h', 39)+" times, scaling divided by "+formatShort(this.effect())},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
-                setClickableState('h', 39, getClickableState('h', 39)*1+1)
+                setClickableState('h', 39, getClickableState('h', 39)* 1 + getClickableState('h', 23))
             },
             canClick() { 
                 alreadyAssigned2 = 0
@@ -2940,7 +2960,7 @@ addLayer("h", {
                     alreadyAssigned2 += getClickableState('h', i)
 
                 }
-                return new Decimal(alreadyAssigned2).lt(buyableEffect('h', 13))
+                return new Decimal(alreadyAssigned2).lte(buyableEffect('h', 13).sub(getClickableState('h', 23)))
             },
             effect() {
                 return clickableEffect('h', 41).pow(new Decimal(getClickableState('h', 39)).pow(clickableEffect('h', 42)))
@@ -2968,7 +2988,7 @@ addLayer("h", {
             canClick() {return true},
         },
         42: {
-            display() { if (hasMilestone('c', 1)) {return "unassign all building ?2s from cost group"} else return "unassign all buildings from cost group, requires zero building ?2s"},
+            display() { if (hasMilestone('c', 1)) {return "respec choices "} else return "respec choices, requires zero building ?2s"},
             unlocked() {return buyableEffect('h', 13).gte(1)},
             onClick() {
                 for (let i = 31; i < 40; i++ ) {
@@ -5664,7 +5684,7 @@ addLayer("g", {
                 for (ig21 = 11; ig21 < 20; ig21++) {
                     milestone3mult = milestone3mult.add(getBuyableAmount('g', ig21).pow(0.6))
                 }
-                milestone3power = Decimal.dOne.sub(Decimal.div(30, player.g.points.max(30).min(80)))
+                milestone3power = Decimal.sub(1/3, Decimal.div(10, player.g.points.max(30).min(80)))
                 milestone3mult = milestone3mult.pow(milestone3power)
 
                 baseeffectg21 = Decimal.times(effBaseg21, effStackg21).add(1).times(baseGaingenerator).times(player.g.points)
@@ -6902,7 +6922,7 @@ addLayer("m", {
             display() { return "increase the magic use limit greatly"},
             unlocked() {return player.m.points.gte(1)},
             onClick() {
-                setClickableState('m', 11, getClickableState('m', 11)*1+1)
+                setClickableState('m', 11, getClickableState('m', 11)* 1 + getClickableState('h', 23))
             },
             canClick() {return true},
         },
@@ -6989,7 +7009,7 @@ addLayer("m", {
     milestones: {
         0: {
             requirementDescription: "magic milestone 0",
-            effectDescription() {return  "1 spells unlocked: continuum heavenly buyables, keep sugar on reset, double crunch multiplier for every spell unlocked, buy one more upgrade on crunch row 3, currently "+format(Decimal.dTwo.pow(player.m.total))+"x"},
+            effectDescription() {return  "1 spells unlocked: continuum heavenly buyables, keep sugar on reset, double crunch multiplier for every spell unlocked, buy one more upgrade on heavenly row 3, currently "+format(Decimal.dTwo.pow(player.m.total))+"x"},
             done() { return player.m.total.gte(1) }
         },
     },
