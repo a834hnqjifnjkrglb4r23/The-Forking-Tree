@@ -51,7 +51,6 @@ function getPointGenBeforePow() {
 	gain = gain.add(buyableEffect('b', 91))
 
 	gain = gain.times(buyableEffect('p', 11))
-	gain = gain.times(buyableEffect('au', 12))
 	return gain
 }
 function getPointGen() {
@@ -77,13 +76,13 @@ function addedPlayerData() { return {
 	clickgain() {
 		clickgain = new Decimal(1)
 		clickgain = clickgain.times(buyableEffect('p', 11))
-		clickgain = clickgain.times(buyableEffect('au', 13))
 		return clickgain
 	},
 	effBasesy() {
-		eff = new Decimal(1.02)
+		eff = new Decimal(1.2)
+		pow = new Decimal(0.8)
 		if (hasUpgrade('c', 13)) {eff = eff.add(upgradeEffect('c', 13))}
-		return eff
+		return [eff, pow]
 	}
 }}
 
