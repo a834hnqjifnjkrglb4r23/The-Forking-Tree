@@ -2627,13 +2627,13 @@ addLayer("h", {
             },
             effect(x) {
                 effBaseh21 = new Decimal(1)
-                effStackh21 = new Decimal(x)
+                if (hasMilestone('m', 0)) {effStackh21 = this.cost().continuum} else {effStackh21 = new Decimal(x)}
 
                 return Decimal.times(effBaseh21, effStackh21)
             },
             title() { return "heavenly buyable 21"},
             display() { return "grant "+format(effBaseh21)+" synergy points. <br> cost: "+format(this.cost().cost)+" <br> effect: "+format(this.effect())+" total synergy point"},
-            canAfford() { return player[this.layer].points.gte(this.cost().cost) },
+            canAfford() { return player[this.layer].points.gte(this.cost().cost) && (!hasMilestone('m', 0)) },
             style() {const size = {width: "160px", height: "160px"}
             return size},
             buy() {
@@ -2665,13 +2665,13 @@ addLayer("h", {
             },
             effect(x) {
                 effBaseh22 = new Decimal(1)
-                effStackh22 = new Decimal(x)
+                if (hasMilestone('m', 0)) {effStackh22 = this.cost().continuum} else {effStackh22 = new Decimal(x)}
 
                 return Decimal.times(effBaseh22, effStackh22)
             },
             title() { return "heavenly buyable 22"},
             display() { return "grant "+format(effBaseh22)+" generators . <br> cost: "+format(this.cost().cost)+" <br> effect: "+format(this.effect())+" total generators"},
-            canAfford() { return player[this.layer].points.gte(this.cost().cost) },
+            canAfford() { return player[this.layer].points.gte(this.cost().cost) && (!hasMilestone('m', 0))},
             style() {const size = {width: "160px", height: "160px"}
             return size},
             buy() {
@@ -2703,13 +2703,13 @@ addLayer("h", {
             },
             effect(x) {
                 effBaseh23 = new Decimal(1)
-                effStackh23 = new Decimal(x)
+                if (hasMilestone('m', 0)) {effStackh23 = this.cost().continuum} else {effStackh23 = new Decimal(x)}
 
                 return Decimal.times(effBaseh23, effStackh23)
             },
             title() { return "heavenly buyable 23"},
             display() { return "gain "+format(effBaseh23)+" dimension points . <br> cost: "+format(this.cost().cost)+" <br> effect: "+format(this.effect())+" total dimension points"},
-            canAfford() { return player[this.layer].points.gte(this.cost().cost) },
+            canAfford() { return player[this.layer].points.gte(this.cost().cost) && (!hasMilestone('m', 0))},
             style() {const size = {width: "160px", height: "160px"}
             return size},
             buy() {
@@ -2741,13 +2741,13 @@ addLayer("h", {
             },
             effect(x) {
                 effBaseh24 = new Decimal(1)
-                effStackh24 = new Decimal(x)
+                if (hasMilestone('m', 0)) {effStackh24 = this.cost().continuum} else {effStackh24 = new Decimal(x)}
 
                 return Decimal.times(effBaseh24, effStackh24)
             },
             title() { return "heavenly buyable 24"},
             display() { return "grant "+format(effBaseh24)+" sugar factories. <br> cost: "+format(this.cost().cost)+" <br> effect: "+format(this.effect())+" total sugar factories"},
-            canAfford() { return player[this.layer].points.gte(this.cost().cost) },
+            canAfford() { return player[this.layer].points.gte(this.cost().cost) && (!hasMilestone('m', 0))},
             style() {const size = {width: "160px", height: "160px"}
             return size},
             buy() {
@@ -3677,7 +3677,7 @@ addLayer("sy", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: 3, // Row the layer is in on the tree (0 is the first row)
 
-    layerShown() {return buyableEffect('h', 21).gte(1)},
+    layerShown() {return hasUpgrade('h', 31)},
     automate() {//change to when player unlock autobuy
         if (false) {
 
@@ -3698,16 +3698,22 @@ addLayer("sy", {
 
     },
     update(diff) {
+        if (hasMilestone('m', 0)) {
+            if (hasUpgrade('h', 31)) {
+                player[this.layer].points = layers.h.buyables[21].cost().continuum
+            }
+        }
     },
     buyables: {
         11: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
-            effect(x) {
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+            effect(x) {                
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3726,14 +3732,14 @@ addLayer("sy", {
             },
         },
         12: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3752,14 +3758,14 @@ addLayer("sy", {
             },
         },
         13: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3778,14 +3784,14 @@ addLayer("sy", {
             },
         },
         14: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3804,14 +3810,14 @@ addLayer("sy", {
             },
         },
         15: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3830,14 +3836,14 @@ addLayer("sy", {
             },
         },
         16: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3856,14 +3862,14 @@ addLayer("sy", {
             },
         },
         17: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3882,14 +3888,14 @@ addLayer("sy", {
             },
         },
         18: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3908,14 +3914,14 @@ addLayer("sy", {
             },
         },
         19: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3934,14 +3940,14 @@ addLayer("sy", {
             },
         },
         21: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3960,14 +3966,14 @@ addLayer("sy", {
             },
         },
         22: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -3986,14 +3992,14 @@ addLayer("sy", {
             },
         },
         23: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4012,14 +4018,14 @@ addLayer("sy", {
             },
         },
         24: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4038,14 +4044,14 @@ addLayer("sy", {
             },
         },
         25: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4064,14 +4070,14 @@ addLayer("sy", {
             },
         },
         26: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4090,14 +4096,14 @@ addLayer("sy", {
             },
         },
         27: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4116,14 +4122,14 @@ addLayer("sy", {
             },
         },
         28: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4142,14 +4148,14 @@ addLayer("sy", {
             },
         },
         29: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4168,14 +4174,14 @@ addLayer("sy", {
             },
         },
         31: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4194,14 +4200,14 @@ addLayer("sy", {
             },
         },
         32: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4220,14 +4226,14 @@ addLayer("sy", {
             },
         },
         33: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4246,14 +4252,14 @@ addLayer("sy", {
             },
         },
         34: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4272,14 +4278,14 @@ addLayer("sy", {
             },
         },
         35: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4298,14 +4304,14 @@ addLayer("sy", {
             },
         },
         36: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4324,14 +4330,14 @@ addLayer("sy", {
             },
         },
         37: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4350,14 +4356,14 @@ addLayer("sy", {
             },
         },
         38: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4376,14 +4382,14 @@ addLayer("sy", {
             },
         },
         39: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4402,14 +4408,14 @@ addLayer("sy", {
             },
         },
         41: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4428,14 +4434,14 @@ addLayer("sy", {
             },
         },
         42: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4454,14 +4460,14 @@ addLayer("sy", {
             },
         },
         43: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4480,14 +4486,14 @@ addLayer("sy", {
             },
         },
         44: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4506,14 +4512,14 @@ addLayer("sy", {
             },
         },
         45: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4532,14 +4538,14 @@ addLayer("sy", {
             },
         },
         46: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4558,14 +4564,14 @@ addLayer("sy", {
             },
         },
         47: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4584,14 +4590,14 @@ addLayer("sy", {
             },
         },
         48: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4610,14 +4616,14 @@ addLayer("sy", {
             },
         },
         49: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4636,14 +4642,14 @@ addLayer("sy", {
             },
         },
         51: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4662,14 +4668,14 @@ addLayer("sy", {
             },
         },
         52: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4688,14 +4694,14 @@ addLayer("sy", {
             },
         },
         53: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4714,14 +4720,14 @@ addLayer("sy", {
             },
         },
         54: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4740,14 +4746,14 @@ addLayer("sy", {
             },
         },
         55: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4766,14 +4772,14 @@ addLayer("sy", {
             },
         },
         56: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4792,14 +4798,14 @@ addLayer("sy", {
             },
         },
         57: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4818,14 +4824,14 @@ addLayer("sy", {
             },
         },
         58: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4844,14 +4850,14 @@ addLayer("sy", {
             },
         },
         59: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4870,14 +4876,14 @@ addLayer("sy", {
             },
         },
         61: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4896,14 +4902,14 @@ addLayer("sy", {
             },
         },
         62: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4922,14 +4928,14 @@ addLayer("sy", {
             },
         },
         63: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4948,14 +4954,14 @@ addLayer("sy", {
             },
         },
         64: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -4974,14 +4980,14 @@ addLayer("sy", {
             },
         },
         65: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5000,14 +5006,14 @@ addLayer("sy", {
             },
         },
         66: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5026,14 +5032,14 @@ addLayer("sy", {
             },
         },
         67: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5052,14 +5058,14 @@ addLayer("sy", {
             },
         },
         68: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5078,14 +5084,14 @@ addLayer("sy", {
             },
         },
         69: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5104,14 +5110,14 @@ addLayer("sy", {
             },
         },
         71: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5130,14 +5136,14 @@ addLayer("sy", {
             },
         },
         72: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5156,14 +5162,14 @@ addLayer("sy", {
             },
         },
         73: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5182,14 +5188,14 @@ addLayer("sy", {
             },
         },
         74: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5208,14 +5214,14 @@ addLayer("sy", {
             },
         },
         75: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5234,14 +5240,14 @@ addLayer("sy", {
             },
         },
         76: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5260,14 +5266,14 @@ addLayer("sy", {
             },
         },
         77: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5286,14 +5292,14 @@ addLayer("sy", {
             },
         },
         78: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5312,14 +5318,14 @@ addLayer("sy", {
             },
         },
         79: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5338,14 +5344,14 @@ addLayer("sy", {
             },
         },
         81: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5364,14 +5370,14 @@ addLayer("sy", {
             },
         },
         82: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5390,14 +5396,14 @@ addLayer("sy", {
             },
         },
         83: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5416,14 +5422,14 @@ addLayer("sy", {
             },
         },
         84: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5442,14 +5448,14 @@ addLayer("sy", {
             },
         },
         85: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5468,14 +5474,14 @@ addLayer("sy", {
             },
         },
         86: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5494,14 +5500,14 @@ addLayer("sy", {
             },
         },
         87: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5520,14 +5526,14 @@ addLayer("sy", {
             },
         },
         88: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5546,14 +5552,14 @@ addLayer("sy", {
             },
         },
         89: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5572,14 +5578,14 @@ addLayer("sy", {
             },
         },
         91: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5598,14 +5604,14 @@ addLayer("sy", {
             },
         },
         92: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5624,14 +5630,14 @@ addLayer("sy", {
             },
         },
         93: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5650,14 +5656,14 @@ addLayer("sy", {
             },
         },
         94: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5676,14 +5682,14 @@ addLayer("sy", {
             },
         },
         95: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5702,14 +5708,14 @@ addLayer("sy", {
             },
         },
         96: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5728,14 +5734,14 @@ addLayer("sy", {
             },
         },
         97: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5754,14 +5760,14 @@ addLayer("sy", {
             },
         },
         98: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5780,14 +5786,14 @@ addLayer("sy", {
             },
         },
         99: {
-            unlocked() {return buyableEffect('h', 21).gte(1)},
+            unlocked() {return buyableEffect('h', 21).gte(1) && (!hasMilestone('m', 0))},
             cost(x) {
                 linearCostsy = new Decimal(2)
                 return linearCostsy.pow(getBuyableAmount(this.layer, this.id))
             },
             effect(x) {
-
-                return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))
+                if (hasMilestone('m', 0)) {return Decimal.pow(player.effBasesy()[0], player.sy.points.max(1).ln().div(linearCostsy.ln()))}
+                else {return Decimal.pow(player.effBasesy()[0], getBuyableAmount(this.layer, this.id))}
             },
             title() { return this.id.toString()},
             display() { return "b"+Math.floor(this.id/10).toString()+"1->b"+Math.round(this.id % 10, 1).toString()+"1. cost: "+formatShort(this.cost(), 0)+" <br> effect: "+formatShort(this.effect())},
@@ -5803,6 +5809,25 @@ addLayer("sy", {
                 while (canBuyBuyable([this.layer], [this.id])){
                     buyBuyable([this.layer], [this.id])
                 }
+            },
+        },
+        111: {
+            unlocked() {return buyableEffect('h', 21).gte(1) && (hasMilestone('m', 0))},
+            cost(x) {
+                linearCostsy = new Decimal(2)
+                return {cost: linearCostsy.pow(getBuyableAmount(this.layer, this.id)), continuum: player.sy.points.max(1).ln().div(linearCostsy.ln())}
+            },
+            effect(x) {
+                return Decimal.pow(player.effBasesy()[0], this.cost().continuum)
+            },
+            title() { return "all synergy buyables"},
+            display() { return " owned: "+format(this.cost().continuum)+"<br> effect: "+format(this.effect())},
+            canAfford() { return false },
+            style() {const size = {width: "200px", height: "200px"}
+                return size},
+            buy() {
+            },
+            buyMax() {
             },
         },
     },
@@ -5831,7 +5856,7 @@ addLayer("g", {
     row: 3, // Row the layer is in on the tree (0 is the first row)
     layerShown() {
         if (getClickableState('g', 11) == "") {setClickableState('g', 11, 11)}
-        return buyableEffect('h', 22).gte(1)},
+        return hasUpgrade('h', 32)},
     automate() {//change to when player unlock autobuy
         if (false) {
 
@@ -5841,7 +5866,15 @@ addLayer("g", {
         if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
     },
     update(diff) { 
-        setBuyableAmount('g', getClickableState('g', 11), getBuyableAmount('g', getClickableState('g', 11)).add(buyableEffect('g', 21).times(diff)))
+
+        if (hasMilestone('m', 0)) {
+            if (hasUpgrade('h', 32)) {
+                player[this.layer].points = layers.h.buyables[22].cost().continuum
+            }
+            setBuyableAmount('g', 22, getBuyableAmount('g', 22).add(buyableEffect('g', 21).times(diff)))
+        } else {
+            setBuyableAmount('g', getClickableState('g', 11), getBuyableAmount('g', getClickableState('g', 11)).add(buyableEffect('g', 21).times(diff)))
+        }
     },
     infoboxes: {
 
@@ -5850,27 +5883,28 @@ addLayer("g", {
         0: {
             requirementDescription: "generator milestone 0",
             effectDescription: "3 generators: extra generators scale proportionally to current generators",
-            done() { return player.g.total.gte(3)  }
+            done() { return player.g.points.gte(3)  }
         },
         1: {
             requirementDescription: "generator milestone 1",
             effectDescription: "10 generators: effect is ^(generators/10)^0.3",
-            done() { return player.g.total.gte(10)  }
+            done() { return player.g.points.gte(10)  }
         },
     },
 
     buyables: {
         11: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
-
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -5886,16 +5920,18 @@ addLayer("g", {
             },
         },
         12: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -5911,16 +5947,18 @@ addLayer("g", {
             },
         },
         13: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -5936,16 +5974,18 @@ addLayer("g", {
             },
         },
         14: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -5961,16 +6001,18 @@ addLayer("g", {
             },
         },
         15: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -5986,16 +6028,18 @@ addLayer("g", {
             },
         },
         16: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -6011,16 +6055,18 @@ addLayer("g", {
             },
         },
         17: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -6036,16 +6082,18 @@ addLayer("g", {
             },
         },
         18: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
 
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -6061,15 +6109,17 @@ addLayer("g", {
             },
         },
         19: {
-            unlocked() {return true},
+            unlocked() {return !hasMilestone('m', 0)},
             cost(x) {
 
                 return Decimal.dInf
             },
             effect(x) {
-                baseeff = new Decimal(x)
-                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
-                return baseeff
+                if (hasMilestone('m', 0)) {return buyableEffect('g', 22)} else {
+                    baseeff = new Decimal(x)
+                    if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                    return baseeff
+                }
             },
             display() { return "assign generator to building "+Math.round(this.id * 10 - 98, 1).toString()+"<br> effect: "+formatShort(this.effect())},
             canAfford() { return true },
@@ -6123,6 +6173,31 @@ addLayer("g", {
                 }
             },
         },
+        22: {
+            unlocked() {return hasMilestone('m', 0)},
+            cost(x) {
+
+                return Decimal.dInf
+            },
+            effect(x) {
+
+                baseeff = new Decimal(x)
+                if (hasMilestone('g', 1)) {baseeff = baseeff.pow(player.g.points.div(10).pow(0.3))}
+                return baseeff
+            },
+            display() { return "assign generator to all building ?2s <br> effect: "+format(this.effect())},
+            canAfford() { return true },
+            style() {const size = {width: "200px", height: "200px"}
+                return size},
+            buy() {
+                setClickableState('g', 11, this.id)
+            },
+            buyMax() {
+                while (canBuyBuyable([this.layer], [this.id])){
+                    buyBuyable([this.layer], [this.id])
+                }
+            },
+        },
     },
     clickables: {
         11: {
@@ -6152,7 +6227,7 @@ addLayer("d", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: 3, // Row the layer is in on the tree (0 is the first row)
     layerShown() {
-        return buyableEffect('h', 23).gte(1)},
+        return hasUpgrade('h', 33)},
     automate() {//change to when player unlock autobuy
         if (false) {
 
@@ -6165,7 +6240,11 @@ addLayer("d", {
 
     },
     update(diff) { 
-    
+        if (hasMilestone('m', 0)) {
+            if (hasUpgrade('h', 33)) {
+                player[this.layer].points = layers.h.buyables[23].cost().continuum
+            }
+        }
     },
 
     milestones: {
@@ -6190,25 +6269,28 @@ addLayer("d", {
             cost(x) {
                 costBased21 = new Decimal(80)
                 costStackd21 = new Decimal(x).add(1)
+                costSoftcapd21 = new Decimal(10000)
+                if (costStackd21.lte(costSoftcapd21)) {costd21 = costBased21.times(costStackd21)} else {costd21 = costBased21.times(costSoftcapd21).times(Decimal.dOne.add(Decimal.dOne.div(costSoftcapd21)).pow(costStackd21.sub(costSoftcapd21)))}
 
                 if (hasMilestone('c', 0)) {
                     building91count = layers.b.buyables[91].cost().continuum
                 } else {
                     building91count = getBuyableAmount('b', 91).add(layers.b.buyables[92].effect().spent)
                 }
+                
 
-                continuumd21 = building91count.div(costBased21).max(0)
+                if (building91count.lte(costBased21.times(costSoftcapd21))) {continuumd21 = building91count.div(costBased21)} else {continuumd21 = building91count.div(costBased21.times(costSoftcapd21)).ln().div(Decimal.dOne.add(Decimal.dOne.div(costSoftcapd21)).ln()).add(costSoftcapd21)}
 
-                return {cost: costBased21.times(costStackd21), continuum: continuumd21}
+                return {cost: costd21, continuum: continuumd21}
             },
             effect(x) {
-                effBased21 = player.d.points.add(4).log2()
-                effStackd21 = new Decimal(x) //this part is the player.d.effect
+                effBased21 = player.d.points.add(2).log2()
+                if (hasMilestone('m', 0)) {effStackd21 = this.cost().continuum}  else {effStackd21 = new Decimal(x)}
                 return effBased21.pow(effStackd21).floor()
             },
             title() { return "dimensional buyable 21"},
             display() { return "reset buildings, then raise the generation of lower buyables by "+format(effBased21, 2)+" <br> req: "+formatShort(this.cost().cost)+" total building 91s. <br> owned: "+format(effStackd21)+"<br> effect: "+format(this.effect())},
-            canAfford() { return building91count.gte(this.cost().cost) },
+            canAfford() { return building91count.gte(this.cost().cost) && !hasMilestone('m', 0) },
 
             buy() {
                 layerDataReset('b')
@@ -6229,7 +6311,7 @@ addLayer("d", {
         A: {
             body() {
                 textd = "each of your building ?1s generate  "+format(buyableEffect('d', 11))+" of the building 1 below it every second"
-                textd += "<br> your "+format(player.d.points)+" dimensional points make the base of dimensional buyable 21 by "+format(player.d.points.add(4).log2())
+                textd += "<br> your "+format(player.d.points)+" dimensional points make the base of dimensional buyable 21 by "+format(effBased21)
                 return textd
             }
         }
@@ -6251,7 +6333,7 @@ addLayer("sf", {
     type: "none", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     row: 3, // Row the layer is in on the tree (0 is the first row)
     layerShown() {
-        return buyableEffect('h', 24).gte(1)},
+        return hasUpgrade('h', 34)},
     automate() {//change to when player unlock autobuy
         if (false) {
 
@@ -6261,7 +6343,11 @@ addLayer("sf", {
         if ((layers[resettingLayer].row > this.row)&&(!false)) {layerDataReset(this.layer, [])}
     },
     update(diff) { 
-
+        if (hasMilestone('m', 0)) {
+            if (hasUpgrade('h', 34)) {
+                player[this.layer].points = layers.h.buyables[24].cost().continuum
+            }
+        }
 
     },
     milestones: {
