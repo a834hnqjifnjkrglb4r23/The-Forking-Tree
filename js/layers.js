@@ -3552,6 +3552,9 @@ addLayer("h", {
                 eff = new Decimal(1)
                 return eff
             },
+            canAfford() {
+                return player[this.layer].points.gte(this.cost())
+            },
             pay() {
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -3566,6 +3569,9 @@ addLayer("h", {
             effect() {
                 eff = new Decimal(1)
                 return eff
+            },
+            canAfford() {
+                return player[this.layer].points.gte(this.cost())
             },
             pay() {
             },
@@ -3582,6 +3588,9 @@ addLayer("h", {
                 eff = new Decimal(1)
                 return eff
             },
+            canAfford() {
+                return player[this.layer].points.gte(this.cost())
+            },
             pay() {
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
@@ -3596,6 +3605,9 @@ addLayer("h", {
             effect() {
                 eff = new Decimal(1)
                 return eff
+            },
+            canAfford() {
+                return player[this.layer].points.gte(this.cost())
             },
             pay() {
             },
