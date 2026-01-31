@@ -2,7 +2,7 @@ let modInfo = {
 	name: "The Cookie Modder Tree",
 	author: "nobody",
 	pointsName: "cookies",
-	id: "H6iBtvKRUFy3lqYAqqX7+PjA8KvFpBtM",
+	id: "aWZodmRLcnslR2ltSkNSUXEvXV4wWHE4",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -106,7 +106,7 @@ var backgroundStyle = {
 
 // You can change this if you have things that can be messed up by long tick lengths
 function maxTickLength() {
-	return(3600) // Default is 1 hour which is just arbitrarily large
+	return(1) // Default is 1 hour which is just arbitrarily large
 }
 
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
