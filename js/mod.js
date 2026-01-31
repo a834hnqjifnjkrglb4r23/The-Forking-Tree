@@ -1,12 +1,13 @@
 let modInfo = {
-	name: "The ??? Tree",
+	name: "a normal tmt mod with layers",
 	author: "nobody",
 	pointsName: "points",
+	id: "R2c1SXIpfWp2LTY4V2tyKnIncjg3Nkhm",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
 	discordLink: "",
-	initialStartPoints: new Decimal (10), // Used for hard resets and new players
+	initialStartPoints: new Decimal (0), // Used for hard resets and new players
 	offlineLimit: 1,  // In hours
 }
 
