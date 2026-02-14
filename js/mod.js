@@ -85,24 +85,25 @@ function getPointGen() {
 
 	gainraw = baseGain.times(gainMult)
 	gainraw = gainraw.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
-	gainraw = gainraw.times(player.b.points.pow(buyableEffect('b', 11)).times(buyableEffect('b', 11).pow(player.b.points)).max(1))
+	gainraw = gainraw.times(player.b.points.pow(buyableEffect('b', 11)).max(1))
 
 	gainExp = new Decimal(1)
-	gainExp = gainExp.add(buyableEffect('hp', 11))
+	gainExp = gainExp.add(buyableEffect('hp', 15))
 
 	gain = gainraw.pow(gainExp)
-	firstSoftcapStrength = new Decimal(16)
+	firstSoftcapStrength = new Decimal(20)
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
 	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 13))
 	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
 
-	secondSoftcapStrength = new Decimal(20)
+	secondSoftcapStrength = new Decimal(40)
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 14))
 	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 11)[0][2])
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('hp', 14))
 	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
 
 	thirdSoftcapStrength = new Decimal(60)
