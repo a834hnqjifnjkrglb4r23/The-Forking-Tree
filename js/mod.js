@@ -43,6 +43,7 @@ function getPointGen() {
 		return new Decimal(0)
 
 	let gain = new Decimal(1)
+	gain = gain.add(buyableEffect('p', 11))
 	return gain
 }
 
@@ -76,4 +77,14 @@ function maxTickLength() {
 // Use this if you need to undo inflation from an older version. If the version is older than the version that fixed the issue,
 // you can cap their current resources with this.
 function fixOldSave(oldVersion){
+}
+
+function determineResourceName(idstring){
+	if (idstring.length >= 1) {idstring = idstring[0]}
+	if (idstring == "") {return "points"} else {return eval("layers."+idstring).resource}
+}
+
+function determinePointCount(idstring){
+	if (idstring.length >= 1) {idstring = idstring[0]}
+	if (idstring == "") {return player.points} else {return eval("player."+idstring).points}
 }
