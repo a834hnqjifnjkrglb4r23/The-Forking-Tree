@@ -122,6 +122,9 @@ function getPointGen() {
 	sixthSoftcapStrength = new Decimal(7200)
 	if (player.points.gte(6)) {gain = gain.div(player.points.div(6).pow(sixthSoftcapStrength))}
 
+	seventhSoftcapStrength = new Decimal(50400)
+	if (player.points.gte(7)) {gain = gain.div(player.points.div(7).pow(seventhSoftcapStrength))}
+
 	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
 
 
@@ -138,17 +141,17 @@ function getPointGen() {
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 	buyablePrice(type, amt, base, exp, limit) {
-		if (type == "large") { //large = base^base^(x+1)^pow
+		if (type == "large") { //large = 10^base^(x+1)^pow
 			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
-			if (base.pow(base.pow(amt.add(1).pow(exp))).floor().gt(limit)) {
-				limitamt = limit.log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1)
+			if (Decimal.dTen.pow(base.pow(amt.add(1).pow(exp))).floor().gt(limit)) {
+				limitamt = limit.log10().log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
 				limitpricetriplelog = limit.log10().log10().log10()
-				limitplus1pricetriplelog = base.pow(base.pow(limitamtplus1.add(1).pow(exp))).log10().log10().log10()
+				limitplus1pricetriplelog = Decimal.dTen.pow(base.pow(limitamtplus1.add(1).pow(exp))).log10().log10().log10()
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
 				return amt.sub(limitamt).times(newpricescalingtriplelog).add(limitpricetriplelog).pow10().pow10().pow10()
 			} else {
-				return base.pow(base.pow(amt.add(1).pow(exp))).floor()
+				return Decimal.dTen.pow(base.pow(amt.add(1).pow(exp))).floor()
 			}
 		}
 		if (type == "normal") { //normal = base^(x+1)^pow
@@ -180,6 +183,10 @@ function addedPlayerData() { return {
 
 		if (type == "asymptote") {
 			return base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+		}
+
+		if (type == "largeasymptote") {
+			return base.pow(base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp))).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
 		
 
