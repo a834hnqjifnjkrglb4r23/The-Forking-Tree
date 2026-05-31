@@ -130,13 +130,10 @@ function addedPlayerData() { return {
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
 				return currency.log10().log10().log10().sub(limitpricetriplelog).div(newpricescalingtriplelog).add(limitamt).ceil()
 			}
-<<<<<<< Updated upstream
-			else return currency.max(10).log10().log10().div(base.log10()).root(exp).sub(1)
-=======
+
 			else {
 				return currency.max(10).log10().log10().div(base.log10()).root(exp).sub(1).floor()
 			}
->>>>>>> Stashed changes
 		}
 		if (type == "normal") {
 			if (limit.lte('e10')) {limit = new Decimal('e10')}
