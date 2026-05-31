@@ -195,14 +195,14 @@ function addedPlayerData() { return {
 		if (type == "large") {
 			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (currency.gt(limit)) {
-				limitamt = limit.log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1).floor()
+				limitamt = limit.log10().log10().div(base.log10()).root(exp).sub(1).floor()
 				limitamtplus1 = limitamt.add(1)
 				limitpricetriplelog = base.pow(base.pow(limitamt.add(1).pow(exp))).log10().log10().log10()
 				limitplus1pricetriplelog = base.pow(base.pow(limitamtplus1.add(1).pow(exp))).log10().log10().log10()
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
 				return currency.log10().log10().log10().sub(limitpricetriplelog).div(newpricescalingtriplelog).add(limitamt).ceil()
 			}
-			else return currency.max(10).log10().div(base.log10()).log10().div(base.log10()).root(exp).sub(1)
+			else return currency.max(10).log10().log10().div(base.log10()).root(exp).sub(1)
 		}
 		if (type == "normal") {
 			if (limit.lte('e10')) {limit = new Decimal('e10')}
