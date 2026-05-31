@@ -20,12 +20,9 @@ let VERSION = {
 
 let changelog = `<h1>Changelog:</h1><br>
 	<h3>v0.6.1</h3><br>
-		- more of technical stuff. <br>
-		- Added up to level 4 content. <br>
+		- Changed point gen formula to account for discrete effects. <br>
 	<h3>v0.6.0</h3><br>
-		- Added worlds. <br>
-		- lots and lots of technical stuff. <br>
-		- basic concept written up. <br>
+		- Added replicants. <br>
 	<h3>v0.5</h3><br>
 		- Added hyperprestige. <br>
 		- Added research. <br>
@@ -66,83 +63,14 @@ function canGenPoints(){
 
 	return !temporaryhidewr
 }
-
-// Calculate points/sec!
-function getPointGen() {
-	if(!canGenPoints())
-		return new Decimal(0)
-
-	baseGain = new Decimal(1)
-	baseGain = baseGain.add(buyableEffect('p', 11))
-	baseGain = baseGain.add(buyableEffect('mp', 11))
-	baseGain = baseGain.add(buyableEffect('bp', 11))
-	baseGain = baseGain.add(buyableEffect('sp', 11))
-	gainMult = new Decimal(1)
-	gainMult = gainMult.add(buyableEffect('p', 12))
-	gainMult = gainMult.add(buyableEffect('mp', 12))
-	gainMult = gainMult.add(buyableEffect('bp', 12))
-	gainMult = gainMult.add(buyableEffect('sp', 12))
-
-	gainraw = baseGain.times(gainMult)
-	gainraw = gainraw.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
-	gainraw = gainraw.times(player.b.points.pow(buyableEffect('b', 11)).max(1))
-
-	gainExp = new Decimal(1)
-	gainExp = gainExp.add(buyableEffect('hp', 15))
-
-	gain = gainraw.pow(gainExp)
-	firstSoftcapStrength = new Decimal(20)
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
-	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 13))
-	if (player.points.gte(1)) {gain = gain.div(player.points.pow(firstSoftcapStrength))}
-
-	secondSoftcapStrength = new Decimal(40)
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 14))
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 14))
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 11)[0][2])
-	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('hp', 14))
-	if (player.points.gte(2)) {gain = gain.div(player.points.div(2).pow(secondSoftcapStrength))}
-
-	thirdSoftcapStrength = new Decimal(60)
-	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 11)[0][3])
-	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('mtp', 13))
-
-	if (player.points.gte(3)) {gain = gain.div(player.points.div(3).pow(thirdSoftcapStrength))}
-
-	fourthSoftcapStrength = new Decimal(240)
-
-	if (player.points.gte(4)) {gain = gain.div(player.points.div(4).pow(fourthSoftcapStrength))}
-
-	fifthSoftcapStrength = new Decimal(1200)
-	if (player.points.gte(5)) {gain = gain.div(player.points.div(5).pow(fifthSoftcapStrength))}
-
-	sixthSoftcapStrength = new Decimal(7200)
-	if (player.points.gte(6)) {gain = gain.div(player.points.div(6).pow(sixthSoftcapStrength))}
-
-	seventhSoftcapStrength = new Decimal(50400)
-	if (player.points.gte(7)) {gain = gain.div(player.points.div(7).pow(seventhSoftcapStrength))}
-
-	if (player.points.gte(9)) {gain = gain.times(player.points.sub(10).times(-1))}
-
-
-
-	if (getBuyableAmount('g', 41).gt(0)) {gain = gain.times(buyableEffect('g', 41))}
-	if (getBuyableAmount('g', 42).gt(0)) {gain = gain.times(buyableEffect('g', 42))}
-	if (getBuyableAmount('g', 43).gt(0)) {gain = gain.times(buyableEffect('g', 43))}
-
-	
-	gain = gain.min(1)
-	return gain
+function getPointGen(){
+	return new Decimal(0)
 }
-
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
 	buyablePrice(type, amt, base, exp, limit) {
 		if (type == "large") { //large = 10^base^(x+1)^pow
-			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
+			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (Decimal.dTen.pow(base.pow(amt.add(1).pow(exp))).floor().gt(limit)) {
 				limitamt = limit.log10().log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
@@ -186,14 +114,14 @@ function addedPlayerData() { return {
 		}
 
 		if (type == "largeasymptote") {
-			return base.pow(base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp))).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+			return Decimal.dTen.pow(base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp))).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
 		
 
 	},
 	buyableMaxPurchaseable(type, currency, base, exp, limit) {
 		if (type == "large") {
-			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
+			if (limit.lte('e100')) {limit = new Decimal('e100')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (currency.gt(limit)) {
 				limitamt = limit.log10().log10().div(base.log10()).root(exp).sub(1).floor()
 				limitamtplus1 = limitamt.add(1)
@@ -202,7 +130,13 @@ function addedPlayerData() { return {
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
 				return currency.log10().log10().log10().sub(limitpricetriplelog).div(newpricescalingtriplelog).add(limitamt).ceil()
 			}
+<<<<<<< Updated upstream
 			else return currency.max(10).log10().log10().div(base.log10()).root(exp).sub(1)
+=======
+			else {
+				return currency.max(10).log10().log10().div(base.log10()).root(exp).sub(1).floor()
+			}
+>>>>>>> Stashed changes
 		}
 		if (type == "normal") {
 			if (limit.lte('e10')) {limit = new Decimal('e10')}
@@ -252,41 +186,8 @@ function addedPlayerData() { return {
 		return Decimal.dTen.pow(capexp)
 	},
 	
-	worldInventory: [
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-		Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero,
-	],
-	worldInventorysublist(type) {
-		sublist = [Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero, Decimal.dZero]
-		for (i = 0; i < player.worldInventory.length / 10 ; i++) {
-			sublist[i] = player.worldInventory[10 * i + type]
-		}
-		return sublist
-	},
-	worldInventoryTotal() {
-		total = new Decimal(0)
-		for (i = 0; i < player.worldInventory.length; i++) {
-			total = total.add(player.worldInventory[i])
-		}
-		return total
-	},
-	worldInventorysublistTotal(type) {
-		total = new Decimal(0)
-		sublist = player.worldInventorysublist(type)
-		for (i = 0; i < sublist.length; i++) {
-			total = total.add(sublist[i])
-		}
-		return total
-	},
-	currentDate: 0,
+
+
 }}
 // Display extra things at the top of the page
 var displayThings = [

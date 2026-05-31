@@ -69,10 +69,16 @@ function getNextAt(layer, canMax=false, useType = null) {
 		return decimalZero
 	}}
 
-function softcap(value, cap, power = 0.5) {
+function softcap(value, cap, power) {
 	if (value.lte(cap)) return value
 	else
 		return value.pow(power).times(cap.pow(decimalOne.sub(power)))
+}
+
+function undosoftcap(value, cap, power) {
+	if (value.lte(cap)) return value
+	else
+		return value.root(power).times(cap.pow(decimalOne.sub(decimalOne.div(power))))
 }
 
 // Return true if the layer should be highlighted. By default checks for upgrades only.
@@ -318,6 +324,115 @@ function autobuyUpgrades(layer){
 			buyUpg(layer, id) 
 }
 
+// Determines if it should show points/sec
+function canGenPoints(){
+	temporaryhidewr = player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lt(0.5)
+
+	return !temporaryhidewr
+}
+
+
+// Calculate points/sec!
+function getPointGenPerTick(diff) {
+	if(!canGenPoints())
+		return new Decimal(0)
+
+	baseGain = new Decimal(1)
+	baseGain = baseGain.add(buyableEffect('p', 11))
+	baseGain = baseGain.add(buyableEffect('mp', 11))
+	baseGain = baseGain.add(buyableEffect('bp', 11))
+	baseGain = baseGain.add(buyableEffect('sp', 11))
+	gainMult = new Decimal(1)
+	gainMult = gainMult.add(buyableEffect('p', 12))
+	gainMult = gainMult.add(buyableEffect('mp', 12))
+	gainMult = gainMult.add(buyableEffect('bp', 12))
+	gainMult = gainMult.add(buyableEffect('sp', 12))
+
+	gainraw = baseGain.times(gainMult)
+	gainraw = gainraw.times(buyableEffect('l', 11)[0][0]).times(buyableEffect('l', 11)[0][1])
+	gainraw = gainraw.times(player.b.points.pow(buyableEffect('b', 11)).max(1))
+
+	gainExp = new Decimal(1)
+	gainExp = gainExp.add(buyableEffect('hp', 15))
+	gainExp = gainExp.add(buyableEffect('wrte', 15))
+
+	gain = gainraw.pow(gainExp)
+
+
+	firstSoftcapStrength = new Decimal(20)
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('p', 13))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('mp', 13))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('bp', 13))
+	firstSoftcapStrength = firstSoftcapStrength.sub(buyableEffect('sp', 13))
+
+	secondSoftcapStrength = new Decimal(40)
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('mp', 14))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('bp', 14))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('sp', 14))
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('l', 11)[0][2])
+	secondSoftcapStrength = secondSoftcapStrength.sub(buyableEffect('hp', 14))
+
+	thirdSoftcapStrength = new Decimal(60)
+	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('l', 11)[0][3])
+	thirdSoftcapStrength = thirdSoftcapStrength.sub(buyableEffect('mtp', 13))
+
+	fourthSoftcapStrength = new Decimal(240) //120 left
+	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('wr', 17))
+	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('wrp', 17))
+	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('wrmp', 17))
+	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('wrbp', 17))
+	fourthSoftcapStrength = fourthSoftcapStrength.sub(buyableEffect('wrsp', 17))
+
+	fifthSoftcapStrength = new Decimal(1200)
+
+	sixthSoftcapStrength = new Decimal(7200)
+
+	seventhSoftcapStrength = new Decimal(50400)
+
+	eighthSoftcapStrength = new Decimal(403200)
+
+	ninthSoftcapStrength = new Decimal(3628800)
+
+	pointTotalSoftcapStrength = new Decimal(0)
+	if (player.points.gte(1)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(firstSoftcapStrength)}
+	if (player.points.gte(2)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(secondSoftcapStrength)}
+	if (player.points.gte(3)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(thirdSoftcapStrength)}
+	if (player.points.gte(4)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(fourthSoftcapStrength)}
+	if (player.points.gte(5)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(fifthSoftcapStrength)}
+	if (player.points.gte(6)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(sixthSoftcapStrength)}
+	if (player.points.gte(7)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(seventhSoftcapStrength)}
+	if (player.points.gte(8)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(eighthSoftcapStrength)}
+	if (player.points.gte(9)) {pointTotalSoftcapStrength = pointTotalSoftcapStrength.add(ninthSoftcapStrength)}
+
+	pointTotalSoftcapConst = new Decimal(1)
+	//  if (player.points.gte(1)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(1).pow(firstSoftcapStrength))} 
+	if (player.points.gte(2)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(2).pow(secondSoftcapStrength))}
+	if (player.points.gte(3)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(3).pow(thirdSoftcapStrength))}
+	if (player.points.gte(4)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(4).pow(fourthSoftcapStrength))}
+	if (player.points.gte(5)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(5).pow(fifthSoftcapStrength))}
+	if (player.points.gte(6)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(6).pow(sixthSoftcapStrength))}
+	if (player.points.gte(7)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(7).pow(seventhSoftcapStrength))}
+	if (player.points.gte(8)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(8).pow(eighthSoftcapStrength))}
+	if (player.points.gte(9)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(9).pow(ninthSoftcapStrength))}
+
+	if (player.points.gte(1)) {	
+		
+		currentPointTime = player.points.pow(pointTotalSoftcapStrength.add(1)).div(pointTotalSoftcapStrength.add(1)).div(pointTotalSoftcapConst).div(gain)
+		pointDiff = diff
+		if (getBuyableAmount('g', 41).gt(0)) {pointDiff = pointDiff.times(buyableEffect('g', 41))}
+		if (getBuyableAmount('g', 42).gt(0)) {pointDiff = pointDiff.times(buyableEffect('g', 42))}
+		if (getBuyableAmount('g', 43).gt(0)) {pointDiff = pointDiff.times(buyableEffect('g', 43))}
+		nextTickPointTime = currentPointTime.add(pointDiff)
+		nextTickPoints = nextTickPointTime.times(pointTotalSoftcapStrength.add(1)).times(pointTotalSoftcapConst).times(gain).root(pointTotalSoftcapStrength.add(1))
+		nextTickPoints = nextTickPoints.min(player.points.add(1).floor())
+
+
+		return nextTickPoints.sub(player.points)}
+	else {
+		return gain.times(diff).min(1)
+	}
+}
+
 function gameLoop(diff) {
 	if (isEndgame() || tmp.gameEnded){
 		tmp.gameEnded = true
@@ -337,7 +452,7 @@ function gameLoop(diff) {
 			diff = limit
 	}
 	addTime(diff)
-	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
+	player.points = player.points.add(getPointGenPerTick(diff)).max(0)
 
 	for (let x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {

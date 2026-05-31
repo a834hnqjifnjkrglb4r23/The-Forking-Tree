@@ -257,8 +257,9 @@ addLayer("l", {
                 costBasel12 = new Decimal('e1e5')
                 costExpl12 = new Decimal(3)
                 costLimitl12 = new Decimal('e2.7e9')
-                costStackl12 = new Decimal(x)
-                if (costStackl12.gte(60)) {costStackl12 = costStackl12.div(60).pow(1.25).times(60)}
+                costSoftcapStartl12 = new Decimal(60)
+                costSoftcapPowerl12 = new Decimal(1.25)
+                costStackl12 = softcap(new Decimal(x), costSoftcapStartl12, costSoftcapPowerl12)
                 return player.buyablePrice(costTypel12, costStackl12, costBasel12, costExpl12, costLimitl12)
             },
             effect(x) {
@@ -281,9 +282,7 @@ addLayer("l", {
                     }
                 } else {
                     if (player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        actualMaxPurchaseablel12 = player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12)
-                        if (actualMaxPurchaseablel12.gte(60)) {actualMaxPurchaseablel12 = actualMaxPurchaseablel12.div(60).root(1.25).times(60).floor()}
-                        setBuyableAmount(this.layer, this.id, actualMaxPurchaseablel12)
+                        setBuyableAmount(this.layer, this.id, undosoftcap(player.buyableMaxPurchaseable(costTypel12, player.p.points, costBasel12, costExpl12, costLimitl12), costSoftcapStartl12, costSoftcapPowerl12).floor())
                         
                     }
                 }
@@ -2526,6 +2525,7 @@ addLayer("m", {
     doReset(resettingLayer) { //milestones
         actualRow = 3
         if (getBuyableAmount('r', 22).gte(1)) {actualRow = 4}
+        if (hasMilestone('wr', 1)) {actualRow = 6}
         if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
     layerShown(){ //milestones
@@ -2653,40 +2653,13 @@ addLayer("b", {
 
         bgainraw = bgainraw.times(player.points.pow(buyableEffect('b', 11)).max(1)).times(buyableEffect('l', 11)[1][0]).times(buyableEffect('l', 11)[1][1])
 
-        bgain = bgainraw
 
+	    bgainExp = new Decimal(1)
+	    bgainExp = bgainExp.add(buyableEffect('wrte', 115))
 
-        bfirstSoftcapStrength = new Decimal(20) // 5 left
-        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('p', 113))
-        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('mp', 113))
-        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('bp', 113))
-        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('sp', 113))
-        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('hp', 113))
-        if (player.b.points.gte(1)) {bgain = bgain.div(player.b.points.pow(bfirstSoftcapStrength))}
+        bgain = bgainraw.pow(bgainExp)
 
-        bsecondSoftcapStrength = new Decimal(40) // 10 left
-        bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('l', 11)[1][2])
-        bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('hp', 114))
-        if (player.b.points.gte(2)) {bgain = bgain.div(player.b.points.div(2).pow(bsecondSoftcapStrength))}
-
-        bthirdSoftcapStrength = new Decimal(60) // 40 left
-        bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('l', 11)[1][3])
-        if (player.b.points.gte(3)) {bgain = bgain.div(player.b.points.div(3).pow(bthirdSoftcapStrength))}
-
-        bfourthSoftcapStrength = new Decimal(240)
-        if (player.b.points.gte(4)) {bgain = bgain.div(player.b.points.div(4).pow(bfourthSoftcapStrength))}
-
-        bfifthSoftcapStrength = new Decimal(1200)
-        if (player.b.points.gte(5)) {bgain = bgain.div(player.b.points.div(5).pow(bfifthSoftcapStrength))}
-
-        bsixthSoftcapStrength = new Decimal(7200)
-	    if (player.b.points.gte(6)) {bgain = bgain.div(player.b.points.div(6).pow(bsixthSoftcapStrength))}
-
-        bseventhSoftcapStrength = new Decimal(50400)
-	    if (player.b.points.gte(7)) {bgain = bgain.div(player.b.points.div(7).pow(bseventhSoftcapStrength))}
-        
-        if (player.b.points.gte(9)) {bgain = bgain.times(player.b.points.sub(10).times(-1))} //***** */
-        return bgain.min(1)
+        return bgain
     },
     getNextAt() {
 
@@ -2695,9 +2668,6 @@ addLayer("b", {
     canReset() {return false},
     prestigeNotify() {return true},
     prestigeButtonText() {return "you cannot reset this layer" },
-    passiveGeneration() {
-        return Decimal.dOne
-    },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     layerShown(){ //bonus points
         realcondition = hasMilestone('m', 0)||player.b.points.gte(0.0001)
@@ -2707,6 +2677,78 @@ addLayer("b", {
         actualRow = 0
         if (hasMilestone('m', 9)) {actualRow = 4}
         if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
+    },
+    update(diff) {
+        bfirstSoftcapStrength = new Decimal(20) 
+        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('p', 113))
+        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('mp', 113))
+        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('bp', 113))
+        bfirstSoftcapStrength = bfirstSoftcapStrength.sub(buyableEffect('sp', 113))
+
+        bsecondSoftcapStrength = new Decimal(40) 
+        bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('l', 11)[1][2])
+        bsecondSoftcapStrength = bsecondSoftcapStrength.sub(buyableEffect('hp', 114))
+
+        bthirdSoftcapStrength = new Decimal(60) // 40 left
+        bthirdSoftcapStrength = bthirdSoftcapStrength.sub(buyableEffect('l', 11)[1][3])
+        bthirdSoftcapStrength = bthirdSoftcapStrength.sub(buyableEffect('hp', 116))
+
+        bfourthSoftcapStrength = new Decimal(240) // 120 left
+        bfourthSoftcapStrength = bfourthSoftcapStrength.sub(buyableEffect('wr', 117))
+	    bfourthSoftcapStrength = bfourthSoftcapStrength.sub(buyableEffect('wrp', 117))
+	    bfourthSoftcapStrength = bfourthSoftcapStrength.sub(buyableEffect('wrmp', 117))
+	    bfourthSoftcapStrength = bfourthSoftcapStrength.sub(buyableEffect('wrbp', 117))
+	    bfourthSoftcapStrength = bfourthSoftcapStrength.sub(buyableEffect('wrsp', 117))
+
+        bfifthSoftcapStrength = new Decimal(1200)
+
+        bsixthSoftcapStrength = new Decimal(7200)
+
+        bseventhSoftcapStrength = new Decimal(50400)
+        
+        beighthSoftcapStrength = new Decimal(403200)
+
+	    bninthSoftcapStrength = new Decimal(3628800)
+
+        bpointTotalSoftcapStrength = new Decimal(0)
+	    if (player.b.points.gte(1)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bfirstSoftcapStrength)}
+	    if (player.b.points.gte(2)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bsecondSoftcapStrength)}
+	    if (player.b.points.gte(3)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bthirdSoftcapStrength)}
+	    if (player.b.points.gte(4)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bfourthSoftcapStrength)}
+	    if (player.b.points.gte(5)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bfifthSoftcapStrength)}
+	    if (player.b.points.gte(6)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bsixthSoftcapStrength)}
+	    if (player.b.points.gte(7)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bseventhSoftcapStrength)}
+	    if (player.b.points.gte(8)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(beighthSoftcapStrength)}
+	    if (player.b.points.gte(9)) {bpointTotalSoftcapStrength = bpointTotalSoftcapStrength.add(bninthSoftcapStrength)}
+
+	    bpointTotalSoftcapConst = new Decimal(1)
+	    //  if (player.b.points.gte(1)) {pointTotalSoftcapConst = pointTotalSoftcapConst.times(new Decimal(1).pow(firstSoftcapStrength))} 
+	    if (player.b.points.gte(2)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(2).pow(bsecondSoftcapStrength))}
+	    if (player.b.points.gte(3)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(3).pow(bthirdSoftcapStrength))}
+	    if (player.b.points.gte(4)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(4).pow(bfourthSoftcapStrength))}
+	    if (player.b.points.gte(5)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(5).pow(bfifthSoftcapStrength))}
+	    if (player.b.points.gte(6)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(6).pow(bsixthSoftcapStrength))}
+	    if (player.b.points.gte(7)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(7).pow(bseventhSoftcapStrength))}
+	    if (player.b.points.gte(8)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(8).pow(beighthSoftcapStrength))}
+	    if (player.b.points.gte(9)) {bpointTotalSoftcapConst = bpointTotalSoftcapConst.times(new Decimal(9).pow(bninthSoftcapStrength))}
+
+	    if (player.b.points.gte(1)) {	
+		
+		    currentbPointTime = player.b.points.pow(bpointTotalSoftcapStrength.add(1)).div(bpointTotalSoftcapStrength.add(1)).div(bpointTotalSoftcapConst).div(bgain)
+		    bpointDiff = diff
+		    if (getBuyableAmount('g', 41).gt(0)) {bpointDiff = bpointDiff.times(buyableEffect('g', 41))}
+		    if (getBuyableAmount('g', 42).gt(0)) {bpointDiff = bpointDiff.times(buyableEffect('g', 42))}
+		    if (getBuyableAmount('g', 43).gt(0)) {bpointDiff = bpointDiff.times(buyableEffect('g', 43))}
+		    nextTickbPointTime = currentbPointTime.add(bpointDiff)
+		    nextTickbPoints = nextTickbPointTime.times(bpointTotalSoftcapStrength.add(1)).times(bpointTotalSoftcapConst).times(bgain).root(bpointTotalSoftcapStrength.add(1))
+		    nextTickbPoints = nextTickbPoints.min(player.b.points.add(1).floor())
+
+
+		    }
+	    else {
+		    nextTickbPoints = player.b.points.add(bgain.times(diff).min(1))
+	    }
+        player.b.points = nextTickbPoints
     },
     buyables: {
         11: { //bonus coefficient (base 1)
@@ -2787,9 +2829,7 @@ addLayer("p", {
         expp = expp.add(buyableEffect('sp', 23))
         expp = expp.times(buyableEffect('l', 11)[2][2].times(buyableEffect('l', 22)).add(1))
         expp = expp.times(buyableEffect('hp', 23))
-        expp = expp.times(buyableEffect('wr', 23))
-        expp = expp.times(buyableEffect('wrp', 23))
-        
+        expp = expp.times(buyableEffect('wrte', 23))   
 
         exp2p = new Decimal(0.5).add(buyableEffect('l', 11)[2][3])
         exp2p = exp2p.add(buyableEffect('p', 24))
@@ -2846,10 +2886,10 @@ addLayer("p", {
         if (layers[resettingLayer].row > actualRow) {layerDataReset(this.layer, [])}
     },
     update(diff) {
-        if (buyableEffect('wr', 13).eq(0)||getBuyableAmount('wr', 212).lt(1)) {return;} else {
-            unsoftcappedCurrentRepliPrestigeTime = player.p.points.max(1).ln().div(buyableEffect('wr', 13)) //unsoftcapped: dx/xdt = mx
+        if (buyableEffect('wr', 13).row1.eq(0)||getBuyableAmount('wr', 212).lt(1)||player.p.points.eq(0)) {return;} else {
+            unsoftcappedCurrentRepliPrestigeTime = player.p.points.max(1).ln().div(buyableEffect('wr', 13).row1) //unsoftcapped: dx/xdt = mx
             unsoftcappedNextTickRepliPrestigeTime = unsoftcappedCurrentRepliPrestigeTime.add(diff)
-            unsoftcappedRepliPrestige = unsoftcappedNextTickRepliPrestigeTime.times(buyableEffect('wr', 13)).exp()
+            unsoftcappedRepliPrestige = unsoftcappedNextTickRepliPrestigeTime.times(buyableEffect('wr', 13).row1).exp()
             addPoints('p', unsoftcappedRepliPrestige.sub(player.p.points))
         }
     },
@@ -2858,7 +2898,7 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep11 = "normal"
-                costBasep11 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasep11 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep11, new Decimal(x), costBasep11, costExpp11, costLimitp11)
@@ -2894,7 +2934,7 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep12 = "normal"
-                costBasep12 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasep12 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep12, new Decimal(x), costBasep12, costExpp12, costLimitp12)
@@ -2965,7 +3005,7 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep21 = "normal"
-                costBasep21 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasep21 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp21 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep21, new Decimal(x), costBasep21, costExpp21, costLimitp21)
@@ -3000,7 +3040,7 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep22 = "normal"
-                costBasep22 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasep22 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp22 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep22, new Decimal(x), costBasep22, costExpp22, costLimitp22)
@@ -3035,7 +3075,7 @@ addLayer("p", {
             unlocked() {return true},
             cost(x) {
                 costTypep23 = "normal"
-                costBasep23 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costBasep23 = new Decimal(1.9).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp23 = new Decimal(1.4).sub(buyableEffect('r', 33))
                 costLimitp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep23, new Decimal(x), costBasep23, costExpp23, costLimitp23)
@@ -3107,7 +3147,7 @@ addLayer("p", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypep111 = "normal"
-                costBasep111 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasep111 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp111 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitp111 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep111, new Decimal(x), costBasep111, costExpp111, costLimitp111)
@@ -3143,7 +3183,7 @@ addLayer("p", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypep112 = "normal"
-                costBasep112 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasep112 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpp112 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitp112 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypep112, new Decimal(x), costBasep112, costExpp112, costLimitp112)
@@ -3285,6 +3325,7 @@ addLayer("mp", {
         expmp = expmp.add(buyableEffect('sp', 33))
         expmp = expmp.times(buyableEffect('l', 11)[3][2].times(buyableEffect('l', 11)[2][2]).add(1))
         expmp = expmp.times(buyableEffect('hp', 33))
+        expmp = expmp.times(buyableEffect('wrte', 33))   
 
         exp2mp = new Decimal(0.5).add(buyableEffect('l', 11)[3][3])
         exp2mp = exp2mp.add(buyableEffect('mp', 34))
@@ -3332,6 +3373,17 @@ addLayer("mp", {
                     if (canBuyBuyable('mp', i*10+j)) {buyMaxBuyable('mp', i*10+j)}
                 }
             }
+            for (let i = 111; i < 115; i++) {
+                if (canBuyBuyable('mp', i)) {buyMaxBuyable('mp', i)}
+            }
+        }
+    },    
+    update(diff) {
+        if (buyableEffect('wr', 13).row2.eq(0)||getBuyableAmount('wr', 212).lt(2)||player.mp.points.eq(0)) {return;} else {
+            unsoftcappedCurrentRepliMetaprestigeTime = player.mp.points.max(1).ln().div(buyableEffect('wr', 13).row2) //unsoftcapped: dx/xdt = mx
+            unsoftcappedNextTickRepliMetaprestigeTime = unsoftcappedCurrentRepliMetaprestigeTime.add(diff)
+            unsoftcappedRepliMetaprestige = unsoftcappedNextTickRepliMetaprestigeTime.times(buyableEffect('wr', 13).row2).exp()
+            addPoints('mp', unsoftcappedRepliMetaprestige.sub(player.mp.points))
         }
     },
     buyables: {
@@ -3339,7 +3391,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp11 = "normal"
-                costBasemp11 = new Decimal(1.2).root(buyableEffect('r', 31))
+                costBasemp11 = new Decimal(1.2).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitmp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp11, new Decimal(x), costBasemp11, costExpmp11, costLimitmp11)
@@ -3374,7 +3426,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp12 = "normal"
-                costBasemp12 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costBasemp12 = new Decimal(1.4).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitmp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp12, new Decimal(x), costBasemp12, costExpmp12, costLimitmp12)
@@ -3483,7 +3535,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp21 = "normal"
-                costBasemp21 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasemp21 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp21 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp21, new Decimal(x), costBasemp21, costExpmp21, costLimitmp21)
@@ -3518,7 +3570,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp22 = "normal"
-                costBasemp22 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasemp22 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp22 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp22, new Decimal(x), costBasemp22, costExpmp22, costLimitmp22)
@@ -3553,7 +3605,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp23 = "normal"
-                costBasemp23 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasemp23 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp23 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp23, new Decimal(x), costBasemp23, costExpmp23, costLimitmp23)
@@ -3625,7 +3677,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp31 = "normal"
-                costBasemp31 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasemp31 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp31 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp31, new Decimal(x), costBasemp31, costExpmp31, costLimitmp31)
@@ -3660,7 +3712,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp32 = "normal"
-                costBasemp32 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasemp32 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp32 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp32, new Decimal(x), costBasemp32, costExpmp32, costLimitmp32)
@@ -3695,7 +3747,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp33 = "normal"
-                costBasemp33 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costBasemp33 = new Decimal(1.9).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp33 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp33, new Decimal(x), costBasemp33, costExpmp33, costLimitmp33)
@@ -3767,7 +3819,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp41 = "normal"
-                costBasemp41 = new Decimal(1.55).root(buyableEffect('r', 31))
+                costBasemp41 = new Decimal(1.55).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp41 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp41, new Decimal(x), costBasemp41, costExpmp41, costLimitmp41)
@@ -3802,7 +3854,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp42 = "normal"
-                costBasemp42 = new Decimal(1.75).root(buyableEffect('r', 31))
+                costBasemp42 = new Decimal(1.75).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp42 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp42, new Decimal(x), costBasemp42, costExpmp42, costLimitmp42)
@@ -3837,7 +3889,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp43 = "normal"
-                costBasemp43 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasemp43 = new Decimal(1.95).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp43 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp43, new Decimal(x), costBasemp43, costExpmp43, costLimitmp43)
@@ -3909,7 +3961,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp51 = "normal"
-                costBasemp51 = new Decimal(1.6).root(buyableEffect('r', 31))
+                costBasemp51 = new Decimal(1.6).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp51 = new Decimal(1.07).sub(buyableEffect('r', 33))
                 costLimitmp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp51, new Decimal(x), costBasemp51, costExpmp51, costLimitmp51)
@@ -3944,7 +3996,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp52 = "normal"
-                costBasemp52 = new Decimal(1.8).root(buyableEffect('r', 31))
+                costBasemp52 = new Decimal(1.8).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp52 = new Decimal(1.17).sub(buyableEffect('r', 33))
                 costLimitmp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp52, new Decimal(x), costBasemp52, costExpmp52, costLimitmp52)
@@ -3979,7 +4031,7 @@ addLayer("mp", {
             unlocked() {return true},
             cost(x) {
                 costTypemp53 = "normal"
-                costBasemp53 = new Decimal(2).root(buyableEffect('r', 31))
+                costBasemp53 = new Decimal(2).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp53 = new Decimal(1.37).sub(buyableEffect('r', 33))
                 costLimitmp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp53, new Decimal(x), costBasemp53, costExpmp53, costLimitmp53)
@@ -4051,7 +4103,7 @@ addLayer("mp", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypemp111 = "normal"
-                costBasemp111 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasemp111 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp111 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitmp111 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp111, new Decimal(x), costBasemp111, costExpmp111, costLimitmp111)
@@ -4087,7 +4139,7 @@ addLayer("mp", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypemp112 = "normal"
-                costBasemp112 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasemp112 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpmp112 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitmp112 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypemp112, new Decimal(x), costBasemp112, costExpmp112, costLimitmp112)
@@ -4245,6 +4297,7 @@ addLayer("bp", {
         expbp = expbp.add(buyableEffect('sp', 43))
         expbp = expbp.times(buyableEffect('l', 11)[3][2].times(buyableEffect('l', 11)[2][2]).add(1))
         expbp = expbp.times(buyableEffect('hp', 43))
+        expbp = expbp.times(buyableEffect('wrte', 43))  
 
         exp2bp = new Decimal(0.5).add(buyableEffect('l', 11)[3][3])
         exp2bp = exp2bp.add(buyableEffect('mp', 44))
@@ -4289,6 +4342,9 @@ addLayer("bp", {
                     if (canBuyBuyable('bp', i*10+j)) {buyMaxBuyable('bp', i*10+j)}
                 }
             }
+            for (let i = 111; i < 115; i++) {
+                if (canBuyBuyable('bp', i)) {buyMaxBuyable('bp', i)}
+            }
         }
     },
     layerShown(){ //buyable
@@ -4296,12 +4352,20 @@ addLayer("bp", {
         temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(1.99))
         return realcondition&&(!temporaryhidewr)
     },
+    update(diff) {
+        if (buyableEffect('wr', 13).row2.eq(0)||getBuyableAmount('wr', 212).lt(2)||player.bp.points.eq(0)) {return;} else {
+            unsoftcappedCurrentRepliBuyabolTime = player.bp.points.max(1).ln().div(buyableEffect('wr', 13).row2) //unsoftcapped: dx/xdt = mx
+            unsoftcappedNextTickRepliBuyabolTime = unsoftcappedCurrentRepliBuyabolTime.add(diff)
+            unsoftcappedRepliBuyabol = unsoftcappedNextTickRepliBuyabolTime.times(buyableEffect('wr', 13).row2).exp()
+            addPoints('bp', unsoftcappedRepliBuyabol.sub(player.bp.points))
+        }
+    },
     buyables: {
         11: {
             unlocked() {return true},
             cost(x) {
                 costTypebp11 = "normal"
-                costBasebp11 = new Decimal(1.2).root(buyableEffect('r', 31))
+                costBasebp11 = new Decimal(1.2).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitbp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp11, new Decimal(x), costBasebp11, costExpbp11, costLimitbp11)
@@ -4336,7 +4400,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp12 = "normal"
-                costBasebp12 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costBasebp12 = new Decimal(1.4).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitbp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp12, new Decimal(x), costBasebp12, costExpbp12, costLimitbp12)
@@ -4446,7 +4510,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp21 = "normal"
-                costBasebp21 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasebp21 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp21 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp21, new Decimal(x), costBasebp21, costExpbp21, costLimitbp21)
@@ -4481,7 +4545,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp22 = "normal"
-                costBasebp22 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasebp22 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp22 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp22, new Decimal(x), costBasebp22, costExpbp22, costLimitbp22)
@@ -4516,7 +4580,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp23 = "normal"
-                costBasebp23 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasebp23 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp23 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp23, new Decimal(x), costBasebp23, costExpbp23, costLimitbp23)
@@ -4588,7 +4652,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp31 = "normal"
-                costBasebp31 = new Decimal(1.45).root(buyableEffect('r', 31))
+                costBasebp31 = new Decimal(1.45).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp31 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp31, new Decimal(x), costBasebp31, costExpbp31, costLimitbp31)
@@ -4623,7 +4687,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp32 = "normal"
-                costBasebp32 = new Decimal(1.65).root(buyableEffect('r', 31))
+                costBasebp32 = new Decimal(1.65).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp32 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp32, new Decimal(x), costBasebp32, costExpbp32, costLimitbp32)
@@ -4658,7 +4722,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp33 = "normal"
-                costBasebp33 = new Decimal(1.85).root(buyableEffect('r', 31))
+                costBasebp33 = new Decimal(1.85).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp33 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp33, new Decimal(x), costBasebp33, costExpbp33, costLimitbp33)
@@ -4730,7 +4794,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp41 = "normal"
-                costBasebp41 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasebp41 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp41 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp41, new Decimal(x), costBasebp41, costExpbp41, costLimitbp41)
@@ -4765,7 +4829,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp42 = "normal"
-                costBasebp42 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasebp42 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp42 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp42, new Decimal(x), costBasebp42, costExpbp42, costLimitbp42)
@@ -4800,7 +4864,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp43 = "normal"
-                costBasebp43 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costBasebp43 = new Decimal(1.9).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp43 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp43, new Decimal(x), costBasebp43, costExpbp43, costLimitbp43)
@@ -4872,7 +4936,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp51 = "normal"
-                costBasebp51 = new Decimal(1.55).root(buyableEffect('r', 31))
+                costBasebp51 = new Decimal(1.55).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp51 = new Decimal(1.065).sub(buyableEffect('r', 33))
                 costLimitbp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp51, new Decimal(x), costBasebp51, costExpbp51, costLimitbp51)
@@ -4907,7 +4971,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp52 = "normal"
-                costBasebp52 = new Decimal(1.75).root(buyableEffect('r', 31))
+                costBasebp52 = new Decimal(1.75).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp52 = new Decimal(1.165).sub(buyableEffect('r', 33))
                 costLimitbp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp52, new Decimal(x), costBasebp52, costExpbp52, costLimitbp52)
@@ -4942,7 +5006,7 @@ addLayer("bp", {
             unlocked() {return true},
             cost(x) {
                 costTypebp53 = "normal"
-                costBasebp53 = new Decimal(1.95).root(buyableEffect('r', 31))
+                costBasebp53 = new Decimal(1.95).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp53 = new Decimal(1.365).sub(buyableEffect('r', 33))
                 costLimitbp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp53, new Decimal(x), costBasebp53, costExpbp53, costLimitbp53)
@@ -5010,11 +5074,11 @@ addLayer("bp", {
                 }
             },
         },
-                111: {
+        111: {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypebp111 = "normal"
-                costBasebp111 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasebp111 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp111 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitbp111 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp111, new Decimal(x), costBasebp111, costExpbp111, costLimitbp111)
@@ -5050,7 +5114,7 @@ addLayer("bp", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypebp112 = "normal"
-                costBasebp112 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasebp112 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpbp112 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitbp112 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypebp112, new Decimal(x), costBasebp112, costExpbp112, costLimitbp112)
@@ -5195,7 +5259,7 @@ addLayer("sp", {
         expsp = expsp.add(buyableEffect('sp', 53))
         expsp = expsp.times(buyableEffect('l', 11)[3][2].times(buyableEffect('l', 11)[2][2]).add(1))
         expsp = expsp.times(buyableEffect('hp', 53))
-
+        expsp = expsp.times(buyableEffect('wrte', 53))        
 
         exp2sp = new Decimal(0.5).add(buyableEffect('l', 11)[3][3])
         exp2sp = exp2sp.add(buyableEffect('mp', 54))
@@ -5235,6 +5299,9 @@ addLayer("sp", {
                     if (canBuyBuyable('sp', i*10+j)) {buyMaxBuyable('sp', i*10+j)}
                 }
             }
+            for (let i = 111; i < 115; i++) {
+                if (canBuyBuyable('sp', i)) {buyMaxBuyable('sp', i)}
+            }
         }
     },
     doReset(resettingLayer) { //superprsetige
@@ -5247,12 +5314,20 @@ addLayer("sp", {
         temporaryhidewr = (getBuyableAmount('r', 54).gte(1))||(player.wr.total.gte(1)&&getBuyableAmount('wr', 211).lte(1.99))
         return realcondition&&(!temporaryhidewr)
     },
+    update(diff) {
+        if (buyableEffect('wr', 13).row2.eq(0)||getBuyableAmount('wr', 212).lt(2)||player.sp.points.eq(0)) {return;} else {
+            unsoftcappedCurrentRepliSuperprestigeTime = player.sp.points.max(1).ln().div(buyableEffect('wr', 13).row2) //unsoftcapped: dx/xdt = mx
+            unsoftcappedNextTickRepliSuperprestigeTime = unsoftcappedCurrentRepliSuperprestigeTime.add(diff)
+            unsoftcappedRepliSuperprestige = unsoftcappedNextTickRepliSuperprestigeTime.times(buyableEffect('wr', 13).row2).exp()
+            addPoints('sp', unsoftcappedRepliSuperprestige.sub(player.sp.points))
+        }
+    },
     buyables: {
         11: {
             unlocked() {return true},
             cost(x) {
                 costTypesp11 = "normal"
-                costBasesp11 = new Decimal(1.2).root(buyableEffect('r', 31))
+                costBasesp11 = new Decimal(1.2).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp11 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitsp11 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp11, new Decimal(x), costBasesp11, costExpsp11, costLimitsp11)
@@ -5287,7 +5362,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp12 = "normal"
-                costBasesp12 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costBasesp12 = new Decimal(1.4).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp12 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitsp12 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp12, new Decimal(x), costBasesp12, costExpsp12, costLimitsp12)
@@ -5395,7 +5470,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp21 = "normal"
-                costBasesp21 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasesp21 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp21 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp21 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp21, new Decimal(x), costBasesp21, costExpsp21, costLimitsp21)
@@ -5430,7 +5505,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp22 = "normal"
-                costBasesp22 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasesp22 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp22 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp22 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp22, new Decimal(x), costBasesp22, costExpsp22, costLimitsp22)
@@ -5465,7 +5540,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp23 = "normal"
-                costBasesp23 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasesp23 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp23 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp23 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp23, new Decimal(x), costBasesp23, costExpsp23, costLimitsp23)
@@ -5537,7 +5612,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp31 = "normal"
-                costBasesp31 = new Decimal(1.4).root(buyableEffect('r', 31))
+                costBasesp31 = new Decimal(1.4).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp31 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp31 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp31, new Decimal(x), costBasesp31, costExpsp31, costLimitsp31)
@@ -5572,7 +5647,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp32 = "normal"
-                costBasesp32 = new Decimal(1.6).root(buyableEffect('r', 31))
+                costBasesp32 = new Decimal(1.6).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp32 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp32 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp32, new Decimal(x), costBasesp32, costExpsp32, costLimitsp32)
@@ -5607,7 +5682,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp33 = "normal"
-                costBasesp33 = new Decimal(1.8).root(buyableEffect('r', 31))
+                costBasesp33 = new Decimal(1.8).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp33 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp33 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp33, new Decimal(x), costBasesp33, costExpsp33, costLimitsp33)
@@ -5679,7 +5754,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp41 = "normal"
-                costBasesp41 = new Decimal(1.45).root(buyableEffect('r', 31))
+                costBasesp41 = new Decimal(1.45).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp41 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp41 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp41, new Decimal(x), costBasesp41, costExpsp41, costLimitsp41)
@@ -5714,7 +5789,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp42 = "normal"
-                costBasesp42 = new Decimal(1.65).root(buyableEffect('r', 31))
+                costBasesp42 = new Decimal(1.65).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp42 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp42 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp42, new Decimal(x), costBasesp42, costExpsp42, costLimitsp42)
@@ -5749,7 +5824,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp43 = "normal"
-                costBasesp43 = new Decimal(1.85).root(buyableEffect('r', 31))
+                costBasesp43 = new Decimal(1.85).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp43 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp43 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp43, new Decimal(x), costBasesp43, costExpsp43, costLimitsp43)
@@ -5821,7 +5896,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp51 = "normal"
-                costBasesp51 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasesp51 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp51 = new Decimal(1.06).sub(buyableEffect('r', 33))
                 costLimitsp51 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp51, new Decimal(x), costBasesp51, costExpsp51, costLimitsp51)
@@ -5856,7 +5931,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp52 = "normal"
-                costBasesp52 = new Decimal(1.7).root(buyableEffect('r', 31))
+                costBasesp52 = new Decimal(1.7).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp52 = new Decimal(1.16).sub(buyableEffect('r', 33))
                 costLimitsp52 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp52, new Decimal(x), costBasesp52, costExpsp52, costLimitsp52)
@@ -5891,7 +5966,7 @@ addLayer("sp", {
             unlocked() {return true},
             cost(x) {
                 costTypesp53 = "normal"
-                costBasesp53 = new Decimal(1.9).root(buyableEffect('r', 31))
+                costBasesp53 = new Decimal(1.9).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp53 = new Decimal(1.36).sub(buyableEffect('r', 33))
                 costLimitsp53 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp53, new Decimal(x), costBasesp53, costExpsp53, costLimitsp53)
@@ -5963,7 +6038,7 @@ addLayer("sp", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypesp111 = "normal"
-                costBasesp111 = new Decimal(1.3).root(buyableEffect('r', 31))
+                costBasesp111 = new Decimal(1.3).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp111 = new Decimal(1.1).sub(buyableEffect('r', 33))
                 costLimitsp111 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp111, new Decimal(x), costBasesp111, costExpsp111, costLimitsp111)
@@ -5974,7 +6049,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp111, effStacksp111)
             },
-            title() { return "superprestigebuyable 111"},
+            title() { return "superprestige buyable 111"},
             display() { return "increase base bonus point gain by "+format(effBasesp111)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp111)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -5999,7 +6074,7 @@ addLayer("sp", {
             unlocked() {return hasMilestone('m', 0)},
             cost(x) {
                 costTypesp112 = "normal"
-                costBasesp112 = new Decimal(1.5).root(buyableEffect('r', 31))
+                costBasesp112 = new Decimal(1.5).sub(1).div(buyableEffect('r', 31)).add(1)
                 costExpsp112 = new Decimal(1.2).sub(buyableEffect('r', 33))
                 costLimitsp112 = player.row2normalBuyableSoftcap()
                 return player.buyablePrice(costTypesp112, new Decimal(x), costBasesp112, costExpsp112, costLimitsp112)
@@ -6010,7 +6085,7 @@ addLayer("sp", {
 
                 return Decimal.times(effBasesp112, effStacksp112)
             },
-            title() { return "superprestigebuyable 112"},
+            title() { return "superprestige buyable 112"},
             display() { return "add bonus point gain mult by "+format(effBasesp112)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp112)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -6046,7 +6121,7 @@ addLayer("sp", {
                 return Decimal.times(effBasesp113, effStacksp113)
             },
             purchaseLimit: new Decimal(50),
-            title() { return "superprestigebuyable 113"},
+            title() { return "superprestige buyable 113"},
             display() { return "subtract first bonus point softcap by "+format(effBasesp113)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp113)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -6082,7 +6157,7 @@ addLayer("sp", {
                 return Decimal.times(effBasesp114, effStacksp114)
             },
             purchaseLimit: new Decimal(200),
-            title() { return "superprestigebuyable 114"},
+            title() { return "superprestige buyable 114"},
             display() { return "add bonus point coefficent "+format(effBasesp114)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStacksp114)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -6313,7 +6388,7 @@ addLayer("hp", {
                 costTypehp15 = "normal"
                 costBasehp15 = new Decimal(1.3)
                 costExphp15 = new Decimal(1.1)
-                costLimithp15 = new Decimal('e100')
+                costLimithp15 = new Decimal('e200')
                 return player.buyablePrice(costTypehp15, new Decimal(x), costBasehp15, costExphp15, costLimithp15)
             },
             effect(x) {
@@ -6482,42 +6557,6 @@ addLayer("hp", {
                 }
             },
         },   
-        113: {
-            unlocked() {return true},
-            cost(x) {
-                costTypehp113 = "asymptote"
-                costBasehp113 = new Decimal(1.15)
-                costExphp113 = new Decimal(1.05)
-                costLimithp113 = layers.hp.buyables[113].purchaseLimit.add(1)
-                return player.buyablePrice(costTypehp113, new Decimal(x), costBasehp113, costExphp113, costLimithp113)
-            },
-            effect(x) {
-                effBasehp113 = new Decimal(0.1)
-                effStackhp113 = new Decimal(x)
-
-                return Decimal.times(effBasehp113, effStackhp113)
-            },
-            purchaseLimit: new Decimal(100),
-            title() { return "hyperprestige buyable 113"},
-            display() { return "subtract first bonus point softcap by "+format(effBasehp113)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp113)+" <br> effect: "+format(this.effect())},
-            canAfford() { return player[this.layer].points.gte(this.cost()) },
-            buy() {
-                player[this.layer].points = player[this.layer].points.sub(this.cost())
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            },
-            buyMax() {
-                if ((costTypehp113 == "asymptote")||player[this.layer].points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypehp113, player[this.layer].points, costBasehp113, costExphp113, costLimithp113).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp113, player[this.layer].points, costBasehp113, costExphp113, costLimithp113))
-                        if (player[this.layer].points.lt('e100')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp113, player.buyableMaxPurchaseable(costTypehp113, player[this.layer].points, costBasehp113, costExphp113, costLimithp113), costBasehp113, costExphp113, costLimithp113))}
-                    }
-                }
-            },
-        },
         114: {
             unlocked() {return true},
             cost(x) {
@@ -6533,9 +6572,9 @@ addLayer("hp", {
 
                 return Decimal.times(effBasehp114, effStackhp114)
             },
-            purchaseLimit: new Decimal(100),
+            purchaseLimit: new Decimal(200),
             title() { return "hyperprestige buyable 114"},
-            display() { return "subtract second bonus point softcap by "+format(effBasehp113)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp113)+" <br> effect: "+format(this.effect())},
+            display() { return "subtract second bonus point softcap by "+format(effBasehp114)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp114)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
                 player[this.layer].points = player[this.layer].points.sub(this.cost())
@@ -6550,6 +6589,42 @@ addLayer("hp", {
                     if (player.buyableMaxPurchaseable(costTypehp114, player[this.layer].points, costBasehp114, costExphp114, costLimithp114).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp114, player[this.layer].points, costBasehp114, costExphp114, costLimithp114))
                         if (player[this.layer].points.lt('e100')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp114, player.buyableMaxPurchaseable(costTypehp114, player[this.layer].points, costBasehp114, costExphp114, costLimithp114), costBasehp114, costExphp114, costLimithp114))}
+                    }
+                }
+            },
+        },
+        116: {
+            unlocked() {return true},
+            cost(x) {
+                costTypehp116 = "asymptote"
+                costBasehp116 = new Decimal(1.15)
+                costExphp116 = new Decimal(1.1)
+                costLimithp116 = layers.hp.buyables[116].purchaseLimit.add(1)
+                return player.buyablePrice(costTypehp116, new Decimal(x), costBasehp116, costExphp116, costLimithp116)
+            },
+            effect(x) {
+                effBasehp116 = new Decimal(0.1)
+                effStackhp116 = new Decimal(x)
+
+                return Decimal.times(effBasehp116, effStackhp116)
+            },
+            purchaseLimit: new Decimal(400),
+            title() { return "hyperprestige buyable 116"},
+            display() { return "subtract third bonus point softcap by "+format(effBasehp116)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackhp116)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player[this.layer].points.gte(this.cost()) },
+            buy() {
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypehp116 == "asymptote")||player[this.layer].points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypehp116, player[this.layer].points, costBasehp116, costExphp116, costLimithp116).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypehp116, player[this.layer].points, costBasehp116, costExphp116, costLimithp116))
+                        if (player[this.layer].points.lt('e100')) {player[this.layer].points = player[this.layer].points.sub(player.buyablePrice(costTypehp116, player.buyableMaxPurchaseable(costTypehp116, player[this.layer].points, costBasehp116, costExphp116, costLimithp116), costBasehp116, costExphp116, costLimithp116))}
                     }
                 }
             },
@@ -6799,7 +6874,7 @@ addLayer("r", {
         },  
         31: {
             unlocked() {return true},
-            purchaseLimit: new Decimal(20),
+            purchaseLimit: new Decimal(18),
             cost(x) {
                 costBaseTimer31 = new Decimal(1.5)
                 costBaseMoneyr31 = new Decimal(2)
@@ -6808,14 +6883,13 @@ addLayer("r", {
                 return [costBaseTimer31.pow(x).times(costMultRMinr31).round(), costBaseMoneyr31.pow(x).times(costMultMoneyr31).round()]
             },
             effect(x) {
-                effBaser31 = new Decimal(1.1220184543019633)
+                effBaser31 = new Decimal(0.05)
                 effStackr31 = new Decimal(x)
 
-                if (effStackr31.eq(20)) {return new Decimal(10)} 
-                else {return Decimal.pow(effBaser31, effStackr31)}
+                {return Decimal.dOne.sub(Decimal.times(effBaser31, effStackr31))}
             },
             title() { return "research buyable 31"},
-            display() { return "root row 1 to 2 unlimited buyable cost by "+format(effBaser31)+" <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr31)+"/20.00 <br> effect: "+format(this.effect())},
+            display() { return "divide row 1 to 2 unlimited buyable cost base by "+format(effBaser31)+" <br> cost: "+formatTime(this.cost()[0].times(60))+" research points, $"+format(this.cost()[1])+" <br> owned: "+format(effStackr31)+"/20.00 <br> effect: "+format(this.effect())},
             canAfford() { return (player.j.points.gte(this.cost()[1])&&getBuyableAmount([this.layer], 12).lt(1e-4))},
             buy() {
                 player.j.points = player.j.points.sub(this.cost()[1])
@@ -7287,18 +7361,18 @@ addLayer("mtp", {
             unlocked() {return true},
             cost(x) {
                 costTypemtp13 = "asymptote"
-                costBasemtp13 = new Decimal(4)
-                costExpmtp13 = new Decimal(1.75)
+                costBasemtp13 = new Decimal(1.2)
+                costExpmtp13 = new Decimal(1.1)
                 costLimitmtp13 = layers.mtp.buyables[13].purchaseLimit.add(1)
                 return player.buyablePrice(costTypemtp13, new Decimal(x), costBasemtp13, costExpmtp13, costLimitmtp13)
             },
             effect(x) {
-                effBasemtp13 = new Decimal(1)
+                effBasemtp13 = new Decimal(0.1)
                 effStackmtp13 = new Decimal(x)
 
                 return Decimal.times(effBasemtp13, effStackmtp13)
             },
-            purchaseLimit: new Decimal(40),
+            purchaseLimit: new Decimal(400),
             title() { return "magical truck parts buyable 13"},
             display() { return "reduce the third point gain softcap by "+format(effBasemtp13)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackmtp13)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].points.gte(this.cost()) },
@@ -7556,31 +7630,49 @@ addLayer("wr", {
 
         multwr = new Decimal(1)
 
-        basemultrepli = new Decimal(0.1)
+        basemultrepli = new Decimal(0.2)
         basemultrepli = basemultrepli.add(buyableEffect('wr', 121))
         basemultrepli = basemultrepli.add(buyableEffect('wrp', 121))
+        basemultrepli = basemultrepli.add(buyableEffect('wrmp', 121))
+        basemultrepli = basemultrepli.add(buyableEffect('wrbp', 121))
+        basemultrepli = basemultrepli.add(buyableEffect('wrsp', 121))
 
-        multreplimult = new Decimal(0.1)
+
+        multreplimult = new Decimal(0.2)
         multreplimult = multreplimult.add(buyableEffect('wr', 122))
         multreplimult = multreplimult.add(buyableEffect('wrp', 122))
+        multreplimult = multreplimult.add(buyableEffect('wrmp', 122))
+        multreplimult = multreplimult.add(buyableEffect('wrbp', 122))
+        multreplimult = multreplimult.add(buyableEffect('wrsp', 122))
 
-        multrepli = basemultrepli.times(multreplimult)
+        multreplishare = basemultrepli.times(multreplimult).times(buyableEffect('wr', 11))
+        
+        multreplionly = multreplishare.times(buyableEffect('wr', 141)).times(buyableEffect('wr', 142)).times(buyableEffect('wr', 143)).times(buyableEffect('wr', 144)).times(buyableEffect('wr', 145))
 
-        firstRepliSoftcapStart = new Decimal(10)
+        firstRepliSoftcapStart = new Decimal(1)
         firstRepliSoftcapStart = firstRepliSoftcapStart.times(buyableEffect('wr', 123))
         firstRepliSoftcapStart = firstRepliSoftcapStart.times(buyableEffect('wrp', 123))
-        firstRepliSoftcapStart = firstRepliSoftcapStart.pow(buyableEffect('wr', 11))
+        firstRepliSoftcapStart = firstRepliSoftcapStart.times(buyableEffect('wrmp', 123))
+        firstRepliSoftcapStart = firstRepliSoftcapStart.times(buyableEffect('wrbp', 123))
+        firstRepliSoftcapStart = firstRepliSoftcapStart.times(buyableEffect('wrsp', 123))
 
-        firstRepliSoftcapStrength = new Decimal(0.5) 
-        firstRepliSoftcapStrength = firstRepliSoftcapStrength.sub(buyableEffect('wr', 124))
-        firstRepliSoftcapStrength = firstRepliSoftcapStrength.sub(buyableEffect('wrp', 124))
-        firstRepliSoftcapStrength = firstRepliSoftcapStrength.div(buyableEffect('wr', 125))       
-        firstRepliSoftcapStrength = firstRepliSoftcapStrength.div(buyableEffect('wrp', 125))        
-        firstRepliPenalty = player.wr.buyables[11].div(firstRepliSoftcapStart).pow(firstRepliSoftcapStrength).max(1)
+
+        firstRepliSoftcapStrengthInverse = new Decimal(2) 
+        firstRepliSoftcapStrengthInverse = firstRepliSoftcapStrengthInverse.add(buyableEffect('wr', 124))
+        firstRepliSoftcapStrengthInverse = firstRepliSoftcapStrengthInverse.add(buyableEffect('wrp', 124))
+        firstRepliSoftcapStrengthInverse = firstRepliSoftcapStrengthInverse.add(buyableEffect('wrmp', 124))
+        firstRepliSoftcapStrengthInverse = firstRepliSoftcapStrengthInverse.add(buyableEffect('wrbp', 124))
+        firstRepliSoftcapStrengthInverse = firstRepliSoftcapStrengthInverse.add(buyableEffect('wrsp', 124))
+ 
+        firstRepliSoftcapStrengthInverse = firstRepliSoftcapStrengthInverse.times(buyableEffect('wrte', 125))
+
+        firstRepliSoftcapStrength = firstRepliSoftcapStrengthInverse.pow(-1)
+
+        firstRepliPenalty = player.wr.buyables[11].div(firstRepliSoftcapStart).max(1).pow(firstRepliSoftcapStrength)
 
         totalRepliPenalty = firstRepliPenalty //times(1) replace with later softcaps
 
-        multrepliAfterPenalty = multrepli.div(totalRepliPenalty)
+        multrepliAfterPenalty = multreplionly.div(totalRepliPenalty)
 
         return multwr
     },
@@ -7608,57 +7700,175 @@ addLayer("wr", {
         if (layers[resettingLayer].row > this.row) {
         layerDataReset("wr", [])
         }
+        if (layers[resettingLayer].row >= this.row) {
+        setBuyableAmount('wr', 11, new Decimal(1))
+        }
 
     },
     prestigeNotify() {return true},
     prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('wr'))+" world replicants. Next at "+format(getNextAt('wr'))+" points" },
     row: 6, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "W", description: "W: Reset for world replicants", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
+        {key: "w", description: "W: Reset for world replicants", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
     update(diff) {
-        if (multrepli.eq(0)) {return;} else {
-            unsoftcappedCurrentRepliTime = player.wr.buyables[11].max(1).ln().div(multrepli) //unsoftcapped: dx/xdt = mx
+        if (multreplionly.eq(0)||player.wr.buyables[11].lte(0)) {return;} else {
+            unsoftcappedCurrentRepliTime = player.wr.buyables[11].ln().div(multreplionly) //unsoftcapped: dx/xdt = mx
             unsoftcappedNextTickRepliTime = unsoftcappedCurrentRepliTime.add(diff)
-            unsoftcappedRepli = unsoftcappedNextTickRepliTime.times(multrepli).exp()
+            unsoftcappedRepli = unsoftcappedNextTickRepliTime.times(multreplionly).exp()
             if (unsoftcappedRepli.lt(firstRepliSoftcapStart)) {
-                setBuyableAmount('wr', 11, unsoftcappedNextTickRepliTime.times(multrepli).exp())                
+                setBuyableAmount('wr', 11, unsoftcappedNextTickRepliTime.times(multreplionly).exp().max(1))                
             }
             else {
-                currentRepliTime = player.wr.buyables[11].div(firstRepliSoftcapStart).pow(firstRepliSoftcapStrength).div(multrepli).div(firstRepliSoftcapStrength) // softcapped: dx/dt = m * s^(p) * x^(1-p) where m = multiplier, s = start , p = strength in positive, x = Repli amount, t = game time 
+                currentRepliTime = player.wr.buyables[11].div(firstRepliSoftcapStart).pow(firstRepliSoftcapStrength).div(multreplionly).div(firstRepliSoftcapStrength) // softcapped: dx/dt = m * s^(p) * x^(1-p) where m = multiplier, s = start , p = strength in positive, x = Repli amount, t = game time 
                 nextTickRepliTime = currentRepliTime.add(diff)      
-                setBuyableAmount('wr', 11, multrepli.times(firstRepliSoftcapStrength).times(nextTickRepliTime).pow(firstRepliSoftcapStrength.pow(-1)).times(firstRepliSoftcapStart))
+                setBuyableAmount('wr', 11, multreplionly.times(firstRepliSoftcapStrength).times(nextTickRepliTime).pow(firstRepliSoftcapStrength.pow(-1)).times(firstRepliSoftcapStart).max(1))
             }
         }
     },
     layerShown(){return getBuyableAmount('r', 54).gte(1)||player.wr.total.gte(1)},
     milestones: {
-                0: {
-            requirementDescription: "1e20 replicants",
-            effectDescription: "automates replication buyables with less than 200 id",
-            done() { return player.wr.buyables[11].gte('1e20') },
+        0: {
+            requirementDescription: "1e10 replicants",
+            effectDescription: "automates replication buyables with less than 129 id",
+            done() { return player.wr.buyables[11].gte('1e10') },
             toggles: [["wr", "autoBuy"]]
         },
+        1: {
+            requirementDescription: "e1e4 replicants",
+            effectDescription: "automates replication buyables with less than 139 id",
+            done() { return player.wr.buyables[11].gte('e1e4') },
+            unlocked() {return player.wr.buyables[11].gte('e1e3')},
+            toggles: [["wr", "autoBuy1"]]
+        },
+        2: {
+            requirementDescription: "e1e8 replicants",
+            effectDescription: "automates replication buyables with less than 149 id",
+            done() { return player.wr.buyables[11].gte('e1e8') },
+            unlocked() {return player.wr.buyables[11].gte('e1e6')},
+            toggles: [["wr", "autoBuy2"]]
+        },
+    },
+    tabFormat: {
+        "main replicants": {
+            shouldNotify: true,
+            content:
+                [["infobox", 11],
+                "main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "milestones", "blank", "buyables"],
+        },
+        "prestige points": {
+            embedLayer: "wrp",
+            shouldNotify: true,
+            unlocked() {return getBuyableAmount('wr', 211).gte(1)},
+            content:
+                ["main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "milestones", "blank", "buyables"],
+        },
+        "metaprestige points": {
+            embedLayer: "wrmp",
+            shouldNotify: true,
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            content:
+                ["main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "milestones", "blank", "buyables"],
+        },
+        "buyabol points": {
+            embedLayer: "wrbp",
+            shouldNotify: true,
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            content:
+                ["main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "milestones", "blank", "buyables"],
+        },
+        "superprestige points": {
+            embedLayer: "wrsp",
+            shouldNotify: true,
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            content:
+                ["main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "milestones", "blank", "buyables"],
+        },
+
     },
     automate() {
         if (hasMilestone('wr', 0)&&player.wr.autoBuy) {
-            for (let i = 23; i < 24; i++) {
+            for (let i = 15; i < 16; i++) {
                 if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
                 if (canBuyBuyable('wrp', i)) {buyMaxBuyable('wrp', i)}
+                if (canBuyBuyable('wrmp', i)) {buyMaxBuyable('wrmp', i)}
+                if (canBuyBuyable('wrbp', i)) {buyMaxBuyable('wrbp', i)}
+                if (canBuyBuyable('wrsp', i)) {buyMaxBuyable('wrsp', i)}
+            }
+            for (let i = 17; i < 18; i++) {
+                if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
+                if (canBuyBuyable('wrp', i)) {buyMaxBuyable('wrp', i)}
+                if (canBuyBuyable('wrmp', i)) {buyMaxBuyable('wrmp', i)}
+                if (canBuyBuyable('wrbp', i)) {buyMaxBuyable('wrbp', i)}
+                if (canBuyBuyable('wrsp', i)) {buyMaxBuyable('wrsp', i)}
+            }
+            for (let i = 2; i < 6; i++) {
+                j = 10*i+3
+                if (canBuyBuyable('wr', j)) {buyMaxBuyable('wr', j)}
+                if (canBuyBuyable('wrp', j)) {buyMaxBuyable('wrp', j)}
+                if (canBuyBuyable('wrmp', j)) {buyMaxBuyable('wrmp', j)}
+                if (canBuyBuyable('wrbp', j)) {buyMaxBuyable('wrbp', j)}
+                if (canBuyBuyable('wrsp', j)) {buyMaxBuyable('wrsp', j)}
+            }
+            for (let i = 115; i < 116; i++) {
+                if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
+                if (canBuyBuyable('wrp', i)) {buyMaxBuyable('wrp', i)}
+                if (canBuyBuyable('wrmp', i)) {buyMaxBuyable('wrmp', i)}
+                if (canBuyBuyable('wrbp', i)) {buyMaxBuyable('wrbp', i)}
+                if (canBuyBuyable('wrsp', i)) {buyMaxBuyable('wrsp', i)}
+            }
+            for (let i = 117; i < 118; i++) {
+                if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
+                if (canBuyBuyable('wrp', i)) {buyMaxBuyable('wrp', i)}
+                if (canBuyBuyable('wrmp', i)) {buyMaxBuyable('wrmp', i)}
+                if (canBuyBuyable('wrbp', i)) {buyMaxBuyable('wrbp', i)}
+                if (canBuyBuyable('wrsp', i)) {buyMaxBuyable('wrsp', i)}
             }
             for (let i = 121; i < 126; i++) {
                 if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
                 if (canBuyBuyable('wrp', i)) {buyMaxBuyable('wrp', i)}
+                if (canBuyBuyable('wrmp', i)) {buyMaxBuyable('wrmp', i)}
+                if (canBuyBuyable('wrbp', i)) {buyMaxBuyable('wrbp', i)}
+                if (canBuyBuyable('wrsp', i)) {buyMaxBuyable('wrsp', i)}
+            }
+        }
+        if (hasMilestone('wr', 1)&&player.wr.autoBuy1) {
+            for (let i = 131; i < 134; i++) {
+                if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
+                if (canBuyBuyable('wrp', i)) {buyMaxBuyable('wrp', i)}
+                if (canBuyBuyable('wrmp', i)) {buyMaxBuyable('wrmp', i)}
+                if (canBuyBuyable('wrbp', i)) {buyMaxBuyable('wrbp', i)}
+                if (canBuyBuyable('wrsp', i)) {buyMaxBuyable('wrsp', i)}
+            }
+        }
+        if (hasMilestone('wr', 2)&&player.wr.autoBuy2) {
+            for (let i = 141; i < 146; i++) {
+                if (canBuyBuyable('wr', i)) {buyMaxBuyable('wr', i)}
             }
         }
     },
     buyables: {
         11: {
-            unlocked() {return false}, //replicanti count
+            unlocked() {return false}, //replicants count
             cost(x) {
                 return new Decimal(1)
             },
-            effect(x) { //replicanti speed from world repl
+            effect(x) { //replicants speed from world repl
 
                 return player.wr.points
             },
@@ -7675,9 +7885,9 @@ addLayer("wr", {
             cost(x) {
                 return new Decimal(1)
             },
-            effect(x) { //unsoftcapped replicanti speed for other layer
+            effect(x) { //unsoftcapped replicants speed for other layer
 
-                return multrepli
+                return {row1: multreplishare.times(buyableEffect('wr', 212)), row2: multreplishare.times(buyableEffect('wr', 212).sub(1).max(0))}
             },
             title() { return ""},
             display() { return ""},
@@ -7687,37 +7897,286 @@ addLayer("wr", {
             buyMax() {
             },
         },
-        23: {
-            unlocked() {return getBuyableAmount('wr', 211).gte(1)},
+        15: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
             cost(x) {
-                costTypewr23 = "normal"
-                costBasewr23 = new Decimal(1.35)
-                costExpwr23 = new Decimal(1.5)
-                costLimitwr23 = new Decimal('e1e4')
-                return player.buyablePrice(costTypewr23, new Decimal(x), costBasewr23, costExpwr23, costLimitwr23)
+                costTypewr15 = "asymptote"
+                costBasewr15 = new Decimal('e200')
+                costExpwr15 = new Decimal(1.9)
+                costLimitwr15 = layers.wr.buyables[15].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewr15, new Decimal(x), costBasewr15, costExpwr15, costLimitwr15)
             },
             effect(x) {
-                effBasewr23 = new Decimal(0.1)
-                effStackwr23 = new Decimal(x)
+                effBasewr15 = new Decimal(0.01)
+                effStackwr15 = new Decimal(x)
 
-                return Decimal.times(effBasewr23, effStackwr23).add(1)
+                return Decimal.times(effBasewr15, effStackwr15) 
             },
-            title() { return "world replication buyable 23"},
-            display() { return "add prestige point gain power by "+format(effBasewr23)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackwr23)+" <br> effect: "+format(this.effect())},
-            canAfford() { return player[this.layer].buyables[11].gte(this.cost()) },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication buyable 15"},
+            display() { return "add the bonus point gain power by "+format(effBasewr15)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr15)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
             buy() {
-                player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(this.cost())
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypewr23 == "asymptote")||player[this.layer].buyables[11].lte(1e10)) {
+                if ((costTypewr15 == "asymptote")||(costTypewr15 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
                 } else {
-                    if (player.buyableMaxPurchaseable(costTypewr23, player[this.layer].buyables[11], costBasewr23, costExpwr23, costLimitwr23).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr23, player[this.layer].buyables[11], costBasewr23, costExpwr23, costLimitwr23))
-                        if (player[this.layer].buyables[11].lt('e100')) {player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(player.buyablePrice(costTypewr23, player.buyableMaxPurchaseable(costTypewr23, player[this.layer].buyables[11], costBasewr23, costExpwr23, costLimitwr23), costBasewr23, costExpwr23, costLimitwr23))}
+                    if (player.buyableMaxPurchaseable(costTypewr15, player.wr.buyables[11], costBasewr15, costExpwr15, costLimitwr15).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr15, player.wr.buyables[11], costBasewr15, costExpwr15, costLimitwr15))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr15, player.buyableMaxPurchaseable(costTypewr15, player.wr.buyables[11], costBasewr15, costExpwr15, costLimitwr15), costBasewr15, costExpwr15, costLimitwr15))}
+                    }
+                }
+            },
+        },
+        17: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr17 = "asymptote"
+                costBasewr17 = new Decimal('e1000')
+                costExpwr17 = new Decimal(2.9)
+                costLimitwr17 = layers.wr.buyables[17].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewr17, new Decimal(x), costBasewr17, costExpwr17, costLimitwr17)
+            },
+            effect(x) {
+                effBasewr17 = new Decimal(0.1)
+                effStackwr17 = new Decimal(x)
+
+                return Decimal.times(effBasewr17, effStackwr17) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication buyable 17"},
+            display() { return "subtract the point fourth softcap by "+format(effBasewr17)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr17)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr17 == "asymptote")||(costTypewr17 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr17, player.wr.buyables[11], costBasewr17, costExpwr17, costLimitwr17).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr17, player.wr.buyables[11], costBasewr17, costExpwr17, costLimitwr17))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr17, player.buyableMaxPurchaseable(costTypewr17, player.wr.buyables[11], costBasewr17, costExpwr17, costLimitwr17), costBasewr17, costExpwr17, costLimitwr17))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(1)},
+            cost(x) {
+                costTypewr23 = "large"
+                costBasewr23 = new Decimal(1.2)
+                costExpwr23 = new Decimal(1.5)
+                costLimitwr23 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewr23, new Decimal(x), costBasewr23, costExpwr23, costLimitwr23)
+            },
+            effect(x) {
+                effBasewr23 = new Decimal(1.2)
+                effStackwr23 = new Decimal(x)
+
+                return Decimal.pow(effBasewr23, effStackwr23)
+            },
+            title() { return "world replication buyable 23"},
+            display() { return "multiply the prestige gain power "+format(effBasewr23)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr23 == "asymptote")||(costTypewr23 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr23, player.wr.buyables[11], costBasewr23, costExpwr23, costLimitwr23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr23, player.wr.buyables[11], costBasewr23, costExpwr23, costLimitwr23))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr23, player.buyableMaxPurchaseable(costTypewr23, player.wr.buyables[11], costBasewr23, costExpwr23, costLimitwr23), costBasewr23, costExpwr23, costLimitwr23))}
+                    }
+                }
+            },
+        },
+        33: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr33 = "large"
+                costBasewr33 = new Decimal(1.2)
+                costExpwr33 = new Decimal(1.5)
+                costLimitwr33 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewr33, new Decimal(x), costBasewr33, costExpwr33, costLimitwr33)
+            },
+            effect(x) {
+                effBasewr33 = new Decimal(1.2)
+                effStackwr33 = new Decimal(x)
+
+                return Decimal.pow(effBasewr33, effStackwr33) 
+            },
+            title() { return "world replication buyable 33"},
+            display() { return "multiply the metaprestige gain power "+format(effBasewr33)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr33 == "asymptote")||(costTypewr33 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr33, player.wr.buyables[11], costBasewr33, costExpwr33, costLimitwr33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr33, player.wr.buyables[11], costBasewr33, costExpwr33, costLimitwr33))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr33, player.buyableMaxPurchaseable(costTypewr33, player.wr.buyables[11], costBasewr33, costExpwr33, costLimitwr33), costBasewr33, costExpwr33, costLimitwr33))}
+                    }
+                }
+            },
+        },
+        43: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr43 = "large"
+                costBasewr43 = new Decimal(1.2)
+                costExpwr43 = new Decimal(1.5)
+                costLimitwr43 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewr43, new Decimal(x), costBasewr43, costExpwr43, costLimitwr43)
+            },
+            effect(x) {
+                effBasewr43 = new Decimal(1.2)
+                effStackwr43 = new Decimal(x)
+
+                return Decimal.pow(effBasewr43, effStackwr43) 
+            },
+            title() { return "world replication buyable 43"},
+            display() { return "multiply the buyabol gain power "+format(effBasewr43)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr43)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr43 == "asymptote")||(costTypewr43 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr43, player.wr.buyables[11], costBasewr43, costExpwr43, costLimitwr43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr43, player.wr.buyables[11], costBasewr43, costExpwr43, costLimitwr43))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr43, player.buyableMaxPurchaseable(costTypewr43, player.wr.buyables[11], costBasewr43, costExpwr43, costLimitwr43), costBasewr43, costExpwr43, costLimitwr43))}
+                    }
+                }
+            },
+        },
+        53: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr53 = "large"
+                costBasewr53 = new Decimal(1.2)
+                costExpwr53 = new Decimal(1.5)
+                costLimitwr53 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewr53, new Decimal(x), costBasewr53, costExpwr53, costLimitwr53)
+            },
+            effect(x) {
+                effBasewr53 = new Decimal(1.2)
+                effStackwr53 = new Decimal(x)
+
+                return Decimal.pow(effBasewr53, effStackwr53) 
+            },
+            title() { return "world replication buyable 53"},
+            display() { return "multiply the superprestige gain power by "+format(effBasewr53)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr53)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr53 == "asymptote")||(costTypewr53 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr53, player.wr.buyables[11], costBasewr53, costExpwr53, costLimitwr53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr53, player.wr.buyables[11], costBasewr53, costExpwr53, costLimitwr53))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr53, player.buyableMaxPurchaseable(costTypewr53, player.wr.buyables[11], costBasewr53, costExpwr53, costLimitwr53), costBasewr53, costExpwr53, costLimitwr53))}
+                    }
+                }
+            },
+        },
+        115: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr115 = "asymptote"
+                costBasewr115 = new Decimal('e200')
+                costExpwr115 = new Decimal(1.9)
+                costLimitwr115 = layers.wr.buyables[115].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewr115, new Decimal(x), costBasewr115, costExpwr115, costLimitwr115)
+            },
+            effect(x) {
+                effBasewr115 = new Decimal(0.01)
+                effStackwr115 = new Decimal(x)
+
+                return Decimal.times(effBasewr115, effStackwr115) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication buyable 115"},
+            display() { return "add the bonus point gain power by "+format(effBasewr115)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr115)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr115 == "asymptote")||(costTypewr115 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr115, player.wr.buyables[11], costBasewr115, costExpwr115, costLimitwr115).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr115, player.wr.buyables[11], costBasewr115, costExpwr115, costLimitwr115))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr115, player.buyableMaxPurchaseable(costTypewr115, player.wr.buyables[11], costBasewr115, costExpwr115, costLimitwr115), costBasewr115, costExpwr115, costLimitwr115))}
+                    }
+                }
+            },
+        },
+        117: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr117 = "asymptote"
+                costBasewr117 = new Decimal('e1000')
+                costExpwr117 = new Decimal(2.9)
+                costLimitwr117 = layers.wr.buyables[117].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewr117, new Decimal(x), costBasewr117, costExpwr117, costLimitwr117)
+            },
+            effect(x) {
+                effBasewr117 = new Decimal(0.1)
+                effStackwr117 = new Decimal(x)
+
+                return Decimal.times(effBasewr117, effStackwr117) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication buyable 117"},
+            display() { return "subtract the bonus point fourth softcap by "+format(effBasewr117)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr117)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost()) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr117 == "asymptote")||(costTypewr117 == "largeasymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr117, player.wr.buyables[11], costBasewr117, costExpwr117, costLimitwr117).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr117, player.wr.buyables[11], costBasewr117, costExpwr117, costLimitwr117))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr117, player.buyableMaxPurchaseable(costTypewr117, player.wr.buyables[11], costBasewr117, costExpwr117, costLimitwr117), costBasewr117, costExpwr117, costLimitwr117))}
                     }
                 }
             },
@@ -7726,19 +8185,19 @@ addLayer("wr", {
             unlocked() {return true},
             cost(x) {
                 costTypewr121 = "normal"
-                costBasewr121 = new Decimal(1.5)
+                costBasewr121 = new Decimal(1.2)
                 costExpwr121 = new Decimal(1.1)
                 costLimitwr121 = new Decimal('e1e4')
                 return player.buyablePrice(costTypewr121, new Decimal(x), costBasewr121, costExpwr121, costLimitwr121)
             },
             effect(x) {
-                effBasewr121 = new Decimal(0.01).times(buyableEffect('wr', 131)).times(buyableEffect('wrp', 131))
+                effBasewr121 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
                 effStackwr121 = new Decimal(x)
 
                 return Decimal.times(effBasewr121, effStackwr121)
             },
             title() { return "world replication buyable 121"},
-            display() { return "increase replicants production by "+format(effBasewr121)+" <br> cost: "+format(this.cost())+" replicanti <br> owned: "+format(effStackwr121)+" <br> effect: "+format(this.effect())},
+            display() { return "increase replicants production by "+format(effBasewr121)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr121)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].buyables[11].gte(this.cost().add(1)) },
             buy() {
                 player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(this.cost())
@@ -7761,19 +8220,19 @@ addLayer("wr", {
             unlocked() {return true},
             cost(x) {
                 costTypewr122 = "normal"
-                costBasewr122 = new Decimal(2)
+                costBasewr122 = new Decimal(1.4)
                 costExpwr122 = new Decimal(1.2)
                 costLimitwr122 = new Decimal('e1e4')
                 return player.buyablePrice(costTypewr122, new Decimal(x), costBasewr122, costExpwr122, costLimitwr122)
             },
             effect(x) {
-                effBasewr122 = new Decimal(0.01).times(buyableEffect('wr', 131)).times(buyableEffect('wrp', 131))
+                effBasewr122 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
                 effStackwr122 = new Decimal(x)
 
                 return Decimal.times(effBasewr122, effStackwr122)
             },
             title() { return "world replication buyable 122"},
-            display() { return "increase replicants production multiplier by "+format(effBasewr122)+" <br> cost: "+format(this.cost())+" replicanti <br> owned: "+format(effStackwr122)+" <br> effect: "+format(this.effect())},
+            display() { return "increase replicants production multiplier by "+format(effBasewr122)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr122)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].buyables[11].gte(this.cost().add(1)) },
             buy() {
                 player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(this.cost())
@@ -7796,19 +8255,19 @@ addLayer("wr", {
             unlocked() {return true},
             cost(x) {
                 costTypewr123 = "normal"
-                costBasewr123 = new Decimal(9)
-                costExpwr123 = new Decimal(1.4)
-                costLimitwr123 = new Decimal('e1e4')
+                costBasewr123 = new Decimal(10)
+                costExpwr123 = new Decimal(1.3)
+                costLimitwr123 = new Decimal('1e200')
                 return player.buyablePrice(costTypewr123, new Decimal(x), costBasewr123, costExpwr123, costLimitwr123)
             },
             effect(x) {
-                effBasewr123 = new Decimal(10).times(buyableEffect('wr', 131)).times(buyableEffect('wrp', 131))
+                effBasewr123 = new Decimal(10).pow(buyableEffect('wrte', 131)).pow(buyableEffect('wrte', 132))
                 effStackwr123 = new Decimal(x)
 
                 return Decimal.pow(effBasewr123, effStackwr123)
             },
             title() { return "world replication buyable 123"},
-            display() { return "delay first replicanti softcap start by "+format(effBasewr123)+"x <br> cost: "+format(this.cost())+" replicanti <br> owned: "+format(effStackwr123)+" <br> effect: "+format(this.effect())},
+            display() { return "delay first replicants softcap start by "+format(effBasewr123)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr123)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].buyables[11].gte(this.cost().add(1)) },
             buy() {
                 player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(this.cost())
@@ -7830,21 +8289,20 @@ addLayer("wr", {
         124: {
             unlocked() {return true},
             cost(x) {
-                costTypewr124 = "asymptote"
-                costBasewr124 = new Decimal(9)
+                costTypewr124 = "normal"
+                costBasewr124 = new Decimal(5)
                 costExpwr124 = new Decimal(1.4)
-                costLimitwr124 = layers.wr.buyables[124].purchaseLimit.add(1)
+                costLimitwr124 = new Decimal('1e100')
                 return player.buyablePrice(costTypewr124, new Decimal(x), costBasewr124, costExpwr124, costLimitwr124)
             },
             effect(x) {
-                effBasewr124 = new Decimal(0.01)
+                effBasewr124 = new Decimal(0.1)
                 effStackwr124 = new Decimal(x)
 
                 return Decimal.times(effBasewr124, effStackwr124)
             },
-            purchaseLimit: new Decimal(10),
             title() { return "world replication buyable 124"},
-            display() { return "subtract first replicanti softcap strength by "+format(effBasewr124)+" <br> cost: "+format(this.cost())+" replicanti <br> owned: "+format(effStackwr124)+" <br> effect: "+format(this.effect())},
+            display() { return "add first replicants softcap strength by "+format(effBasewr124)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr124)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].buyables[11].gte(this.cost()) },
             buy() {
                 player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(this.cost())
@@ -7867,20 +8325,20 @@ addLayer("wr", {
             unlocked() {return true},
             cost(x) {
                 costTypewr125 = "asymptote"
-                costBasewr125 = new Decimal(99)
-                costExpwr125 = new Decimal(1.3)
+                costBasewr125 = new Decimal(100)
+                costExpwr125 = new Decimal(2.2)
                 costLimitwr125 = layers.wr.buyables[125].purchaseLimit.add(1)
                 return player.buyablePrice(costTypewr125, new Decimal(x), costBasewr125, costExpwr125, costLimitwr125)
             },
             effect(x) {
-                effBasewr125 = new Decimal(0.02)
+                effBasewr125 = new Decimal(1.025)
                 effStackwr125 = new Decimal(x)
 
-                return Decimal.times(effBasewr125, effStackwr125).add(1)
+                return Decimal.pow(effBasewr125, effStackwr125)
             },
             purchaseLimit: new Decimal(50),
             title() { return "world replication buyable 125"},
-            display() { return "increase the first replicanti softcap strength divisor by "+format(effBasewr125)+" <br> cost: "+format(this.cost())+" replicanti <br> owned: "+format(effStackwr125)+" <br> effect: "+format(this.effect())},
+            display() { return "divide the first replicants softcap strength by "+format(effBasewr125)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr125)+" <br> effect: "+format(this.effect())},
             canAfford() { return player[this.layer].buyables[11].gte(this.cost()) },
             buy() {
                 player[this.layer].buyables[11] = player[this.layer].buyables[11].sub(this.cost())
@@ -7909,27 +8367,277 @@ addLayer("wr", {
                 return player.buyablePrice(costTypewr131, new Decimal(x), costBasewr131, costExpwr131, costLimitwr131)
             },
             effect(x) {
-                effBasewr131 = new Decimal(0.01)
+                effBasewr131 = new Decimal(0.01).times(buyableEffect('wrte', 132))
                 effStackwr131 = new Decimal(x)
 
-                return Decimal.times(effBasewr131, effStackwr131).add(1)
+                return Decimal.times(effBasewr131, effStackwr131)
             },
-            title() { return "world replication prestige buyable 131"},
-            display() { return "multiply buyables 121 to 123 by "+format(effBasewr131)+"x <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwr131)+" <br> effect: "+format(this.effect())},
-            canAfford() { return player.p.points.gte(this.cost().add(1)) },
+            title() { return "world replication buyable 131"},
+            display() { return "add buyables 121 to 123 effect multiplier by "+format(effBasewr131)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr131)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
             buy() {
-                player.p.points = player.p.points.sub(this.cost())
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypewr131 == "asymptote")||player.p.points.lte(1e10)) {
+                if ((costTypewr131 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
                 } else {
-                    if (player.buyableMaxPurchaseable(costTypewr131, player.p.points, costBasewr131, costExpwr131, costLimitwr131).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr131, player.p.points, costBasewr131, costExpwr131, costLimitwr131))
-                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewr131, player.buyableMaxPurchaseable(costTypewr131, player.p.points, costBasewr131, costExpwr131, costLimitwr131), costBasewr131, costExpwr131, costLimitwr131))}
+                    if (player.buyableMaxPurchaseable(costTypewr131, player.wr.buyables[11], costBasewr131, costExpwr131, costLimitwr131).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr131, player.wr.buyables[11], costBasewr131, costExpwr131, costLimitwr131))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr131, player.buyableMaxPurchaseable(costTypewr131, player.wr.buyables[11], costBasewr131, costExpwr131, costLimitwr131), costBasewr131, costExpwr131, costLimitwr131))}
+                    }
+                }
+            },
+        },
+        132: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr132 = "large"
+                costBasewr132 = new Decimal('1e5')
+                costExpwr132 = new Decimal(0.3)
+                costLimitwr132 = new Decimal('e1e8')
+                return player.buyablePrice(costTypewr132, new Decimal(x), costBasewr132, costExpwr132, costLimitwr132)
+            },
+            effect(x) {
+                effBasewr132 = new Decimal(0.01)
+                effStackwr132 = new Decimal(x)
+
+                return Decimal.times(effBasewr132, effStackwr132)
+            },
+            title() { return "world replication buyable 132"},
+            display() { return "add buyables 121 to 123 and 131 effect multiplier by "+format(effBasewr132)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr132)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr132 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr132, player.wr.buyables[11], costBasewr132, costExpwr132, costLimitwr132).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr132, player.wr.buyables[11], costBasewr132, costExpwr132, costLimitwr132))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr132, player.buyableMaxPurchaseable(costTypewr132, player.wr.buyables[11], costBasewr132, costExpwr132, costLimitwr132), costBasewr132, costExpwr132, costLimitwr132))}
+                    }
+                }
+            },
+        },
+        133: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr133 = "asymptote"
+                costBasewr133 = new Decimal('e2e7')
+                costExpwr133 = new Decimal(3)
+                costLimitwr133 = layers.wr.buyables[133].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewr133, new Decimal(x), costBasewr133, costExpwr133, costLimitwr133)
+            },
+            effect(x) {
+                effBasewr133 = new Decimal(1.05)
+                effStackwr133 = new Decimal(x)
+
+                return Decimal.pow(effBasewr133, effStackwr133)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "world replication buyable 133"},
+            display() { return "divide the first replicanti softcap strength by "+format(effBasewr133)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr133)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr133 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr133, player.wr.buyables[11], costBasewr133, costExpwr133, costLimitwr133).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr133, player.wr.buyables[11], costBasewr133, costExpwr133, costLimitwr133))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr133, player.buyableMaxPurchaseable(costTypewr133, player.wr.buyables[11], costBasewr133, costExpwr133, costLimitwr133), costBasewr133, costExpwr133, costLimitwr133))}
+                    }
+                }
+            },
+        },
+        141: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(1)},
+            cost(x) {
+                costTypewr141 = "normal"
+                costBasewr141 = new Decimal('e1e6')
+                costExpwr141 = new Decimal(3)
+                costLimitwr141 = new Decimal('e1e7')                 // 1 free buyables
+                return player.buyablePrice(costTypewr141, new Decimal(x).sub(1), costBasewr141, costExpwr141, costLimitwr141)
+            },
+            effect(x) {
+                effBasewr141 = player.points.max(1).times(player.b.points.max(1))
+                effStackwr141 = new Decimal(x)
+
+                return Decimal.pow(effBasewr141, effStackwr141)
+            },
+            title() { return "world replication buyable 141"},
+            display() { return "multiply replication speed by (points * bonus points), currently "+format(effBasewr141)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr141)+" <br> effect: "+format(this.effect())+"<br> Starting from buyable row 14 won't be replicated and multiplier won't be shared to lower layers. "},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr141 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr141, player.wr.buyables[11], costBasewr141, costExpwr141, costLimitwr141).add(1).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr141, player.wr.buyables[11], costBasewr141, costExpwr141, costLimitwr141).add(1))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr141, player.buyableMaxPurchaseable(costTypewr141, player.wr.buyables[11], costBasewr141, costExpwr141, costLimitwr141).sub(1), costBasewr141, costExpwr141, costLimitwr141))}
+                    }
+                }
+            },
+        },
+        142: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(1)},
+            cost(x) {
+                costTypewr142 = "normal"
+                costBasewr142 = new Decimal('e3e6')
+                costExpwr142 = new Decimal(3)
+                costLimitwr142 = new Decimal('e1e7')              //    1 free level on this 
+                return player.buyablePrice(costTypewr142, new Decimal(x).sub(1), costBasewr142, costExpwr142, costLimitwr142)
+            },
+            effect(x) {
+                effBasewr142 = player.p.points.max('1e10').log10().log10()
+                if (effBasewr142.gte(10)) {effBasewr142 = effBasewr142.log10().pow(0.5).pow10()}
+                effStackwr142 = new Decimal(x)
+
+                return Decimal.pow(effBasewr142, effStackwr142)
+            },
+            title() { return "world replication buyable 142"},
+            display() { return "multiply replication speed by 10^(log(log(log(prestige points)))^0.5), currently "+format(effBasewr142)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr142)+" <br> effect: "+format(this.effect())+"<br> Starting from buyable row 14 won't be replicated. "},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr142 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr142, player.wr.buyables[11], costBasewr142, costExpwr142, costLimitwr142).add(1).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr142, player.wr.buyables[11], costBasewr142, costExpwr142, costLimitwr142).add(1))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr142, player.buyableMaxPurchaseable(costTypewr142, player.wr.buyables[11], costBasewr142, costExpwr142, costLimitwr142).sub(1), costBasewr142, costExpwr142, costLimitwr142))}
+                    }
+                }
+            },
+        },
+        143: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr143 = "normal"
+                costBasewr143 = new Decimal('e3e6')
+                costExpwr143 = new Decimal(3)
+                costLimitwr143 = new Decimal('e1e7')  
+                return player.buyablePrice(costTypewr143, new Decimal(x), costBasewr143, costExpwr143, costLimitwr143)
+            },
+            effect(x) {
+                effBasewr143 = player.mp.points.max('1e10').log10().log10()
+                if (effBasewr143.gte(10)) {effBasewr143 = effBasewr143.log10().pow(0.5).pow10()}
+                effStackwr143 = new Decimal(x)
+
+                return Decimal.pow(effBasewr143, effStackwr143)
+            },
+            title() { return "world replication buyable 143"},
+            display() { return "multiply replication speed by 10^(log(log(log(metaprestige points)))^0.5), currently "+format(effBasewr143)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr143)+" <br> effect: "+format(this.effect())+"<br> Starting from buyable row 14 won't be replicated. "},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr143 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr143, player.wr.buyables[11], costBasewr143, costExpwr143, costLimitwr143).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr143, player.wr.buyables[11], costBasewr143, costExpwr143, costLimitwr143))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr143, player.buyableMaxPurchaseable(costTypewr143, player.wr.buyables[11], costBasewr143, costExpwr143, costLimitwr143), costBasewr143, costExpwr143, costLimitwr143))}
+                    }
+                }
+            },
+        },
+        144: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr144 = "normal"
+                costBasewr144 = new Decimal('e3e6')
+                costExpwr144 = new Decimal(3)
+                costLimitwr144 = new Decimal('e1e7') 
+                return player.buyablePrice(costTypewr144, new Decimal(x), costBasewr144, costExpwr144, costLimitwr144)
+            },
+            effect(x) {
+                effBasewr144 = player.bp.points.max('1e10').log10().log10()
+                if (effBasewr144.gte(10)) {effBasewr144 = effBasewr144.log10().pow(0.5).pow10()}
+                effStackwr144 = new Decimal(x)
+
+                return Decimal.pow(effBasewr144, effStackwr144)
+            },
+            title() { return "world replication buyable 144"},
+            display() { return "multiply replication speed by 10^(log(log(log(buyabol points)))^0.5), currently "+format(effBasewr144)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr144)+" <br> effect: "+format(this.effect())+"<br> Starting from buyable row 14 won't be replicated. "},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr144 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr144, player.wr.buyables[11], costBasewr144, costExpwr144, costLimitwr144).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr144, player.wr.buyables[11], costBasewr144, costExpwr144, costLimitwr144))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr144, player.buyableMaxPurchaseable(costTypewr144, player.wr.buyables[11], costBasewr144, costExpwr144, costLimitwr144), costBasewr144, costExpwr144, costLimitwr144))}
+                    }
+                }
+            },
+        },
+        145: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewr145 = "normal"
+                costBasewr145 = new Decimal('e3e6')
+                costExpwr145 = new Decimal(3)
+                costLimitwr145 = new Decimal('e1e7') 
+                return player.buyablePrice(costTypewr145, new Decimal(x), costBasewr145, costExpwr145, costLimitwr145)
+            },
+            effect(x) {
+                effBasewr145 = player.sp.points.max('1e10').log10().log10()
+                if (effBasewr145.gte(10)) {effBasewr145 = effBasewr145.log10().pow(0.5).pow10()}
+                effStackwr145 = new Decimal(x)
+
+                return Decimal.pow(effBasewr145, effStackwr145)
+            },
+            title() { return "world replication buyable 145"},
+            display() { return "multiply replication speed by 10^(log(log(log(superprestige points)))^0.5), currently "+format(effBasewr145)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwr145)+" <br> effect: "+format(this.effect())+"<br> Starting from buyable row 14 won't be replicated. "},
+            canAfford() { return player.wr.buyables[11].gte(this.cost().add(1)) },
+            buy() {
+                player.wr.buyables[11] = player.wr.buyables[11].sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewr145 == "asymptote")||player.wr.buyables[11].lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewr145, player.wr.buyables[11], costBasewr145, costExpwr145, costLimitwr145).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewr145, player.wr.buyables[11], costBasewr145, costExpwr145, costLimitwr145))
+                        if (player.wr.buyables[11].lt('e100')) {player.wr.buyables[11] = player.wr.buyables[11].sub(player.buyablePrice(costTypewr145, player.buyableMaxPurchaseable(costTypewr145, player.wr.buyables[11], costBasewr145, costExpwr145, costLimitwr145), costBasewr145, costExpwr145, costLimitwr145))}
                     }
                 }
             },
@@ -7940,7 +8648,7 @@ addLayer("wr", {
                 costTypewr211 = "large"
                 costBasewr211 = new Decimal(10)
                 costExpwr211 = new Decimal(2)
-                costLimitwr211 = new Decimal('e1e4')
+                costLimitwr211 = new Decimal('e10')
                 return player.buyablePrice(costTypewr211, new Decimal(x), costBasewr211, costExpwr211, costLimitwr211)
             },
             effect(x) {
@@ -7975,7 +8683,7 @@ addLayer("wr", {
                 costTypewr211 = "large"
                 costBasewr211 = new Decimal(100)
                 costExpwr211 = new Decimal(2)
-                costLimitwr211 = new Decimal('e1e4')
+                costLimitwr211 = new Decimal('e100')
                 return player.buyablePrice(costTypewr211, new Decimal(x), costBasewr211, costExpwr211, costLimitwr211)
             },
             effect(x) {
@@ -8010,15 +8718,21 @@ addLayer("wr", {
     infoboxes: {
         11: {
             body() {
-                textwr = "You have "+format(getBuyableAmount('wr', 11))+" replicants, producing themselves at a rate of "+format(multrepli)+"/s"
-                if (player.wr.buyables[212].gte(1)) {textwr += "<br> Your resources up to row "+format(getBuyableAmount('wr', 212).min(2))+" are also producing themselves at this rate"}
+                textwr = "You have "+format(getBuyableAmount('wr', 11))+" replicants"
                 textwr += "<br> you gain "+format(player.wr.buyables[11].times(multrepliAfterPenalty))+" replicants/s, which is "
                 if (multrepliAfterPenalty.gte(10)) {textwr += "+"+format(multrepliAfterPenalty.log(10))+" OoM <br>"} else {textwr += format(multrepliAfterPenalty)+"x <br>"}
                 textwr += " of your replicants"
-                if (player.wr.buyables[11].gte(firstRepliSoftcapStart)) {textwr += "<br> After "+format(firstRepliSoftcapStart)+" replicants, slow down replicants growth by replicants^"+format(firstRepliSoftcapStrength)+". Currently "
+                if (player.wr.buyables[11].gte(firstRepliSoftcapStart)) {textwr += "<br> After "+format(firstRepliSoftcapStart)+" replicants, slow down replicants growth by replicants^(1/"+format(firstRepliSoftcapStrengthInverse)+"). Currently "
                     if (firstRepliPenalty.gte(10)) {textwr += "-"+format(firstRepliPenalty.log(10))+" OoM"} else {textwr += format(firstRepliPenalty)+"x"}
                 }
-                textwr += "<br> Your world replications are powering replicant softcap start by ^"+format(buyableEffect('wr', 11))
+                textwr += "<br> Your world replications are multiplying replicant gain by x"+format(buyableEffect('wr', 11))
+
+                if (player.wr.buyables[212].gte(1)) {textwr += "<br> <br> Your row 1 resources are producing themselves at a rate of "
+                    if (buyableEffect('wr', 13).row1.gte(10)) {textwr += "+"+format(buyableEffect('wr', 13).row1.log(10))+" OoM/s"} else {textwr += format(buyableEffect('wr', 13).row1)+"x/s"}
+                }
+                if (player.wr.buyables[212].gte(2)) {textwr += "<br> Your row 2 resources are producing themselves at a rate of "
+                    if (buyableEffect('wr', 13).row2.gte(10)) {textwr += "+"+format(buyableEffect('wr', 13).row2.log(10))+" OoM/s"} else {textwr += format(buyableEffect('wr', 13).row2)+"x/s"}
+                }
                 return textwr
             }
         }
@@ -8028,12 +8742,12 @@ addLayer("wr", {
 addLayer("wrp", {
     name: "World Replication Prestige", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "WRP", // This appears on the layer's node. Default is the id with the first letter capitalized
-    position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
         unlocked() {getBuyableAmount('wr', 211).gte(1)} ,
 		points: new Decimal(0),
     }},
-    color: "#ef5a5a",
+    position: 1,
+    color: "#d05050",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "world replication prestige", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
@@ -8064,32 +8778,105 @@ addLayer("wrp", {
     row: 6, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
     ],
-    layerShown(){return getBuyableAmount('wr', 211).gte(1)},
+    layerShown(){return false},
     buyables: {
-        23: {
-            unlocked() {return getBuyableAmount('wr', 211).gte(1)},
+        15: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
             cost(x) {
-                costTypewrp23 = "normal"
-                costBasewrp23 = new Decimal(1.35)
-                costExpwrp23 = new Decimal(1.5)
-                costLimitwrp23 = new Decimal('e1e4')
-                return player.buyablePrice(costTypewrp23, new Decimal(x), costBasewrp23, costExpwrp23, costLimitwrp23)
+                costTypewrp15 = "asymptote"
+                costBasewrp15 = new Decimal('e200')
+                costExpwrp15 = new Decimal(1.9)
+                costLimitwrp15 = layers.wrp.buyables[15].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp15, new Decimal(x), costBasewrp15, costExpwrp15, costLimitwrp15)
             },
             effect(x) {
-                effBasewrp23 = new Decimal(0.1)
-                effStackwrp23 = new Decimal(x)
+                effBasewrp15 = new Decimal(0.01)
+                effStackwrp15 = new Decimal(x)
 
-                return Decimal.times(effBasewrp23, effStackwrp23).add(1)
+                return Decimal.times(effBasewrp15, effStackwrp15) 
             },
-            title() { return "world replication prestige buyable 23"},
-            display() { return "add prestige point gain power by "+format(effBasewrp23)+" <br> cost: "+format(this.cost())+" <br> owned: "+format(effStackwrp23)+" <br> effect: "+format(this.effect())},
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication prestige buyable 15"},
+            display() { return "add the point gain power by "+format(effBasewrp15)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp15)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.p.points.gte(this.cost()) },
             buy() {
                 player.p.points = player.p.points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypewrp23 == "asymptote")||player.p.points.lte(1e10)) {
+                if ((costTypewrp15 == "asymptote")||(costTypewrp15 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp15, player.p.points, costBasewrp15, costExpwrp15, costLimitwrp15).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp15, player.p.points, costBasewrp15, costExpwrp15, costLimitwrp15))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp15, player.buyableMaxPurchaseable(costTypewrp15, player.p.points, costBasewrp15, costExpwrp15, costLimitwrp15), costBasewrp15, costExpwrp15, costLimitwrp15))}
+                    }
+                }
+            },
+        },
+        17: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp17 = "asymptote"
+                costBasewrp17 = new Decimal('e1000')
+                costExpwrp17 = new Decimal(2.9)
+                costLimitwrp17 = layers.wrp.buyables[17].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp17, new Decimal(x), costBasewrp17, costExpwrp17, costLimitwrp17)
+            },
+            effect(x) {
+                effBasewrp17 = new Decimal(0.1)
+                effStackwrp17 = new Decimal(x)
+
+                return Decimal.times(effBasewrp17, effStackwrp17) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication prestige buyable 17"},
+            display() { return "subtract the point fourth softcap by "+format(effBasewrp17)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp17)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp17 == "asymptote")||(costTypewrp17 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp17, player.p.points, costBasewrp17, costExpwrp17, costLimitwrp17).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp17, player.p.points, costBasewrp17, costExpwrp17, costLimitwrp17))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp17, player.buyableMaxPurchaseable(costTypewrp17, player.p.points, costBasewrp17, costExpwrp17, costLimitwrp17), costBasewrp17, costExpwrp17, costLimitwrp17))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrp23 = "large"
+                costBasewrp23 = new Decimal(1.2)
+                costExpwrp23 = new Decimal(1.5)
+                costLimitwrp23 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrp23, new Decimal(x), costBasewrp23, costExpwrp23, costLimitwrp23)
+            },
+            effect(x) {
+                effBasewrp23 = new Decimal(1.2)
+                effStackwrp23 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp23, effStackwrp23)
+            },
+            
+            title() { return "world replication prestige buyable 23"},
+            display() { return "multiply the prestige gain power "+format(effBasewrp23)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp23 == "asymptote")||(costTypewrp23 == "largeasymptote")||player.p.points.lte(1e10)) {
                     while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
@@ -8101,17 +8888,197 @@ addLayer("wrp", {
                 }
             },
         },
+        33: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp33 = "large"
+                costBasewrp33 = new Decimal(1.2)
+                costExpwrp33 = new Decimal(1.5)
+                costLimitwrp33 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrp33, new Decimal(x), costBasewrp33, costExpwrp33, costLimitwrp33)
+            },
+            effect(x) {
+                effBasewrp33 = new Decimal(1.2)
+                effStackwrp33 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp33, effStackwrp33) 
+            },
+            
+            title() { return "world replication prestige buyable 33"},
+            display() { return "multiply the metaprestige "+format(effBasewrp33)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp33 == "asymptote")||(costTypewrp33 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp33, player.p.points, costBasewrp33, costExpwrp33, costLimitwrp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp33, player.p.points, costBasewrp33, costExpwrp33, costLimitwrp33))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp33, player.buyableMaxPurchaseable(costTypewrp33, player.p.points, costBasewrp33, costExpwrp33, costLimitwrp33), costBasewrp33, costExpwrp33, costLimitwrp33))}
+                    }
+                }
+            },
+        },
+        43: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp43 = "large"
+                costBasewrp43 = new Decimal(1.2)
+                costExpwrp43 = new Decimal(1.5)
+                costLimitwrp43 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrp43, new Decimal(x), costBasewrp43, costExpwrp43, costLimitwrp43)
+            },
+            effect(x) {
+                effBasewrp43 = new Decimal(1.2)
+                effStackwrp43 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp43, effStackwrp43) 
+            },
+            
+            title() { return "world replication prestige buyable 43"},
+            display() { return "multiply the buyabol gain power "+format(effBasewrp43)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp43)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp43 == "asymptote")||(costTypewrp43 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp43, player.p.points, costBasewrp43, costExpwrp43, costLimitwrp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp43, player.p.points, costBasewrp43, costExpwrp43, costLimitwrp43))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp43, player.buyableMaxPurchaseable(costTypewrp43, player.p.points, costBasewrp43, costExpwrp43, costLimitwrp43), costBasewrp43, costExpwrp43, costLimitwrp43))}
+                    }
+                }
+            },
+        },
+        53: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp53 = "large"
+                costBasewrp53 = new Decimal(1.2)
+                costExpwrp53 = new Decimal(1.5)
+                costLimitwrp53 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrp53, new Decimal(x), costBasewrp53, costExpwrp53, costLimitwrp53)
+            },
+            effect(x) {
+                effBasewrp53 = new Decimal(1.2)
+                effStackwrp53 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp53, effStackwrp53) 
+            },
+            
+            title() { return "world replication prestige buyable 53"},
+            display() { return "multiply the superprestige gain power by "+format(effBasewrp53)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp53)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp53 == "asymptote")||(costTypewrp53 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp53, player.p.points, costBasewrp53, costExpwrp53, costLimitwrp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp53, player.p.points, costBasewrp53, costExpwrp53, costLimitwrp53))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp53, player.buyableMaxPurchaseable(costTypewrp53, player.p.points, costBasewrp53, costExpwrp53, costLimitwrp53), costBasewrp53, costExpwrp53, costLimitwrp53))}
+                    }
+                }
+            },
+        },
+        115: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp115 = "asymptote"
+                costBasewrp115 = new Decimal('e200')
+                costExpwrp115 = new Decimal(1.9)
+                costLimitwrp115 = layers.wrp.buyables[115].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp115, new Decimal(x), costBasewrp115, costExpwrp115, costLimitwrp115)
+            },
+            effect(x) {
+                effBasewrp115 = new Decimal(0.01)
+                effStackwrp115 = new Decimal(x)
+
+                return Decimal.times(effBasewrp115, effStackwrp115) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication prestige buyable 115"},
+            display() { return "add the bonus point gain power by "+format(effBasewrp115)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp115)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp115 == "asymptote")||(costTypewrp115 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp115, player.p.points, costBasewrp115, costExpwrp115, costLimitwrp115).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp115, player.p.points, costBasewrp115, costExpwrp115, costLimitwrp115))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp115, player.buyableMaxPurchaseable(costTypewrp115, player.p.points, costBasewrp115, costExpwrp115, costLimitwrp115), costBasewrp115, costExpwrp115, costLimitwrp115))}
+                    }
+                }
+            },
+        },
+        117: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp117 = "asymptote"
+                costBasewrp117 = new Decimal('e1000')
+                costExpwrp117 = new Decimal(2.9)
+                costLimitwrp117 = layers.wrp.buyables[117].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp117, new Decimal(x), costBasewrp117, costExpwrp117, costLimitwrp117)
+            },
+            effect(x) {
+                effBasewrp117 = new Decimal(0.1)
+                effStackwrp117 = new Decimal(x)
+
+                return Decimal.times(effBasewrp117, effStackwrp117) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication prestige buyable 117"},
+            display() { return "subtract the bonus point fourth softcap by "+format(effBasewrp117)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp117)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost()) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp117 == "asymptote")||(costTypewrp117 == "largeasymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp117, player.p.points, costBasewrp117, costExpwrp117, costLimitwrp117).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp117, player.p.points, costBasewrp117, costExpwrp117, costLimitwrp117))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp117, player.buyableMaxPurchaseable(costTypewrp117, player.p.points, costBasewrp117, costExpwrp117, costLimitwrp117), costBasewrp117, costExpwrp117, costLimitwrp117))}
+                    }
+                }
+            },
+        },
         121: {
             unlocked() {return true},
             cost(x) {
                 costTypewrp121 = "normal"
-                costBasewrp121 = new Decimal(1.5)
+                costBasewrp121 = new Decimal(1.2)
                 costExpwrp121 = new Decimal(1.1)
                 costLimitwrp121 = new Decimal('e1e4')
                 return player.buyablePrice(costTypewrp121, new Decimal(x), costBasewrp121, costExpwrp121, costLimitwrp121)
             },
             effect(x) {
-                effBasewrp121 = new Decimal(0.01).times(buyableEffect('wr', 131)).times(buyableEffect('wrp', 131))
+                effBasewrp121 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
                 effStackwrp121 = new Decimal(x)
 
                 return Decimal.times(effBasewrp121, effStackwrp121)
@@ -8140,13 +9107,13 @@ addLayer("wrp", {
             unlocked() {return true},
             cost(x) {
                 costTypewrp122 = "normal"
-                costBasewrp122 = new Decimal(2)
+                costBasewrp122 = new Decimal(1.4)
                 costExpwrp122 = new Decimal(1.2)
                 costLimitwrp122 = new Decimal('e1e4')
                 return player.buyablePrice(costTypewrp122, new Decimal(x), costBasewrp122, costExpwrp122, costLimitwrp122)
             },
             effect(x) {
-                effBasewrp122 = new Decimal(0.01).times(buyableEffect('wr', 131)).times(buyableEffect('wrp', 131))
+                effBasewrp122 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
                 effStackwrp122 = new Decimal(x)
 
                 return Decimal.times(effBasewrp122, effStackwrp122)
@@ -8175,19 +9142,19 @@ addLayer("wrp", {
             unlocked() {return true},
             cost(x) {
                 costTypewrp123 = "normal"
-                costBasewrp123 = new Decimal(9)
-                costExpwrp123 = new Decimal(1.4)
-                costLimitwrp123 = new Decimal('e1e4')
+                costBasewrp123 = new Decimal(10)
+                costExpwrp123 = new Decimal(1.3)
+                costLimitwrp123 = new Decimal('1e200')
                 return player.buyablePrice(costTypewrp123, new Decimal(x), costBasewrp123, costExpwrp123, costLimitwrp123)
             },
             effect(x) {
-                effBasewrp123 = new Decimal(10).times(buyableEffect('wr', 131)).times(buyableEffect('wrp', 131))
+                effBasewrp123 = new Decimal(10).pow(buyableEffect('wrte', 131)).pow(buyableEffect('wrte', 132))
                 effStackwrp123 = new Decimal(x)
 
                 return Decimal.pow(effBasewrp123, effStackwrp123)
             },
             title() { return "world replication buyable 123"},
-            display() { return "delay first replicanti softcap start by "+format(effBasewrp123)+"x <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp123)+" <br> effect: "+format(this.effect())},
+            display() { return "delay first replicants softcap start by "+format(effBasewrp123)+"x <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp123)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.p.points.gte(this.cost().add(1)) },
             buy() {
                 player.p.points = player.p.points.sub(this.cost())
@@ -8209,21 +9176,20 @@ addLayer("wrp", {
         124: {
             unlocked() {return true},
             cost(x) {
-                costTypewrp124 = "asymptote"
-                costBasewrp124 = new Decimal(9)
+                costTypewrp124 = "normal"
+                costBasewrp124 = new Decimal(5)
                 costExpwrp124 = new Decimal(1.4)
-                costLimitwrp124 = layers.wrp.buyables[124].purchaseLimit.add(1)
+                costLimitwrp124 = new Decimal('1e100')
                 return player.buyablePrice(costTypewrp124, new Decimal(x), costBasewrp124, costExpwrp124, costLimitwrp124)
             },
             effect(x) {
-                effBasewrp124 = new Decimal(0.01)
+                effBasewrp124 = new Decimal(0.1)
                 effStackwrp124 = new Decimal(x)
 
                 return Decimal.times(effBasewrp124, effStackwrp124)
             },
-            purchaseLimit: new Decimal(10),
             title() { return "world replication prestige buyable 124"},
-            display() { return "subtract first replicanti softcap strength by "+format(effBasewrp124)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp124)+" <br> effect: "+format(this.effect())},
+            display() { return "add first replicants softcap strength by "+format(effBasewrp124)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp124)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.p.points.gte(this.cost()) },
             buy() {
                 player.p.points = player.p.points.sub(this.cost())
@@ -8246,20 +9212,20 @@ addLayer("wrp", {
             unlocked() {return true},
             cost(x) {
                 costTypewrp125 = "asymptote"
-                costBasewrp125 = new Decimal(99)
-                costExpwrp125 = new Decimal(1.3)
+                costBasewrp125 = new Decimal(100)
+                costExpwrp125 = new Decimal(2.2)
                 costLimitwrp125 = layers.wrp.buyables[125].purchaseLimit.add(1)
                 return player.buyablePrice(costTypewrp125, new Decimal(x), costBasewrp125, costExpwrp125, costLimitwrp125)
             },
             effect(x) {
-                effBasewrp125 = new Decimal(0.02)
+                effBasewrp125 = new Decimal(1.025)
                 effStackwrp125 = new Decimal(x)
 
-                return Decimal.times(effBasewrp125, effStackwrp125).add(1)
+                return Decimal.pow(effBasewrp125, effStackwrp125)
             },
             purchaseLimit: new Decimal(50),
             title() { return "world replication prestige buyable 125"},
-            display() { return "increase the first replicanti softcap strength divisor by "+format(effBasewrp125)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp125)+" <br> effect: "+format(this.effect())},
+            display() { return "divide the first replicants softcap strength by "+format(effBasewrp125)+" <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp125)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.p.points.gte(this.cost()) },
             buy() {
                 player.p.points = player.p.points.sub(this.cost())
@@ -8284,17 +9250,17 @@ addLayer("wrp", {
                 costTypewrp131 = "normal"
                 costBasewrp131 = new Decimal(1e10)
                 costExpwrp131 = new Decimal(3)
-                costLimitwrp131 = new Decimal('e1e4')
+                costLimitwrp131 = new Decimal('e1e6')
                 return player.buyablePrice(costTypewrp131, new Decimal(x), costBasewrp131, costExpwrp131, costLimitwrp131)
             },
             effect(x) {
-                effBasewrp131 = new Decimal(0.01)
+                effBasewrp131 = new Decimal(0.01).times(buyableEffect('wrte', 132))
                 effStackwrp131 = new Decimal(x)
 
-                return Decimal.times(effBasewrp131, effStackwrp131).add(1)
+                return Decimal.times(effBasewrp131, effStackwrp131)
             },
             title() { return "world replication prestige buyable 131"},
-            display() { return "multiply buyables 121 to 123 by "+format(effBasewrp131)+"x <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp131)+" <br> effect: "+format(this.effect())},
+            display() { return "add buyables 121 to 123 effect multiplier by "+format(effBasewrp131)+"x <br> cost: "+format(this.cost())+" prestige points <br> owned: "+format(effStackwrp131)+" <br> effect: "+format(this.effect())},
             canAfford() { return player.p.points.gte(this.cost().add(1)) },
             buy() {
                 player.p.points = player.p.points.sub(this.cost())
@@ -8311,6 +9277,2178 @@ addLayer("wrp", {
                         if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp131, player.buyableMaxPurchaseable(costTypewrp131, player.p.points, costBasewrp131, costExpwrp131, costLimitwrp131), costBasewrp131, costExpwrp131, costLimitwrp131))}
                     }
                 }
+            },
+        },        
+        132: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp132 = "large"
+                costBasewrp132 = new Decimal('1e5')
+                costExpwrp132 = new Decimal(0.3)
+                costLimitwrp132 = new Decimal('e1e8')
+                return player.buyablePrice(costTypewrp132, new Decimal(x), costBasewrp132, costExpwrp132, costLimitwrp132)
+            },
+            effect(x) {
+                effBasewrp132 = new Decimal(0.01)
+                effStackwrp132 = new Decimal(x)
+
+                return Decimal.times(effBasewrp132, effStackwrp132)
+            },
+            title() { return "world replication prestige prestige buyable 132"},
+            display() { return "add buyables 121 to 123 and 131 effect multiplier by "+format(effBasewrp132)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp132)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost().add(1)) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp132 == "asymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp132, player.p.points, costBasewrp132, costExpwrp132, costLimitwrp132).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp132, player.p.points, costBasewrp132, costExpwrp132, costLimitwrp132))
+                        if (player.wr.buyables[11].lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp132, player.buyableMaxPurchaseable(costTypewrp132, player.p.points, costBasewrp132, costExpwrp132, costLimitwrp132), costBasewrp132, costExpwrp132, costLimitwrp132))}
+                    }
+                }
+            },
+        },
+        133: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp133 = "asymptote"
+                costBasewrp133 = new Decimal('e2e7')
+                costExpwrp133 = new Decimal(3)
+                costLimitwrp133 = layers.wrp.buyables[133].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp133, new Decimal(x), costBasewrp133, costExpwrp133, costLimitwrp133)
+            },
+            effect(x) {
+                effBasewrp133 = new Decimal(1.05)
+                effStackwrp133 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp133, effStackwrp133)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "world replication prestige buyable 133"},
+            display() { return "divide the first replicanti softcap strength by "+format(effBasewrp133)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp133)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.p.points.gte(this.cost().add(1)) },
+            buy() {
+                player.p.points = player.p.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp133 == "asymptote")||player.p.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp133, player.p.points, costBasewrp133, costExpwrp133, costLimitwrp133).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp133, player.p.points, costBasewrp133, costExpwrp133, costLimitwrp133))
+                        if (player.p.points.lt('e100')) {player.p.points = player.p.points.sub(player.buyablePrice(costTypewrp133, player.buyableMaxPurchaseable(costTypewrp133, player.p.points, costBasewrp133, costExpwrp133, costLimitwrp133), costBasewrp133, costExpwrp133, costLimitwrp133))}
+                    }
+                }
+            },
+        },
+    },
+    upgrades: {
+    },
+
+})
+
+addLayer("wrmp", {
+    name: "World Replication Metaprestige", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "WRMP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked() {getBuyableAmount('wr', 211).gte(1)} ,
+		points: new Decimal(0),
+    }},
+    color: "#d05050",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "World Replication Metaprestige", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {
+
+        return player.points
+    }, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        
+
+        return new Decimal(1)
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+
+        return new Decimal(1)
+    },
+    getResetGain() {
+
+        return new Decimal(0)
+    },
+    getNextAt() {
+        return Decimal.dInf
+    },
+    canReset() {return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "You cannot reset this layer" },
+    row: 6, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+    ],
+    layerShown(){return false},
+    buyables: {
+        15: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrmp15 = "asymptote"
+                costBasewrmp15 = new Decimal('e200')
+                costExpwrmp15 = new Decimal(1.9)
+                costLimitwrmp15 = layers.wrmp.buyables[15].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrmp15, new Decimal(x), costBasewrmp15, costExpwrmp15, costLimitwrmp15)
+            },
+            effect(x) {
+                effBasewrmp15 = new Decimal(0.01)
+                effStackwrmp15 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp15, effStackwrmp15) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication metaprestige buyable 15"},
+            display() { return "add the point gain power by "+format(effBasewrmp15)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrmp15)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp15 == "asymptote")||(costTypewrmp15 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp15, player.mp.points, costBasewrmp15, costExpwrmp15, costLimitwrmp15).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp15, player.mp.points, costBasewrmp15, costExpwrmp15, costLimitwrmp15))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp15, player.buyableMaxPurchaseable(costTypewrmp15, player.mp.points, costBasewrmp15, costExpwrmp15, costLimitwrmp15), costBasewrmp15, costExpwrmp15, costLimitwrmp15))}
+                    }
+                }
+            },
+        },
+        17: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrmp17 = "asymptote"
+                costBasewrmp17 = new Decimal('e1000')
+                costExpwrmp17 = new Decimal(2.9)
+                costLimitwrmp17 = layers.wrmp.buyables[17].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrmp17, new Decimal(x), costBasewrmp17, costExpwrmp17, costLimitwrmp17)
+            },
+            effect(x) {
+                effBasewrmp17 = new Decimal(0.1)
+                effStackwrmp17 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp17, effStackwrmp17) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication metaprestige buyable 17"},
+            display() { return "subtract the point fourth softcap by "+format(effBasewrmp17)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrmp17)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp17 == "asymptote")||(costTypewrmp17 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp17, player.mp.points, costBasewrmp17, costExpwrmp17, costLimitwrmp17).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp17, player.mp.points, costBasewrmp17, costExpwrmp17, costLimitwrmp17))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp17, player.buyableMaxPurchaseable(costTypewrmp17, player.mp.points, costBasewrmp17, costExpwrmp17, costLimitwrmp17), costBasewrmp17, costExpwrmp17, costLimitwrmp17))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp23 = "large"
+                costBasewrmp23 = new Decimal(1.2)
+                costExpwrmp23 = new Decimal(1.5)
+                costLimitwrmp23 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrmp23, new Decimal(x), costBasewrmp23, costExpwrmp23, costLimitwrmp23)
+            },
+            effect(x) {
+                effBasewrmp23 = new Decimal(1.2)
+                effStackwrmp23 = new Decimal(x)
+
+                return Decimal.pow(effBasewrmp23, effStackwrmp23)
+            },
+            
+            title() { return "world replication metaprestige buyable 23"},
+            display() { return "multiply the prestige gain power "+format(effBasewrmp23)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp23 == "asymptote")||(costTypewrmp23 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp23, player.mp.points, costBasewrmp23, costExpwrmp23, costLimitwrmp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp23, player.mp.points, costBasewrmp23, costExpwrmp23, costLimitwrmp23))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp23, player.buyableMaxPurchaseable(costTypewrmp23, player.mp.points, costBasewrmp23, costExpwrmp23, costLimitwrmp23), costBasewrmp23, costExpwrmp23, costLimitwrmp23))}
+                    }
+                }
+            },
+        },
+        33: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp33 = "large"
+                costBasewrmp33 = new Decimal(1.2)
+                costExpwrmp33 = new Decimal(1.5)
+                costLimitwrmp33 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrmp33, new Decimal(x), costBasewrmp33, costExpwrmp33, costLimitwrmp33)
+            },
+            effect(x) {
+                effBasewrmp33 = new Decimal(1.2)
+                effStackwrmp33 = new Decimal(x)
+
+                return Decimal.pow(effBasewrmp33, effStackwrmp33) 
+            },
+            
+            title() { return "world replication metaprestige buyable 33"},
+            display() { return "multiply the metaprestige gain power by "+format(effBasewrmp33)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp33 == "asymptote")||(costTypewrmp33 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp33, player.mp.points, costBasewrmp33, costExpwrmp33, costLimitwrmp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp33, player.mp.points, costBasewrmp33, costExpwrmp33, costLimitwrmp33))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp33, player.buyableMaxPurchaseable(costTypewrmp33, player.mp.points, costBasewrmp33, costExpwrmp33, costLimitwrmp33), costBasewrmp33, costExpwrmp33, costLimitwrmp33))}
+                    }
+                }
+            },
+        },
+        43: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp43 = "large"
+                costBasewrmp43 = new Decimal(1.2)
+                costExpwrmp43 = new Decimal(1.5)
+                costLimitwrmp43 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrmp43, new Decimal(x), costBasewrmp43, costExpwrmp43, costLimitwrmp43)
+            },
+            effect(x) {
+                effBasewrmp43 = new Decimal(1.2)
+                effStackwrmp43 = new Decimal(x)
+
+                return Decimal.pow(effBasewrmp43, effStackwrmp43) 
+            },
+            
+            title() { return "world replication metaprestige buyable 43"},
+            display() { return "multiply the buyabol gain power "+format(effBasewrmp43)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp43)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp43 == "asymptote")||(costTypewrmp43 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp43, player.mp.points, costBasewrmp43, costExpwrmp43, costLimitwrmp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp43, player.mp.points, costBasewrmp43, costExpwrmp43, costLimitwrmp43))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp43, player.buyableMaxPurchaseable(costTypewrmp43, player.mp.points, costBasewrmp43, costExpwrmp43, costLimitwrmp43), costBasewrmp43, costExpwrmp43, costLimitwrmp43))}
+                    }
+                }
+            },
+        },
+        53: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp53 = "large"
+                costBasewrmp53 = new Decimal(1.2)
+                costExpwrmp53 = new Decimal(1.5)
+                costLimitwrmp53 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrmp53, new Decimal(x), costBasewrmp53, costExpwrmp53, costLimitwrmp53)
+            },
+            effect(x) {
+                effBasewrmp53 = new Decimal(1.2)
+                effStackwrmp53 = new Decimal(x)
+
+                return Decimal.pow(effBasewrmp53, effStackwrmp53) 
+            },
+            
+            title() { return "world replication metaprestige buyable 53"},
+            display() { return "multiply the superprestige gain power by "+format(effBasewrmp53)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp53)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp53 == "asymptote")||(costTypewrmp53 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp53, player.mp.points, costBasewrmp53, costExpwrmp53, costLimitwrmp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp53, player.mp.points, costBasewrmp53, costExpwrmp53, costLimitwrmp53))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp53, player.buyableMaxPurchaseable(costTypewrmp53, player.mp.points, costBasewrmp53, costExpwrmp53, costLimitwrmp53), costBasewrmp53, costExpwrmp53, costLimitwrmp53))}
+                    }
+                }
+            },
+        },
+        115: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrmp115 = "asymptote"
+                costBasewrmp115 = new Decimal('e200')
+                costExpwrmp115 = new Decimal(1.9)
+                costLimitwrmp115 = layers.wrmp.buyables[115].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrmp115, new Decimal(x), costBasewrmp115, costExpwrmp115, costLimitwrmp115)
+            },
+            effect(x) {
+                effBasewrmp115 = new Decimal(0.01)
+                effStackwrmp115 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp115, effStackwrmp115) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication metaprestige buyable 115"},
+            display() { return "add the bonus point gain power by "+format(effBasewrmp115)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrmp115)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp115 == "asymptote")||(costTypewrmp115 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp115, player.mp.points, costBasewrmp115, costExpwrmp115, costLimitwrmp115).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp115, player.mp.points, costBasewrmp115, costExpwrmp115, costLimitwrmp115))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp115, player.buyableMaxPurchaseable(costTypewrmp115, player.mp.points, costBasewrmp115, costExpwrmp115, costLimitwrmp115), costBasewrmp115, costExpwrmp115, costLimitwrmp115))}
+                    }
+                }
+            },
+        },
+        117: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrmp117 = "asymptote"
+                costBasewrmp117 = new Decimal('e1000')
+                costExpwrmp117 = new Decimal(2.9)
+                costLimitwrmp117 = layers.wrmp.buyables[117].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrmp117, new Decimal(x), costBasewrmp117, costExpwrmp117, costLimitwrmp117)
+            },
+            effect(x) {
+                effBasewrmp117 = new Decimal(0.1)
+                effStackwrmp117 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp117, effStackwrmp117) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication metaprestige buyable 117"},
+            display() { return "subtract the bonus point fourth softcap by "+format(effBasewrmp117)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrmp117)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp117 == "asymptote")||(costTypewrmp117 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp117, player.mp.points, costBasewrmp117, costExpwrmp117, costLimitwrmp117).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp117, player.mp.points, costBasewrmp117, costExpwrmp117, costLimitwrmp117))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp117, player.buyableMaxPurchaseable(costTypewrmp117, player.mp.points, costBasewrmp117, costExpwrmp117, costLimitwrmp117), costBasewrmp117, costExpwrmp117, costLimitwrmp117))}
+                    }
+                }
+            },
+        },
+        121: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp121 = "normal"
+                costBasewrmp121 = new Decimal(1.2)
+                costExpwrmp121 = new Decimal(1.1)
+                costLimitwrmp121 = new Decimal('e1e4')
+                return player.buyablePrice(costTypewrmp121, new Decimal(x), costBasewrmp121, costExpwrmp121, costLimitwrmp121)
+            },
+            effect(x) {
+                effBasewrmp121 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
+                effStackwrmp121 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp121, effStackwrmp121)
+            },
+            title() { return "world replication buyable 121"},
+            display() { return "increase replicants production by "+format(effBasewrmp121)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp121)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp121 == "asymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp121, player.mp.points, costBasewrmp121, costExpwrmp121, costLimitwrmp121).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp121, player.mp.points, costBasewrmp121, costExpwrmp121, costLimitwrmp121))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp121, player.buyableMaxPurchaseable(costTypewrmp121, player.mp.points, costBasewrmp121, costExpwrmp121, costLimitwrmp121), costBasewrmp121, costExpwrmp121, costLimitwrmp121))}
+                    }
+                }
+            },
+        },
+        122: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp122 = "normal"
+                costBasewrmp122 = new Decimal(1.4)
+                costExpwrmp122 = new Decimal(1.2)
+                costLimitwrmp122 = new Decimal('e1e4')
+                return player.buyablePrice(costTypewrmp122, new Decimal(x), costBasewrmp122, costExpwrmp122, costLimitwrmp122)
+            },
+            effect(x) {
+                effBasewrmp122 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
+                effStackwrmp122 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp122, effStackwrmp122)
+            },
+            title() { return "world replication buyable 122"},
+            display() { return "increase replicants production multiplier by "+format(effBasewrmp122)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp122)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp122 == "asymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp122, player.mp.points, costBasewrmp122, costExpwrmp122, costLimitwrmp122).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp122, player.mp.points, costBasewrmp122, costExpwrmp122, costLimitwrmp122))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp122, player.buyableMaxPurchaseable(costTypewrmp122, player.mp.points, costBasewrmp122, costExpwrmp122, costLimitwrmp122), costBasewrmp122, costExpwrmp122, costLimitwrmp122))}
+                    }
+                }
+            },
+        },
+        123: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp123 = "normal"
+                costBasewrmp123 = new Decimal(10)
+                costExpwrmp123 = new Decimal(1.3)
+                costLimitwrmp123 = new Decimal('1e200')
+                return player.buyablePrice(costTypewrmp123, new Decimal(x), costBasewrmp123, costExpwrmp123, costLimitwrmp123)
+            },
+            effect(x) {
+                effBasewrmp123 = new Decimal(10).pow(buyableEffect('wrte', 131)).pow(buyableEffect('wrte', 132))
+                effStackwrmp123 = new Decimal(x)
+
+                return Decimal.pow(effBasewrmp123, effStackwrmp123)
+            },
+            title() { return "world replication buyable 123"},
+            display() { return "delay first replicants softcap start by "+format(effBasewrmp123)+"x <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp123)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp123 == "asymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp123, player.mp.points, costBasewrmp123, costExpwrmp123, costLimitwrmp123).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp123, player.mp.points, costBasewrmp123, costExpwrmp123, costLimitwrmp123))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp123, player.buyableMaxPurchaseable(costTypewrmp123, player.mp.points, costBasewrmp123, costExpwrmp123, costLimitwrmp123), costBasewrmp123, costExpwrmp123, costLimitwrmp123))}
+                    }
+                }
+            },
+        },
+        124: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp124 = "normal"
+                costBasewrmp124 = new Decimal(5)
+                costExpwrmp124 = new Decimal(1.4)
+                costLimitwrmp124 = new Decimal('1e100')
+                return player.buyablePrice(costTypewrmp124, new Decimal(x), costBasewrmp124, costExpwrmp124, costLimitwrmp124)
+            },
+            effect(x) {
+                effBasewrmp124 = new Decimal(0.1)
+                effStackwrmp124 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp124, effStackwrmp124)
+            },
+            title() { return "World Replication Metaprestige buyable 124"},
+            display() { return "add first replicants softcap strength by "+format(effBasewrmp124)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp124)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp124 == "asymptote")||(costTypewrmp124 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp124, player.mp.points, costBasewrmp124, costExpwrmp124, costLimitwrmp124).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp124, player.mp.points, costBasewrmp124, costExpwrmp124, costLimitwrmp124))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp124, player.buyableMaxPurchaseable(costTypewrmp124, player.mp.points, costBasewrmp124, costExpwrmp124, costLimitwrmp124), costBasewrmp124, costExpwrmp124, costLimitwrmp124))}
+                    }
+                }
+            },
+        },
+        125: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp125 = "asymptote"
+                costBasewrmp125 = new Decimal(100)
+                costExpwrmp125 = new Decimal(2.2)
+                costLimitwrmp125 = layers.wrmp.buyables[125].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrmp125, new Decimal(x), costBasewrmp125, costExpwrmp125, costLimitwrmp125)
+            },
+            effect(x) {
+                effBasewrmp125 = new Decimal(1.025)
+                effStackwrmp125 = new Decimal(x)
+
+                return Decimal.pow(effBasewrmp125, effStackwrmp125)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "World Replication Metaprestige buyable 125"},
+            display() { return "divide the first replicants softcap strength by "+format(effBasewrmp125)+" <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp125)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost()) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp125 == "asymptote")||(costTypewrmp125 == "largeasymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp125, player.mp.points, costBasewrmp125, costExpwrmp125, costLimitwrmp125).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp125, player.mp.points, costBasewrmp125, costExpwrmp125, costLimitwrmp125))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp125, player.buyableMaxPurchaseable(costTypewrmp125, player.mp.points, costBasewrmp125, costExpwrmp125, costLimitwrmp125), costBasewrmp125, costExpwrmp125, costLimitwrmp125))}
+                    }
+                }
+            },
+        },
+        131: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrmp131 = "normal"
+                costBasewrmp131 = new Decimal(1e10)
+                costExpwrmp131 = new Decimal(3)
+                costLimitwrmp131 = new Decimal('e1e6')
+                return player.buyablePrice(costTypewrmp131, new Decimal(x), costBasewrmp131, costExpwrmp131, costLimitwrmp131)
+            },
+            effect(x) {
+                effBasewrmp131 = new Decimal(0.01).times(buyableEffect('wrte', 132))
+                effStackwrmp131 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp131, effStackwrmp131)
+            },
+            title() { return "World Replication Metaprestige buyable 131"},
+            display() { return "add buyables 121 to 123 multiplier by "+format(effBasewrmp131)+"x <br> cost: "+format(this.cost())+" metaprestige points <br> owned: "+format(effStackwrmp131)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp131 == "asymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp131, player.mp.points, costBasewrmp131, costExpwrmp131, costLimitwrmp131).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp131, player.mp.points, costBasewrmp131, costExpwrmp131, costLimitwrmp131))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp131, player.buyableMaxPurchaseable(costTypewrmp131, player.mp.points, costBasewrmp131, costExpwrmp131, costLimitwrmp131), costBasewrmp131, costExpwrmp131, costLimitwrmp131))}
+                    }
+                }
+            },
+        },
+        132: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrmp132 = "large"
+                costBasewrmp132 = new Decimal('1e5')
+                costExpwrmp132 = new Decimal(0.3)
+                costLimitwrmp132 = new Decimal('e1e8')
+                return player.buyablePrice(costTypewrmp132, new Decimal(x), costBasewrmp132, costExpwrmp132, costLimitwrmp132)
+            },
+            effect(x) {
+                effBasewrmp132 = new Decimal(0.01)
+                effStackwrmp132 = new Decimal(x)
+
+                return Decimal.times(effBasewrmp132, effStackwrmp132)
+            },
+            title() { return "world replication metaprestige buyable 132"},
+            display() { return "add buyables 121 to 123 and 131 effect multiplier by "+format(effBasewrmp132)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrmp132)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrmp132 == "asymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrmp132, player.mp.points, costBasewrmp132, costExpwrmp132, costLimitwrmp132).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrmp132, player.mp.points, costBasewrmp132, costExpwrmp132, costLimitwrmp132))
+                        if (player.wr.buyables[11].lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrmp132, player.buyableMaxPurchaseable(costTypewrmp132, player.mp.points, costBasewrmp132, costExpwrmp132, costLimitwrmp132), costBasewrmp132, costExpwrmp132, costLimitwrmp132))}
+                    }
+                }
+            },
+        },
+        133: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp133 = "asymptote"
+                costBasewrp133 = new Decimal('e2e7')
+                costExpwrp133 = new Decimal(3)
+                costLimitwrp133 = layers.wrmp.buyables[133].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp133, new Decimal(x), costBasewrp133, costExpwrp133, costLimitwrp133)
+            },
+            effect(x) {
+                effBasewrp133 = new Decimal(1.05)
+                effStackwrp133 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp133, effStackwrp133)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "world replication buyable 133"},
+            display() { return "divide the first replicanti softcap strength by "+format(effBasewrp133)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp133)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.mp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.mp.points = player.mp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp133 == "asymptote")||player.mp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp133, player.mp.points, costBasewrp133, costExpwrp133, costLimitwrp133).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp133, player.mp.points, costBasewrp133, costExpwrp133, costLimitwrp133))
+                        if (player.mp.points.lt('e100')) {player.mp.points = player.mp.points.sub(player.buyablePrice(costTypewrp133, player.buyableMaxPurchaseable(costTypewrp133, player.mp.points, costBasewrp133, costExpwrp133, costLimitwrp133), costBasewrp133, costExpwrp133, costLimitwrp133))}
+                    }
+                }
+            },
+        },
+    },
+    upgrades: {
+    },
+
+})
+
+addLayer("wrbp", {
+    name: "World Replication Buyabol", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "WRBP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 3, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked() {getBuyableAmount('wr', 211).gte(1)} ,
+		points: new Decimal(0),
+    }},
+    color: "#d05050",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "World Replication Buyabol", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {
+
+        return player.points
+    }, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        
+
+        return new Decimal(1)
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+
+        return new Decimal(1)
+    },
+    getResetGain() {
+
+        return new Decimal(0)
+    },
+    getNextAt() {
+        return Decimal.dInf
+    },
+    canReset() {return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "You cannot reset this layer" },
+    row: 6, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+    ],
+    layerShown(){return false},
+    buyables: {
+        15: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrbp15 = "asymptote"
+                costBasewrbp15 = new Decimal('e200')
+                costExpwrbp15 = new Decimal(1.9)
+                costLimitwrbp15 = layers.wrbp.buyables[15].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrbp15, new Decimal(x), costBasewrbp15, costExpwrbp15, costLimitwrbp15)
+            },
+            effect(x) {
+                effBasewrbp15 = new Decimal(0.01)
+                effStackwrbp15 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp15, effStackwrbp15) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication buyabol buyable 15"},
+            display() { return "add the point gain power by "+format(effBasewrbp15)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrbp15)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp15 == "asymptote")||(costTypewrbp15 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp15, player.bp.points, costBasewrbp15, costExpwrbp15, costLimitwrbp15).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp15, player.bp.points, costBasewrbp15, costExpwrbp15, costLimitwrbp15))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp15, player.buyableMaxPurchaseable(costTypewrbp15, player.bp.points, costBasewrbp15, costExpwrbp15, costLimitwrbp15), costBasewrbp15, costExpwrbp15, costLimitwrbp15))}
+                    }
+                }
+            },
+        },
+        17: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrbp17 = "asymptote"
+                costBasewrbp17 = new Decimal('e1000')
+                costExpwrbp17 = new Decimal(2.9)
+                costLimitwrbp17 = layers.wrbp.buyables[17].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrbp17, new Decimal(x), costBasewrbp17, costExpwrbp17, costLimitwrbp17)
+            },
+            effect(x) {
+                effBasewrbp17 = new Decimal(0.1)
+                effStackwrbp17 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp17, effStackwrbp17) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication buyabol buyable 17"},
+            display() { return "subtract the point fourth softcap by "+format(effBasewrbp17)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrbp17)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp17 == "asymptote")||(costTypewrbp17 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp17, player.bp.points, costBasewrbp17, costExpwrbp17, costLimitwrbp17).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp17, player.bp.points, costBasewrbp17, costExpwrbp17, costLimitwrbp17))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp17, player.buyableMaxPurchaseable(costTypewrbp17, player.bp.points, costBasewrbp17, costExpwrbp17, costLimitwrbp17), costBasewrbp17, costExpwrbp17, costLimitwrbp17))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp23 = "large"
+                costBasewrbp23 = new Decimal(1.2)
+                costExpwrbp23 = new Decimal(1.5)
+                costLimitwrbp23 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrbp23, new Decimal(x), costBasewrbp23, costExpwrbp23, costLimitwrbp23)
+            },
+            effect(x) {
+                effBasewrbp23 = new Decimal(1.2)
+                effStackwrbp23 = new Decimal(x)
+
+                return Decimal.pow(effBasewrbp23, effStackwrbp23)
+            },
+            
+            title() { return "world replication buyabol buyable 23"},
+            display() { return "multiply the prestige gain power "+format(effBasewrbp23)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp23 == "asymptote")||(costTypewrbp23 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp23, player.bp.points, costBasewrbp23, costExpwrbp23, costLimitwrbp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp23, player.bp.points, costBasewrbp23, costExpwrbp23, costLimitwrbp23))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp23, player.buyableMaxPurchaseable(costTypewrbp23, player.bp.points, costBasewrbp23, costExpwrbp23, costLimitwrbp23), costBasewrbp23, costExpwrbp23, costLimitwrbp23))}
+                    }
+                }
+            },
+        },
+        33: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp33 = "large"
+                costBasewrbp33 = new Decimal(1.2)
+                costExpwrbp33 = new Decimal(1.5)
+                costLimitwrbp33 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrbp33, new Decimal(x), costBasewrbp33, costExpwrbp33, costLimitwrbp33)
+            },
+            effect(x) {
+                effBasewrbp33 = new Decimal(1.2)
+                effStackwrbp33 = new Decimal(x)
+
+                return Decimal.pow(effBasewrbp33, effStackwrbp33) 
+            },
+            
+            title() { return "world replication buyabol buyable 33"},
+            display() { return "multiply the metaprestige gain power "+format(effBasewrbp33)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp33 == "asymptote")||(costTypewrbp33 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp33, player.bp.points, costBasewrbp33, costExpwrbp33, costLimitwrbp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp33, player.bp.points, costBasewrbp33, costExpwrbp33, costLimitwrbp33))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp33, player.buyableMaxPurchaseable(costTypewrbp33, player.bp.points, costBasewrbp33, costExpwrbp33, costLimitwrbp33), costBasewrbp33, costExpwrbp33, costLimitwrbp33))}
+                    }
+                }
+            },
+        },
+        43: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp43 = "large"
+                costBasewrbp43 = new Decimal(1.2)
+                costExpwrbp43 = new Decimal(1.5)
+                costLimitwrbp43 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrbp43, new Decimal(x), costBasewrbp43, costExpwrbp43, costLimitwrbp43)
+            },
+            effect(x) {
+                effBasewrbp43 = new Decimal(1.2)
+                effStackwrbp43 = new Decimal(x)
+
+                return Decimal.pow(effBasewrbp43, effStackwrbp43) 
+            },
+            
+            title() { return "world replication buyabol buyable 43"},
+            display() { return "multiply the buyabol gain power "+format(effBasewrbp43)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp43)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp43 == "asymptote")||(costTypewrbp43 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp43, player.bp.points, costBasewrbp43, costExpwrbp43, costLimitwrbp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp43, player.bp.points, costBasewrbp43, costExpwrbp43, costLimitwrbp43))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp43, player.buyableMaxPurchaseable(costTypewrbp43, player.bp.points, costBasewrbp43, costExpwrbp43, costLimitwrbp43), costBasewrbp43, costExpwrbp43, costLimitwrbp43))}
+                    }
+                }
+            },
+        },
+        53: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp53 = "large"
+                costBasewrbp53 = new Decimal(1.2)
+                costExpwrbp53 = new Decimal(1.5)
+                costLimitwrbp53 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrbp53, new Decimal(x), costBasewrbp53, costExpwrbp53, costLimitwrbp53)
+            },
+            effect(x) {
+                effBasewrbp53 = new Decimal(1.2)
+                effStackwrbp53 = new Decimal(x)
+
+                return Decimal.pow(effBasewrbp53, effStackwrbp53) 
+            },
+            
+            title() { return "world replication buyabol buyable 53"},
+            display() { return "multiply the superprestige gain power by "+format(effBasewrbp53)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp53)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp53 == "asymptote")||(costTypewrbp53 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp53, player.bp.points, costBasewrbp53, costExpwrbp53, costLimitwrbp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp53, player.bp.points, costBasewrbp53, costExpwrbp53, costLimitwrbp53))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp53, player.buyableMaxPurchaseable(costTypewrbp53, player.bp.points, costBasewrbp53, costExpwrbp53, costLimitwrbp53), costBasewrbp53, costExpwrbp53, costLimitwrbp53))}
+                    }
+                }
+            },
+        },
+        115: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrbp115 = "asymptote"
+                costBasewrbp115 = new Decimal('e200')
+                costExpwrbp115 = new Decimal(1.9)
+                costLimitwrbp115 = new Decimal('1e100')
+                return player.buyablePrice(costTypewrbp115, new Decimal(x), costBasewrbp115, costExpwrbp115, costLimitwrbp115)
+            },
+            effect(x) {
+                effBasewrbp115 = new Decimal(0.01)
+                effStackwrbp115 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp115, effStackwrbp115) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication buyabol buyable 115"},
+            display() { return "add the bonus point gain power by "+format(effBasewrbp115)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrbp115)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp115 == "asymptote")||(costTypewrbp115 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp115, player.bp.points, costBasewrbp115, costExpwrbp115, costLimitwrbp115).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp115, player.bp.points, costBasewrbp115, costExpwrbp115, costLimitwrbp115))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp115, player.buyableMaxPurchaseable(costTypewrbp115, player.bp.points, costBasewrbp115, costExpwrbp115, costLimitwrbp115), costBasewrbp115, costExpwrbp115, costLimitwrbp115))}
+                    }
+                }
+            },
+        },
+        117: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrbp117 = "asymptote"
+                costBasewrbp117 = new Decimal('e1000')
+                costExpwrbp117 = new Decimal(2.9)
+                costLimitwrbp117 = layers.wrbp.buyables[117].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrbp117, new Decimal(x), costBasewrbp117, costExpwrbp117, costLimitwrbp117)
+            },
+            effect(x) {
+                effBasewrbp117 = new Decimal(0.1)
+                effStackwrbp117 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp117, effStackwrbp117) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication buyabol buyable 117"},
+            display() { return "subtract the bonus point fourth softcap by "+format(effBasewrbp117)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrbp117)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp117 == "asymptote")||(costTypewrbp117 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp117, player.bp.points, costBasewrbp117, costExpwrbp117, costLimitwrbp117).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp117, player.bp.points, costBasewrbp117, costExpwrbp117, costLimitwrbp117))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp117, player.buyableMaxPurchaseable(costTypewrbp117, player.bp.points, costBasewrbp117, costExpwrbp117, costLimitwrbp117), costBasewrbp117, costExpwrbp117, costLimitwrbp117))}
+                    }
+                }
+            },
+        },
+        121: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp121 = "normal"
+                costBasewrbp121 = new Decimal(1.2)
+                costExpwrbp121 = new Decimal(1.1)
+                costLimitwrbp121 = new Decimal('e1e4')
+                return player.buyablePrice(costTypewrbp121, new Decimal(x), costBasewrbp121, costExpwrbp121, costLimitwrbp121)
+            },
+            effect(x) {
+                effBasewrbp121 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
+                effStackwrbp121 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp121, effStackwrbp121)
+            },
+            title() { return "world replication buyable 121"},
+            display() { return "increase replicants production by "+format(effBasewrbp121)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp121)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp121 == "asymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp121, player.bp.points, costBasewrbp121, costExpwrbp121, costLimitwrbp121).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp121, player.bp.points, costBasewrbp121, costExpwrbp121, costLimitwrbp121))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp121, player.buyableMaxPurchaseable(costTypewrbp121, player.bp.points, costBasewrbp121, costExpwrbp121, costLimitwrbp121), costBasewrbp121, costExpwrbp121, costLimitwrbp121))}
+                    }
+                }
+            },
+        },
+        122: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp122 = "normal"
+                costBasewrbp122 = new Decimal(1.4)
+                costExpwrbp122 = new Decimal(1.2)
+                costLimitwrbp122 = new Decimal('e1e4')
+                return player.buyablePrice(costTypewrbp122, new Decimal(x), costBasewrbp122, costExpwrbp122, costLimitwrbp122)
+            },
+            effect(x) {
+                effBasewrbp122 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
+                effStackwrbp122 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp122, effStackwrbp122)
+            },
+            title() { return "world replication buyable 122"},
+            display() { return "increase replicants production multiplier by "+format(effBasewrbp122)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp122)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp122 == "asymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp122, player.bp.points, costBasewrbp122, costExpwrbp122, costLimitwrbp122).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp122, player.bp.points, costBasewrbp122, costExpwrbp122, costLimitwrbp122))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp122, player.buyableMaxPurchaseable(costTypewrbp122, player.bp.points, costBasewrbp122, costExpwrbp122, costLimitwrbp122), costBasewrbp122, costExpwrbp122, costLimitwrbp122))}
+                    }
+                }
+            },
+        },
+        123: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp123 = "normal"
+                costBasewrbp123 = new Decimal(10)
+                costExpwrbp123 = new Decimal(1.3)
+                costLimitwrbp123 = new Decimal('1e200')
+                return player.buyablePrice(costTypewrbp123, new Decimal(x), costBasewrbp123, costExpwrbp123, costLimitwrbp123)
+            },
+            effect(x) {
+                effBasewrbp123 = new Decimal(10).pow(buyableEffect('wrte', 131)).pow(buyableEffect('wrte', 132))
+                effStackwrbp123 = new Decimal(x)
+
+                return Decimal.pow(effBasewrbp123, effStackwrbp123)
+            },
+            title() { return "world replication buyable 123"},
+            display() { return "delay first replicants softcap start by "+format(effBasewrbp123)+"x <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp123)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp123 == "asymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp123, player.bp.points, costBasewrbp123, costExpwrbp123, costLimitwrbp123).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp123, player.bp.points, costBasewrbp123, costExpwrbp123, costLimitwrbp123))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp123, player.buyableMaxPurchaseable(costTypewrbp123, player.bp.points, costBasewrbp123, costExpwrbp123, costLimitwrbp123), costBasewrbp123, costExpwrbp123, costLimitwrbp123))}
+                    }
+                }
+            },
+        },
+        124: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp124 = "normal"
+                costBasewrbp124 = new Decimal(5)
+                costExpwrbp124 = new Decimal(1.4)
+                costLimitwrbp124 = new Decimal('1e100')
+                return player.buyablePrice(costTypewrbp124, new Decimal(x), costBasewrbp124, costExpwrbp124, costLimitwrbp124)
+            },
+            effect(x) {
+                effBasewrbp124 = new Decimal(0.1)
+                effStackwrbp124 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp124, effStackwrbp124)
+            },
+            title() { return "World Replication Buyabol buyable 124"},
+            display() { return "add first replicants softcap strength by "+format(effBasewrbp124)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp124)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp124 == "asymptote")||(costTypewrbp124 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp124, player.bp.points, costBasewrbp124, costExpwrbp124, costLimitwrbp124).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp124, player.bp.points, costBasewrbp124, costExpwrbp124, costLimitwrbp124))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp124, player.buyableMaxPurchaseable(costTypewrbp124, player.bp.points, costBasewrbp124, costExpwrbp124, costLimitwrbp124), costBasewrbp124, costExpwrbp124, costLimitwrbp124))}
+                    }
+                }
+            },
+        },
+        125: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp125 = "asymptote"
+                costBasewrbp125 = new Decimal(100)
+                costExpwrbp125 = new Decimal(2.2)
+                costLimitwrbp125 = layers.wrbp.buyables[125].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrbp125, new Decimal(x), costBasewrbp125, costExpwrbp125, costLimitwrbp125)
+            },
+            effect(x) {
+                effBasewrbp125 = new Decimal(1.025)
+                effStackwrbp125 = new Decimal(x)
+
+                return Decimal.pow(effBasewrbp125, effStackwrbp125)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "World Replication Buyabol buyable 125"},
+            display() { return "divide the first replicants softcap strength by "+format(effBasewrbp125)+" <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp125)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost()) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp125 == "asymptote")||(costTypewrbp125 == "largeasymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp125, player.bp.points, costBasewrbp125, costExpwrbp125, costLimitwrbp125).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp125, player.bp.points, costBasewrbp125, costExpwrbp125, costLimitwrbp125))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp125, player.buyableMaxPurchaseable(costTypewrbp125, player.bp.points, costBasewrbp125, costExpwrbp125, costLimitwrbp125), costBasewrbp125, costExpwrbp125, costLimitwrbp125))}
+                    }
+                }
+            },
+        },
+        131: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrbp131 = "normal"
+                costBasewrbp131 = new Decimal(1e10)
+                costExpwrbp131 = new Decimal(3)
+                costLimitwrbp131 = new Decimal('e1e6')
+                return player.buyablePrice(costTypewrbp131, new Decimal(x), costBasewrbp131, costExpwrbp131, costLimitwrbp131)
+            },
+            effect(x) {
+                effBasewrbp131 = new Decimal(0.01).times(buyableEffect('wrte', 132))
+                effStackwrbp131 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp131, effStackwrbp131)
+            },
+            title() { return "World Replication Buyabol buyable 131"},
+            display() { return "add buyables 121 to 123 multiplier by "+format(effBasewrbp131)+"x <br> cost: "+format(this.cost())+" buyabol points <br> owned: "+format(effStackwrbp131)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp131 == "asymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp131, player.bp.points, costBasewrbp131, costExpwrbp131, costLimitwrbp131).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp131, player.bp.points, costBasewrbp131, costExpwrbp131, costLimitwrbp131))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp131, player.buyableMaxPurchaseable(costTypewrbp131, player.bp.points, costBasewrbp131, costExpwrbp131, costLimitwrbp131), costBasewrbp131, costExpwrbp131, costLimitwrbp131))}
+                    }
+                }
+            },
+        },
+        132: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrbp132 = "large"
+                costBasewrbp132 = new Decimal('1e5')
+                costExpwrbp132 = new Decimal(0.3)
+                costLimitwrbp132 = new Decimal('e1e8')
+                return player.buyablePrice(costTypewrbp132, new Decimal(x), costBasewrbp132, costExpwrbp132, costLimitwrbp132)
+            },
+            effect(x) {
+                effBasewrbp132 = new Decimal(0.01)
+                effStackwrbp132 = new Decimal(x)
+
+                return Decimal.times(effBasewrbp132, effStackwrbp132)
+            },
+            title() { return "world replication buyabol buyable 132"},
+            display() { return "add buyables 121 to 123 and 131 effect multiplier by "+format(effBasewrbp132)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrbp132)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrbp132 == "asymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrbp132, player.bp.points, costBasewrbp132, costExpwrbp132, costLimitwrbp132).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrbp132, player.bp.points, costBasewrbp132, costExpwrbp132, costLimitwrbp132))
+                        if (player.wr.buyables[11].lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrbp132, player.buyableMaxPurchaseable(costTypewrbp132, player.bp.points, costBasewrbp132, costExpwrbp132, costLimitwrbp132), costBasewrbp132, costExpwrbp132, costLimitwrbp132))}
+                    }
+                }
+            },
+        },
+        133: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp133 = "asymptote"
+                costBasewrp133 = new Decimal('e2e7')
+                costExpwrp133 = new Decimal(3)
+                costLimitwrp133 = layers.wrbp.buyables[133].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp133, new Decimal(x), costBasewrp133, costExpwrp133, costLimitwrp133)
+            },
+            effect(x) {
+                effBasewrp133 = new Decimal(1.05)
+                effStackwrp133 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp133, effStackwrp133)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "world replication buyable 133"},
+            display() { return "divide the first replicanti softcap strength by "+format(effBasewrp133)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp133)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.bp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.bp.points = player.bp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp133 == "asymptote")||player.bp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp133, player.bp.points, costBasewrp133, costExpwrp133, costLimitwrp133).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp133, player.bp.points, costBasewrp133, costExpwrp133, costLimitwrp133))
+                        if (player.bp.points.lt('e100')) {player.bp.points = player.bp.points.sub(player.buyablePrice(costTypewrp133, player.buyableMaxPurchaseable(costTypewrp133, player.bp.points, costBasewrp133, costExpwrp133, costLimitwrp133), costBasewrp133, costExpwrp133, costLimitwrp133))}
+                    }
+                }
+            },
+        },
+    },
+    upgrades: {
+    },
+
+})
+
+addLayer("wrsp", {
+    name: "World Replication Superprestige", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "WRSP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 4, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked() {getBuyableAmount('wr', 211).gte(1)} ,
+		points: new Decimal(0),
+    }},
+    color: "#d05050",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "World Replication Superprestige", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {
+
+        return player.points
+    }, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        
+
+        return new Decimal(1)
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+
+        return new Decimal(1)
+    },
+    getResetGain() {
+
+        return new Decimal(0)
+    },
+    getNextAt() {
+        return Decimal.dInf
+    },
+    canReset() {return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "You cannot reset this layer" },
+    row: 6, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+    ],
+    layerShown(){return false},
+    buyables: {
+        15: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrsp15 = "asymptote"
+                costBasewrsp15 = new Decimal('e200')
+                costExpwrsp15 = new Decimal(1.9)
+                costLimitwrsp15 = layers.wrsp.buyables[15].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrsp15, new Decimal(x), costBasewrsp15, costExpwrsp15, costLimitwrsp15)
+            },
+            effect(x) {
+                effBasewrsp15 = new Decimal(0.01)
+                effStackwrsp15 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp15, effStackwrsp15) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication superprestige buyable 15"},
+            display() { return "add the point gain power by "+format(effBasewrsp15)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrsp15)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp15 == "asymptote")||(costTypewrsp15 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp15, player.sp.points, costBasewrsp15, costExpwrsp15, costLimitwrsp15).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp15, player.sp.points, costBasewrsp15, costExpwrsp15, costLimitwrsp15))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp15, player.buyableMaxPurchaseable(costTypewrsp15, player.sp.points, costBasewrsp15, costExpwrsp15, costLimitwrsp15), costBasewrsp15, costExpwrsp15, costLimitwrsp15))}
+                    }
+                }
+            },
+        },
+        17: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrsp17 = "asymptote"
+                costBasewrsp17 = new Decimal('e1000')
+                costExpwrsp17 = new Decimal(2.9)
+                costLimitwrsp17 = layers.wrsp.buyables[17].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrsp17, new Decimal(x), costBasewrsp17, costExpwrsp17, costLimitwrsp17)
+            },
+            effect(x) {
+                effBasewrsp17 = new Decimal(0.1)
+                effStackwrsp17 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp17, effStackwrsp17) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication superprestige buyable 17"},
+            display() { return "subtract the point fourth softcap by "+format(effBasewrsp17)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrsp17)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp17 == "asymptote")||(costTypewrsp17 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp17, player.sp.points, costBasewrsp17, costExpwrsp17, costLimitwrsp17).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp17, player.sp.points, costBasewrsp17, costExpwrsp17, costLimitwrsp17))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp17, player.buyableMaxPurchaseable(costTypewrsp17, player.sp.points, costBasewrsp17, costExpwrsp17, costLimitwrsp17), costBasewrsp17, costExpwrsp17, costLimitwrsp17))}
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp23 = "large"
+                costBasewrsp23 = new Decimal(1.2)
+                costExpwrsp23 = new Decimal(1.5)
+                costLimitwrsp23 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrsp23, new Decimal(x), costBasewrsp23, costExpwrsp23, costLimitwrsp23)
+            },
+            effect(x) {
+                effBasewrsp23 = new Decimal(1.2)
+                effStackwrsp23 = new Decimal(x)
+
+                return Decimal.pow(effBasewrsp23, effStackwrsp23)
+            },
+            
+            title() { return "world replication superprestige buyable 23"},
+            display() { return "multiply the prestige gain power "+format(effBasewrsp23)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp23)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp23 == "asymptote")||(costTypewrsp23 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp23, player.sp.points, costBasewrsp23, costExpwrsp23, costLimitwrsp23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp23, player.sp.points, costBasewrsp23, costExpwrsp23, costLimitwrsp23))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp23, player.buyableMaxPurchaseable(costTypewrsp23, player.sp.points, costBasewrsp23, costExpwrsp23, costLimitwrsp23), costBasewrsp23, costExpwrsp23, costLimitwrsp23))}
+                    }
+                }
+            },
+        },
+        33: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp33 = "large"
+                costBasewrsp33 = new Decimal(1.2)
+                costExpwrsp33 = new Decimal(1.5)
+                costLimitwrsp33 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrsp33, new Decimal(x), costBasewrsp33, costExpwrsp33, costLimitwrsp33)
+            },
+            effect(x) {
+                effBasewrsp33 = new Decimal(1.2)
+                effStackwrsp33 = new Decimal(x)
+
+                return Decimal.pow(effBasewrsp33, effStackwrsp33) 
+            },
+            
+            title() { return "world replication superprestige buyable 33"},
+            display() { return "multiply the metaprestige gain power "+format(effBasewrsp33)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp33)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp33 == "asymptote")||(costTypewrsp33 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp33, player.sp.points, costBasewrsp33, costExpwrsp33, costLimitwrsp33).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp33, player.sp.points, costBasewrsp33, costExpwrsp33, costLimitwrsp33))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp33, player.buyableMaxPurchaseable(costTypewrsp33, player.sp.points, costBasewrsp33, costExpwrsp33, costLimitwrsp33), costBasewrsp33, costExpwrsp33, costLimitwrsp33))}
+                    }
+                }
+            },
+        },
+        43: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp43 = "large"
+                costBasewrsp43 = new Decimal(1.2)
+                costExpwrsp43 = new Decimal(1.5)
+                costLimitwrsp43 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrsp43, new Decimal(x), costBasewrsp43, costExpwrsp43, costLimitwrsp43)
+            },
+            effect(x) {
+                effBasewrsp43 = new Decimal(1.2)
+                effStackwrsp43 = new Decimal(x)
+
+                return Decimal.pow(effBasewrsp43, effStackwrsp43) 
+            },
+            
+            title() { return "world replication superprestige buyable 43"},
+            display() { return "multiply the buyabol gain power "+format(effBasewrsp43)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp43)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp43 == "asymptote")||(costTypewrsp43 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp43, player.sp.points, costBasewrsp43, costExpwrsp43, costLimitwrsp43).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp43, player.sp.points, costBasewrsp43, costExpwrsp43, costLimitwrsp43))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp43, player.buyableMaxPurchaseable(costTypewrsp43, player.sp.points, costBasewrsp43, costExpwrsp43, costLimitwrsp43), costBasewrsp43, costExpwrsp43, costLimitwrsp43))}
+                    }
+                }
+            },
+        },
+        53: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp53 = "large"
+                costBasewrsp53 = new Decimal(1.2)
+                costExpwrsp53 = new Decimal(1.5)
+                costLimitwrsp53 = new Decimal('e1.00e4')
+                return player.buyablePrice(costTypewrsp53, new Decimal(x), costBasewrsp53, costExpwrsp53, costLimitwrsp53)
+            },
+            effect(x) {
+                effBasewrsp53 = new Decimal(1.2)
+                effStackwrsp53 = new Decimal(x)
+
+                return Decimal.pow(effBasewrsp53, effStackwrsp53) 
+            },
+            
+            title() { return "world replication superprestige buyable 53"},
+            display() { return "multiply the superprestige gain power by "+format(effBasewrsp53)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp53)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp53 == "asymptote")||(costTypewrsp53 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp53, player.sp.points, costBasewrsp53, costExpwrsp53, costLimitwrsp53).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp53, player.sp.points, costBasewrsp53, costExpwrsp53, costLimitwrsp53))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp53, player.buyableMaxPurchaseable(costTypewrsp53, player.sp.points, costBasewrsp53, costExpwrsp53, costLimitwrsp53), costBasewrsp53, costExpwrsp53, costLimitwrsp53))}
+                    }
+                }
+            },
+        },
+        115: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrsp115 = "asymptote"
+                costBasewrsp115 = new Decimal('e200')
+                costExpwrsp115 = new Decimal(1.9)
+                costLimitwrsp115 = layers.wrsp.buyables[115].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrsp115, new Decimal(x), costBasewrsp115, costExpwrsp115, costLimitwrsp115)
+            },
+            effect(x) {
+                effBasewrsp115 = new Decimal(0.01)
+                effStackwrsp115 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp115, effStackwrsp115) 
+            },
+            purchaseLimit: new Decimal(40),
+            title() { return "world replication superprestige buyable 115"},
+            display() { return "add the bonus point gain power by "+format(effBasewrsp115)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrsp115)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp115 == "asymptote")||(costTypewrsp115 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp115, player.sp.points, costBasewrsp115, costExpwrsp115, costLimitwrsp115).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp115, player.sp.points, costBasewrsp115, costExpwrsp115, costLimitwrsp115))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp115, player.buyableMaxPurchaseable(costTypewrsp115, player.sp.points, costBasewrsp115, costExpwrsp115, costLimitwrsp115), costBasewrsp115, costExpwrsp115, costLimitwrsp115))}
+                    }
+                }
+            },
+        },
+        117: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrsp117 = "asymptote"
+                costBasewrsp117 = new Decimal('e1000')
+                costExpwrsp117 = new Decimal(2.9)
+                costLimitwrsp117 = layers.wrsp.buyables[117].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrsp117, new Decimal(x), costBasewrsp117, costExpwrsp117, costLimitwrsp117)
+            },
+            effect(x) {
+                effBasewrsp117 = new Decimal(0.1)
+                effStackwrsp117 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp117, effStackwrsp117) 
+            },
+            purchaseLimit: new Decimal(240),
+            title() { return "world replication superprestige buyable 117"},
+            display() { return "subtract the bonus point fourth softcap by "+format(effBasewrsp117)+" <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrsp117)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp117 == "asymptote")||(costTypewrsp117 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp117, player.sp.points, costBasewrsp117, costExpwrsp117, costLimitwrsp117).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp117, player.sp.points, costBasewrsp117, costExpwrsp117, costLimitwrsp117))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp117, player.buyableMaxPurchaseable(costTypewrsp117, player.sp.points, costBasewrsp117, costExpwrsp117, costLimitwrsp117), costBasewrsp117, costExpwrsp117, costLimitwrsp117))}
+                    }
+                }
+            },
+        },
+        121: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp121 = "normal"
+                costBasewrsp121 = new Decimal(1.2)
+                costExpwrsp121 = new Decimal(1.1)
+                costLimitwrsp121 = new Decimal('e1e4')
+                return player.buyablePrice(costTypewrsp121, new Decimal(x), costBasewrsp121, costExpwrsp121, costLimitwrsp121)
+            },
+            effect(x) {
+                effBasewrsp121 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
+                effStackwrsp121 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp121, effStackwrsp121)
+            },
+            title() { return "world replication buyable 121"},
+            display() { return "increase replicants production by "+format(effBasewrsp121)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp121)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp121 == "asymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp121, player.sp.points, costBasewrsp121, costExpwrsp121, costLimitwrsp121).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp121, player.sp.points, costBasewrsp121, costExpwrsp121, costLimitwrsp121))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp121, player.buyableMaxPurchaseable(costTypewrsp121, player.sp.points, costBasewrsp121, costExpwrsp121, costLimitwrsp121), costBasewrsp121, costExpwrsp121, costLimitwrsp121))}
+                    }
+                }
+            },
+        },
+        122: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp122 = "normal"
+                costBasewrsp122 = new Decimal(1.4)
+                costExpwrsp122 = new Decimal(1.2)
+                costLimitwrsp122 = new Decimal('e1e4')
+                return player.buyablePrice(costTypewrsp122, new Decimal(x), costBasewrsp122, costExpwrsp122, costLimitwrsp122)
+            },
+            effect(x) {
+                effBasewrsp122 = new Decimal(0.01).times(buyableEffect('wrte', 131)).times(buyableEffect('wrte', 132))
+                effStackwrsp122 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp122, effStackwrsp122)
+            },
+            title() { return "world replication buyable 122"},
+            display() { return "increase replicants production multiplier by "+format(effBasewrsp122)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp122)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp122 == "asymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp122, player.sp.points, costBasewrsp122, costExpwrsp122, costLimitwrsp122).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp122, player.sp.points, costBasewrsp122, costExpwrsp122, costLimitwrsp122))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp122, player.buyableMaxPurchaseable(costTypewrsp122, player.sp.points, costBasewrsp122, costExpwrsp122, costLimitwrsp122), costBasewrsp122, costExpwrsp122, costLimitwrsp122))}
+                    }
+                }
+            },
+        },
+        123: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp123 = "normal"
+                costBasewrsp123 = new Decimal(10)
+                costExpwrsp123 = new Decimal(1.3)
+                costLimitwrsp123 = new Decimal('1e200')
+                return player.buyablePrice(costTypewrsp123, new Decimal(x), costBasewrsp123, costExpwrsp123, costLimitwrsp123)
+            },
+            effect(x) {
+                effBasewrsp123 = new Decimal(10).pow(buyableEffect('wrte', 131)).pow(buyableEffect('wrte', 132))
+                effStackwrsp123 = new Decimal(x)
+
+                return Decimal.pow(effBasewrsp123, effStackwrsp123)
+            },
+            title() { return "world replication buyable 123"},
+            display() { return "delay first replicants softcap start by "+format(effBasewrsp123)+"x <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp123)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp123 == "asymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp123, player.sp.points, costBasewrsp123, costExpwrsp123, costLimitwrsp123).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp123, player.sp.points, costBasewrsp123, costExpwrsp123, costLimitwrsp123))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp123, player.buyableMaxPurchaseable(costTypewrsp123, player.sp.points, costBasewrsp123, costExpwrsp123, costLimitwrsp123), costBasewrsp123, costExpwrsp123, costLimitwrsp123))}
+                    }
+                }
+            },
+        },
+        124: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp124 = "normal"
+                costBasewrsp124 = new Decimal(5)
+                costExpwrsp124 = new Decimal(1.4)
+                costLimitwrsp124 = new Decimal('1e100')
+                return player.buyablePrice(costTypewrsp124, new Decimal(x), costBasewrsp124, costExpwrsp124, costLimitwrsp124)
+            },
+            effect(x) {
+                effBasewrsp124 = new Decimal(0.1)
+                effStackwrsp124 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp124, effStackwrsp124)
+            },
+            title() { return "World Replication Superprestige buyable 124"},
+            display() { return "add first replicants softcap strength by "+format(effBasewrsp124)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp124)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp124 == "asymptote")||(costTypewrsp124 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp124, player.sp.points, costBasewrsp124, costExpwrsp124, costLimitwrsp124).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp124, player.sp.points, costBasewrsp124, costExpwrsp124, costLimitwrsp124))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp124, player.buyableMaxPurchaseable(costTypewrsp124, player.sp.points, costBasewrsp124, costExpwrsp124, costLimitwrsp124), costBasewrsp124, costExpwrsp124, costLimitwrsp124))}
+                    }
+                }
+            },
+        },
+        125: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp125 = "asymptote"
+                costBasewrsp125 = new Decimal(100)
+                costExpwrsp125 = new Decimal(2.2)
+                costLimitwrsp125 = layers.wrsp.buyables[125].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrsp125, new Decimal(x), costBasewrsp125, costExpwrsp125, costLimitwrsp125)
+            },
+            effect(x) {
+                effBasewrsp125 = new Decimal(1.025)
+                effStackwrsp125 = new Decimal(x)
+
+                return Decimal.pow(effBasewrsp125, effStackwrsp125)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "World Replication Superprestige buyable 125"},
+            display() { return "divide the first replicants softcap strength by "+format(effBasewrsp125)+" <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp125)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost()) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp125 == "asymptote")||(costTypewrsp125 == "largeasymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp125, player.sp.points, costBasewrsp125, costExpwrsp125, costLimitwrsp125).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp125, player.sp.points, costBasewrsp125, costExpwrsp125, costLimitwrsp125))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp125, player.buyableMaxPurchaseable(costTypewrsp125, player.sp.points, costBasewrsp125, costExpwrsp125, costLimitwrsp125), costBasewrsp125, costExpwrsp125, costLimitwrsp125))}
+                    }
+                }
+            },
+        },
+        131: {
+            unlocked() {return true},
+            cost(x) {
+                costTypewrsp131 = "normal"
+                costBasewrsp131 = new Decimal(1e10)
+                costExpwrsp131 = new Decimal(3)
+                costLimitwrsp131 = new Decimal('e1e6')
+                return player.buyablePrice(costTypewrsp131, new Decimal(x), costBasewrsp131, costExpwrsp131, costLimitwrsp131)
+            },
+            effect(x) {
+                effBasewrsp131 = new Decimal(0.01).times(buyableEffect('wrte', 132))
+                effStackwrsp131 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp131, effStackwrsp131)
+            },
+            title() { return "World Replication Superprestige buyable 131"},
+            display() { return "add buyables 121 to 123 multiplier by "+format(effBasewrsp131)+"x <br> cost: "+format(this.cost())+" superprestige points <br> owned: "+format(effStackwrsp131)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp131 == "asymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp131, player.sp.points, costBasewrsp131, costExpwrsp131, costLimitwrsp131).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp131, player.sp.points, costBasewrsp131, costExpwrsp131, costLimitwrsp131))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp131, player.buyableMaxPurchaseable(costTypewrsp131, player.sp.points, costBasewrsp131, costExpwrsp131, costLimitwrsp131), costBasewrsp131, costExpwrsp131, costLimitwrsp131))}
+                    }
+                }
+            },
+        },
+        132: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrsp132 = "large"
+                costBasewrsp132 = new Decimal('1e5')
+                costExpwrsp132 = new Decimal(0.3)
+                costLimitwrsp132 = new Decimal('e1e8')
+                return player.buyablePrice(costTypewrsp132, new Decimal(x), costBasewrsp132, costExpwrsp132, costLimitwrsp132)
+            },
+            effect(x) {
+                effBasewrsp132 = new Decimal(0.01)
+                effStackwrsp132 = new Decimal(x)
+
+                return Decimal.times(effBasewrsp132, effStackwrsp132)
+            },
+            title() { return "world replication superprestige buyable 132"},
+            display() { return "add buyables 121 to 123 and 131 effect multiplier by "+format(effBasewrsp132)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrsp132)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrsp132 == "asymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrsp132, player.sp.points, costBasewrsp132, costExpwrsp132, costLimitwrsp132).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrsp132, player.sp.points, costBasewrsp132, costExpwrsp132, costLimitwrsp132))
+                        if (player.wr.buyables[11].lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrsp132, player.buyableMaxPurchaseable(costTypewrsp132, player.sp.points, costBasewrsp132, costExpwrsp132, costLimitwrsp132), costBasewrsp132, costExpwrsp132, costLimitwrsp132))}
+                    }
+                }
+            },
+        },
+        133: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                costTypewrp133 = "asymptote"
+                costBasewrp133 = new Decimal('e2e7')
+                costExpwrp133 = new Decimal(3)
+                costLimitwrp133 = layers.wrsp.buyables[133].purchaseLimit.add(1)
+                return player.buyablePrice(costTypewrp133, new Decimal(x), costBasewrp133, costExpwrp133, costLimitwrp133)
+            },
+            effect(x) {
+                effBasewrp133 = new Decimal(1.05)
+                effStackwrp133 = new Decimal(x)
+
+                return Decimal.pow(effBasewrp133, effStackwrp133)
+            },
+            purchaseLimit: new Decimal(50),
+            title() { return "world replication buyable 133"},
+            display() { return "divide the first replicanti softcap strength by "+format(effBasewrp133)+"x <br> cost: "+format(this.cost())+" replicants <br> owned: "+format(effStackwrp133)+" <br> effect: "+format(this.effect())},
+            canAfford() { return player.sp.points.gte(this.cost().add(1)) },
+            buy() {
+                player.sp.points = player.sp.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if ((costTypewrp133 == "asymptote")||player.sp.points.lte(1e10)) {
+                    while (canBuyBuyable([this.layer], [this.id])){
+                        buyBuyable([this.layer], [this.id])
+                    }
+                } else {
+                    if (player.buyableMaxPurchaseable(costTypewrp133, player.sp.points, costBasewrp133, costExpwrp133, costLimitwrp133).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypewrp133, player.sp.points, costBasewrp133, costExpwrp133, costLimitwrp133))
+                        if (player.sp.points.lt('e100')) {player.sp.points = player.sp.points.sub(player.buyablePrice(costTypewrp133, player.buyableMaxPurchaseable(costTypewrp133, player.sp.points, costBasewrp133, costExpwrp133, costLimitwrp133), costBasewrp133, costExpwrp133, costLimitwrp133))}
+                    }
+                }
+            },
+        },
+    },
+    upgrades: {
+    },
+
+})
+
+addLayer("wrte", {
+    name: "World Replication Total Effect", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "WRTE", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 4, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: false ,
+		points: new Decimal(0),
+    }},
+    color: "#d05050",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "World Replication Total Effect", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {
+
+        return player.points
+    }, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        
+
+        return new Decimal(1)
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+
+        return new Decimal(1)
+    },
+    getResetGain() {
+
+        return new Decimal(0)
+    },
+    getNextAt() {
+        return Decimal.dInf
+    },
+    canReset() {return false},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "You cannot reset this layer" },
+    row: 6, // Row the layer is in on the tree (0 is the first row)
+    hotkeys: [
+    ],
+    layerShown(){return false},
+    buyables: {
+        15: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte15 = new Decimal(1)
+                effBasewrte15 = effBasewrte15.add(buyableEffect('wr', 15))
+                effBasewrte15 = effBasewrte15.add(buyableEffect('wrp', 15))
+                effBasewrte15 = effBasewrte15.add(buyableEffect('wrmp', 15))
+                effBasewrte15 = effBasewrte15.add(buyableEffect('wrbp', 15))
+                effBasewrte15 = effBasewrte15.add(buyableEffect('wrsp', 15))
+
+                return effBasewrte15
+            },
+            title() { return "World Replication total effect buyable 15"},
+            display() { return "add points gain power "},
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        23: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte23 = new Decimal(1)
+                effBasewrte23 = effBasewrte23.times(buyableEffect('wr', 23))
+                effBasewrte23 = effBasewrte23.times(buyableEffect('wrp', 23))
+                effBasewrte23 = effBasewrte23.times(buyableEffect('wrmp', 23))
+                effBasewrte23 = effBasewrte23.times(buyableEffect('wrbp', 23))
+                effBasewrte23 = effBasewrte23.times(buyableEffect('wrsp', 23))
+                return effBasewrte23
+            },
+            title() { return "world replication total effect buyable 23"},
+            display() { return "add the prestige gain power by "},
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        33: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte33 = new Decimal(1)
+                effBasewrte33 = effBasewrte33.times(buyableEffect('wr', 33))
+                effBasewrte33 = effBasewrte33.times(buyableEffect('wrp', 33))
+                effBasewrte33 = effBasewrte33.times(buyableEffect('wrmp', 33))
+                effBasewrte33 = effBasewrte33.times(buyableEffect('wrbp', 33))
+                effBasewrte33 = effBasewrte33.times(buyableEffect('wrsp', 33))
+                return effBasewrte33
+            },
+            title() { return "world replication total effect buyable 33"},
+            display() { return "add the superprestige gain power by "},
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        43: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte43 = new Decimal(1)
+                effBasewrte43 = effBasewrte43.times(buyableEffect('wr', 43))
+                effBasewrte43 = effBasewrte43.times(buyableEffect('wrp', 43))
+                effBasewrte43 = effBasewrte43.times(buyableEffect('wrmp', 43))
+                effBasewrte43 = effBasewrte43.times(buyableEffect('wrbp', 43))
+                effBasewrte43 = effBasewrte43.times(buyableEffect('wrsp', 43))
+                return effBasewrte43
+            },
+            title() { return "world replication total effect buyable 43"},
+            display() { return "add the superprestige gain power by "},
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        53: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte53 = new Decimal(1)
+                effBasewrte53 = effBasewrte53.times(buyableEffect('wr', 53))
+                effBasewrte53 = effBasewrte53.times(buyableEffect('wrp', 53))
+                effBasewrte53 = effBasewrte53.times(buyableEffect('wrmp', 53))
+                effBasewrte53 = effBasewrte53.times(buyableEffect('wrbp', 53))
+                effBasewrte53 = effBasewrte53.times(buyableEffect('wrsp', 53))
+                return effBasewrte53
+            },
+            title() { return "world replication total effect buyable 53"},
+            display() { return "add the superprestige gain power by "},
+            canAfford() { return false },
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        115: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte115 = new Decimal(0)
+                effBasewrte115 = effBasewrte115.add(buyableEffect('wr', 115))
+                effBasewrte115 = effBasewrte115.add(buyableEffect('wrp', 115))
+                effBasewrte115 = effBasewrte115.add(buyableEffect('wrmp', 115))
+                effBasewrte115 = effBasewrte115.add(buyableEffect('wrbp', 115))
+                effBasewrte115 = effBasewrte115.add(buyableEffect('wrsp', 115))
+
+                return effBasewrte115
+            },
+            title() { return "World Replication total effect buyable 115"},
+            display() { return "add bonus point gain power"},
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        125: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte125 = new Decimal(1)
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wr', 125))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrp', 125))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrmp', 125))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrbp', 125))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrsp', 125))
+
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wr', 133))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrp', 133))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrmp', 133))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrbp', 133))
+                effBasewrte125 = effBasewrte125.times(buyableEffect('wrsp', 133))
+                return effBasewrte125
+            },
+            title() { return "World Replication total effect buyable 125"},
+            display() { return "add buyables 121 to 123 multiplier by "},
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        131: {
+            unlocked() {return true},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte131 = new Decimal(1)
+                effBasewrte131 = effBasewrte131.add(buyableEffect('wr', 131))
+                effBasewrte131 = effBasewrte131.add(buyableEffect('wrp', 131))
+                effBasewrte131 = effBasewrte131.add(buyableEffect('wrmp', 131))
+                effBasewrte131 = effBasewrte131.add(buyableEffect('wrbp', 131))
+                effBasewrte131 = effBasewrte131.add(buyableEffect('wrsp', 131))
+
+                return effBasewrte131
+            },
+            title() { return "World Replication total effect buyable 131"},
+            display() { return "add buyables 121 to 123 multiplier by "},
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        132: {
+            unlocked() {return getBuyableAmount('wr', 211).gte(2)},
+            cost(x) {
+                return Decimal.dInf
+            },
+            effect(x) {
+                effBasewrte132 = new Decimal(1)
+                effBasewrte132 = effBasewrte132.add(buyableEffect('wr', 132))
+                effBasewrte132 = effBasewrte132.add(buyableEffect('wrp', 132))
+                effBasewrte132 = effBasewrte132.add(buyableEffect('wrmp', 132))
+                effBasewrte132 = effBasewrte132.add(buyableEffect('wrbp', 132))
+                effBasewrte132 = effBasewrte132.add(buyableEffect('wrsp', 132))
+
+                return effBasewrte132
+            },
+            title() { return "World Replication total effect buyable 132"},
+            display() { return "add buyables 121 to 123 and 132 multiplier by "},
+            buy() {
+            },
+            buyMax() {
             },
         },
     },
