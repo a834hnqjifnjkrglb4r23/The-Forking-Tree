@@ -43,23 +43,43 @@ function getPointGen() {
 
 	let gain = new Decimal(0)
 	gain = gain.add(buyableEffect('p', 11))
+	gain = gain.add(buyableEffect('p', 12))
+	gain = gain.add(buyableEffect('p', 13))
+	gain = gain.times(buyableEffect('p', 14))
+
+	if (hasUpgrade('p', 11)) {gain = gain.times(upgradeEffect('p', 11))}
+	if (hasUpgrade('p', 12)) {gain = gain.times(upgradeEffect('p', 12))}
+	if (hasUpgrade('p', 13)) {gain = gain.times(upgradeEffect('p', 13))}
+	if (hasUpgrade('p', 14)) {gain = gain.times(upgradeEffect('p', 14))}
+	if (hasUpgrade('p', 21)) {gain = gain.times(upgradeEffect('p', 21))}
+	if (hasUpgrade('p', 22)) {gain = gain.times(upgradeEffect('p', 22))}
+	if (hasUpgrade('p', 32)) {gain = gain.times(upgradeEffect('p', 32))}
+	if (hasUpgrade('ca', 11)) {gain = gain.times(upgradeEffect('ca', 11))}
+	if (hasUpgrade('ca', 12)) {gain = gain.times(upgradeEffect('ca', 12))}
+	if (hasUpgrade('ca', 21)) {gain = gain.times(upgradeEffect('ca', 21))}
+	if (hasUpgrade('ca', 22)) {gain = gain.times(upgradeEffect('ca', 22))}
+	if (hasUpgrade('ca', 24)) {gain = gain.times(upgradeEffect('ca', 24))}
+	if (hasMilestone('me', 10)) {gain = gain.times(1000)}
+
+	if (hasUpgrade('p', 41)) {gain = gain.pow(upgradeEffect('p', 41))}
+	if (hasUpgrade('p', 44)) {gain = gain.pow(upgradeEffect('p', 44))}
 	return gain
 }
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
-	buyablePrice(type, amt, base, exp = Decimal.dOne, mult = Decimal.dOne, limit = Decimal.dInf) {
+	buyablePrice(type, amt, base, exp = Decimal.dOne, mult = Decimal.dOne, limit = Decimal.dInf, floorprice = false) {
 		if (type == "large") { //large = 10^(mult*base^(x+1)^pow)
 			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
-			if (Decimal.dTen.pow(base.pow(amt.add(1).pow(exp))).floor().gt(limit)) {
+			if (Decimal.dTen.pow(base.pow(amt.add(1).pow(exp))).gt(limit)) {
 				limitamt = limit.log10().div(mult).log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
 				limitpricetriplelog = limit.log10().log10().log10()
 				limitplus1pricetriplelog = Decimal.dTen.pow(base.pow(limitamtplus1.add(1).pow(exp)).times(mult)).log10().log10().log10()
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
-				return amt.sub(limitamt).times(newpricescalingtriplelog).add(limitpricetriplelog).pow10().pow10().pow10()
+				priceQuantity = amt.sub(limitamt).times(newpricescalingtriplelog).add(limitpricetriplelog).pow10().pow10().pow10()
 			} else {
-				return Decimal.dTen.pow(base.pow(amt.add(1).pow(exp)).times(mult)).floor()
+				priceQuantity = Decimal.dTen.pow(base.pow(amt.add(1).pow(exp)).times(mult))
 			}
 		}
 		if (type == "normal") { //normal = mult*base^(x+1)^pow
@@ -70,9 +90,9 @@ function addedPlayerData() { return {
 				limitpriceloglog = limit.log10().log10()
 				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).times(mult).log10().log10()
 				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
-				return amt.sub(limitamt).times(newpricescalingloglog).add(limitpriceloglog).pow10().pow10()
+				priceQuantity = amt.sub(limitamt).times(newpricescalingloglog).add(limitpriceloglog).pow10().pow10()
 			} else {
-				return base.pow(amt.add(1).pow(exp)).times(mult).floor()
+				priceQuantity = base.pow(amt.add(1).pow(exp)).times(mult)
 			}
 		}
 		if (type == "small") { //small = base*(x+1)^pow
@@ -83,20 +103,23 @@ function addedPlayerData() { return {
 				limitpricelog = limit.log10()
 				limitplus1pricelog = base.times(limitamtplus1.add(1).pow(exp)).log10()
 				newpricescalinglog = limitplus1pricelog.sub(limitpricelog)
-				return amt.sub(limitamt).times(newpricescalinglog).add(limitpricelog).pow10()
+				priceQuantity = amt.sub(limitamt).times(newpricescalinglog).add(limitpricelog).pow10()
 			} else {
-				return base.times(amt.add(1).pow(exp)).floor()
+				priceQuantity = base.times(amt.add(1).pow(exp))
 			}
 		}
 
 		if (type == "asymptote") {
-			return base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+			priceQuantity = base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
 
 		if (type == "largeasymptote") {
-			return base.pow(base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp))).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+			priceQuantity = base.pow(base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp))).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
-		
+		if (floorprice) {
+			priceQuantity = priceQuantity.floor()
+		}
+		return priceQuantity
 
 	},
 	buyableMaxPurchaseable(type, currency, base, exp = Decimal.dOne, mult = Decimal.dOne, limit = Decimal.dInf) {
@@ -147,7 +170,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e280000000"))
+	return player.points.gte(new Decimal("e1e15"))
 }
 
 

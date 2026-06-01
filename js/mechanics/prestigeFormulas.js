@@ -120,3 +120,8 @@ function softcap(value, cap, power = 0.5) {
 	else
 		return value.pow(power).times(cap.pow(decimalOne.sub(power)))
 }
+function undosoftcap(value, cap, power = 0.5) {
+	if (value.lte(cap)) return value
+	else
+		return value.root(power).times(cap.pow(decimalOne.sub(power.pow(-1))))
+}
