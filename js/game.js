@@ -46,7 +46,8 @@ function getPointGen() {
 	gain = gain.add(buyableEffect('p', 12))
 	gain = gain.add(buyableEffect('p', 13))
 	gain = gain.times(buyableEffect('p', 14))
-
+	gain = gain.times(buyableEffect('me', 11))
+	gain = gain.times(buyableEffect('mec', 11))
 	if (hasUpgrade('p', 11)) {gain = gain.times(upgradeEffect('p', 11))}
 	if (hasUpgrade('p', 12)) {gain = gain.times(upgradeEffect('p', 12))}
 	if (hasUpgrade('p', 13)) {gain = gain.times(upgradeEffect('p', 13))}
@@ -59,10 +60,22 @@ function getPointGen() {
 	if (hasUpgrade('ca', 21)) {gain = gain.times(upgradeEffect('ca', 21))}
 	if (hasUpgrade('ca', 22)) {gain = gain.times(upgradeEffect('ca', 22))}
 	if (hasUpgrade('ca', 24)) {gain = gain.times(upgradeEffect('ca', 24))}
+	if (hasUpgrade('ca', 34)) {gain = gain.times(upgradeEffect('ca', 34))}
 	if (hasMilestone('me', 10)) {gain = gain.times(1000)}
-
+	if (hasMilestone('ha', 10)) {gain = gain.times(1000)}
+	if (hasMilestone('si', 10)) {gain = gain.times(1000)}
+	if (hasMilestone('cu', 10)) {gain = gain.times(1e6)}
 	if (hasUpgrade('p', 41)) {gain = gain.pow(upgradeEffect('p', 41))}
 	if (hasUpgrade('p', 44)) {gain = gain.pow(upgradeEffect('p', 44))}
+	if (hasUpgrade('ca', 41)) {gain = gain.pow(upgradeEffect('ca', 41))}
+	if (hasUpgrade('ha', 11)) {gain = gain.pow(upgradeEffect('ha', 11))}
+	if (hasUpgrade('ha', 12)) {gain = gain.pow(upgradeEffect('ha', 12))}
+	if (hasUpgrade('ha', 13)) {gain = gain.pow(upgradeEffect('ha', 13))}
+	if (hasUpgrade('ha', 21)) {gain = gain.pow(upgradeEffect('ha', 21))}
+	if (hasUpgrade('si', 11)) {gain = gain.pow(upgradeEffect('si', 11))}
+	if (hasUpgrade('si', 12)) {gain = gain.pow(upgradeEffect('si', 12))}
+	if (hasUpgrade('si', 13)) {gain = gain.pow(upgradeEffect('si', 13))}
+	if (hasUpgrade('si', 21)) {gain = gain.times(upgradeEffect('si', 21))}
 	return gain
 }
 
@@ -110,11 +123,11 @@ function addedPlayerData() { return {
 		}
 
 		if (type == "asymptote") {
-			priceQuantity = base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+			priceQuantity = base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).times(mult).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
 
 		if (type == "largeasymptote") {
-			priceQuantity = base.pow(base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp))).floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
+			priceQuantity = base.pow(amt.add(1).times(limit).div(Decimal.sub(limit, amt)).pow(exp)).times(mult).pow10().floor() //limit is hard limit, in buyable amount. softcap not needed since hardcapped
 		}
 		if (floorprice) {
 			priceQuantity = priceQuantity.floor()
