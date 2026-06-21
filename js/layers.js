@@ -978,13 +978,21 @@ addLayer("me", {
                 if (canBuyBuyable('mec', i)) {buyMaxBuyable('mec', i)}
             }
         }
-        if (hasMilestone('si', 0)||hasMilestone('ha', 0)) {
+        if (hasMilestone('si', 0)||hasMilestone('ha', 0)||hasMilestone('cu', 10)) {
             for (let i1 = 1; i1 < 3; i1++) {
                 for (let i2 = 1; i2 < 5; i2++) {
                     if (!hasUpgrade('me', i1*10+i2)) {buyUpgrade('me', i1*10+i2)}
                     if (!hasUpgrade('mec', i1*10+i2)) {buyUpgrade('mec', i1*10+i2)}
                 }
             }
+        }
+    },
+    update(diff) {
+        if (hasMilestone('ha', 1)||hasMilestone('si', 1)||hasMilestone('cu', 10)) {
+            addPoints('me', getResetGain('me').max(0).times(diff))
+        }
+        if (hasMilestone('ha', 2)||hasMilestone('si', 2)||hasMilestone('cu', 10)) {
+            addPoints('mec', getResetGain('me').max(0).pow(0.5).times(diff))
         }
     },
     tabFormat: {
@@ -1007,7 +1015,6 @@ addLayer("me", {
                 ["blank", "5px"], // Height
                  "challenges", "blank", "buyables"],
         },
-
     },
     milestones: {
         0: {
@@ -1086,16 +1093,13 @@ addLayer("me", {
                 eff = player.me.points.add(2).log(2)
                 if (hasUpgrade('gi', 41)) {eff = eff.times(upgradeEffect('gi', 41))}
                 if (hasUpgrade('gi', 42)) {eff = eff.times(upgradeEffect('gi', 42))}
-                softcapStart = new Decimal(5)
-                softcapStart = softcapStart.times(buyableEffect('cu', 102).max(1))
-                if (eff.gte(softcapStart)) {
-                    if (hasUpgrade('si', 14)) {
-                        eff = eff.log(softcapStart).pow(upgradeEffect('si', 14)).times(softcapStart)
-                    } else {
-                        eff = softcapStart
-                    }
+                softcapStartme = new Decimal(5)
+                if (hasUpgrade('si', 14)) {softcapStartme = softcapStartme.times(upgradeEffect('si', 14))}
+                softcapStartme = softcapStartme.times(buyableEffect('cu', 102).max(1))
+                if (eff.gte(softcapStartme)) {
+                    eff = eff.log(softcapStartme).times(softcapStartme)
                 }
-                return eff
+                if (isNaN(eff)) {return new Decimal(1)} else {return eff}
             },
             title() { 
                 return "message upgrades effect calculator" 
@@ -1113,7 +1117,7 @@ addLayer("me", {
     upgrades: {
         11: {
             title: "message upgrade 11",
-            description: "raise prestige upgrade 11 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 11 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(1),
             effect() {
                 return buyableEffect('me', 12)
@@ -1123,7 +1127,7 @@ addLayer("me", {
         },
         12: {
             title: "message upgrade 12",
-            description: "raise prestige upgrade 12 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 12 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(2),
             effect() {
                 return buyableEffect('me', 12)
@@ -1133,7 +1137,7 @@ addLayer("me", {
         },
         13: {
             title: "message upgrade 13",
-            description: "raise prestige upgrade 13 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 13 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(3),
             effect() {
                 return buyableEffect('me', 12)
@@ -1143,7 +1147,7 @@ addLayer("me", {
         },
         14: {
             title: "message upgrade 14",
-            description: "raise prestige upgrade 14 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 14 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(4),
             effect() {
                 return buyableEffect('me', 12)
@@ -1153,7 +1157,7 @@ addLayer("me", {
         },
         21: {
             title: "message upgrade 21",
-            description: "raise prestige upgrade 21 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 21 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(5),
             effect() {
                 return buyableEffect('me', 12)
@@ -1163,7 +1167,7 @@ addLayer("me", {
         },
         22: {
             title: "message upgrade 22",
-            description: "raise prestige upgrade 22 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 22 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(6),
             effect() {
                 return buyableEffect('me', 12)
@@ -1173,7 +1177,7 @@ addLayer("me", {
         },
         23: {
             title: "message upgrade 23",
-            description: "raise prestige upgrade 23 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 23 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(7),
             effect() {
                 return buyableEffect('me', 12)
@@ -1183,7 +1187,7 @@ addLayer("me", {
         },
         24: {
             title: "message upgrade 24",
-            description: "raise prestige upgrade 24 effect to log2(message points +2), capped at ^5",
+            description: "raise prestige upgrade 24 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(8),
             effect() {
                 return buyableEffect('me', 12)
@@ -1203,7 +1207,7 @@ addLayer("mec", {
 		points: new Decimal(0),
     }},
     color: "#5465ff",
-    requires: new Decimal(0), // Can be a function that takes requiremecnt increases into account
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
     resource: "message decabled points", // Namec of message decabled currency
     baseResource: "cable points", // Namec of resource message decabled is based on
     baseAmount() {return player.ca.points}, // Get the current amount of baseResource
@@ -1247,21 +1251,8 @@ addLayer("mec", {
     onPrestige(gain) {
 
     },
-    automate() {
-        if (hasMilestone('ha', 0)||hasMilestone('si', 0)) {        
-            if (canBuyBuyable('me', 11)) {buyBuyable('me', 11)}
-            if (canBuyBuyable('mec', 11)) {buyBuyable('mec', 11)}
-        }
 
-    },
-    update(diff) {
-        if (hasMilestone('ha', 1)||hasMilestone('si', 1)||hasMilestone('cu', 10)) {
-            addPoints('me', getResetGain('me').times(diff))
-        }
-        if (hasMilestone('ha', 2)||hasMilestone('si', 2)||hasMilestone('cu', 10)) {
-            addPoints('mec', getResetGain('me').pow(0.5).times(diff))
-        }
-    },
+
     doReset(resettingLayer){
         keepRow = 2.5
         if (hasMilestone('ha', 0)||hasMilestone('si', 0)) {keepRow += 1}
@@ -1312,7 +1303,7 @@ addLayer("mec", {
             },
             buyMax() {
                 if ((costTypemec11 == "asymptote")||player.mec.points.lte(1e10)) {
-                    while (mecnBuyBuyable([this.layer], [this.id])){
+                    while (canBuyBuyable([this.layer], [this.id])){
                         buyBuyable([this.layer], [this.id])
                     }
                 } else {
@@ -1332,16 +1323,14 @@ addLayer("mec", {
                 eff = player.mec.points.add(2).log(2)
                 if (hasUpgrade('gi', 41)) {eff = eff.times(upgradeEffect('gi', 41))}
                 if (hasUpgrade('gi', 42)) {eff = eff.times(upgradeEffect('gi', 42))}
-                softcapStart = new Decimal(5)
-                softcapStart = softcapStart.times(buyableEffect('cu', 102).max(1))
-                if (eff.gte(softcapStart)) {
-                    if (hasUpgrade('si', 14)) {
-                        eff = eff.log(softcapStart).pow(upgradeEffect('si', 14)).times(softcapStart)
-                    } else {
-                        eff = softcapStart
-                    }
+                softcapStartmec = new Decimal(5)
+                if (hasUpgrade('si', 14)) {softcapStartmec = softcapStartmec.times(upgradeEffect('si', 14))}
+                softcapStartmec = softcapStartmec.times(buyableEffect('cu', 102).max(1))
+                if (eff.gte(softcapStartmec)) {
+                    eff = eff.log(softcapStartmec).times(softcapStartmec)
                 }
-                return eff
+                if (isNaN(eff)) {return new Decimal(1)} else {return eff}
+                
             },
             title() { 
                 return "message upgrades effect calculator" 
@@ -1359,7 +1348,7 @@ addLayer("mec", {
     upgrades: {
         11: {
             title: "message decabled upgrade 11",
-            description: "raise prestige upgrade 11 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 11 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(1),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1369,7 +1358,7 @@ addLayer("mec", {
         },
         12: {
             title: "message decabled upgrade 12",
-            description: "raise prestige upgrade 12 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 12 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(2),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1379,7 +1368,7 @@ addLayer("mec", {
         },
         13: {
             title: "message decabled upgrade 13",
-            description: "raise prestige upgrade 13 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 13 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(3),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1389,7 +1378,7 @@ addLayer("mec", {
         },
         14: {
             title: "message decabled upgrade 14",
-            description: "raise prestige upgrade 14 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 14 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(4),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1399,7 +1388,7 @@ addLayer("mec", {
         },
         21: {
             title: "message decabled upgrade 21",
-            description: "raise prestige upgrade 21 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 21 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(5),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1409,7 +1398,7 @@ addLayer("mec", {
         },
         22: {
             title: "message decabled upgrade 22",
-            description: "raise prestige upgrade 22 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 22 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(6),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1419,7 +1408,7 @@ addLayer("mec", {
         },
         23: {
             title: "message decabled upgrade 23",
-            description: "raise prestige upgrade 23 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 23 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(7),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1429,7 +1418,7 @@ addLayer("mec", {
         },
         24: {
             title: "message decabled upgrade 24",
-            description: "raise prestige upgrade 24 effect to log2(message decabled points +2), capped at ^5",
+            description: "raise prestige upgrade 24 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(8),
             effect() {
                 return buyableEffect('mec', 12)
@@ -1476,7 +1465,7 @@ addLayer("ha", {
 
         choseSilence = hasMilestone('si', 10)
         if (choseSilence&&!maxedChallenge('gi', 11)&&!inChallenge('gi', 11)) {
-            if (!hasChallenge('gi', 11)) {hapMax = new Decimal(0)} else {hapMax = Decimal.dTen.pow(challengeCompletions('gi', 11)**2)}
+            if (!hasChallenge('gi', 11)) {hapMax = new Decimal(0)} else {hapMax = Decimal.dTen.pow(Math.log10(challengeCompletions('gi', 11))**2)}
             hap = hap.min(hapMax)
         }
 
@@ -1794,7 +1783,7 @@ addLayer("si", {
 
         choseHarvest = hasMilestone('ha', 10)
         if (choseHarvest&&!maxedChallenge('gi', 11)&&!inChallenge('gi', 11)) {
-            if (!hasChallenge('gi', 11)) {sipMax = new Decimal(0)} else {sipMax = Decimal.dTen.pow(challengeCompletions('gi', 11)**2)}
+            if (!hasChallenge('gi', 11)) {sipMax = new Decimal(0)} else {sipMax = Decimal.dTen.pow(Math.log10(challengeCompletions('gi', 11))**2)}
             sip = sip.min(sipMax)
         }
 
@@ -2033,14 +2022,14 @@ addLayer("si", {
         },
         14: {
             title: "silence upgrade 14",
-            description: "message upgrades are softcapped at ^5 instead of hardcapped",
+            description: "message upgrades softcap start x2 later",
             cost: new Decimal(100),
             effect() {
-                eff = new Decimal(1)
+                eff = new Decimal(2)
                 if (hasUpgrade('gi', 33)) {eff = eff.add(upgradeEffect('gi', 33))}
                 return eff
             },
-            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
         },
         21: {
@@ -2106,8 +2095,9 @@ addLayer("cu", {
     baseAmount() {return Decimal.max(player.ha.points, player.si.points)}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already cuve
     gainMult() { // Calculate the multiplier for main currency from bonuses
-        multcu = new Decimal(1e-8)
+        multcu = new Decimal(1e-9)
         if (hasUpgrade('gi', 22)) {multcu = multcu.times(upgradeEffect('gi', 22))}
+        if (hasUpgrade('cup', 11)) {multcu = multcu.times(upgradeEffect('cup', 11))}
         return multcu
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2219,11 +2209,11 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu11 = "normal"
-                costBasecu11 = new Decimal(1.8)
+                costBasecu11 = new Decimal(2)
                 if (hasUpgrade('gi', 14)) {costBasecu11 = costBasecu11.root(upgradeEffect('gi', 14))}
-                costMultcu11 = new Decimal(0.555555555555555556)
-                costExpcu11 = new Decimal(1)
-                costLimitcu11 = new Decimal('e100')
+                costMultcu11 = new Decimal(0.5)
+                costExpcu11 = new Decimal(1.1)
+                costLimitcu11 = new Decimal('e10')
                 costStackcu11 = new Decimal(x)
                 return player.buyablePrice(costTypecu11, costStackcu11, costBasecu11, costExpcu11 ,costMultcu11, costLimitcu11 , false)
             },
@@ -2267,8 +2257,8 @@ addLayer("cu", {
                 costTypecu12 = "normal"
                 costBasecu12 = new Decimal(3)
                 if (hasUpgrade('gi', 14)) {costBasecu12 = costBasecu12.root(upgradeEffect('gi', 14))}
-                costMultcu12 = new Decimal(3.33333333333333334)
-                costExpcu12 = new Decimal(1)
+                costMultcu12 = new Decimal(10)
+                costExpcu12 = new Decimal(1.1)
                 costLimitcu12 = new Decimal('e10')
                 costStackcu12 = new Decimal(x)
                 return player.buyablePrice(costTypecu12, costStackcu12, costBasecu12, costExpcu12 ,costMultcu12, costLimitcu12 , false)
@@ -2313,8 +2303,8 @@ addLayer("cu", {
                 costTypecu13 = "normal"
                 costBasecu13 = new Decimal(4)
                 if (hasUpgrade('gi', 14)) {costBasecu13 = costBasecu13.root(upgradeEffect('gi', 14))}
-                costMultcu13 = new Decimal(25)
-                costExpcu13 = new Decimal(1)
+                costMultcu13 = new Decimal(100)
+                costExpcu13 = new Decimal(1.1)
                 costLimitcu13 = new Decimal('e10')
                 costStackcu13 = new Decimal(x)
                 return player.buyablePrice(costTypecu13, costStackcu13, costBasecu13, costExpcu13 ,costMultcu13, costLimitcu13 , false)
@@ -2359,8 +2349,8 @@ addLayer("cu", {
                 costTypecu14 = "normal"
                 costBasecu14 = new Decimal(5)
                 if (hasUpgrade('gi', 14)) {costBasecu14 = costBasecu14.root(upgradeEffect('gi', 14))}
-                costMultcu14 = new Decimal(200)
-                costExpcu14 = new Decimal(1)
+                costMultcu14 = new Decimal(1000)
+                costExpcu14 = new Decimal(1.1)
                 costLimitcu14 = new Decimal('e10')
                 costStackcu14 = new Decimal(x)
                 return player.buyablePrice(costTypecu14, costStackcu14, costBasecu14, costExpcu14 ,costMultcu14, costLimitcu14 , false)
@@ -2403,10 +2393,10 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu21 = "normal"
-                costBasecu21 = new Decimal(1.8)
+                costBasecu21 = new Decimal(2)
                 if (hasUpgrade('gi', 14)) {costBasecu21 = costBasecu21.root(upgradeEffect('gi', 14))}
-                costMultcu21 = new Decimal(5.555555555556)
-                costExpcu21 = new Decimal(1)
+                costMultcu21 = new Decimal(5)
+                costExpcu21 = new Decimal(1.1)
                 costLimitcu21 = new Decimal('e10')
                 costStackcu21 = new Decimal(x)
                 return player.buyablePrice(costTypecu21, costStackcu21, costBasecu21, costExpcu21 ,costMultcu21, costLimitcu21 , false)
@@ -2451,8 +2441,8 @@ addLayer("cu", {
                 costTypecu22 = "normal"
                 costBasecu22 = new Decimal(6)
                 if (hasUpgrade('gi', 14)) {costBasecu22 = costBasecu22.root(upgradeEffect('gi', 14))}
-                costMultcu22 = new Decimal(16.6666666666667)
-                costExpcu22 = new Decimal(1)
+                costMultcu22 = new Decimal(100)
+                costExpcu22 = new Decimal(1.1)
                 costLimitcu22 = new Decimal('e10')
                 costStackcu22 = new Decimal(x)
                 return player.buyablePrice(costTypecu22, costStackcu22, costBasecu22, costExpcu22 ,costMultcu22, costLimitcu22 , false)
@@ -2497,8 +2487,8 @@ addLayer("cu", {
                 costTypecu23 = "normal"
                 costBasecu23 = new Decimal(7)
                 if (hasUpgrade('gi', 14)) {costBasecu23 = costBasecu23.root(upgradeEffect('gi', 14))}
-                costMultcu23 = new Decimal(142.857142857142858)
-                costExpcu23 = new Decimal(1)
+                costMultcu23 = new Decimal(1000)
+                costExpcu23 = new Decimal(1.1)
                 costLimitcu23 = new Decimal('e10')
                 costStackcu23 = new Decimal(x)
                 return player.buyablePrice(costTypecu23, costStackcu23, costBasecu23, costExpcu23 ,costMultcu23, costLimitcu23 , false)
@@ -2541,10 +2531,10 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu31 = "normal"
-                costBasecu31 = new Decimal(1.8)
+                costBasecu31 = new Decimal(2)
                 if (hasUpgrade('gi', 14)) {costBasecu31 = costBasecu31.root(upgradeEffect('gi', 14))}
-                costMultcu31 = new Decimal(55.55555555556)
-                costExpcu31 = new Decimal(1)
+                costMultcu31 = new Decimal(50)
+                costExpcu31 = new Decimal(1.1)
                 costLimitcu31 = new Decimal('e10')
                 costStackcu31 = new Decimal(x)
                 return player.buyablePrice(costTypecu31, costStackcu31, costBasecu31, costExpcu31 ,costMultcu31, costLimitcu31 , false)
@@ -2589,8 +2579,8 @@ addLayer("cu", {
                 costTypecu32 = "normal"
                 costBasecu32 = new Decimal(8)
                 if (hasUpgrade('gi', 14)) {costBasecu32 = costBasecu32.root(upgradeEffect('gi', 14))}
-                costMultcu32 = new Decimal(125)
-                costExpcu32 = new Decimal(1)
+                costMultcu32 = new Decimal(1000)
+                costExpcu32 = new Decimal(1.1)
                 costLimitcu32 = new Decimal('e10')
                 costStackcu32 = new Decimal(x)
                 return player.buyablePrice(costTypecu32, costStackcu32, costBasecu32, costExpcu32 ,costMultcu32, costLimitcu32 , false)
@@ -2682,7 +2672,7 @@ addLayer("cu", {
             },
             effect(x){
 
-                boosteff = new Decimal(x).div(100).add(1)
+                boosteff = new Decimal(x).pow(0.5).max(1)
                 if (hasUpgrade('gi', 12)) {boosteff = boosteff.pow(upgradeEffect('gi', 12))}
                 if (hasUpgrade('gi', 34)) {boosteff = boosteff.pow(upgradeEffect('gi', 34))}
                 if (boosteff.gte(2)) {boosteff = boosteff.div(2).pow(0.25).times(2)}
@@ -2734,7 +2724,8 @@ addLayer("cu", {
             },
             effect(x){
 
-                boosteff = new Decimal(x).pow(0.08).max(1)
+                boosteff = new Decimal(x).root(12).max(1)
+                if (hasUpgrade('gi', 11)) {eff = eff.pow(upgradeEffect('gi', 11))}
                 boosteffsoftcapstart = Decimal.dTen 
                 if (hasUpgrade('gi', 13)) {boosteffsoftcapstart = boosteffsoftcapstart.times(upgradeEffect('gi', 13))}
                 if (hasUpgrade('gi', 24)) {boosteffsoftcapstart = boosteffsoftcapstart.times(upgradeEffect('gi', 24))}
@@ -2834,7 +2825,6 @@ addLayer("cu", {
             },
             effect(x){
                 eff = player.cu.points
-                if (hasUpgrade('gi', 11)) {eff = eff.pow(upgradeEffect('gi', 11))}
                 return eff
             },
             title() { 
@@ -2933,10 +2923,10 @@ addLayer("gi", {
     upgrades: {        
         11: {
             title: "guitar upgrade 11",
-            description: "raise copper points effect to ^1.3",
+            description: "raise copper coins passive effect to ^1.5",
             cost: new Decimal(1),
             effect() {
-                return new Decimal(1.3)
+                return new Decimal(1.5)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -3033,10 +3023,10 @@ addLayer("gi", {
         },
         33: {
             title: "guitar upgrade 33",
-            description: "subtract +0.5 to message upgrades softcap strength",
+            description: "add +1 to silence buyable 14 effect",
             cost: new Decimal(5e3),
             effect() {
-                return new Decimal(0.5)
+                return new Decimal(1)
             },
             effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('gi', 24)}
@@ -3053,7 +3043,7 @@ addLayer("gi", {
         },
         41: {
             title: "guitar upgrade 41",
-            description: "multiply all message upgrade by 5",
+            description: "multiply all messages upgrade effects by 5",
             cost: new Decimal(1e4),
             effect() {
                 return new Decimal(5)
@@ -3063,8 +3053,8 @@ addLayer("gi", {
         },
         42: {
             title: "guitar upgrade 42",
-            description: "multiply all message upgrade by 5",
-            cost: new Decimal(2e4),
+            description: "multiply all messages upgrade effects by 5",
+            cost: new Decimal(1.5e4),
             effect() {
                 return new Decimal(5)
             },
@@ -3074,7 +3064,7 @@ addLayer("gi", {
         43: {
             title: "guitar upgrade 43",
             description: "raise harvest/silence gain by log2(log2(guitar points))^0.1",
-            cost: new Decimal(3e4),
+            cost: new Decimal(2e4),
             effect() {
                 return player.gi.points.max(4).log(2).log(2).pow(0.1)
             },
@@ -3083,10 +3073,10 @@ addLayer("gi", {
         },
         44: {
             title: "guitar upgrade 44",
-            description: "raise harvest/silence gain exponent by 1.1",
-            cost: new Decimal(4e4),
+            description: "raise harvest/silence gain exponent by 1.15",
+            cost: new Decimal(2.5e4),
             effect() {
-                return new Decimal(1.1)
+                return new Decimal(1.15)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('gi', 34)}
@@ -3098,13 +3088,12 @@ addLayer("gi", {
             name: "harvest/silence coexistence challenge",
             challengeDescription: "Copper buyables are limited to 1 purchase. Harvest/Silence point gains are nerfed 10^x -> 10^(x^0.5).",
             canComplete() {
-                goalcup = new Decimal(challengeCompletions(this.layer, this.id)).pow10()
-                
-                challcup = Decimal.max(player.ha.points, player.si.points).times(1e-8).pow(0.2)
-                if (challcup.gte(10)) {challcup = challcup.log10().pow(0.8).pow10()}
+                goalcup = new Decimal(challengeCompletions(this.layer, this.id)).floor().add(1)
 
-                if (challcup.eq(0)) {completions = new Decimal(0)} else {completions = challcup.log10().add(1).floor()}
-                return completions.sub(challengeCompletions(this.layer, this.id)).max(0) * 1
+                challcup = Decimal.max(player.ha.points, player.si.points).times(multcu).pow(expcu)
+                if (challcup.gte(10)) {challcup = challcup.log10().pow(exp2cu).pow10()}
+
+                return challcup.floor().sub(challengeCompletions(this.layer, this.id)).floor().max(0) * 1
             },
             goalDescription() { 
                 textgichall11g = "Get "+format(goalcup)+" effective copper points on reset. "
@@ -3116,7 +3105,7 @@ addLayer("gi", {
                 if (maxedChallenge(this.layer, this.id)) {
                     textgichall11r += " fully allowing harvest and silence points to coexist"
                 } else {
-                    textgichall11r += " capping harvest/silence points reset gain to "+formatWhole(new Decimal(10**(challengeCompletions(this.layer, this.id)-1)).floor())+" points "
+                    textgichall11r += " capping harvest/silence points reset gain to "+formatWhole(new Decimal(10**(Math.log10(challengeCompletions(this.layer, this.id))**2)).floor())+" points "
                 }
                 return textgichall11r
             },
@@ -3135,9 +3124,85 @@ addLayer("gi", {
                 }
             },
             rewardEffect() {
-                return new Decimal(10**(challengeCompletions(this.layer, this.id)**2)).floor()
+                return new Decimal(10**(Math.log10(challengeCompletions(this.layer, this.id))**2)).floor()
             },
-            completionLimit: 10,
+            completionLimit: 1e10,
         }
+    }
+})
+
+addLayer("cup", {
+    namec: "copper projections", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "CUP", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 2, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked() {return getBuyableAmount('cu', 101).times(getBuyableAmount('cu', 102)).times(getBuyableAmount('cu', 103)).gte('1e200')||player.cup.points.gte(1)},
+		points: new Decimal(0),
+    }},
+    color: "#9c410b",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "copper projections", // Namec of message decabled currency
+    baseResource: "copper products", // Namec of resource message decabled is based on
+    baseAmount() {return getBuyableAmount('cu', 101).times(getBuyableAmount('cu', 102)).times(getBuyableAmount('cu', 103))}, // Get the current amount of baseResource
+    type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+
+        addcup = new Decimal(-100)
+        multcup = new Decimal(0.01)
+        return multcup
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        expcup = new Decimal(1)
+        exp2cup = new Decimal(1)
+        return expcup
+
+    },
+    getResetGain() {
+        cupp = this.baseAmount().log10().add(addcup).times(multcup).pow(expcup)
+        if (cupp.gte(10)) {cupp = cupp.log10().pow(exp2cup).pow10()}
+
+        return cupp.floor().max(0)
+    },
+    getNextAt() {
+        nextcup = getResetGain('cup').add(1)
+        if (nextcup.gte(10)) {nextcup = nextcup.log10().root(exp2cup).pow10()}
+        return nextcup.root(expcup).div(multcup).sub(addcup).pow10()
+    },
+    canReset() {
+        return false
+    },
+    prestigeNotify() {return true},
+    prestigeButtonText() {
+
+
+
+
+    textcup = "you cannot reset this layer"
+    textcup += "<br> you have "+format(getResetGain('cup'))+" total copper projections"
+    textcup += "<br> next at "+format(getNextAt('cup'))+" copper products"
+    return textcup
+    },
+    row: 4, // Row the layer is in on the tree (0 is the first row)
+
+    layerShown(){return getBuyableAmount('cu', 101).times(getBuyableAmount('cu', 102)).times(getBuyableAmount('cu', 103)).gte('1e200')||player.cup.points.gte(1)},
+    onPrestige(gain) {
+
+    },
+    update(diff) {
+        addPoints('cup', getResetGain('cup').sub(player.cup.total))
+    },
+
+    doReset(resettingLayer){
+    },
+
+    challenges: {
+    },
+    milestones: {
+
+    },
+    buyables: {
+    },
+    upgrades: {        
+
     }
 })
