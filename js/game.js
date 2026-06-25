@@ -80,7 +80,14 @@ function getPointGen() {
 	if (hasUpgrade('si', 12)) {gain = gain.pow(upgradeEffect('si', 12))}
 	if (hasUpgrade('si', 13)) {gain = gain.pow(upgradeEffect('si', 13))}
 	if (hasUpgrade('si', 21)) {gain = gain.pow(upgradeEffect('si', 21))}
+	gain = gain.pow(buyableEffect('cu', 102))
 	if (hasUpgrade('gi', 32)) {gain = gain.pow(upgradeEffect('gi', 32))}
+	gain = gain.pow(buyableEffect('pr', 12))
+
+	if (hasUpgrade('pr', 14)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('pr', 14)).pow10()}
+	if (hasUpgrade('pr', 24)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('pr', 24)).pow10()}
+
+	if (inChallenge('pr', 11)&&gain.gte(10))  {gain = gain.log10().pow(0.5).pow10()}
 	return gain
 }
 
@@ -113,7 +120,7 @@ function addedPlayerData() { return {
 				priceQuantity = base.pow(amt.add(1).pow(exp)).times(mult)
 			}
 		}
-		if (type == "small") { //small = base*(x+1)^pow
+		if (type == "small") { //small = base*(x+1)^pow, mult is useless
 			if (limit.lte('10')) {limit = new Decimal('10')} //limit is softcap, in currency at which scaling change to exponential : linear
 			if (base.times(amt.add(1).pow(exp)).gt(limit)) {
 				limitamt = limit.div(base).root(exp).sub(1)
@@ -188,7 +195,7 @@ var displayThings = [
 
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("e1e15"))
+	return player.points.gte(new Decimal("ee1000"))
 }
 
 
