@@ -151,7 +151,7 @@ function addedPlayerData() { return {
 		if (type == "large") {
 			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (currency.gt(limit)) {
-				limitamt = limit.log10().div(mult).log10().div(base.log10()).root(exp)
+				limitamt = limit.log10().div(mult).log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
 				limitpricetriplelog = base.pow(limitamt.add(1).pow(exp)).times(mult).pow10().log10().log10().log10()
 				limitplus1pricetriplelog = base.pow(limitamtplus1.add(1).pow(exp)).times(mult).pow10().log10().log10().log10()
@@ -163,20 +163,20 @@ function addedPlayerData() { return {
 		if (type == "normal") {
 			if (limit.lte('e10')) {limit = new Decimal('e10')}
 			if (currency.gt(limit)) {
-				limitamt = limit.div(mult).log10().div(base.log10()).pow(exp.pow(-1))
+				limitamt = limit.div(mult).log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
 				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).times(mult).log10().log10()
 				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).times(mult).log10().log10()
 				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
 				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).floor()
 			} else {
-				return currency.div(mult).max(1).log10().div(base.log10()).pow(exp.pow(-1)).floor()
+				return currency.div(mult).max(1).log10().div(base.log10()).root(exp).floor()
 			}
 		}
 		if (type == "small") {
 			if (limit.lte('10')) {limit = new Decimal('10')}
 			if (currency.gt(limit)) {
-				limitamt = limit.div(base).root(exp)
+				limitamt = limit.div(base).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
 				limitpricelog = base.times(limitamt.add(1).pow(exp)).log10()
 				limitplus1pricelog = base.times(limitamtplus1.add(1).pow(exp)).log10()
@@ -187,6 +187,42 @@ function addedPlayerData() { return {
 			}
 		}
 	},
+	buyablePriceNew(type, amt, baseLog, exp = Decimal.dOne, multLog = Decimal.dZero, limitLog = Decimal.dInf, floorprice = false) {
+		if (type == "normal") {
+			if (limitLog.lte('10')) {limitLog = new Decimal('10')}
+			if (amt.add(1).pow(exp).times(baseLog).add(multLog).gt(limitLog)) {
+				limitamt = limitLog.sub(multLog).div(baseLog).root(exp).sub(1)
+				limitamtplus1 = limitamt.add(1)
+				limitpriceloglog = limitLog.log10()
+				limitplus1priceloglog = limitamtplus1.add(1).pow(exp).times(baseLog).add(multLog).log10()
+				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
+				priceQuantityLog = amt.sub(limitamt).times(newpricescalingloglog).add(limitpriceloglog).pow10()
+			} else {
+				priceQuantityLog = amt.add(1).pow(exp).times(baseLog).add(multLog)
+			}
+		}		
+		priceQuantity = priceQuantityLog.pow10()
+		if (floorprice) {
+			priceQuantity = priceQuantity.floor()
+		}
+		return priceQuantity
+	},
+	buyableMaxPurchaseableNew(type, currency, baseLog, exp = Decimal.dOne, multLog = Decimal.dZero, limitLog = Decimal.dInf, floorprice = false) {
+		if (currency.lte(multLog.pow10())) {return Decimal.dZero} else {currencyLog = currency.log10()}
+		if (type == "normal") {
+			if (limitLog.lte('10')) {limitLog = new Decimal('10')}
+			if (currencyLog.gt(limitLog)) {
+				limitamt = limitLog.sub(multLog).div(baseLog).root(exp).sub(1)
+				limitamtplus1 = limitamt.add(1)
+				limitpriceloglog = limitLog.log10()
+				limitplus1priceloglog = limitamtplus1.add(1).pow(exp).times(baseLog).add(multLog).log10()
+				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
+				return currencyLog.log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).floor()
+			} else {
+				return currencyLog.sub(multLog).div(baseLog).root(exp).sub(1).floor()
+			} // there is problem if price < 1 here since cannot root(exp)
+		}
+	}
 }}
 
 // Display extra things at the top of the page
