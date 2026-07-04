@@ -3318,7 +3318,7 @@ addLayer("cup", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
 
-        multcup = new Decimal(0.001)
+        multcup = new Decimal(0.002)
         return multcup
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -3400,16 +3400,16 @@ addLayer("cup", {
         },
         13: {
             title: "copper projection upgrade 13",
-            description: "multiply copper point gain by copper plates effect ^0.5",
+            description: "multiply copper point gain by copper plates effect ^0.3",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 13)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
             },
             pay() {},
             effect() {
-                return buyableEffect('cu', 101).pow(0.5)
+                return buyableEffect('cu', 101).pow(0.3)
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 12)}
@@ -3418,7 +3418,7 @@ addLayer("cup", {
             title: "copper projection upgrade 14",
             description: "multiply copper point gain by harvest/silence challenge coexistence copper points",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 13)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -3526,7 +3526,12 @@ addLayer("pr", {
     row: 5, // Row the layer is in on the tree (0 is the first row)
 
     layerShown(){return player.points.gte('e1e7')||hasMilestone('pr', 10)},
-
+    hotkeys: [
+        {key: "q", description: "Dev hotkey temp", onPress(){
+            
+            }
+        },
+    ],
 
     automate() {
 
@@ -4086,7 +4091,7 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr41, costStackpr41, costBasepr41, costExppr41 ,costMultpr41, costLimitpr41 , false)
             },
             effect(x){
-                effBasepr41 = player.ca.points.max('e1e10').log10().log10().log10().times(10).log10().pow(0.15).pow10().div(10)
+                effBasepr41 = player.ca.points.max('e1e10').log10().log10().log10().times(10).log10().pow(0.5).pow10().div(10)
                 effBasepr41 = effBasepr41.pow(buyableEffect('pr', 53))
                 effStackpr41 = new Decimal(x)
                 return effBasepr41.pow(effStackpr41)
@@ -4095,7 +4100,7 @@ addLayer("pr", {
                 return "progress/message subbuyable 41" 
             },
             display() {
-                return "multiply progress/message and progress/copper point gain by 10^(log10(log10(log10(log10(cable points))))-1)^0.15+1, currently "+format(effBasepr41)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply progress/message and progress/copper point gain by 10^(log10(log10(log10(log10(cable points))))-1)^0.5+1, currently "+format(effBasepr41)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -4129,7 +4134,7 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr42, costStackpr42, costBasepr42, costExppr42 ,costMultpr42, costLimitpr42 , false)
             },
             effect(x){
-                effBasepr42 = player.ca.points.max('e1e10').log10().log10().log10().times(10).log10().pow(0.15).pow10().div(10)
+                effBasepr42 = player.ca.points.max('e1e10').log10().log10().log10().times(10).log10().pow(0.5).pow10().div(10)
                 effBasepr42 = effBasepr42.pow(buyableEffect('pr', 53))
                 effStackpr42 = new Decimal(x)
                 return effBasepr42.pow(effStackpr42)
@@ -4138,7 +4143,7 @@ addLayer("pr", {
                 return "progress/message subbuyable 42" 
             },
             display() {
-                return "multiply progress point gain by 10^(log10(log10(log10(log10(cable points))))-1)^0.15+1, currently "+format(effBasepr42)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply progress point gain by 10^(log10(log10(log10(log10(cable points))))-1)^0.5+1, currently "+format(effBasepr42)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -4331,8 +4336,8 @@ addLayer("pr", {
             unlocked() {return true},
             cost(x) { 
                 costTypepr53 = "large"
-                costBasepr53 = new Decimal(10)
-                costMultpr53 = new Decimal(3)
+                costBasepr53 = new Decimal(3)
+                costMultpr53 = new Decimal(5)
                 costExppr53 = new Decimal(0.75)
                 costLimitpr53 = new Decimal('ee10')
                 costStackpr53 = new Decimal(x)
@@ -4613,7 +4618,7 @@ addLayer("pr", {
             },
             effect(x){
                 eff = Decimal.dZero
-                for (i1 = 1; i1 < 3; i1++) {
+                for (i1 = 1; i1 < 5; i1++) {
                     for (i2 = 1; i2 < 3; i2++) {
                         eff = eff.add(getBuyableAmount('pr', i1*10+i2)) 
                     }                    
