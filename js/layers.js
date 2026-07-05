@@ -2197,7 +2197,9 @@ addLayer("cu", {
         if (hasUpgrade('gi', 22)) {multcu = multcu.times(upgradeEffect('gi', 22))}
         if (hasUpgrade('cup', 11)) {multcu = multcu.times(upgradeEffect('cup', 11))}
         if (hasUpgrade('cup', 12)) {multcu = multcu.times(upgradeEffect('cup', 12))}
-        multcu = multcu.times(buyableEffect('pr', 112))
+        if (hasUpgrade('cup', 13)) {multcu = multcu.times(upgradeEffect('cup', 13))}
+        if (hasUpgrade('cup', 14)) {multcu = multcu.times(upgradeEffect('cup', 14))}
+        multcu = multcu.times(buyableEffect('pr', 102))
         return multcu
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2873,9 +2875,11 @@ addLayer("cu", {
                 boosteffsoftcapstart = Decimal.dTen 
                 if (hasUpgrade('gi', 13)) {boosteffsoftcapstart = boosteffsoftcapstart.times(upgradeEffect('gi', 13))}
                 if (hasUpgrade('gi', 24)) {boosteffsoftcapstart = boosteffsoftcapstart.times(upgradeEffect('gi', 24))}
+                boosteffsoftcapstart = boosteffsoftcapstart.times(buyableEffect('pr', 112))
+
                 if (boosteff.gte(boosteffsoftcapstart)) {boosteff = boosteff.log(boosteffsoftcapstart).times(boosteffsoftcapstart)}
 
-                if (hasUpgrade('gi', 11)) {eff = eff.pow(upgradeEffect('gi', 11))}
+                if (hasUpgrade('gi', 11)) {boosteff = boosteff.pow(upgradeEffect('gi', 11))}
                 if (hasUpgrade('cup', 21)) {boosteff = boosteff.pow(upgradeEffect('cup', 21))}
 
                 return boosteff
@@ -3012,6 +3016,7 @@ addLayer("gi", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already sive
     gainMult() { // Calculate the multiplier for main currency from bonuses
         multgi = new Decimal(1e-6)
+        multgi = multgi.times(buyableEffect('pr', 112))
         return multgi
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -3164,10 +3169,10 @@ addLayer("gi", {
         },
         24: {
             title: "guitar upgrade 24",
-            description: "copper coins passive effect softcap start xlog2(log2(guitar points +4))^0.7 later, caps at x4",
+            description: "copper coins passive effect softcap start xlog2(log2(guitar points +4))^0.7 later, caps at x5",
             cost: new Decimal(500),
             effect() {
-                return player.gi.points.add(4).log(2).log(2).pow(0.7).min(4)
+                return player.gi.points.add(4).log(2).log(2).pow(0.7).min(5)
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('gi', 14)}
@@ -3234,10 +3239,10 @@ addLayer("gi", {
         },
         43: {
             title: "guitar upgrade 43",
-            description: "raise harvest/silence gain by log2(log2(guitar points))^0.05",
+            description: "raise harvest/silence gain by log2(log2(guitar points))^0.15",
             cost: new Decimal(3e4),
             effect() {
-                return player.gi.points.max(4).log(2).log(2).pow(0.05)
+                return player.gi.points.max(4).log(2).log(2).pow(0.15)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('gi', 34)}
@@ -3297,7 +3302,7 @@ addLayer("gi", {
             rewardEffect() {
                 return new Decimal(10**(Math.log10(challengeCompletions(this.layer, this.id))**2)).floor()
             },
-            completionLimit: 1e10,
+            completionLimit: 1e20,
         }
     }
 })
@@ -3416,7 +3421,7 @@ addLayer("cup", {
         },
         14: {
             title: "copper projection upgrade 14",
-            description: "multiply copper point gain by harvest/silence challenge coexistence copper points",
+            description: "multiply copper point gain by guitar challenge effect",
             cost() {
                 return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
@@ -3526,12 +3531,7 @@ addLayer("pr", {
     row: 5, // Row the layer is in on the tree (0 is the first row)
 
     layerShown(){return player.points.gte('e1e7')||hasMilestone('pr', 10)},
-    hotkeys: [
-        {key: "q", description: "Dev hotkey temp", onPress(){
-            
-            }
-        },
-    ],
+
 
     automate() {
 
@@ -3553,7 +3553,7 @@ addLayer("pr", {
             body() {
                 textpr = "Your progress points are giving "+format(buyableEffect('pr', 99))+" progress/base generation "
                 textpr += "<br> You have "+format(getBuyableAmount('pr', 101))+" progress/message points ("+format(buyableEffect('pr', 103))+"/s), multiplying messages upgrade softcap start by "+format(buyableEffect('pr', 101))+", raising message points gain to "+format(buyableEffect('pr', 111))+", and dividing progress/copper points effective count by "+format(buyableEffect('pr', 121))
-                textpr += "<br> You have "+format(getBuyableAmount('pr', 102))+" progress/copper points ("+format(buyableEffect('pr', 104))+"/s), multiplying copper subresources gain by "+format(buyableEffect('pr', 102))+", multiplying copper points gain by "+format(buyableEffect('pr', 112))+", and dividing progress/message points effective count by "+format(buyableEffect('pr', 122))
+                textpr += "<br> You have "+format(getBuyableAmount('pr', 102))+" progress/copper points ("+format(buyableEffect('pr', 104))+"/s), multiplying copper subresources and copper points gain by "+format(buyableEffect('pr', 102))+", multiplying guitar points gain and copper coins effect softcap start by "+format(buyableEffect('pr', 112))+", and dividing progress/message points effective count by "+format(buyableEffect('pr', 122))
                 textpr += "<br><br> Your progress/message subbuyables are making progress/copper subbuyables cost scale +"+format(buyableEffect('pr', 131))+" faster"
                 textpr += "<br> Your progress/copper subbuyables are making progress/message subbuyables cost scale +"+format(buyableEffect('pr', 132))+" faster"
 
@@ -3876,7 +3876,7 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr24, costStackpr24, costBasepr24, costExppr24 ,costMultpr24, costLimitpr24 , false)
             },
             effect(x){
-                effBasepr24 = new Decimal(1.1)
+                effBasepr24 = new Decimal(1.2)
                 effBasepr24 = effBasepr24.pow(buyableEffect('pr', 53))
                 effStackpr24 = new Decimal(x)
                 return effBasepr24.pow(effStackpr24)
@@ -3962,16 +3962,16 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr32, costStackpr32, costBasepr32, costExppr32 ,costMultpr32, costLimitpr32 , false)
             },
             effect(x){
-                effBasepr32 = new Decimal(1.05)
-                effBasepr32 = effBasepr32.pow(buyableEffect('pr', 53))
+                effBasepr32 = new Decimal(0.05)
+                effBasepr32 = effBasepr32.times(buyableEffect('pr', 53))
                 effStackpr32 = new Decimal(x)
-                return effBasepr32.pow(effStackpr32)
+                return effBasepr32.times(effStackpr32).add(1)
             },
             title() { 
                 return "progress/message subbuyable 32" 
             },
             display() {
-                return "raise prestige upgrades 11-24 effect exponent by "+format(effBasepr32)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "add the prestige upgrades 11-24 effect exponent power by "+format(effBasepr32)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -4284,19 +4284,20 @@ addLayer("pr", {
                 thismaxPurchaseable = player.buyableMaxPurchaseable(costTypepr51, Decimal.min(getBuyableAmount('pr', 101), getBuyableAmount('pr', 102)), costBasepr51, costExppr51, costMultpr51, costLimitpr51).min(this.purchaseLimit)
                 if (!false) {
                     doReset('pr')
-                    layerDataReset('pr')
+                    layerDataReset('pr', ['challenges'])
                 } //free requirement
                 addPoints(this.layer, 1)
                 setBuyableAmount(this.layer, this.id, thismaxPurchaseable)
                 setBuyableAmount('pr', 52, pr52s)
                 setBuyableAmount('pr', 52, pr53s)
+
             },
         },
         52: {
             unlocked() {return getBuyableAmount('pr', 51).gte(4)},
             cost(x) { 
                 costTypepr52 = "normal"
-                costBasepr52 = new Decimal(1000)
+                costBasepr52 = new Decimal(100)
                 costMultpr52 = new Decimal(27000000)
                 costExppr52 = new Decimal(1.5)
                 costLimitpr52 = new Decimal('e10000')
@@ -4324,7 +4325,7 @@ addLayer("pr", {
                 thismaxPurchaseable = player.buyableMaxPurchaseable(costTypepr52, Decimal.min(getBuyableAmount('pr', 101), getBuyableAmount('pr', 102)), costBasepr52, costExppr52, costMultpr52, costLimitpr52)
                 if (!false) {
                     doReset('pr')
-                    layerDataReset('pr')
+                    layerDataReset('pr', ['challenges'])
                 } //free requirement
                 addPoints(this.layer, 1)
                 setBuyableAmount(this.layer, this.id, thismaxPurchaseable)
@@ -4362,7 +4363,7 @@ addLayer("pr", {
                 thismaxPurchaseable = player.buyableMaxPurchaseable(costTypepr53, Decimal.min(getBuyableAmount('pr', 101), getBuyableAmount('pr', 102)), costBasepr53, costExppr53, costMultpr53, costLimitpr53)
                 if (!false) {
                     doReset('pr')
-                    layerDataReset('pr')
+                    layerDataReset('pr', ['challenges'])
                 } //free requirement
                 addPoints(this.layer, 1)
                 setBuyableAmount(this.layer, this.id, thismaxPurchaseable)

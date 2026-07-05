@@ -225,7 +225,7 @@ function addedPlayerData() { return {
 				return currencyLog.log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt).floor()
 			} else {
 				return currencyLog.sub(multLog).div(baseLog).root(exp).sub(1).floor()
-			} // there is problem if price < 1 here since cannot root(exp)
+			} 
 		}
 	}
 }}
