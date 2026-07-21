@@ -3539,6 +3539,7 @@ addLayer("pr", {
 
     },
     milestones: {
+
         10: {
             done() { return player.pr.total.gte(1) },
             unlocked() {return true},
