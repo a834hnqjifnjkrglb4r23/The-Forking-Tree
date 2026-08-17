@@ -61,7 +61,7 @@ addLayer("p", {
     prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('p'))+" prestige points. Next at "+format(getNextAt('p'))+" points" },
     row: 0, // Row the layer is in on the tree (0 is the first row)
     hotkeys: [
-        {key: "p", description: "P: Reset for prestige/progress points", onPress(){
+        {key: "p", description: "P: Reset for prestige/proverb points", onPress(){
             if (canReset('pr')) {doReset('pr')} else {if (canReset(this.layer)) {doReset(this.layer)}}
             }
         },
@@ -2322,9 +2322,9 @@ addLayer("cu", {
         },
     },
     update(diff) {
-        setBuyableAmount('cu', 101, getBuyableAmount('cu', 101).add(buyableEffect('cu', 113).times(diff)))
-        setBuyableAmount('cu', 102, getBuyableAmount('cu', 102).add(buyableEffect('cu', 111).times(diff)))
-        setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).add(buyableEffect('cu', 112).times(diff)))
+        addBuyables('cu', 101, buyableEffect('cu', 113).times(diff))
+        addBuyables('cu', 102, buyableEffect('cu', 111).times(diff))
+        addBuyables('cu', 103, buyableEffect('cu', 112).times(diff))
         if (hasMilestone('pr', 10)) {addPoints('cu', getResetGain('cu').times(diff))}
     },
 
@@ -2371,7 +2371,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2382,7 +2382,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu11, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11), costBasecu11, costExpcu11, costMultcu11, costLimitcu11, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu11, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11), costBasecu11, costExpcu11, costMultcu11, costLimitcu11, false).times(-1))}
                     }
                 }
             },
@@ -2418,7 +2418,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2429,7 +2429,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu12, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12), costBasecu12, costExpcu12, costMultcu12, costLimitcu12, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu12, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12), costBasecu12, costExpcu12, costMultcu12, costLimitcu12, false).times(-1))}
                     }
                 }
             },
@@ -2465,7 +2465,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2476,7 +2476,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu13, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13), costBasecu13, costExpcu13, costMultcu13, costLimitcu13, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu13, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13), costBasecu13, costExpcu13, costMultcu13, costLimitcu13, false).times(-1))}
                     }
                 }
             },
@@ -2512,7 +2512,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2523,7 +2523,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu14, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14), costBasecu14, costExpcu14, costMultcu14, costLimitcu14, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu14, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14), costBasecu14, costExpcu14, costMultcu14, costLimitcu14, false).times(-1))}
                     }
                 }
             },
@@ -2559,7 +2559,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2570,7 +2570,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu21, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21), costBasecu21, costExpcu21, costMultcu21, costLimitcu21, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu21, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21), costBasecu21, costExpcu21, costMultcu21, costLimitcu21, false).times(-1))}
                     }
                 }
             },
@@ -2606,7 +2606,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2617,7 +2617,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu22, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22), costBasecu22, costExpcu22, costMultcu22, costLimitcu22, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu22, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22), costBasecu22, costExpcu22, costMultcu22, costLimitcu22, false))}
                     }
                 }
             },
@@ -2653,7 +2653,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2664,7 +2664,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu23, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23), costBasecu23, costExpcu23, costMultcu23, costLimitcu23, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu23, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23), costBasecu23, costExpcu23, costMultcu23, costLimitcu23, false).times(-1))}
                     }
                 }
             },
@@ -2700,7 +2700,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2711,7 +2711,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu31, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31), costBasecu31, costExpcu31, costMultcu31, costLimitcu31, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu31, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31), costBasecu31, costExpcu31, costMultcu31, costLimitcu31, false))}
                     }
                 }
             },
@@ -2747,7 +2747,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2758,7 +2758,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu32, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32), costBasecu32, costExpcu32, costMultcu32, costLimitcu32, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu32, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32), costBasecu32, costExpcu32, costMultcu32, costLimitcu32, false))}
                     }
                 }
             },
@@ -2794,7 +2794,7 @@ addLayer("cu", {
                 return size1},
             canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
             buy() {
-                if (!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(this.cost()))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
@@ -2805,7 +2805,7 @@ addLayer("cu", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41))
-                        if (player.cu.points.lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('cu', 103, getBuyableAmount('cu', 103).sub(player.buyablePrice(costTypecu41, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41), costBasecu41, costExpcu41, costMultcu41, costLimitcu41, false)))}
+                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu41, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41), costBasecu41, costExpcu41, costMultcu41, costLimitcu41, false).times(-1))}
                     }
                 }
             },
@@ -3306,7 +3306,7 @@ addLayer("gi", {
             rewardEffect() {
                 return new Decimal(10**(Math.log10(challengeCompletions(this.layer, this.id))**2)).floor()
             },
-            completionLimit: 1e20,
+            completionLimit: 1e10,
         }
     }
 })
@@ -3332,7 +3332,7 @@ addLayer("cup", {
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         expcup = new Decimal(0.8)
-        exp2cup = new Decimal(0.6)
+        exp2cup = new Decimal(0.4)
         return expcup
 
     },
@@ -3472,7 +3472,7 @@ addLayer("cup", {
             unlocked() {return hasUpgrade('cup', 21)&&hasUpgrade('cup', 12)}
         },
         23: {
-            title: "copper projection upgrade 22",
+            title: "copper projection upgrade 23",
             description: "raise copper plates passive effect to ^1.3",
             cost() {
                 return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
@@ -3491,7 +3491,7 @@ addLayer("cup", {
 })
 
 addLayer("pr", {
-    name: "progress", // This is optional, only used in a few places, If absent it just uses the layer id.
+    name: "proverb", // This is optional, only used in a few places, If absent it just uses the layer id.
     symbol: "PR", // This appears on the layer's node. Default is the id with the first letter capitalized
     position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
@@ -3500,7 +3500,7 @@ addLayer("pr", {
     }},
     color: "#188801",
     requires: new Decimal(0), // Can be a function that takes requirement increases into account
-    resource: "progress points", // Name of prestige currency
+    resource: "proverb points", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
@@ -3531,7 +3531,7 @@ addLayer("pr", {
     },
     canReset() {return getResetGain('pr').gte(1)},
     prestigeNotify() {return true},
-    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('pr'))+" progress points. Next at "+format(getNextAt('pr'))+" points" },
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('pr'))+" proverb points. Next at "+format(getNextAt('pr'))+" points" },
     row: 5, // Row the layer is in on the tree (0 is the first row)
 
     layerShown(){return player.points.gte('e1e7')||hasMilestone('pr', 10)},
@@ -3552,6 +3552,11 @@ addLayer("pr", {
 
     },
     milestones: {
+        4: {
+            effectDescription: "proverb subbuyables no longer cost proverb subpoints",
+            done() { return player.pr.total.gte(10000) },
+            unlocked() {return true},
+        },
         10: {
             effectDescription: "never reset prestige points",
             done() { return player.pr.total.gte(1) },
@@ -3559,23 +3564,25 @@ addLayer("pr", {
         },
     },
     update(diff) {
-        if (getClickableState('pr', 11)==1) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).add(buyableEffect('pr', 103).times(diff)))}
+        if (getClickableState('pr', 11)==1) {addBuyables('pr', 101, buyableEffect('pr', 103).times(diff))}
         
-        if (getClickableState('pr', 11)==2) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).add(buyableEffect('pr', 104).times(diff)))}
-        setBuyableAmount('pr', 105, getBuyableAmount('pr', 105).add(buyableEffect('pr', 98).times(diff)))
+        if (getClickableState('pr', 11)==2) {addBuyables('pr', 102, buyableEffect('pr', 104).times(diff))}
+
+
+        addBuyables('pr', 105, buyableEffect('pr', 98).times(diff))
     },
     infoboxes: {
         C: {
-            title: "progres subresources",
+            title: "proverb subresources",
             body() {
-                textpr = "Your progress points are giving "+format(buyableEffect('pr', 99))+" progress/base generation "
-                textpr += "<br> You have "+format(getBuyableAmount('pr', 101))+" progress/message points ("+format(buyableEffect('pr', 103))+"/s), multiplying messages upgrade softcap start by "+format(buyableEffect('pr', 101))+", raising message points gain to "+format(buyableEffect('pr', 111))+", and dividing progress/copper points effective count by "+format(buyableEffect('pr', 121))
-                textpr += "<br> You have "+format(getBuyableAmount('pr', 102))+" progress/copper points ("+format(buyableEffect('pr', 104))+"/s), multiplying copper subresources and copper points gain by "+format(buyableEffect('pr', 102))+", multiplying guitar points gain and copper coin effect softcap start by "+format(buyableEffect('pr', 112))+", and dividing progress/message points effective count by "+format(buyableEffect('pr', 122))
+                textpr = "Your proverb points are giving "+format(buyableEffect('pr', 99))+" proverb/base generation "
+                textpr += "<br> You have "+format(getBuyableAmount('pr', 101))+" proverb/message points ("+format(buyableEffect('pr', 103))+"/s), multiplying messages upgrade softcap start by "+format(buyableEffect('pr', 101))+", raising message points gain to "+format(buyableEffect('pr', 111))+", and dividing proverb/copper points effective count by "+format(buyableEffect('pr', 121))
+                textpr += "<br> You have "+format(getBuyableAmount('pr', 102))+" proverb/copper points ("+format(buyableEffect('pr', 104))+"/s), multiplying copper subresources and copper points gain by "+format(buyableEffect('pr', 102))+", multiplying guitar points gain and copper coin effect softcap start by "+format(buyableEffect('pr', 112))+", and dividing proverb/message points effective count by "+format(buyableEffect('pr', 122))
                 if (buyableEffect('pr', 98).gt(0)) {
-                    textpr += "<br> You have "+format(getBuyableAmount('pr', 105))+" progress/shiny points ("+format(buyableEffect('pr', 98))+"/s), raising point gain exponent to "+format(buyableEffect('pr', 105), 4)
+                    textpr += "<br> You have "+format(getBuyableAmount('pr', 105))+" proverb/shiny points ("+format(buyableEffect('pr', 98))+"/s), raising point gain exponent to "+format(buyableEffect('pr', 105), 4)
                 }
-                textpr += "<br><br> Your progress/message subbuyables are making progress/copper subbuyables cost scale +"+format(buyableEffect('pr', 131))+" faster"
-                textpr += "<br> Your progress/copper subbuyables are making progress/message subbuyables cost scale +"+format(buyableEffect('pr', 132))+" faster"
+                textpr += "<br><br> Your proverb/message subbuyables are making proverb/copper subbuyables cost scale +"+format(buyableEffect('pr', 131))+" faster"
+                textpr += "<br> Your proverb/copper subbuyables are making proverb/message subbuyables cost scale +"+format(buyableEffect('pr', 132))+" faster"
 
 
                 return textpr
@@ -3601,10 +3608,10 @@ addLayer("pr", {
                 return effBasepr11.pow(effStackpr11)
             },
             title() { 
-                return "progress/message subbuyable 11" 
+                return "proverb/message subbuyable 11" 
             },
             display() {
-                return "multiply progress/message point gain by "+format(effBasepr11)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply proverb/message point gain by "+format(effBasepr11)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -3621,7 +3628,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr11, getBuyableAmount('pr', 101), costBasepr11, costExppr11, costMultpr11, costLimitpr11).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr11, getBuyableAmount('pr', 101), costBasepr11, costExppr11, costMultpr11, costLimitpr11))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr11, player.buyableMaxPurchaseable(costTypepr11, getBuyableAmount('pr', 101), costBasepr11, costExppr11, costMultpr11, costLimitpr11), costBasepr11, costExppr11, costMultpr11, costLimitpr11, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr11, player.buyableMaxPurchaseable(costTypepr11, getBuyableAmount('pr', 101), costBasepr11, costExppr11, costMultpr11, costLimitpr11), costBasepr11, costExppr11, costMultpr11, costLimitpr11, false).times(-1))}
                     }
                 }
             },
@@ -3644,10 +3651,10 @@ addLayer("pr", {
                 return effBasepr12.pow(effStackpr12)
             },
             title() { 
-                return "progress/message subbuyable 12" 
+                return "proverb/message subbuyable 12" 
             },
             display() {
-                return "raise point gain by "+format(effBasepr12)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "raise point gain by "+format(effBasepr12)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -3664,7 +3671,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr12, getBuyableAmount('pr', 101), costBasepr12, costExppr12, costMultpr12, costLimitpr12).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr12, getBuyableAmount('pr', 101), costBasepr12, costExppr12, costMultpr12, costLimitpr12))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr12, player.buyableMaxPurchaseable(costTypepr12, getBuyableAmount('pr', 101), costBasepr12, costExppr12, costMultpr12, costLimitpr12), costBasepr12, costExppr12, costMultpr12, costLimitpr12, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr12, player.buyableMaxPurchaseable(costTypepr12, getBuyableAmount('pr', 101), costBasepr12, costExppr12, costMultpr12, costLimitpr12), costBasepr12, costExppr12, costMultpr12, costLimitpr12, false).times(-1))}
                     }
                 }
             },
@@ -3687,10 +3694,10 @@ addLayer("pr", {
                 return effBasepr13.pow(effStackpr13)
             },
             title() { 
-                return "progress/copper subbuyable 13" 
+                return "proverb/copper subbuyable 13" 
             },
             display() {
-                return "multiply progress point gain by "+format(effBasepr13)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "multiply proverb point gain by "+format(effBasepr13)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -3707,7 +3714,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr13, getBuyableAmount('pr', 102), costBasepr13, costExppr13, costMultpr13, costLimitpr13).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr13, getBuyableAmount('pr', 102), costBasepr13, costExppr13, costMultpr13, costLimitpr13))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr13, player.buyableMaxPurchaseable(costTypepr13, getBuyableAmount('pr', 102), costBasepr13, costExppr13, costMultpr13, costLimitpr13), costBasepr13, costExppr13, costMultpr13, costLimitpr13, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr13, player.buyableMaxPurchaseable(costTypepr13, getBuyableAmount('pr', 102), costBasepr13, costExppr13, costMultpr13, costLimitpr13), costBasepr13, costExppr13, costMultpr13, costLimitpr13, false).times(-1))}
                     }
                 }
             },
@@ -3730,10 +3737,10 @@ addLayer("pr", {
                 return effBasepr14.pow(effStackpr14)
             },
             title() { 
-                return "progress/copper subbuyable 14" 
+                return "proverb/copper subbuyable 14" 
             },
             display() {
-                return "multiply progress/copper point gain by "+format(effBasepr14)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "multiply proverb/copper point gain by "+format(effBasepr14)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -3750,7 +3757,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr14, getBuyableAmount('pr', 102), costBasepr14, costExppr14, costMultpr14, costLimitpr14).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr14, getBuyableAmount('pr', 102), costBasepr14, costExppr14, costMultpr14, costLimitpr14))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr14, player.buyableMaxPurchaseable(costTypepr14, getBuyableAmount('pr', 102), costBasepr14, costExppr14, costMultpr14, costLimitpr14), costBasepr14, costExppr14, costMultpr14, costLimitpr14, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr14, player.buyableMaxPurchaseable(costTypepr14, getBuyableAmount('pr', 102), costBasepr14, costExppr14, costMultpr14, costLimitpr14), costBasepr14, costExppr14, costMultpr14, costLimitpr14, false).times(-1))}
                     }
                 }
             },
@@ -3773,10 +3780,10 @@ addLayer("pr", {
                 return effBasepr21.pow(effStackpr21)
             },
             title() { 
-                return "progress/message subbuyable 21" 
+                return "proverb/message subbuyable 21" 
             },
             display() {
-                return "multiply prestige buyable count by "+format(effBasepr21)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply prestige buyable count by "+format(effBasepr21)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -3793,7 +3800,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr21, getBuyableAmount('pr', 101), costBasepr21, costExppr21, costMultpr21, costLimitpr21).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr21, getBuyableAmount('pr', 101), costBasepr21, costExppr21, costMultpr21, costLimitpr21))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr21, player.buyableMaxPurchaseable(costTypepr21, getBuyableAmount('pr', 101), costBasepr21, costExppr21, costMultpr21, costLimitpr21), costBasepr21, costExppr21, costMultpr21, costLimitpr21, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr21, player.buyableMaxPurchaseable(costTypepr21, getBuyableAmount('pr', 101), costBasepr21, costExppr21, costMultpr21, costLimitpr21), costBasepr21, costExppr21, costMultpr21, costLimitpr21, false).times(-1))}
                     }
                 }
             },
@@ -3816,10 +3823,10 @@ addLayer("pr", {
                 return effBasepr22.pow(effStackpr22)
             },
             title() { 
-                return "progress/message subbuyable 22" 
+                return "proverb/message subbuyable 22" 
             },
             display() {
-                return "divide the progress/message subbuyable scaling nerf by "+format(effBasepr22)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "divide the proverb/message subbuyable scaling nerf by "+format(effBasepr22)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -3836,7 +3843,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr22, getBuyableAmount('pr', 101), costBasepr22, costExppr22, costMultpr22, costLimitpr22).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr22, getBuyableAmount('pr', 101), costBasepr22, costExppr22, costMultpr22, costLimitpr22))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr22, player.buyableMaxPurchaseable(costTypepr22, getBuyableAmount('pr', 101), costBasepr22, costExppr22, costMultpr22, costLimitpr22), costBasepr22, costExppr22, costMultpr22, costLimitpr22, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr22, player.buyableMaxPurchaseable(costTypepr22, getBuyableAmount('pr', 101), costBasepr22, costExppr22, costMultpr22, costLimitpr22), costBasepr22, costExppr22, costMultpr22, costLimitpr22, false).times(-1))}
                     }
                 }
             },
@@ -3859,10 +3866,10 @@ addLayer("pr", {
                 return effBasepr23.pow(effStackpr23)
             },
             title() { 
-                return "progress/copper subbuyable 23" 
+                return "proverb/copper subbuyable 23" 
             },
             display() {
-                return "divide the progress/copper subbuyable scaling nerf by "+format(effBasepr23)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "divide the proverb/copper subbuyable scaling nerf by "+format(effBasepr23)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -3879,7 +3886,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr23, getBuyableAmount('pr', 102), costBasepr23, costExppr23, costMultpr23, costLimitpr23).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr23, getBuyableAmount('pr', 102), costBasepr23, costExppr23, costMultpr23, costLimitpr23))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr23, player.buyableMaxPurchaseable(costTypepr23, getBuyableAmount('pr', 102), costBasepr23, costExppr23, costMultpr23, costLimitpr23), costBasepr23, costExppr23, costMultpr23, costLimitpr23, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr23, player.buyableMaxPurchaseable(costTypepr23, getBuyableAmount('pr', 102), costBasepr23, costExppr23, costMultpr23, costLimitpr23), costBasepr23, costExppr23, costMultpr23, costLimitpr23, false).times(-1))}
                     }
                 }
             },
@@ -3902,10 +3909,10 @@ addLayer("pr", {
                 return effBasepr24.pow(effStackpr24)
             },
             title() { 
-                return "progress/copper subbuyable 24" 
+                return "proverb/copper subbuyable 24" 
             },
             display() {
-                return "root the copper buyable scaling by "+format(effBasepr24)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "root the copper buyable scaling by "+format(effBasepr24)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -3922,7 +3929,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr24, getBuyableAmount('pr', 102), costBasepr24, costExppr24, costMultpr24, costLimitpr24).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr24, getBuyableAmount('pr', 102), costBasepr24, costExppr24, costMultpr24, costLimitpr24))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr24, player.buyableMaxPurchaseable(costTypepr24, getBuyableAmount('pr', 102), costBasepr24, costExppr24, costMultpr24, costLimitpr24), costBasepr24, costExppr24, costMultpr24, costLimitpr24, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr24, player.buyableMaxPurchaseable(costTypepr24, getBuyableAmount('pr', 102), costBasepr24, costExppr24, costMultpr24, costLimitpr24), costBasepr24, costExppr24, costMultpr24, costLimitpr24, false).times(-1))}
                     }
                 }
             },
@@ -3939,16 +3946,16 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr31, costStackpr31, costBasepr31, costExppr31 ,costMultpr31, costLimitpr31 , false)
             },
             effect(x){
-                effBasepr31 = getBuyableAmount('pr', 105).max(10).log10()
+                effBasepr31 = getBuyableAmount('pr', 105).add(10).log10().add(10).log10()
                 effBasepr31 = effBasepr31.pow(buyableEffect('pr', 53))
                 effStackpr31 = new Decimal(x)
                 return effBasepr31.pow(effStackpr31)
             },
             title() { 
-                return "progress/message subbuyable 31" 
+                return "proverb/message subbuyable 31" 
             },
             display() {
-                return "multiply progress/message point gain by log10(progress/shiny points), currently "+format(effBasepr31)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply proverb/message point gain by log10(log10(proverb/shiny points+10)+1), currently "+format(effBasepr31)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -3965,7 +3972,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr31, getBuyableAmount('pr', 101), costBasepr31, costExppr31, costMultpr31, costLimitpr31).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr31, getBuyableAmount('pr', 101), costBasepr31, costExppr31, costMultpr31, costLimitpr31))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr31, player.buyableMaxPurchaseable(costTypepr31, getBuyableAmount('pr', 101), costBasepr31, costExppr31, costMultpr31, costLimitpr31), costBasepr31, costExppr31, costMultpr31, costLimitpr31, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr31, player.buyableMaxPurchaseable(costTypepr31, getBuyableAmount('pr', 101), costBasepr31, costExppr31, costMultpr31, costLimitpr31), costBasepr31, costExppr31, costMultpr31, costLimitpr31, false).times(-1))}
                     }
                 }
             },
@@ -3988,10 +3995,10 @@ addLayer("pr", {
                 return effBasepr32.pow(effStackpr32)
             },
             title() { 
-                return "progress/message subbuyable 32" 
+                return "proverb/message subbuyable 32" 
             },
             display() {
-                return "raise the prestige upgrades 11-24 effect exponent by "+format(effBasepr32)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "raise the prestige upgrades 11-24 effect exponent by "+format(effBasepr32)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -4008,7 +4015,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr32, getBuyableAmount('pr', 101), costBasepr32, costExppr32, costMultpr32, costLimitpr32).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr32, getBuyableAmount('pr', 101), costBasepr32, costExppr32, costMultpr32, costLimitpr32))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr32, player.buyableMaxPurchaseable(costTypepr32, getBuyableAmount('pr', 101), costBasepr32, costExppr32, costMultpr32, costLimitpr32), costBasepr32, costExppr32, costMultpr32, costLimitpr32, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr32, player.buyableMaxPurchaseable(costTypepr32, getBuyableAmount('pr', 101), costBasepr32, costExppr32, costMultpr32, costLimitpr32), costBasepr32, costExppr32, costMultpr32, costLimitpr32, false).times(-1))}
                     }
                 }
             },
@@ -4031,10 +4038,10 @@ addLayer("pr", {
                 return effBasepr33.pow(effStackpr33)
             },
             title() { 
-                return "progress/copper subbuyable 33" 
+                return "proverb/copper subbuyable 33" 
             },
             display() {
-                return "raise silence/heavenly upgrade effects by "+format(effBasepr33)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "raise silence/heavenly upgrade effects by "+format(effBasepr33)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -4051,7 +4058,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr33, getBuyableAmount('pr', 102), costBasepr33, costExppr33, costMultpr33, costLimitpr33).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr33, getBuyableAmount('pr', 102), costBasepr33, costExppr33, costMultpr33, costLimitpr33))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr33, player.buyableMaxPurchaseable(costTypepr33, getBuyableAmount('pr', 102), costBasepr33, costExppr33, costMultpr33, costLimitpr33), costBasepr33, costExppr33, costMultpr33, costLimitpr33, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr33, player.buyableMaxPurchaseable(costTypepr33, getBuyableAmount('pr', 102), costBasepr33, costExppr33, costMultpr33, costLimitpr33), costBasepr33, costExppr33, costMultpr33, costLimitpr33, false).times(-1))}
                     }
                 }
             },
@@ -4068,16 +4075,16 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr34, costStackpr34, costBasepr34, costExppr34 ,costMultpr34, costLimitpr34 , false)
             },
             effect(x){
-                effBasepr34 = getBuyableAmount('pr', 105).max(10).log10()
+                effBasepr34 = getBuyableAmount('pr', 105).add(10).log10().add(10).log10()
                 effBasepr34 = effBasepr34.pow(buyableEffect('pr', 53))
                 effStackpr34 = new Decimal(x)
                 return effBasepr34.pow(effStackpr34)
             },
             title() { 
-                return "progress/copper subbuyable 34" 
+                return "proverb/copper subbuyable 34" 
             },
             display() {
-                return "multiply progress/copper point gain by log10(progress/shiny points), currently "+format(effBasepr34)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "multiply proverb/copper point gain by log10(log10(proverb/shiny points+10)+1), currently "+format(effBasepr34)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -4094,7 +4101,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr34, getBuyableAmount('pr', 102), costBasepr34, costExppr34, costMultpr34, costLimitpr34).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr34, getBuyableAmount('pr', 102), costBasepr34, costExppr34, costMultpr34, costLimitpr34))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr34, player.buyableMaxPurchaseable(costTypepr34, getBuyableAmount('pr', 102), costBasepr34, costExppr34, costMultpr34, costLimitpr34), costBasepr34, costExppr34, costMultpr34, costLimitpr34, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr34, player.buyableMaxPurchaseable(costTypepr34, getBuyableAmount('pr', 102), costBasepr34, costExppr34, costMultpr34, costLimitpr34), costBasepr34, costExppr34, costMultpr34, costLimitpr34, false).times(-1))}
                     }
                 }
             },
@@ -4117,10 +4124,10 @@ addLayer("pr", {
                 return effBasepr41.pow(effStackpr41)
             },
             title() { 
-                return "progress/message subbuyable 41" 
+                return "proverb/message subbuyable 41" 
             },
             display() {
-                return "multiply progress/message and progress/copper point gain by log10(log10(prestige points)), currently "+format(effBasepr41)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply proverb/message and proverb/copper point gain by log10(log10(prestige points)), currently "+format(effBasepr41)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -4137,7 +4144,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr41, getBuyableAmount('pr', 101), costBasepr41, costExppr41, costMultpr41, costLimitpr41).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr41, getBuyableAmount('pr', 101), costBasepr41, costExppr41, costMultpr41, costLimitpr41))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr41, player.buyableMaxPurchaseable(costTypepr41, getBuyableAmount('pr', 101), costBasepr41, costExppr41, costMultpr41, costLimitpr41), costBasepr41, costExppr41, costMultpr41, costLimitpr41, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr41, player.buyableMaxPurchaseable(costTypepr41, getBuyableAmount('pr', 101), costBasepr41, costExppr41, costMultpr41, costLimitpr41), costBasepr41, costExppr41, costMultpr41, costLimitpr41, false).times(-1))}
                     }
                 }
             },
@@ -4160,10 +4167,10 @@ addLayer("pr", {
                 return effBasepr42.pow(effStackpr42)
             },
             title() { 
-                return "progress/message subbuyable 42" 
+                return "proverb/message subbuyable 42" 
             },
             display() {
-                return "multiply progress point gain by log10(log10(prestige points)), currently "+format(effBasepr42)+" <br> Cost: "+format(this.cost())+" progress/message points <br> Effect: "+format(this.effect())
+                return "multiply proverb point gain by log10(log10(prestige points)), currently "+format(effBasepr42)+" <br> Cost: "+format(this.cost())+" proverb/message points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorm = {width: "150px", height: "150px", 'background-color': "#5465ff"}
                 if (this.canAfford()) {return sizecolorm} else {return {width: "150px", height: "150px"}}},
@@ -4180,7 +4187,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr42, getBuyableAmount('pr', 101), costBasepr42, costExppr42, costMultpr42, costLimitpr42).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr42, getBuyableAmount('pr', 101), costBasepr42, costExppr42, costMultpr42, costLimitpr42))
-                        if (getBuyableAmount('pr', 101).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 101, getBuyableAmount('pr', 101).sub(player.buyablePrice(costTypepr42, player.buyableMaxPurchaseable(costTypepr42, getBuyableAmount('pr', 101), costBasepr42, costExppr42, costMultpr42, costLimitpr42), costBasepr42, costExppr42, costMultpr42, costLimitpr42, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 101, player.buyablePrice(costTypepr42, player.buyableMaxPurchaseable(costTypepr42, getBuyableAmount('pr', 101), costBasepr42, costExppr42, costMultpr42, costLimitpr42), costBasepr42, costExppr42, costMultpr42, costLimitpr42, false).times(-1))}
                     }
                 }
             },
@@ -4203,10 +4210,10 @@ addLayer("pr", {
                 return effBasepr43.pow(effStackpr43)
             },
             title() { 
-                return "progress/copper subbuyable 43" 
+                return "proverb/copper subbuyable 43" 
             },
             display() {
-                return "multiply progress point gain by log10(log10(prestige points)), currently "+format(effBasepr43)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "multiply proverb point gain by log10(log10(prestige points)), currently "+format(effBasepr43)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -4223,7 +4230,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr43, getBuyableAmount('pr', 102), costBasepr43, costExppr43, costMultpr43, costLimitpr43).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr43, getBuyableAmount('pr', 102), costBasepr43, costExppr43, costMultpr43, costLimitpr43))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr43, player.buyableMaxPurchaseable(costTypepr43, getBuyableAmount('pr', 102), costBasepr43, costExppr43, costMultpr43, costLimitpr43), costBasepr43, costExppr43, costMultpr43, costLimitpr43, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr43, player.buyableMaxPurchaseable(costTypepr43, getBuyableAmount('pr', 102), costBasepr43, costExppr43, costMultpr43, costLimitpr43), costBasepr43, costExppr43, costMultpr43, costLimitpr43, false).times(-1))}
                     }
                 }
             },
@@ -4246,10 +4253,10 @@ addLayer("pr", {
                 return effBasepr44.pow(effStackpr44)
             },
             title() { 
-                return "progress/copper subbuyable 44" 
+                return "proverb/copper subbuyable 44" 
             },
             display() {
-                return "multiply progress/message and progress/copper point gain by log10(log10(prestige points)), currently "+format(effBasepr44)+" <br> Cost: "+format(this.cost())+" progress/copper points <br> Effect: "+format(this.effect())
+                return "multiply proverb/message and proverb/copper point gain by log10(log10(prestige points)), currently "+format(effBasepr44)+" <br> Cost: "+format(this.cost())+" proverb/copper points <br> Effect: "+format(this.effect())
             },
             style() {const sizecolorc = {width: "150px", height: "150px", 'background-color': "#9c410b"}
                 if (this.canAfford()) {return sizecolorc} else {return {width: "150px", height: "150px"}}},
@@ -4266,7 +4273,7 @@ addLayer("pr", {
                 } else {
                     if (player.buyableMaxPurchaseable(costTypepr44, getBuyableAmount('pr', 102), costBasepr44, costExppr44, costMultpr44, costLimitpr44).lte(getBuyableAmount(this.layer, this.id))) {} else {
                         setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypepr44, getBuyableAmount('pr', 102), costBasepr44, costExppr44, costMultpr44, costLimitpr44))
-                        if (getBuyableAmount('pr', 102).lt('e100')&&!hasMilestone('cu', 1)) {setBuyableAmount('pr', 102, getBuyableAmount('pr', 102).sub(player.buyablePrice(costTypepr44, player.buyableMaxPurchaseable(costTypepr44, getBuyableAmount('pr', 102), costBasepr44, costExppr44, costMultpr44, costLimitpr44), costBasepr44, costExppr44, costMultpr44, costLimitpr44, false)))}
+                        if (!hasMilestone('pr', 4)) {addBuyables('pr', 102, player.buyablePrice(costTypepr44, player.buyableMaxPurchaseable(costTypepr44, getBuyableAmount('pr', 102), costBasepr44, costExppr44, costMultpr44, costLimitpr44), costBasepr44, costExppr44, costMultpr44, costLimitpr44, false).times(-1))}
                     }
                 }
             },
@@ -4283,16 +4290,16 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr51, costStackpr51, costBasepr51, costExppr51 ,costMultpr51, costLimitpr51 , false)
             },
             effect(x){
-                effBasepr51 = new Decimal(1)
+                effBasepr51 = new Decimal(2)
                 effStackpr51 = new Decimal(x)
-                return effBasepr51.times(effStackpr51)
+                return effBasepr51.pow(effStackpr51)
             },
             purchaseLimit: new Decimal(4),
             title() { 
-                return "progress buyable 51" 
+                return "proverb buyable 51" 
             },
             display() {
-                return "Resets this layer except later buyables back to 1 progress point, delays the progress subpoint gain softcap by "+format(effBasepr51)+", and unlocks "+format(effBasepr51)+" row of progress upgrades (max 2) and buyables (max 4) <br> Cost: "+format(this.cost())+" progress/message and progress/copper points <br> Effect: "+format(this.effect())
+                return "Resets this layer except later buyables back to 1 proverb point, multiply proverb/subpoint gain by "+format(effBasepr51)+", and unlocks a row of proverb upgrades (max 2) and buyables (max 4) <br> Cost: "+format(this.cost())+" proverb/message and proverb/copper points <br> Effect: "+format(this.effect())
             },
             canAfford() { return getBuyableAmount('pr', 101).gte(this.cost())&&getBuyableAmount('pr', 102).gte(this.cost())},
             buy() {
@@ -4325,15 +4332,15 @@ addLayer("pr", {
                 return player.buyablePrice(costTypepr52, costStackpr52, costBasepr52, costExppr52 ,costMultpr52, costLimitpr52 , false)
             },
             effect(x){
-                effBasepr52 = new Decimal(1)
+                effBasepr52 = new Decimal(2)
                 effStackpr52 = new Decimal(x)
-                return effBasepr52.times(effStackpr52)
+                return effBasepr52.pow(effStackpr52)
             },
             title() { 
-                return "progress buyable 52" 
+                return "proverb buyable 52" 
             },
             display() {
-                return "Delays the progress subpoint gain softcap by "+format(effBasepr52)+" <br> Cost: "+format(this.cost())+" progress/message and progress/copper points <br> Effect: "+format(this.effect())
+                return "Multiply proverb/subpoints gain by "+format(effBasepr52)+" <br> Cost: "+format(this.cost())+" proverb/message and proverb/copper points <br> Effect: "+format(this.effect())
             },
             canAfford() { return getBuyableAmount('pr', 101).gte(this.cost())&&getBuyableAmount('pr', 102).gte(this.cost())},
             buy() {
@@ -4350,7 +4357,7 @@ addLayer("pr", {
                 costTypepr53 = "large"
                 costBasepr53 = new Decimal(5)
                 costMultpr53 = new Decimal(10)
-                costExppr53 = new Decimal(0.8)
+                costExppr53 = new Decimal(1)
                 costLimitpr53 = new Decimal('ee10')
                 costStackpr53 = new Decimal(x)
                 return player.buyablePrice(costTypepr53, costStackpr53, costBasepr53, costExppr53 ,costMultpr53, costLimitpr53 , false)
@@ -4361,10 +4368,10 @@ addLayer("pr", {
                 return effBasepr53.pow(effStackpr53).times(buyableEffect('pr', 54))
             },
             title() { 
-                return "progress buyable 53" 
+                return "proverb buyable 53" 
             },
             display() {
-                return "Resets this layer back to 1 progress point, and raise the progress subpoint and progress subbuyables effect by "+format(effBasepr53)+" <br> Cost: "+format(this.cost())+" progress/message and progress/copper points <br> Effect: "+format(this.effect())
+                return "Resets this layer back to 1 proverb point, and raise the proverb subpoint and proverb subbuyables effect by "+format(effBasepr53)+" <br> Cost: "+format(this.cost())+" proverb/message and proverb/copper points <br> Effect: "+format(this.effect())
             },
             purchaseLimit: new Decimal(4),
             canAfford() { return getBuyableAmount('pr', 101).gte(this.cost())&&getBuyableAmount('pr', 102).gte(this.cost())},
@@ -4386,9 +4393,9 @@ addLayer("pr", {
             cost(x) { 
                 costTypepr54 = "large"
                 costBasepr54 = new Decimal(10)
-                costMultpr54 = new Decimal(400)
-                costExppr54 = new Decimal(1.3)
-                costLimitpr54 = new Decimal('e4000')
+                costMultpr54 = new Decimal(500)
+                costExppr54 = new Decimal(1.5)
+                costLimitpr54 = new Decimal('e5000')
                 costStackpr54 = new Decimal(x)
                 return player.buyablePrice(costTypepr54, costStackpr54, costBasepr54, costExppr54 ,costMultpr54, costLimitpr54 , false)
             },
@@ -4398,10 +4405,10 @@ addLayer("pr", {
                 return effBasepr54.pow(effStackpr54)
             },
             title() { 
-                return "progress buyable 54" 
+                return "proverb buyable 54" 
             },
             display() {
-                return "Raise the progress subpoint and progress subbuyables effect by "+format(effBasepr54)+" <br> Cost: "+format(this.cost())+" progress/message and progress/copper points <br> Effect: "+format(this.effect())
+                return "Raise the proverb subpoint and proverb subbuyables effect by "+format(effBasepr54)+" <br> Cost: "+format(this.cost())+" proverb/message and proverb/copper points <br> Effect: "+format(this.effect())
             },
             canAfford() { return getBuyableAmount('pr', 101).gte(this.cost())&&getBuyableAmount('pr', 102).gte(this.cost())},
             buy() {
@@ -4421,7 +4428,7 @@ addLayer("pr", {
                 return Decimal.dZero
             },
             title() { 
-                return "Reset progress subbuyables"
+                return "Reset proverb subbuyables"
             },
             display() {
                 return 
@@ -4445,17 +4452,11 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
-                if (player.pr.points.eq(0)) {return Decimal.dZero}
-                softcapStartprsh = new Decimal(0)
-                softcapStartprsh = softcapStartprsh.add(buyableEffect('pr', 51))
-                softcapStartprsh = softcapStartprsh.add(buyableEffect('pr', 52))
-                if (softcapStartprsh.lt(2)) {return Decimal.dZero}
-                if (player.pr.points.lte(softcapStartprsh)) {eff = player.pr.points}
-                else {eff = softcapStartprsh.add(player.pr.points.sub(softcapStartprsh).add(2).log(2)).sub(1)}
+                eff = player.pr.points.sub(2).max(0)
                 return eff
             },
             title() { 
-                return "progress/shiny base generation" 
+                return "proverb/shiny base generation" 
             },
             display() {
                 return 
@@ -4472,16 +4473,13 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
-                if (player.pr.points.eq(0)) {return Decimal.dZero}
-                softcapStartpr = new Decimal(2)
-                softcapStartpr = softcapStartpr.add(buyableEffect('pr', 51))
-                softcapStartpr = softcapStartpr.add(buyableEffect('pr', 52))
-                if (player.pr.points.lte(softcapStartpr)) {eff = Decimal.dTwo.pow(player.pr.points.sub(1))}
-                else {eff = player.pr.points.sub(softcapStartpr.sub(2)).times(Decimal.dTwo.pow(softcapStartpr.sub(2)))}
+                eff = player.pr.points
+                eff = eff.times(buyableEffect('pr', 51))
+                eff = eff.times(buyableEffect('pr', 52))
                 return eff
             },
             title() { 
-                return "progress/base generation" 
+                return "proverb/base generation" 
             },
             display() {
                 return 
@@ -4508,7 +4506,7 @@ addLayer("pr", {
                 return boosteff
             },
             title() { 
-                return "progress/message points" 
+                return "proverb/message points" 
             },
             display() {
                 return 
@@ -4535,7 +4533,7 @@ addLayer("pr", {
                 return boosteff
             },
             title() { 
-                return "progress/copper points" 
+                return "proverb/copper points" 
             },
             display() {
                 return 
@@ -4561,7 +4559,7 @@ addLayer("pr", {
                 return eff
             },
             title() { 
-                return "progress/message generation" 
+                return "proverb/message generation" 
             },
             display() {
                 return 
@@ -4588,7 +4586,7 @@ addLayer("pr", {
                 return eff
             },
             title() { 
-                return "progress/copper generation" 
+                return "proverb/copper generation" 
             },
             display() {
                 return 
@@ -4605,13 +4603,12 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
-                eff = getBuyableAmount('pr', 105).add(3125).log(5).log(5).root(5)
+                eff = getBuyableAmount('pr', 105).add(19683).log(3).log(3).log(2).root(5)
 
-                if (eff.gte(2)) {eff = eff.log(2).times(2)}
                 return eff
             },
             title() { 
-                return "progress/shiny points" 
+                return "proverb/shiny points" 
             },
             display() {
                 return 
@@ -4639,7 +4636,7 @@ addLayer("pr", {
                 return boosteff2
             },
             title() { 
-                return "progress/message 2nd effect" 
+                return "proverb/message 2nd effect" 
             },
             display() {
                 return 
@@ -4667,7 +4664,7 @@ addLayer("pr", {
                 return boosteff2
             },
             title() { 
-                return "progress/copper 2nd effect" 
+                return "proverb/copper 2nd effect" 
             },
             display() {
                 return 
@@ -4694,7 +4691,7 @@ addLayer("pr", {
                 return boosteffneg
             },
             title() { 
-                return "progress/message adverse effect" 
+                return "proverb/message adverse effect" 
             },
             display() {
                 return 
@@ -4721,7 +4718,7 @@ addLayer("pr", {
                 return boosteffneg
             },
             title() { 
-                return "progress/copper adverse effect" 
+                return "proverb/copper adverse effect" 
             },
             display() {
                 return 
@@ -4752,7 +4749,7 @@ addLayer("pr", {
                 return eff.max(0)
             },
             title() { 
-                return "progress/message subbuyables adverse effect to progress/copper" 
+                return "proverb/message subbuyables adverse effect to proverb/copper" 
             },
             display() {
                 return 
@@ -4783,7 +4780,7 @@ addLayer("pr", {
                 return eff.max(0)
             },
             title() { 
-                return "progress/copper subbuyables adverse effect to progress/message " 
+                return "proverb/copper subbuyables adverse effect to proverb/message " 
             },
             display() {
                 return 
@@ -4797,7 +4794,7 @@ addLayer("pr", {
     },
     clickables: {
         11: {
-            display() {return "Start collecting progress/message points "},
+            display() {return "Start collecting proverb/message points "},
             canClick: true,
             onClick() {
                 setClickableState(this.layer, this.id, 1)
@@ -4807,7 +4804,7 @@ addLayer("pr", {
             }
         },
         12: {
-            display() {return "Start collecting progress/copper points "},
+            display() {return "Start collecting proverb/copper points "},
             canClick: true,
             onClick() {
                 setClickableState(this.layer, 11, 2)
@@ -4819,8 +4816,8 @@ addLayer("pr", {
     },
     upgrades: {
         11: {
-            title: "progress upgrade 11",
-            description: "subtract log10(log10(log10(points)) levels from progress subbuyables scaling",
+            title: "proverb upgrade 11",
+            description: "subtract log10(log10(log10(points)) levels from proverb subbuyables scaling",
             cost: new Decimal(1),
             effect() {
                 eff = player.points.max('e10').log10().log10().log10()
@@ -4830,8 +4827,8 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(1)}
         },
         12: {
-            title: "progress upgrade 12",
-            description: "subtract log10(log10(log10(prestige points)) levels from progress subbuyables scaling",
+            title: "proverb upgrade 12",
+            description: "subtract log10(log10(log10(prestige points)) levels from proverb subbuyables scaling",
             cost: new Decimal(2),
             effect() {
                 eff = player.p.points.max('e10').log10().log10().log10()
@@ -4841,8 +4838,8 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(1)}
         },
         13: {
-            title: "progress upgrade 13",
-            description: "subtract log10(log10(log10(cable points)) levels from progress subbuyables scaling",
+            title: "proverb upgrade 13",
+            description: "subtract log10(log10(log10(cable points)) levels from proverb subbuyables scaling",
             cost: new Decimal(3),
             effect() {
                 eff = player.ca.points.max('e10').log10().log10().log10()
@@ -4852,7 +4849,7 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(1)}
         },
         14: {
-            title: "progress upgrade 14",
+            title: "proverb upgrade 14",
             description: "raise point gain exponent by ^1.01",
             cost: new Decimal(4),
             effect() {
@@ -4863,8 +4860,8 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(1)}
         },
         21: {
-            title: "progress upgrade 21",
-            description: "all positive progress subpoints effects are ^1.1",
+            title: "proverb upgrade 21",
+            description: "all positive proverb subpoints effects are ^1.1",
             cost: new Decimal(10),
             effect() {
                 eff = new Decimal(1.1)
@@ -4874,8 +4871,8 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(2)}
         },
         22: {
-            title: "progress upgrade 21",
-            description: "all positive progress subpoints effects are ^1.2",
+            title: "proverb upgrade 21",
+            description: "all positive proverb subpoints effects are ^1.2",
             cost: new Decimal(20),
             effect() {
                 eff = new Decimal(1.2)
@@ -4885,7 +4882,7 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(2)}
         },
         23: {
-            title: "progress upgrade 23",
+            title: "proverb upgrade 23",
             description: "raise harvest/silence gain exponent by 1.05",
             cost: new Decimal(30),
             effect() {
@@ -4896,7 +4893,7 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(2)}
         },
         24: {
-            title: "progress upgrade 24",
+            title: "proverb upgrade 24",
             description: "raise point gain exponent by ^1.01",
             cost: new Decimal(40),
             effect() {
@@ -4910,7 +4907,7 @@ addLayer("pr", {
     challenges: {
         11: {
             unlocked() { return hasUpgrade('pr', 24)},
-            name: "progress/message progress/copper coexistence challenges",
+            name: "proverb/message proverb/copper coexistence challenges",
             challengeDescription: "Points and resettable layer points lower than this one are nerfed 10^x -> 10^(x^0.5).",
             canComplete() {
                 goalprp = new Decimal(challengeCompletions(this.layer, this.id)).floor().add(1)
@@ -4921,8 +4918,8 @@ addLayer("pr", {
                 return challprp.floor().sub(challengeCompletions(this.layer, this.id)).floor().max(0) * 1
             },
             goalDescription() { 
-                textprchall11g = "Get "+format(goalprp)+" effective progress points on reset. "
-                if (inChallenge(this.layer, this.id)) {textprchall11g += " Currently "+formatWhole(challprp.floor())+" effective progress points "}
+                textprchall11g = "Get "+format(goalprp)+" effective proverb points on reset. "
+                if (inChallenge(this.layer, this.id)) {textprchall11g += " Currently "+formatWhole(challprp.floor())+" effective proverb points "}
                 return textprchall11g
             },
             rewardEffect() {
@@ -4933,9 +4930,9 @@ addLayer("pr", {
             rewardDescription() { 
                 textprchall11r = formatWhole(challengeCompletions(this.layer, this.id))+"/"+formatWhole(this.completionLimit)+" completions, "
                 // if (maxedChallenge(this.layer, this.id)) {
-                //     textprchall11r += " fully allowing progress/harvest and progress/copper points to coexist"
+                //     textprchall11r += " fully allowing proverb/harvest and proverb/copper points to coexist"
                 // } else {
-                    textprchall11r += " reducing the progress/harvest and progress/copper conerf by ^1/"+format(this.rewardEffect())
+                    textprchall11r += " reducing the proverb/harvest and proverb/copper conerf by ^1/"+format(this.rewardEffect())
                 // }
                 return textprchall11r
             },
