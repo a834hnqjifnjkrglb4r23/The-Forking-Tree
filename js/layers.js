@@ -80,7 +80,7 @@ addLayer("p", {
         }
     },
     automate() {
-        if (hasMilestone('p', 0)&&player.p.autoBuyBuyable) {
+        if (hasMilestone('p', 0)&&player.p.autoBuyBuyable&&(!hasMilestone('ca', 0))) {
             for (let i = 11; i < 16; i++) {
                 if (canBuyBuyable('p', i)) {buyMaxBuyable('p', i)}
             }
@@ -129,37 +129,40 @@ addLayer("p", {
                 costLimitLogp11 = new Decimal('1000')
                 costLimitLogp11 = costLimitLogp11.times(buyableEffect('ha', 13))
                 costStackp11 = new Decimal(x)
-                return player.buyablePriceNew(costTypep11, costStackp11, costBaseLogp11, costExpp11 ,costMultLogp11, costLimitLogp11 )
+                return {cost: player.buyablePriceNew(costTypep11, costStackp11, costBaseLogp11, costExpp11 ,costMultLogp11, costLimitLogp11), continuum: player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11).max(1)}
             },
             effect(x){
-                effBasep11 = new Decimal(1).times(buyableEffect('pr', 21))
-                effStackp11 = new Decimal(x)
+                effBasep11 = new Decimal(1)
+                if (hasMilestone('ca', 0)) {effStackp11 = this.cost().continuum} else {effStackp11 = new Decimal(x)}
+                effStackp11 = effStackp11.times(buyableEffect('pr', 21))
                 return effBasep11.times(effStackp11)
             },
             title() { 
                 return "prestige buyable 11" 
             },
             display() {
-                return "increase point gain by "+format(effBasep11)+" <br> Cost: "+format(this.cost())+" points <br> Effect: "+format(this.effect())
+                return "increase point gain by "+format(effBasep11)+" <br> Cost: "+format(this.cost().cost)+" points <br> Effect: "+format(this.effect())
             },
             style() {const size = {width: "150px", height: "150px"}
                 return size},
-            canAfford() { return player.points.gte(this.cost()) },
+            canAfford() { return player.points.gte(this.cost().cost)&&(!hasMilestone('ca', 0)) },
             buy() {
-                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost())}
+                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep11 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
+                if (hasMilestone('ca', 0)) {} else {                
+                    if ((costTypep11 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11))
+                            if (player.points.lt('e100')) {player.points = player.points.sub(player.buyablePriceNew(costTypep11, player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11), costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11))}
+                        }
                     }
-                } else {
-                    if (player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11))
-                        if (player.points.lt('e100')&&!hasMilestone('ca', 0)) {player.points = player.points.sub(player.buyablePriceNew(costTypep11, player.buyableMaxPurchaseableNew(costTypep11, player.points, costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11), costBaseLogp11, costExpp11, costMultLogp11, costLimitLogp11))}
-                    }
-                }
+                }   
             },
         },
         12: {
@@ -179,35 +182,38 @@ addLayer("p", {
                 costLimitLogp12 = new Decimal('1000')
                 costLimitLogp12 = costLimitLogp12.times(buyableEffect('ha', 13))
                 costStackp12 = new Decimal(x)
-                return player.buyablePriceNew(costTypep12, costStackp12, costBaseLogp12, costExpp12 ,costMultLogp12, costLimitLogp12 )
+                return {cost: player.buyablePriceNew(costTypep12, costStackp12, costBaseLogp12, costExpp12 ,costMultLogp12, costLimitLogp12), continuum: player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12)}
             },
             effect(x){
-                effBasep12 = new Decimal(1).times(buyableEffect('pr', 21))
-                effStackp12 = new Decimal(x)
+                effBasep12 = new Decimal(1)
+                if (hasMilestone('ca', 0)) {effStackp12 = this.cost().continuum} else {effStackp12 = new Decimal(x)}
+                effStackp12 = effStackp12.times(buyableEffect('pr', 21))
                 return effBasep12.times(effStackp12)
             },
             title() { 
                 return "prestige buyable 12" 
             },
             display() {
-                return "increase point gain by "+format(effBasep12)+" <br> Cost: "+format(this.cost())+" points <br> Effect: "+format(this.effect())
+                return "increase point gain by "+format(effBasep12)+" <br> Cost: "+format(this.cost().cost)+" points <br> Effect: "+format(this.effect())
             },
             style() {const size = {width: "150px", height: "150px"}
                 return size},
-            canAfford() { return player.points.gte(this.cost()) },
+            canAfford() { return player.points.gte(this.cost().cost)&&(!hasMilestone('ca', 0)) },
             buy() {
-                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost())}
+                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep12 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12))
-                        if (player.points.lt('e100')&&!hasMilestone('ca', 0)) {player.points = player.points.sub(player.buyablePriceNew(costTypep12, player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12), costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12))}
+                if (hasMilestone('ca', 0)) {} else {
+                    if ((costTypep12 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12))
+                            if (player.points.lt('e100')) {player.points = player.points.sub(player.buyablePriceNew(costTypep12, player.buyableMaxPurchaseableNew(costTypep12, player.points, costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12), costBaseLogp12, costExpp12, costMultLogp12, costLimitLogp12))}
+                        }
                     }
                 }
             },
@@ -229,37 +235,41 @@ addLayer("p", {
                 costLimitLogp13 = new Decimal('1000')
                 costLimitLogp13 = costLimitLogp13.times(buyableEffect('ha', 13))
                 costStackp13 = new Decimal(x)
-                return player.buyablePriceNew(costTypep13, costStackp13, costBaseLogp13, costExpp13 ,costMultLogp13, costLimitLogp13 )
+                return {cost: player.buyablePriceNew(costTypep13, costStackp13, costBaseLogp13, costExpp13 ,costMultLogp13, costLimitLogp13), continuum: player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13)}
             },
             effect(x){
-                effBasep13 = new Decimal(1).times(buyableEffect('pr', 21))
-                effStackp13 = new Decimal(x)
+                effBasep13 = new Decimal(1)
+                if (hasMilestone('ca', 0)) {effStackp13 = this.cost().continuum} else {effStackp13 = new Decimal(x)}
+                effStackp13 = effStackp13.times(buyableEffect('pr', 21))
                 return effBasep13.times(effStackp13)
             },
             title() { 
                 return "prestige buyable 13" 
             },
             display() {
-                return "increase point gain by "+format(effBasep13)+" <br> Cost: "+format(this.cost())+" points <br> Effect: "+format(this.effect())
+                return "increase point gain by "+format(effBasep13)+" <br> Cost: "+format(this.cost().cost)+" points <br> Effect: "+format(this.effect())
             },
             style() {const size = {width: "150px", height: "150px"}
                 return size},
-            canAfford() { return player.points.gte(this.cost()) },
+            canAfford() { return player.points.gte(this.cost().cost)&&(!hasMilestone('ca', 0)) },
             buy() {
-                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost())}
+                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep13 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13))
-                        if (player.points.lt('e100')&&!hasMilestone('ca', 0)) {player.points = player.points.sub(player.buyablePriceNew(costTypep13, player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13), costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13))}
+                if (hasMilestone('ca', 0)) {} else {
+                    if ((costTypep13 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13))
+                            if (player.points.lt('e100')) {player.points = player.points.sub(player.buyablePriceNew(costTypep13, player.buyableMaxPurchaseableNew(costTypep13, player.points, costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13), costBaseLogp13, costExpp13, costMultLogp13, costLimitLogp13))}
+                        }
                     }
                 }
+
             },
         },
         // 14: { // purposefully not included in p/ca upgrade 21
@@ -331,35 +341,38 @@ addLayer("p", {
                 costLimitLogp14 = new Decimal('100')
                 costLimitLogp14 = costLimitLogp14.times(buyableEffect('ha', 13))
                 costStackp14 = new Decimal(x)
-                return player.buyablePriceNew(costTypep14, costStackp14, costBaseLogp14, costExpp14 ,costMultLogp14, costLimitLogp14 )
+                return {cost: player.buyablePriceNew(costTypep14, costStackp14, costBaseLogp14, costExpp14 ,costMultLogp14, costLimitLogp14), continuum: player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14)}
             },
             effect(x){
-                effBasep14 = new Decimal(1.2).add(buyableEffect('ha', 11)).pow(buyableEffect('pr', 21))
-                effStackp14 = new Decimal(x)
+                effBasep14 = new Decimal(1.2).add(buyableEffect('ha', 11))
+                if (hasMilestone('ca', 0)) {effStackp14 = this.cost().continuum} else {effStackp14 = new Decimal(x)}
+                effStackp14 = effStackp14.times(buyableEffect('pr', 21))
                 return effBasep14.pow(effStackp14)
             },
             title() { 
                 return "prestige buyable 14" 
             },
             display() {
-                return "multiply point gain by "+format(effBasep14)+" <br> Cost: "+format(this.cost())+" points <br> Effect: "+format(this.effect())
+                return "multiply point gain by "+format(effBasep14)+" <br> Cost: "+format(this.cost().cost)+" points <br> Effect: "+format(this.effect())
             },
             style() {const size = {width: "150px", height: "150px"}
                 return size},
-            canAfford() { return player.points.gte(this.cost()) },
+            canAfford() { return player.points.gte(this.cost().cost)&&(!hasMilestone('ca', 0)) },
             buy() {
-                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost())}
+                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep14 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14))
-                        if (player.points.lt('e100')&&!hasMilestone('ca', 0)) {player.points = player.points.sub(player.buyablePriceNew(costTypep14, player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14), costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14))}
+                if (hasMilestone('ca', 0)) {} else {
+                    if ((costTypep14 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14))
+                            if (player.points.lt('e100')) {player.points = player.points.sub(player.buyablePriceNew(costTypep14, player.buyableMaxPurchaseableNew(costTypep14, player.points, costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14), costBaseLogp14, costExpp14, costMultLogp14, costLimitLogp14))}
+                        }
                     }
                 }
             },
@@ -381,35 +394,38 @@ addLayer("p", {
                 costLimitLogp15 = new Decimal('100')
                 costLimitLogp15 = costLimitLogp15.times(buyableEffect('ha', 13))
                 costStackp15 = new Decimal(x)
-                return player.buyablePriceNew(costTypep15, costStackp15, costBaseLogp15, costExpp15 ,costMultLogp15, costLimitLogp15 )
+                return {cost: player.buyablePriceNew(costTypep15, costStackp15, costBaseLogp15, costExpp15 ,costMultLogp15, costLimitLogp15), continuum: player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15)}
             },
             effect(x){
-                effBasep15 = new Decimal(1.2).add(buyableEffect('ha', 11)).pow(buyableEffect('pr', 21))
-                effStackp15 = new Decimal(x)
+                effBasep15 = new Decimal(1.2).add(buyableEffect('ha', 11))
+                if (hasMilestone('ca', 0)) {effStackp15 = this.cost().continuum} else {effStackp15 = new Decimal(x)}
+                effStackp15 = effStackp15.times(buyableEffect('pr', 21))
                 return effBasep15.pow(effStackp15)
             },
             title() { 
                 return "prestige buyable 15" 
             },
             display() {
-                return "multiply point gain by "+format(effBasep15)+" <br> Cost: "+format(this.cost())+" points <br> Effect: "+format(this.effect())
+                return "multiply point gain by "+format(effBasep15)+" <br> Cost: "+format(this.cost().cost)+" points <br> Effect: "+format(this.effect())
             },
             style() {const size = {width: "150px", height: "150px"}
                 return size},
-            canAfford() { return player.points.gte(this.cost()) },
+            canAfford() { return player.points.gte(this.cost().cost)&&(!hasMilestone('ca', 0)) },
             buy() {
-                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost())}
+                if (hasMilestone('ca', 0)) {} else {player.points = player.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypep15 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15))
-                        if (player.points.lt('e100')&&!hasMilestone('ca', 0)) {player.points = player.points.sub(player.buyablePriceNew(costTypep15, player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15), costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15))}
+                if (hasMilestone('ca', 0)) {} else {
+                    if ((costTypep15 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15))
+                            if (player.points.lt('e100')&&!hasMilestone('ca', 0)) {player.points = player.points.sub(player.buyablePriceNew(costTypep15, player.buyableMaxPurchaseableNew(costTypep15, player.points, costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15), costBaseLogp15, costExpp15, costMultLogp15, costLimitLogp15))}
+                        }
                     }
                 }
             },
@@ -679,9 +695,7 @@ addLayer("ca", {
         }
     },
     automate() {
-        if (hasMilestone('me', 1)) {
-            if (canBuyBuyable('ca', 11)) {buyMaxBuyable('ca', 11)}
-        }
+
         if (hasMilestone('me', 1)) {
             for (let i1 = 1; i1 < 5; i1++) {
                 for (let i2 = 1; i2 < 5; i2++) {
@@ -731,36 +745,39 @@ addLayer("ca", {
                 costLimitca11 = new Decimal('e100')
                 if (hasUpgrade('ha', 14)) {costLimitca11 = costLimitca11.pow(upgradeEffect('ha', 14))}
                 costStackca11 = new Decimal(x)
-                return player.buyablePrice(costTypeca11, costStackca11, costBaseca11, costExpca11 ,costMultca11, costLimitca11 , true)
+                return {cost: player.buyablePrice(costTypeca11, costStackca11, costBaseca11, costExpca11 ,costMultca11, costLimitca11 , true), continuum: player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11, false)}
             },
             effect(x){
                 if (inChallenge('mec', 11)) {return Decimal.dOne}
                 effBaseca11 = new Decimal(5)
-                effStackca11 = new Decimal(x)
+                if (hasMilestone('me', 0)) {effStackca11 = this.cost().continuum} else {effStackca11 = new Decimal(x)}
                 return effBaseca11.pow(effStackca11)
             },
             title() { 
                 return "cable buyable 11" 
             },
             display() {
-                return "divide prestige buyable 1x costs by "+format(effBaseca11)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "divide prestige buyable 1x costs by "+format(effBaseca11)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.ca.points.gte(this.cost())&&(!inChallenge('mec', 11)) },
+            canAfford() { return player.ca.points.gte(this.cost().cost)&&(!inChallenge('mec', 11))&&(!hasMilestone('me', 0)) },
             buy() {
-                if (!hasMilestone('me', 0)) {player.ca.points = player.ca.points.sub(this.cost())}
+                if (!hasMilestone('me', 0)) {player.ca.points = player.ca.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypeca11 == "asymptote")||player.ca.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11))
-                        if (player.ca.points.lt('e100')&&!hasMilestone('me', 0)) {player.ca.points = player.ca.points.sub(player.buyablePrice(costTypeca11, player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11), costBaseca11, costExpca11, costMultca11, costLimitca11, true))}
+                if (!hasMilestone('me', 0)) {} {
+                    if ((costTypeca11 == "asymptote")||player.ca.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11))
+                            if (player.ca.points.lt('e100')) {player.ca.points = player.ca.points.sub(player.buyablePrice(costTypeca11, player.buyableMaxPurchaseable(costTypeca11, player.ca.points, costBaseca11, costExpca11, costMultca11, costLimitca11), costBaseca11, costExpca11, costMultca11, costLimitca11, true))}
+                        }
                     }
                 }
+
             },
         },
     },
@@ -1004,12 +1021,12 @@ addLayer("me", {
     type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     gainMult() { // Calculate the multiplier for main currency from bonuses
         multme = new Decimal(1e-6)
-        multme = multme.times(buyableEffect('si', 13))
         multme = multme.times(buyableEffect('cu', 41))
         return multme
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
         expme = new Decimal(0.2)
+        expme = expme.times(buyableEffect('si', 13))
         if (hasUpgrade('si', 24)) {expme = expme.times(upgradeEffect('si', 24))}
         expme = expme.times(buyableEffect('pr', 111))
         exp2me = new Decimal(0.5)
@@ -1050,12 +1067,6 @@ addLayer("me", {
         }
     },
     automate() {
-        if (hasMilestone('si', 0)||hasMilestone('ha', 0)) {
-            for (let i = 11; i < 12; i++) {
-                if (canBuyBuyable('me', i)) {buyMaxBuyable('me', i)}
-                if (canBuyBuyable('mec', i)) {buyMaxBuyable('mec', i)}
-            }
-        }
         if (hasMilestone('si', 0)||hasMilestone('ha', 0)||hasMilestone('cu', 10)) {
             for (let i1 = 1; i1 < 3; i1++) {
                 for (let i2 = 1; i2 < 5; i2++) {
@@ -1130,44 +1141,47 @@ addLayer("me", {
                 costExpme11 = new Decimal(1.02)
                 costLimitme11 = new Decimal('e6')
                 costStackme11 = new Decimal(x)
-                return player.buyablePrice(costTypeme11, costStackme11, costBaseme11, costExpme11 ,costMultme11, costLimitme11 , true)
+                return {cost: player.buyablePrice(costTypeme11, costStackme11, costBaseme11, costExpme11 ,costMultme11, costLimitme11 , true), continuum: player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11)}
             },
             effect(x){
                 effBaseme11 = player.p.points.max(2).log(2)
                 effBaseme11 = effBaseme11.pow(buyableEffect('si', 11))
-                effStackme11 = new Decimal(x)
+                if (hasMilestone('ha', 0)||hasMilestone('si', 0)) {effStackme11 = this.cost().continuum} else {effStackme11 = new Decimal(x)}
                 return effBaseme11.pow(effStackme11)
             },
             title() { 
                 return "message buyable 11" 
             },
             display() {
-                return "multiply point gain by log2(prestige points), currently "+format(effBaseme11)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "multiply point gain by log2(prestige points), currently "+format(effBaseme11)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.me.points.gte(this.cost()) },
+            canAfford() { return player.me.points.gte(this.cost().cost)&&(!(hasMilestone('ha', 0)||hasMilestone('si', 0))) },
             buy() {
-                if (!(hasMilestone('ha', 2)||hasMilestone('si', 2))) {player.me.points = player.me.points.sub(this.cost())}
+                if (!(hasMilestone('ha', 0)||hasMilestone('si', 0))) {player.me.points = player.me.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypeme11 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11))
-                        if (player.me.points.lt('e100')&&!hasMilestone('ha', 0)&&!hasMilestone('si', 0)) {player.me.points = player.me.points.sub(player.buyablePrice(costTypeme11, player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11), costBaseme11, costExpme11, costMultme11, costLimitme11, true))}
+                if ((hasMilestone('ha', 0)||hasMilestone('si', 0))) {} else {
+                    if ((costTypeme11 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11))
+                            if (player.me.points.lt('e100')) {player.me.points = player.me.points.sub(player.buyablePrice(costTypeme11, player.buyableMaxPurchaseable(costTypeme11, player.me.points, costBaseme11, costExpme11, costMultme11, costLimitme11), costBaseme11, costExpme11, costMultme11, costLimitme11, true))}
+                        }
                     }
                 }
             },
         },
-        12: {
-            unlocked() {return false},
-            cost(x) { 
-                return Decimal.dInf
-            },
-            effect(x){
+    },
+    upgrades: {
+        11: {
+            title: "message upgrade 11",
+            description: "raise prestige upgrade 11 effect to log2(message points +2), softcapped at ^5",
+            cost: new Decimal(1),
+            effect() {
                 eff = player.me.points.add(2).log(2)
                 if (hasUpgrade('gi', 41)) {eff = eff.times(upgradeEffect('gi', 41))}
                 if (hasUpgrade('gi', 42)) {eff = eff.times(upgradeEffect('gi', 42))}
@@ -1178,27 +1192,7 @@ addLayer("me", {
                     eff = eff.log(softcapStartme).times(softcapStartme)
                 }
                 if (isNaN(eff)) {return new Decimal(1)} else {return eff}
-            },
-            title() { 
-                return "message upgrades effect calculator" 
-            },
-            display() {
-                return 
-            },
-            canAfford() { return false },
-            buy() {
-            },
-            buyMax() {
-            },
-        },
-    },
-    upgrades: {
-        11: {
-            title: "message upgrade 11",
-            description: "raise prestige upgrade 11 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(1),
-            effect() {
-                return buyableEffect('me', 12)
+                return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1208,7 +1202,7 @@ addLayer("me", {
             description: "raise prestige upgrade 12 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(2),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1218,7 +1212,7 @@ addLayer("me", {
             description: "raise prestige upgrade 13 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(3),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1228,7 +1222,7 @@ addLayer("me", {
             description: "raise prestige upgrade 14 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(4),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1238,7 +1232,7 @@ addLayer("me", {
             description: "raise prestige upgrade 21 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(5),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1248,7 +1242,7 @@ addLayer("me", {
             description: "raise prestige upgrade 22 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(6),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1258,7 +1252,7 @@ addLayer("me", {
             description: "raise prestige upgrade 23 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(7),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1268,7 +1262,7 @@ addLayer("me", {
             description: "raise prestige upgrade 24 effect to log2(message points +2), softcapped at ^5",
             cost: new Decimal(8),
             effect() {
-                return buyableEffect('me', 12)
+                return upgradeEffect('me', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1362,44 +1356,48 @@ addLayer("mec", {
                 costExpmec11 = new Decimal(1.02)
                 costLimitmec11 = new Decimal('e6')
                 costStackmec11 = new Decimal(x)
-                return player.buyablePrice(costTypemec11, costStackmec11, costBasemec11, costExpmec11 ,costMultmec11, costLimitmec11 , true)
+                return {cost: player.buyablePrice(costTypemec11, costStackmec11, costBasemec11, costExpmec11 ,costMultmec11, costLimitmec11 , true), continuum: player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11)}
             },
             effect(x){
                 effBasemec11 = player.ca.points.max(2).log(2)
                 effBasemec11 = effBasemec11.pow(buyableEffect('si', 11))
-                effStackmec11 = new Decimal(x)
+                if (hasMilestone('ha', 0)||hasMilestone('si', 0)) {effStackmec11 = this.cost().continuum} else {effStackmec11 = new Decimal(x)}
                 return effBasemec11.pow(effStackmec11)
             },
             title() { 
                 return "message decabled buyable 11" 
             },
             display() {
-                return "multiply point gain by log2(cable points), currently "+format(effBasemec11)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "multiply point gain by log2(cable points), currently "+format(effBasemec11)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.mec.points.gte(this.cost()) },
+            canAfford() { return player.mec.points.gte(this.cost().cost)&&(!(hasMilestone('ha', 0)||hasMilestone('si', 0))) },
             buy() {
-                if (!(hasMilestone('ha', 2)||hasMilestone('si', 2))) {player.mec.points = player.mec.points.sub(this.cost())}
+                if (!(hasMilestone('ha', 0)||hasMilestone('si', 0))) {player.mec.points = player.mec.points.sub(this.cost().cost)}
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypemec11 == "asymptote")) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11))
-                        if (player.mec.points.lt('e100')&&!hasMilestone('ha', 0)&&!hasMilestone('si', 0)) {player.mec.points = player.mec.points.sub(player.buyablePrice(costTypemec11, player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11), costBasemec11, costExpmec11, costMultmec11, costLimitmec11, true))}
+                if ((hasMilestone('ha', 0)||hasMilestone('si', 0))) {} else {
+                    if ((costTypemec11 == "asymptote")) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11))
+                            if (player.mec.points.lt('e100')) {player.mec.points = player.mec.points.sub(player.buyablePrice(costTypemec11, player.buyableMaxPurchaseable(costTypemec11, player.mec.points, costBasemec11, costExpmec11, costMultmec11, costLimitmec11), costBasemec11, costExpmec11, costMultmec11, costLimitmec11, true))}
+                        }
                     }
                 }
+
             },
         },
-        12: {
-            unlocked() {return false},
-            cost(x) { 
-                return Decimal.dInf
-            },
-            effect(x){
+    },
+    upgrades: {
+        11: {
+            title: "message decabled upgrade 11",
+            description: "raise prestige upgrade 11 effect to log2(message decabled points +2), softcapped at ^5",
+            cost: new Decimal(1),
+            effect() {
                 eff = player.mec.points.add(2).log(2)
                 if (hasUpgrade('gi', 41)) {eff = eff.times(upgradeEffect('gi', 41))}
                 if (hasUpgrade('gi', 42)) {eff = eff.times(upgradeEffect('gi', 42))}
@@ -1410,28 +1408,6 @@ addLayer("mec", {
                     eff = eff.log(softcapStartmec).times(softcapStartmec)
                 }
                 if (isNaN(eff)) {return new Decimal(1)} else {return eff}
-                
-            },
-            title() { 
-                return "message upgrades effect calculator" 
-            },
-            display() {
-                return 
-            },
-            canAfford() { return false },
-            buy() {
-            },
-            buyMax() {
-            },
-        },
-    },
-    upgrades: {
-        11: {
-            title: "message decabled upgrade 11",
-            description: "raise prestige upgrade 11 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(1),
-            effect() {
-                return buyableEffect('mec', 12)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1441,7 +1417,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 12 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(2),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1451,7 +1427,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 13 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(3),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1461,7 +1437,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 14 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(4),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1471,7 +1447,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 21 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(5),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1481,7 +1457,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 22 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(6),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1491,7 +1467,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 23 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(7),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1501,7 +1477,7 @@ addLayer("mec", {
             description: "raise prestige upgrade 24 effect to log2(message decabled points +2), softcapped at ^5",
             cost: new Decimal(8),
             effect() {
-                return buyableEffect('mec', 12)
+                return upgradeEffect('mec', 11)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
@@ -1533,18 +1509,19 @@ addLayer("ha", {
         expha = new Decimal(4)
         if (hasUpgrade('gi', 31)) {expha = expha.times(upgradeEffect('gi', 31))}
         if (hasUpgrade('gi', 43)) {expha = expha.times(upgradeEffect('gi', 43))}
+        expha = expha.times(buyableEffect('gi', 24))
         exp2ha = new Decimal(1.2)
         if (hasUpgrade('gi', 44)) {exp2ha = exp2ha.times(upgradeEffect('gi', 44))}
         if (hasUpgrade('pr', 23)) {exp2ha = exp2ha.times(upgradeEffect('pr', 23))}
         if (inChallenge('gi', 11)) {exp2ha = exp2ha.times(0.3)}
         if (inChallenge('pr', 11)) {exp2ha = exp2ha.times(0.5)}
+        exp3ha = new Decimal(0.96)
         return expha
-
     },
     getResetGain() {
         hap = player.points.log10().times(multha).pow(expha)
         if (hap.gte(10)) {hap = hap.log10().pow(exp2ha).pow10()}
-
+        if (hap.gte(1e10)) {hap = hap.log10().log10().pow(exp3ha).pow10().pow10()}
         choseSilence = hasMilestone('si', 10)
         if (choseSilence&&!maxedChallenge('gi', 11)&&!inChallenge('gi', 11)) {
             if (!hasChallenge('gi', 11)) {hapMax = new Decimal(0)} else {hapMax = Decimal.dTen.pow(Math.log10(challengeCompletions('gi', 11))**2)}
@@ -1556,6 +1533,7 @@ addLayer("ha", {
     getNextAt() {
         nextha = getResetGain('ha').add(1)
         if (nextha.gte(10)) {nextha = nextha.log10().root(exp2ha).pow10()}
+        if (nextha.gte(1e10)) {nextha = nextha.log10().log10().root(exp3ha).pow10().pow10()}
         return nextha.root(expha).div(multha).pow10()
     },
     canReset() {return getResetGain('ha').gte(1)},
@@ -1615,37 +1593,38 @@ addLayer("ha", {
                 costExpha11 = new Decimal(1.2)
                 costLimitha11 = new Decimal('1e6')
                 costStackha11 = new Decimal(x)
-                return player.buyablePrice(costTypeha11, costStackha11, costBaseha11, costExpha11 ,costMultha11, costLimitha11 , true)
+                return {cost: player.buyablePrice(costTypeha11, costStackha11, costBaseha11, costExpha11 ,costMultha11, costLimitha11 , true), continuum: player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11, false).min(this.purchaseLimit())}
             },
             effect(x){
                 effBaseha11 = new Decimal(0.05)
-                effStackha11 = new Decimal(x)
+                if (hasMilestone('cu',0)) {effStackha11 = this.cost().continuum} else {effStackha11 = new Decimal(x)}
                 return effBaseha11.times(effStackha11)
             },
             title() { 
                 return "harvest buyable 11" 
             },
             purchaseLimit() {
-                variablenameBrillantWow = new Decimal(56)
-                return variablenameBrillantWow
+                return new Decimal(56)
             },
             display() {
-                return "add prestige buyable 14/15 effect by "+format(effBaseha11)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "add prestige buyable 14/15 effect by "+format(effBaseha11)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.ha.points.gte(this.cost())},
+            canAfford() { return player.ha.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
             buy() {
-                if (!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(this.cost())} // change to  free req
+                if (!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(this.cost().cost)} // change to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypeha11 == "asymptote")||player.ha.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11).min(this.purchaseLimit()))
-                        if (player.ha.points.lt('e100')&&!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(player.buyablePrice(costTypeha11, player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11), costBaseha11, costExpha11, costMultha11, costLimitha11, true))}
+                if (hasMilestone('cu', 0)) {} else {
+                    if ((costTypeha11 == "asymptote")||player.ha.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11).min(this.purchaseLimit()))
+                            if (player.ha.points.lt('e100')&&!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(player.buyablePrice(costTypeha11, player.buyableMaxPurchaseable(costTypeha11, player.ha.points, costBaseha11, costExpha11, costMultha11, costLimitha11), costBaseha11, costExpha11, costMultha11, costLimitha11, true))}
+                        }
                     }
                 }
             },
@@ -1659,11 +1638,11 @@ addLayer("ha", {
                 costExpha12 = new Decimal(1.4)
                 costLimitha12 = new Decimal('1e6')
                 costStackha12 = new Decimal(x)
-                return player.buyablePrice(costTypeha12, costStackha12, costBaseha12, costExpha12 ,costMultha12, costLimitha12 , true)
+                return {cost: player.buyablePrice(costTypeha12, costStackha12, costBaseha12, costExpha12 ,costMultha12, costLimitha12 , true), continuum: player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12, false).min(this.purchaseLimit())}
             },
             effect(x){
                 effBaseha12 = new Decimal(1.05)
-                effStackha12 = new Decimal(x)
+                if (hasMilestone('cu',0)) {effStackha12 = this.cost().continuum} else {effStackha12 = new Decimal(x)}
                 return effBaseha12.pow(effStackha12)
             },
             title() { 
@@ -1673,22 +1652,24 @@ addLayer("ha", {
                 return new Decimal(24)
             },
             display() {
-                return "root prestige buyable 1x scaling by "+format(effBaseha12)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "root prestige buyable 1x scaling by "+format(effBaseha12)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.ha.points.gte(this.cost())},
+            canAfford() { return player.ha.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
             buy() {
                 if (!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(this.cost())} // change to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypeha12 == "asymptote")||player.ha.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12).min(this.purchaseLimit()))
-                        if (player.ha.points.lt('e100')&&!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(player.buyablePrice(costTypeha12, player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12), costBaseha12, costExpha12, costMultha12, costLimitha12, true))}
+                if (hasMilestone('cu', 0)) {} else {
+                    if ((costTypeha12 == "asymptote")||player.ha.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12).min(this.purchaseLimit()))
+                            if (player.ha.points.lt('e100')) {player.ha.points = player.ha.points.sub(player.buyablePrice(costTypeha12, player.buyableMaxPurchaseable(costTypeha12, player.ha.points, costBaseha12, costExpha12, costMultha12, costLimitha12), costBaseha12, costExpha12, costMultha12, costLimitha12, true))}
+                        }
                     }
                 }
             },
@@ -1702,11 +1683,11 @@ addLayer("ha", {
                 costExpha13 = new Decimal(1.6)
                 costLimitha13 = new Decimal('1e6')
                 costStackha13 = new Decimal(x)
-                return player.buyablePrice(costTypeha13, costStackha13, costBaseha13, costExpha13 ,costMultha13, costLimitha13 , true)
+                return {cost: player.buyablePrice(costTypeha13, costStackha13, costBaseha13, costExpha13 ,costMultha13, costLimitha13 , true), continuum: player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13, false).min(this.purchaseLimit())}
             },
             effect(x){
                 effBaseha13 = new Decimal(2)
-                effStackha13 = new Decimal(x)
+                if (hasMilestone('cu',0)) {effStackha13 = this.cost().continuum} else {effStackha13 = new Decimal(x)}
                 return effBaseha13.pow(effStackha13)
             },
             purchaseLimit() {
@@ -1716,22 +1697,24 @@ addLayer("ha", {
                 return "harvest buyable 13" 
             },
             display() {
-                return "raise prestige buyable 1x softcap start by "+format(effBaseha13)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "raise prestige buyable 1x softcap start by "+format(effBaseha13)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.ha.points.gte(this.cost())},
+            canAfford() { return player.ha.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
             buy() {
                 if (!hasMilestone('cu', 0)){player.ha.points = player.ha.points.sub(this.cost())} // change to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypeha13 == "asymptote")||player.ha.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13).min(this.purchaseLimit()))
-                        if (player.ha.points.lt('e100')&&!hasMilestone('cu', 0)) {player.ha.points = player.ha.points.sub(player.buyablePrice(costTypeha13, player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13), costBaseha13, costExpha13, costMultha13, costLimitha13, true))}
+                if (hasMilestone('cu', 0)) {} else {
+                    if ((costTypeha13 == "asymptote")||player.ha.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13).min(this.purchaseLimit()))
+                            if (player.ha.points.lt('e100')) {player.ha.points = player.ha.points.sub(player.buyablePrice(costTypeha13, player.buyableMaxPurchaseable(costTypeha13, player.ha.points, costBaseha13, costExpha13, costMultha13, costLimitha13), costBaseha13, costExpha13, costMultha13, costLimitha13, true))}
+                        }
                     }
                 }
             },
@@ -1862,18 +1845,20 @@ addLayer("si", {
         expsi = new Decimal(4)
         if (hasUpgrade('gi', 31)) {expsi = expsi.times(upgradeEffect('gi', 31))}
         if (hasUpgrade('gi', 43)) {expsi = expsi.times(upgradeEffect('gi', 43))}
+        expsi = expsi.times(buyableEffect('gi', 24))
         exp2si = new Decimal(1.2)
         if (hasUpgrade('gi', 44)) {exp2si = exp2si.times(upgradeEffect('gi', 44))}
         if (hasUpgrade('pr', 23)) {exp2si = exp2si.times(upgradeEffect('pr', 23))}
         if (inChallenge('gi', 11)) {exp2si = exp2si.times(0.3)}
         if (inChallenge('pr', 11)) {exp2si = exp2si.times(0.5)}
+        exp3si = new Decimal(0.96)
         return expsi
 
     },
     getResetGain() {
         sip = player.points.log10().times(multsi).pow(expsi)
         if (sip.gte(10)) {sip = sip.log10().pow(exp2si).pow10()}
-
+        if (sip.gte('1e10')) {sip = sip.log10().log10().pow(exp3si).pow10().pow10()}
         choseHarvest = hasMilestone('ha', 10)
         if (choseHarvest&&!maxedChallenge('gi', 11)&&!inChallenge('gi', 11)) {
             if (!hasChallenge('gi', 11)) {sipMax = new Decimal(0)} else {sipMax = Decimal.dTen.pow(Math.log10(challengeCompletions('gi', 11))**2)}
@@ -1884,6 +1869,7 @@ addLayer("si", {
     },
     getNextAt() {
         nextsi = getResetGain('si').add(1)
+        if (nextsi.gte(1e10)) {nextsi = nextsi.log10().log10().root(exp3si).pow10().pow10()}
         if (nextsi.gte(10)) {nextsi = nextsi.log10().root(exp2si).pow10()}
         return nextsi.root(expsi).div(multsi).pow10()
     },
@@ -1902,12 +1888,6 @@ addLayer("si", {
 
     },
     automate() {
-        if (hasMilestone('cu', 0)) {
-            for (i = 11; i < 14; i++){
-                if (canBuyBuyable('ha', i)) {buyMaxBuyable('ha', i)}
-                if (canBuyBuyable('si', i)) {buyMaxBuyable('si', i)}
-            }
-        }
         if (hasMilestone('cu', 0)) {
             for (let i1 = 1; i1 < 5; i1++) {
                 for (let i2 = 1; i2 < 5; i2++) {
@@ -1957,39 +1937,41 @@ addLayer("si", {
                 costExpsi11 = new Decimal(1.2)
                 costLimitsi11 = new Decimal('1e6')
                 costStacksi11 = new Decimal(x)
-                return player.buyablePrice(costTypesi11, costStacksi11, costBasesi11, costExpsi11 ,costMultsi11, costLimitsi11 , true)
+                return {cost: player.buyablePrice(costTypesi11, costStacksi11, costBasesi11, costExpsi11 ,costMultsi11, costLimitsi11 , true), continuum: player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11, false).min(this.purchaseLimit())}
             },
             effect(x){
-                effBasesi11 = new Decimal(0.05)
-                effStacksi11 = new Decimal(x)
-                return effBasesi11.times(effStacksi11).add(1)
+                effBasesi11 = new Decimal(1.05)
+                if (hasMilestone('cu',0)) {effStacksi11 = this.cost().continuum} else {effStacksi11 = new Decimal(x)}
+                return effBasesi11.pow(effStacksi11)
             },
             title() { 
                 return "silence buyable 11" 
             },
             purchaseLimit() {
-                variablenameBrillantWow = new Decimal(56)
-                return variablenameBrillantWow
+                return new Decimal(56)
             },
             display() {
-                return "power message buyable effect by "+format(effBasesi11)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "raise message buyable effect by "+format(effBasesi11)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.si.points.gte(this.cost())},
+            canAfford() { return player.si.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
             buy() {
-                if (!hasMilestone('cu', 0)){player.si.points = player.si.points.sub(this.cost())} // csinge to  free req
+                if (!hasMilestone('cu', 0)){player.si.points = player.si.points.sub(this.cost().cost)} // csinge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesi11 == "asymptote")||player.si.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11).min(this.purchaseLimit()))
-                        if (player.si.points.lt('e100')&&!hasMilestone('cu', 0)) {player.si.points = player.si.points.sub(player.buyablePrice(costTypesi11, player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11), costBasesi11, costExpsi11, costMultsi11, costLimitsi11, true))}
+                if (hasMilestone('cu', 0)) {} else {
+                    if ((costTypesi11 == "asymptote")||player.si.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11).min(this.purchaseLimit()))
+                            if (player.si.points.lt('e100')&&!hasMilestone('cu', 0)) {player.si.points = player.si.points.sub(player.buyablePrice(costTypesi11, player.buyableMaxPurchaseable(costTypesi11, player.si.points, costBasesi11, costExpsi11, costMultsi11, costLimitsi11), costBasesi11, costExpsi11, costMultsi11, costLimitsi11, true))}
+                        }
                     }
                 }
+
             },
         },
         12: {
@@ -2001,36 +1983,38 @@ addLayer("si", {
                 costExpsi12 = new Decimal(1.4)
                 costLimitsi12 = new Decimal('1e6')
                 costStacksi12 = new Decimal(x)
-                return player.buyablePrice(costTypesi12, costStacksi12, costBasesi12, costExpsi12 ,costMultsi12, costLimitsi12 , true)
+                return {cost: player.buyablePrice(costTypesi12, costStacksi12, costBasesi12, costExpsi12 ,costMultsi12, costLimitsi12 , true), continuum: player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12, false).min(this.purchaseLimit())}
             },
             effect(x){
-                effBasesi12 = new Decimal(1.15)
-                effStacksi12 = new Decimal(x)
+                effBasesi12 = new Decimal(1.25)
+                if (hasMilestone('cu',0)) {effStacksi12 = this.cost().continuum} else {effStacksi12 = new Decimal(x)}
                 return effBasesi12.pow(effStacksi12)
             },
             title() { 
                 return "silence buyable 12" 
             },
             display() {
-                return "divide message buyable 11s scaling by "+format(effBasesi12)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "divide message buyable 11s scaling by "+format(effBasesi12)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
             purchaseLimit() {
                 return new Decimal(24)
             },
-            canAfford() { return player.si.points.gte(this.cost())},
+            canAfford() { return player.si.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
             buy() {
-                if (!hasMilestone('cu', 0)){player.si.points = player.si.points.sub(this.cost())} // csinge to  free req
+                if (!hasMilestone('cu', 0)){player.si.points = player.si.points.sub(this.cost().cost)} // csinge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesi12 == "asymptote")||player.si.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12).min(this.purchaseLimit()))
-                        if (player.si.points.lt('e100')&&!hasMilestone('cu', 0)) {player.si.points = player.si.points.sub(player.buyablePrice(costTypesi12, player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12), costBasesi12, costExpsi12, costMultsi12, costLimitsi12, true))}
+                if (hasMilestone('cu', 0)) {} else {
+                    if ((costTypesi12 == "asymptote")||player.si.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12).min(this.purchaseLimit()))
+                            if (player.si.points.lt('e100')&&!hasMilestone('cu', 0)) {player.si.points = player.si.points.sub(player.buyablePrice(costTypesi12, player.buyableMaxPurchaseable(costTypesi12, player.si.points, costBasesi12, costExpsi12, costMultsi12, costLimitsi12), costBasesi12, costExpsi12, costMultsi12, costLimitsi12, true))}
+                        }
                     }
                 }
             },
@@ -2044,11 +2028,11 @@ addLayer("si", {
                 costExpsi13 = new Decimal(1.6)
                 costLimitsi13 = new Decimal('1e6')
                 costStacksi13 = new Decimal(x)
-                return player.buyablePrice(costTypesi13, costStacksi13, costBasesi13, costExpsi13 ,costMultsi13, costLimitsi13 , true)
+                return {cost: player.buyablePrice(costTypesi13, costStacksi13, costBasesi13, costExpsi13 ,costMultsi13, costLimitsi13 , true), continuum: player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13, false).min(this.purchaseLimit())}
             },
             effect(x){
-                effBasesi13 = new Decimal(1e4)
-                effStacksi13 = new Decimal(x)
+                effBasesi13 = new Decimal(1.5)
+                if (hasMilestone('cu',0)) {effStacksi13 = this.cost().continuum} else {effStacksi13 = new Decimal(x)}
                 return effBasesi13.pow(effStacksi13)
             },
             purchaseLimit() {
@@ -2058,22 +2042,24 @@ addLayer("si", {
                 return "silence buyable 13" 
             },
             display() {
-                return "multiply message gain by "+format(effBasesi13)+" <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+                return "raise message gain by "+format(effBasesi13)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.si.points.gte(this.cost())},
+            canAfford() { return player.si.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
             buy() {
-                if (!hasMilestone('cu', 0)){player.si.points = player.si.points.sub(this.cost())} // csinge to  free req
+                if (!hasMilestone('cu', 0)){player.si.points = player.si.points.sub(this.cost().cost)} // csinge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypesi13 == "asymptote")||player.si.points.lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13).min(this.purchaseLimit()))
-                        if (player.si.points.lt('e100')&&!hasMilestone('cu', 0)) {player.si.points = player.si.points.sub(player.buyablePrice(costTypesi13, player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13), costBasesi13, costExpsi13, costMultsi13, costLimitsi13, true))}
+                if (hasMilestone('cu', 0)) {} else {
+                    if ((costTypesi13 == "asymptote")||player.si.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13).min(this.purchaseLimit()))
+                            if (player.si.points.lt('e100')&&!hasMilestone('cu', 0)) {player.si.points = player.si.points.sub(player.buyablePrice(costTypesi13, player.buyableMaxPurchaseable(costTypesi13, player.si.points, costBasesi13, costExpsi13, costMultsi13, costLimitsi13), costBasesi13, costExpsi13, costMultsi13, costLimitsi13, true))}
+                        }
                     }
                 }
             },
@@ -2094,10 +2080,10 @@ addLayer("si", {
         },
         12: {
             title: "silence upgrade 12",
-            description: "raise point gain by log10(log10(prestige points))^0.5/1.4",
+            description: "raise point gain by log10(log10(prestige points))^0.5/1.2",
             cost: new Decimal(2),
             effect() {
-                eff = player.p.points.max('ee1.96').log10().log10().pow(0.5).div(1.4)
+                eff = player.p.points.max('ee1.44').log10().log10().pow(0.5).div(1.2)
                 eff = eff.pow(buyableEffect('pr', 33))
                 return eff
             },
@@ -2119,10 +2105,10 @@ addLayer("si", {
         },
         14: {
             title: "silence upgrade 14",
-            description: "message upgrades softcap start x2 later",
+            description: "message upgrades softcap start x4 later",
             cost: new Decimal(100),
             effect() {
-                eff = new Decimal(2)
+                eff = new Decimal(4)
                 if (hasUpgrade('gi', 33)) {eff = eff.add(upgradeEffect('gi', 33))}
                 eff = eff.pow(buyableEffect('pr', 33))
                 return eff
@@ -2204,6 +2190,7 @@ addLayer("cu", {
         if (hasUpgrade('cup', 13)) {multcu = multcu.times(upgradeEffect('cup', 13))}
         if (hasUpgrade('cup', 14)) {multcu = multcu.times(upgradeEffect('cup', 14))}
         multcu = multcu.times(buyableEffect('pr', 102))
+        multcu = multcu.times(buyableEffect('gi', 22))
         return multcu
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2259,20 +2246,7 @@ addLayer("cu", {
         }
     },
     automate() {
-        if (hasMilestone('cu', 1)&&!inChallenge('gi', 11)) {
-            for (i = 11; i < 15; i++) {
-                if (canBuyBuyable('cu', i)) {buyMaxBuyable('cu', i)}
-            }
-            for (i = 21; i < 24; i++) {
-                if (canBuyBuyable('cu', i)) {buyMaxBuyable('cu', i)}
-            }
-            for (i = 31; i < 33; i++) {
-                if (canBuyBuyable('cu', i)) {buyMaxBuyable('cu', i)}
-            }
-            for (i = 41; i < 42; i++) {
-                if (canBuyBuyable('cu', i)) {buyMaxBuyable('cu', i)}
-            }
-        }
+
 
     },
     tabFormat: {
@@ -2350,12 +2324,13 @@ addLayer("cu", {
                 costMultcu11 = new Decimal(0.5)
                 costExpcu11 = new Decimal(1.1)
                 costLimitcu11 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu11 = new Decimal(x)
-                return player.buyablePrice(costTypecu11, costStackcu11, costBasecu11, costExpcu11 ,costMultcu11, costLimitcu11 , false)
+                return {cost: player.buyablePrice(costTypecu11, costStackcu11, costBasecu11, costExpcu11 ,costMultcu11, costLimitcu11 , false), continuum: player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11)}
             },
             effect(x){
-                effBasecu11 = getBuyableAmount('cu', 102).max(1).pow(buyableEffect('cu', 103))
-                effStackcu11 = new Decimal(x)
+                effBasecu11 = getBuyableAmount('cu', 103).max(1).pow(buyableEffect('cu', 103))
+                if (inChallenge('gi', 11)) {effStackcu11 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu11 = this.cost().continuum} else {effStackcu11 = new Decimal(x)}}
                 return effBasecu11.pow(effStackcu11)
             },
             purchaseLimit() {
@@ -2365,24 +2340,26 @@ addLayer("cu", {
                 return "copper buyable 11" 
             },
             display() {
-                return "multiply point gain by copper wires, currently "+format(effBasecu11)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply point gain by copper coins, currently "+format(effBasecu11)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu11 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu11, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11), costBasecu11, costExpcu11, costMultcu11, costLimitcu11, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu11 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu11, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11), costBasecu11, costExpcu11, costMultcu11, costLimitcu11, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2397,12 +2374,13 @@ addLayer("cu", {
                 costMultcu12 = new Decimal(10)
                 costExpcu12 = new Decimal(1.1)
                 costLimitcu12 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu12 = new Decimal(x)
-                return player.buyablePrice(costTypecu12, costStackcu12, costBasecu12, costExpcu12 ,costMultcu12, costLimitcu12 , false)
+                return {cost: player.buyablePrice(costTypecu12, costStackcu12, costBasecu12, costExpcu12 ,costMultcu12, costLimitcu12 , false), continuum: player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12)}
             },
             effect(x){
                 effBasecu12 = player.points.max(2).log(2).pow(buyableEffect('cu', 103))
-                effStackcu12 = new Decimal(x)
+                if (inChallenge('gi', 11)) {effStackcu12 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu12 = this.cost().continuum} else {effStackcu12 = new Decimal(x)}}
                 return effBasecu12.pow(effStackcu12)
             },
             purchaseLimit() {
@@ -2412,24 +2390,26 @@ addLayer("cu", {
                 return "copper buyable 12" 
             },
             display() {
-                return "multiply point gain by log2(points), currently "+format(effBasecu12)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply point gain by log2(points), currently "+format(effBasecu12)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu12 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu12, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12), costBasecu12, costExpcu12, costMultcu12, costLimitcu12, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu12 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu12, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12), costBasecu12, costExpcu12, costMultcu12, costLimitcu12, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2444,12 +2424,13 @@ addLayer("cu", {
                 costMultcu13 = new Decimal(100)
                 costExpcu13 = new Decimal(1.1)
                 costLimitcu13 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu13 = new Decimal(x)
-                return player.buyablePrice(costTypecu13, costStackcu13, costBasecu13, costExpcu13 ,costMultcu13, costLimitcu13 , false)
+                return {cost: player.buyablePrice(costTypecu13, costStackcu13, costBasecu13, costExpcu13 ,costMultcu13, costLimitcu13 , false), continuum: player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13)}
             },
             effect(x){
                 effBasecu13 = player.p.points.max(2).log(2).pow(buyableEffect('cu', 103))
-                effStackcu13 = new Decimal(x)
+                if (inChallenge('gi', 11)) {effStackcu13 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu13 = this.cost().continuum} else {effStackcu13 = new Decimal(x)}}
                 return effBasecu13.pow(effStackcu13)
             },
             purchaseLimit() {
@@ -2459,24 +2440,26 @@ addLayer("cu", {
                 return "copper buyable 13" 
             },
             display() {
-                return "multiply point gain by log2(prestige points), currently "+format(effBasecu13)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply point gain by log2(prestige points), currently "+format(effBasecu13)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu13 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu13, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13), costBasecu13, costExpcu13, costMultcu13, costLimitcu13, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu13 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu13, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13), costBasecu13, costExpcu13, costMultcu13, costLimitcu13, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2491,12 +2474,13 @@ addLayer("cu", {
                 costMultcu14 = new Decimal(1000)
                 costExpcu14 = new Decimal(1.1)
                 costLimitcu14 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu14 = new Decimal(x)
-                return player.buyablePrice(costTypecu14, costStackcu14, costBasecu14, costExpcu14 ,costMultcu14, costLimitcu14 , false)
+                return {cost: player.buyablePrice(costTypecu14, costStackcu14, costBasecu14, costExpcu14 ,costMultcu14, costLimitcu14 , false), continuum: player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14)}
             },
             effect(x){
                 effBasecu14 = player.ca.points.max(2).log(2).pow(buyableEffect('cu', 103))
-                effStackcu14 = new Decimal(x)
+                if (inChallenge('gi', 11)) {effStackcu14 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu14 = this.cost().continuum} else {effStackcu14 = new Decimal(x)}}
                 return effBasecu14.pow(effStackcu14)
             },
             purchaseLimit() {
@@ -2506,24 +2490,26 @@ addLayer("cu", {
                 return "copper buyable 14" 
             },
             display() {
-                return "multiply point gain by log2(cable points), currently "+format(effBasecu14)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply point gain by log2(cable points), currently "+format(effBasecu14)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu14 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu14, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14), costBasecu14, costExpcu14, costMultcu14, costLimitcu14, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu14 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu14, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14), costBasecu14, costExpcu14, costMultcu14, costLimitcu14, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2538,12 +2524,13 @@ addLayer("cu", {
                 costMultcu21 = new Decimal(5)
                 costExpcu21 = new Decimal(1.1)
                 costLimitcu21 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu21 = new Decimal(x)
-                return player.buyablePrice(costTypecu21, costStackcu21, costBasecu21, costExpcu21 ,costMultcu21, costLimitcu21 , false)
+                return {cost: player.buyablePrice(costTypecu21, costStackcu21, costBasecu21, costExpcu21 ,costMultcu21, costLimitcu21 , false), continuum: player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21)}
             },
             effect(x){
-                effBasecu21 = getBuyableAmount('cu', 101).max(1).pow(buyableEffect('cu', 103))
-                effStackcu21 = new Decimal(x)
+                effBasecu21 = getBuyableAmount('cu', 102).max(1).pow(buyableEffect('cu', 103))
+                if (inChallenge('gi', 11)) {effStackcu21 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu21 = this.cost().continuum} else {effStackcu21 = new Decimal(x)}}
                 return effBasecu21.pow(effStackcu21)
             },
             purchaseLimit() {
@@ -2553,24 +2540,26 @@ addLayer("cu", {
                 return "copper buyable 21" 
             },
             display() {
-                return "multiply prestige point gain by copper plates, currently "+format(effBasecu21)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply prestige point gain by copper wires, currently "+format(effBasecu21)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu21 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu21, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21), costBasecu21, costExpcu21, costMultcu21, costLimitcu21, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu21 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu21, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21), costBasecu21, costExpcu21, costMultcu21, costLimitcu21, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2585,12 +2574,13 @@ addLayer("cu", {
                 costMultcu22 = new Decimal(100)
                 costExpcu22 = new Decimal(1.1)
                 costLimitcu22 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu22 = new Decimal(x)
-                return player.buyablePrice(costTypecu22, costStackcu22, costBasecu22, costExpcu22 ,costMultcu22, costLimitcu22 , false)
+                return {cost: player.buyablePrice(costTypecu22, costStackcu22, costBasecu22, costExpcu22 ,costMultcu22, costLimitcu22 , false), continuum: player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22)}
             },
             effect(x){
                 effBasecu22 = player.p.points.max(2).log(2).pow(buyableEffect('cu', 103))
-                effStackcu22 = new Decimal(x)
+                if (inChallenge('gi', 11)) {effStackcu22 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu22 = this.cost().continuum} else {effStackcu22 = new Decimal(x)}}
                 return effBasecu22.pow(effStackcu22)
             },
             purchaseLimit() {
@@ -2600,24 +2590,26 @@ addLayer("cu", {
                 return "copper buyable 22" 
             },
             display() {
-                return "multiply prestige point gain by log2(prestige points), currently "+format(effBasecu22)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply prestige point gain by log2(prestige points), currently "+format(effBasecu22)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu22 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu22, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22), costBasecu22, costExpcu22, costMultcu22, costLimitcu22, false))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu22 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu22, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22), costBasecu22, costExpcu22, costMultcu22, costLimitcu22, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2632,12 +2624,13 @@ addLayer("cu", {
                 costMultcu23 = new Decimal(1000)
                 costExpcu23 = new Decimal(1.1)
                 costLimitcu23 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu23 = new Decimal(x)
-                return player.buyablePrice(costTypecu23, costStackcu23, costBasecu23, costExpcu23 ,costMultcu23, costLimitcu23 , false)
+                return {cost: player.buyablePrice(costTypecu23, costStackcu23, costBasecu23, costExpcu23 ,costMultcu23, costLimitcu23 , false), continuum: player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23)}
             },
             effect(x){
                 effBasecu23 = player.ca.points.max(2).log(2).pow(buyableEffect('cu', 103))
-                effStackcu23 = new Decimal(x)
+                if (inChallenge('gi', 11)) {effStackcu23 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu23 = this.cost().continuum} else {effStackcu23 = new Decimal(x)}}
                 return effBasecu23.pow(effStackcu23)
             },
             purchaseLimit() {
@@ -2647,24 +2640,26 @@ addLayer("cu", {
                 return "copper buyable 23" 
             },
             display() {
-                return "multiply prestige point gain by log2(cable points), currently "+format(effBasecu23)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply prestige point gain by log2(cable points), currently "+format(effBasecu23)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu23 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu23, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23), costBasecu23, costExpcu23, costMultcu23, costLimitcu23, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu23 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu23, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23), costBasecu23, costExpcu23, costMultcu23, costLimitcu23, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2679,12 +2674,13 @@ addLayer("cu", {
                 costMultcu31 = new Decimal(50)
                 costExpcu31 = new Decimal(1.1)
                 costLimitcu31 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu31 = new Decimal(x)
-                return player.buyablePrice(costTypecu31, costStackcu31, costBasecu31, costExpcu31 ,costMultcu31, costLimitcu31 , false)
+                return {cost: player.buyablePrice(costTypecu31, costStackcu31, costBasecu31, costExpcu31 ,costMultcu31, costLimitcu31 , false), continuum: player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31)}
             },
             effect(x){
-                effBasecu31 = getBuyableAmount('cu', 101).max(1).log10().pow(0.5).pow10().pow(buyableEffect('cu', 103))
-                effStackcu31 = new Decimal(x)
+                effBasecu31 = getBuyableAmount('cu', 101).max(1).pow(buyableEffect('cu', 103))
+                if (inChallenge('gi', 11)) {effStackcu31 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu31 = this.cost().continuum} else {effStackcu31 = new Decimal(x)}}
                 return effBasecu31.pow(effStackcu31)
             },
             purchaseLimit() {
@@ -2694,24 +2690,26 @@ addLayer("cu", {
                 return "copper buyable 31" 
             },
             display() {
-                return "multiply cable point gain by 10^log10(copper plates)^0.5, currently "+format(effBasecu31)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply cable point gain by copper plates, currently "+format(effBasecu31)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu31 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu31, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31), costBasecu31, costExpcu31, costMultcu31, costLimitcu31, false))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu31 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu31, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31), costBasecu31, costExpcu31, costMultcu31, costLimitcu31, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2726,12 +2724,13 @@ addLayer("cu", {
                 costMultcu32 = new Decimal(1000)
                 costExpcu32 = new Decimal(1.1)
                 costLimitcu32 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu32 = new Decimal(x)
-                return player.buyablePrice(costTypecu32, costStackcu32, costBasecu32, costExpcu32 ,costMultcu32, costLimitcu32 , false)
+                return {cost: player.buyablePrice(costTypecu32, costStackcu32, costBasecu32, costExpcu32 ,costMultcu32, costLimitcu32 , false), continuum: player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32)}
             },
             effect(x){
                 effBasecu32 = player.ca.points.max(2).log(2).pow(buyableEffect('cu', 103))
-                effStackcu32 = new Decimal(x)
+                if (inChallenge('gi', 11)) {effStackcu32 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu32 = this.cost().continuum} else {effStackcu32 = new Decimal(x)}}
                 return effBasecu32.pow(effStackcu32)
             },
             purchaseLimit() {
@@ -2741,24 +2740,26 @@ addLayer("cu", {
                 return "copper buyable 32" 
             },
             display() {
-                return "multiply cable point gain by log2(cable points), currently "+format(effBasecu32)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply cable point gain by log2(cable points), currently "+format(effBasecu32)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu32 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu32, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32), costBasecu32, costExpcu32, costMultcu32, costLimitcu32, false))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu32 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu32, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32), costBasecu32, costExpcu32, costMultcu32, costLimitcu32, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2773,12 +2774,13 @@ addLayer("cu", {
                 costMultcu41 = new Decimal(1e4)
                 costExpcu41 = new Decimal(1.3)
                 costLimitcu41 = new Decimal('e10')
+                if (hasUpgrade('cu', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cu', 32))}
                 costStackcu41 = new Decimal(x)
-                return player.buyablePrice(costTypecu41, costStackcu41, costBasecu41, costExpcu41 ,costMultcu41, costLimitcu41 , false)
+                return {cost: player.buyablePrice(costTypecu41, costStackcu41, costBasecu41, costExpcu41 ,costMultcu41, costLimitcu41 , false), continuum: player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41)}
             },
             effect(x){
-                effBasecu41 = new Decimal(4).pow(buyableEffect('cu', 103))
-                effStackcu41 = new Decimal(x)
+                effBasecu41 = player.cu.points.max(1).pow(buyableEffect('cu', 103))
+                if (inChallenge('gi', 11)) {effStackcu41 = new Decimal(1)} else {if (hasMilestone('cu', 1)) {effStackcu41 = this.cost().continuum} else {effStackcu41 = new Decimal(x)}}
                 return effBasecu41.pow(effStackcu41)
             },
             purchaseLimit() {
@@ -2788,24 +2790,26 @@ addLayer("cu", {
                 return "copper buyable 41" 
             },
             display() {
-                return "multiply message point gain by 4, currently "+format(effBasecu41)+" <br> Cost: "+format(this.cost())+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply message point gain by copper points, currently "+format(effBasecu41)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
-            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost())},
+            canAfford() { return getBuyableAmount('cu', 103).gte(this.cost().cost)&&(!hasMilestone('cu', 1))},
             buy() {
-                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().times(-1))} // ccunge to  free req
+                if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, this.cost().cost.times(-1))} // ccunge to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {
-                if ((costTypecu41 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
-                    while (canBuyBuyable([this.layer], [this.id])){
-                        buyBuyable([this.layer], [this.id])
-                    }
-                } else {
-                    if (player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                        setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41))
-                        if (!hasMilestone('cu', 1)) {addBuyables('cu', 103, player.buyablePrice(costTypecu41, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41), costBasecu41, costExpcu41, costMultcu41, costLimitcu41, false).times(-1))}
+                if (!hasMilestone('cu', 1)) {
+                    if ((costTypecu41 == "asymptote")||getBuyableAmount('cu', 103).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu41, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41), costBasecu41, costExpcu41, costMultcu41, costLimitcu41, false).times(-1))}
+                        }
                     }
                 }
             },
@@ -2819,12 +2823,14 @@ addLayer("cu", {
 
                 boosteff = new Decimal(x).pow(0.5).max(1)
                 if (boosteff.gte(2)) {boosteff = boosteff.div(2).pow(0.5).times(2)}
-                if (boosteff.gte(100)) {boosteff = boosteff.log10().div(2).pow(0.8).times(2).pow10()}
+                boosteffsoftcapstart1 = new Decimal(100)
+                if (hasUpgrade('cup', 31)) {boosteffsoftcapstart1 = boosteffsoftcapstart1.times(upgradeEffect('cup', 31))}
+                if (boosteff.gte(boosteffsoftcapstart1)) {boosteff = boosteff.log10().div(boosteffsoftcapstart1.log10()).pow(0.8).times(boosteffsoftcapstart1.log10()).pow10()}
 
                 if (hasUpgrade('gi', 12)) {boosteff = boosteff.pow(upgradeEffect('gi', 12))}
                 if (hasUpgrade('gi', 34)) {boosteff = boosteff.pow(upgradeEffect('gi', 34))}
                 if (hasUpgrade('cup', 23)) {boosteff = boosteff.pow(upgradeEffect('cup', 23))}
-
+                boosteff = boosteff.pow(buyableEffect('gi', 101))
 
                 return boosteff
             },
@@ -3021,6 +3027,7 @@ addLayer("gi", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         multgi = new Decimal(1e-6)
         multgi = multgi.times(buyableEffect('pr', 112))
+        multgi = multgi.times(buyableEffect('gi', 23))
         return multgi
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -3082,14 +3089,32 @@ addLayer("gi", {
         if (hasMilestone('gi', 0)) {
             addPoints('gi', getResetGain('gi').times(diff))
         }
+        addBuyables('gi', 101, buyableEffect('gi', 11).times(diff))
     },
-
+    infoboxes: {
+        A: {
+            title: "guitar subresources",
+            body() {
+                textgi = ""
+                if (player.gi.total.gte(1e10)||getBuyableAmount('gi', 11).gte(1)) {
+                    textgi += "You have "+format(getBuyableAmount('gi', 101))+" guitar loops, raising copper plates effect by "+format(buyableEffect('gi', 101))
+                }
+                return textgi
+            }
+        },
+    },
     milestones: {
         0: {
             requirementDescription: "10,000 total guitar points",
             effectDescription: "automatically gain guitar points on reset",
             done() { return player.gi.total.gte(1e4)||hasMilestone('pr', 10) },
             unlocked() {return player.gi.total.gte(1e4)||hasMilestone('pr', 10)},
+        },
+        2: {
+            requirementDescription: "1e100 total guitar points",
+            effectDescription: "automate guitar loops",
+            done() { return player.gi.total.gte(1e100) },
+            unlocked() {return player.gi.total.gte(1e100)},
         },
         10: {
             done() { return player.gi.total.gte(1)||hasMilestone('pr', 10) },
@@ -3098,7 +3123,246 @@ addLayer("gi", {
         },
     },
     buyables: {
-
+        11: {
+            unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
+            cost(x) { 
+                costTypegi11 = "normal"
+                costBasegi11 = new Decimal(1e15)
+                costMultgi11 = new Decimal(1)
+                costExpgi11 = new Decimal(1)
+                costLimitgi11 = new Decimal('e400')
+                costStackgi11 = new Decimal(x)
+                return {cost: player.buyablePrice(costTypegi11, costStackgi11, costBasegi11, costExpgi11 ,costMultgi11, costLimitgi11 , true), continuum: player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11, false)}
+            },
+            effect(x){
+                effBasegi11 = new Decimal(1)
+                effBasegi11 = effBasegi11.times(buyableEffect('gi', 21))
+                if (hasMilestone('gi',2)) {effStackgi11 = this.cost().continuum} else {effStackgi11 = new Decimal(x)}
+                return effBasegi11.times(effStackgi11)
+            },
+            title() { 
+                return "guitar buyable 11" 
+            },
+            display() {
+                return "generate "+format(effBasegi11)+" guitar loops per second <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
+            },
+            canAfford() { return player.gi.points.gte(this.cost().cost)&&(!hasMilestone('gi', 2))},
+            buy() {
+                if (!hasMilestone('gi', 2)){player.gi.points = player.gi.points.sub(this.cost().cost)} // cginge to  free req
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (hasMilestone('gi', 2)) {} else {
+                    if ((costTypegi11 == "asymptote")||player.gi.points.lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11).min(this.purchaseLimit()))
+                            if (player.gi.points.lt('e100')&&!hasMilestone('cu', 0)) {player.gi.points = player.gi.points.sub(player.buyablePrice(costTypegi11, player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11), costBasegi11, costExpgi11, costMultgi11, costLimitgi11, true))}
+                        }
+                    }
+                }
+            },
+        },
+        21: {
+            unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
+            cost(x) { 
+                costTypegi21 = "normal"
+                costBasegi21 = new Decimal(2)
+                costMultgi21 = new Decimal(1)
+                costExpgi21 = new Decimal(1)
+                costLimitgi21 = new Decimal('e400')
+                costStackgi21 = new Decimal(x)
+                return {cost: player.buyablePrice(costTypegi21, costStackgi21, costBasegi21, costExpgi21 ,costMultgi21, costLimitgi21 , false), continuum: player.buyableMaxPurchaseable(costTypegi21, getBuyableAmount('gi', 101), costBasegi21, costExpgi21, costMultgi21, costLimitgi21, false)}
+            },
+            effect(x){
+                effBasegi21 = new Decimal(1.5).add(buyableEffect('pr', 115))
+                if (hasMilestone('gi', 2)) {effStackgi21 = this.cost().continuum} else {effStackgi21 = new Decimal(x)}
+                return effBasegi21.pow(effStackgi21)
+            },
+            title() { 
+                return "guitar buyable 21" 
+            },
+            display() {
+                return "multiply guitar loop gain by "+format(effBasegi21)+" <br> Cost: "+format(this.cost().cost)+" guitar loops <br> Effect: "+format(this.effect())
+            },
+            style() {const size1 = {width: "160px", height: "160px"}
+                return size1},
+            canAfford() { return getBuyableAmount('gi', 101).gte(this.cost().cost)&&(!hasMilestone('gi', 2))},
+            buy() {
+                if (!hasMilestone('gi', 2)) {addBuyables('gi', 101, this.cost().cost.times(-1))} // cginge to  free req
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (!hasMilestone('gi', 2)) {
+                    if ((costTypegi21 == "asymptote")||getBuyableAmount('gi', 101).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypegi21, getBuyableAmount('gi', 101), costBasegi21, costExpgi21, costMultgi21, costLimitgi21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi21, getBuyableAmount('gi', 101), costBasegi21, costExpgi21, costMultgi21, costLimitgi21))
+                            if (getBuyableAmount('gi', 101).lte(1e100)) {addBuyables('gi', 101, player.buyablePrice(costTypegi21, player.buyableMaxPurchaseable(costTypegi21, getBuyableAmount('gi', 101), costBasegi21, costExpgi21, costMultgi21, costLimitgi21), costBasegi21, costExpgi21, costMultgi21, costLimitgi21, false).times(-1))}
+                        }
+                    }
+                }
+            },
+        },
+        22: {
+            unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
+            cost(x) { 
+                costTypegi22 = "normal"
+                costBasegi22 = new Decimal(2)
+                costMultgi22 = new Decimal(1)
+                costExpgi22 = new Decimal(1)
+                costLimitgi22 = new Decimal('e400')
+                costStackgi22 = new Decimal(x)
+                return {cost: player.buyablePrice(costTypegi22, costStackgi22, costBasegi22, costExpgi22 ,costMultgi22, costLimitgi22 , false), continuum: player.buyableMaxPurchaseable(costTypegi22, getBuyableAmount('gi', 101), costBasegi22, costExpgi22, costMultgi22, costLimitgi22, false)}
+            },
+            effect(x){
+                effBasegi22 = new Decimal(1e20)
+                if (hasMilestone('gi', 2)) {effStackgi22 = this.cost().continuum} else {effStackgi22 = new Decimal(x)}
+                return effBasegi22.pow(effStackgi22)
+            },
+            title() { 
+                return "guitar buyable 22" 
+            },
+            display() {
+                return "multiply copper gain by "+format(effBasegi22)+" <br> Cost: "+format(this.cost().cost)+" guitar loops <br> Effect: "+format(this.effect())
+            },
+            style() {const size1 = {width: "160px", height: "160px"}
+                return size1},
+            canAfford() { return getBuyableAmount('gi', 101).gte(this.cost().cost)&&(!hasMilestone('gi', 2))},
+            buy() {
+                if (!hasMilestone('gi', 2)) {addBuyables('gi', 101, this.cost().cost.times(-1))} // cginge to  free req
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (!hasMilestone('gi', 2)) {
+                    if ((costTypegi22 == "asymptote")||getBuyableAmount('gi', 101).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypegi22, getBuyableAmount('gi', 101), costBasegi22, costExpgi22, costMultgi22, costLimitgi22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi22, getBuyableAmount('gi', 101), costBasegi22, costExpgi22, costMultgi22, costLimitgi22))
+                            if (getBuyableAmount('gi', 101).lte(1e100)) {addBuyables('gi', 101, player.buyablePrice(costTypegi22, player.buyableMaxPurchaseable(costTypegi22, getBuyableAmount('gi', 101), costBasegi22, costExpgi22, costMultgi22, costLimitgi22), costBasegi22, costExpgi22, costMultgi22, costLimitgi22, false).times(-1))}
+                        }
+                    }
+                }
+            },
+        },
+        23: {
+            unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
+            cost(x) { 
+                costTypegi23 = "normal"
+                costBasegi23 = new Decimal(2)
+                costMultgi23 = new Decimal(1)
+                costExpgi23 = new Decimal(1)
+                costLimitgi23 = new Decimal('e400')
+                costStackgi23 = new Decimal(x)
+                return {cost: player.buyablePrice(costTypegi23, costStackgi23, costBasegi23, costExpgi23 ,costMultgi23, costLimitgi23 , false), continuum: player.buyableMaxPurchaseable(costTypegi23, getBuyableAmount('gi', 101), costBasegi23, costExpgi23, costMultgi23, costLimitgi23, false)}
+            },
+            effect(x){
+                effBasegi23 = new Decimal(1e4)
+                if (hasMilestone('gi', 2)) {effStackgi23 = this.cost().continuum} else {effStackgi23 = new Decimal(x)}
+                return effBasegi23.pow(effStackgi23)
+            },
+            title() { 
+                return "guitar buyable 23" 
+            },
+            display() {
+                return "multiply guitar gain by "+format(effBasegi23)+" <br> Cost: "+format(this.cost().cost)+" guitar loops <br> Effect: "+format(this.effect())
+            },
+            style() {const size1 = {width: "160px", height: "160px"}
+                return size1},
+            canAfford() { return getBuyableAmount('gi', 101).gte(this.cost().cost)&&(!hasMilestone('gi', 2))},
+            buy() {
+                if (!hasMilestone('gi', 2)) {addBuyables('gi', 101, this.cost().cost.times(-1))} // cginge to  free req
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (!hasMilestone('gi', 2)) {
+                    if ((costTypegi23 == "asymptote")||getBuyableAmount('gi', 101).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypegi23, getBuyableAmount('gi', 101), costBasegi23, costExpgi23, costMultgi23, costLimitgi23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi23, getBuyableAmount('gi', 101), costBasegi23, costExpgi23, costMultgi23, costLimitgi23))
+                            if (getBuyableAmount('gi', 101).lte(1e100)) {addBuyables('gi', 101, player.buyablePrice(costTypegi23, player.buyableMaxPurchaseable(costTypegi23, getBuyableAmount('gi', 101), costBasegi23, costExpgi23, costMultgi23, costLimitgi23), costBasegi23, costExpgi23, costMultgi23, costLimitgi23, false).times(-1))}
+                        }
+                    }
+                }
+            },
+        },
+        24: {
+            unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
+            cost(x) { 
+                costTypegi24 = "normal"
+                costBasegi24 = new Decimal(2)
+                costMultgi24 = new Decimal(1)
+                costExpgi24 = new Decimal(2)
+                costLimitgi24 = new Decimal('e400')
+                costStackgi24 = new Decimal(x)
+                return {cost: player.buyablePrice(costTypegi24, costStackgi24, costBasegi24, costExpgi24 ,costMultgi24, costLimitgi24 , false), continuum: player.buyableMaxPurchaseable(costTypegi24, getBuyableAmount('gi', 101), costBasegi24, costExpgi24, costMultgi24, costLimitgi24, false)}
+            },
+            effect(x){
+                effBasegi24 = new Decimal(1.1)
+                if (hasMilestone('gi', 2)) {effStackgi24 = this.cost().continuum} else {effStackgi24 = new Decimal(x)}
+                return effBasegi24.pow(effStackgi24)
+            },
+            title() { 
+                return "guitar buyable 24" 
+            },
+            display() {
+                return "multiply harvest/silence gain exponent by "+format(effBasegi24)+" <br> Cost: "+format(this.cost().cost)+" guitar loops <br> Effect: "+format(this.effect())
+            },
+            style() {const size1 = {width: "160px", height: "160px"}
+                return size1},
+            canAfford() { return getBuyableAmount('gi', 101).gte(this.cost().cost)&&(!hasMilestone('gi', 2))},
+            buy() {
+                if (!hasMilestone('gi', 2)) {addBuyables('gi', 101, this.cost().cost.times(-1))} // cginge to  free req
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                if (!hasMilestone('gi', 2)) {
+                    if ((costTypegi24 == "asymptote")||getBuyableAmount('gi', 101).lte(1e10)) {
+                        while (canBuyBuyable([this.layer], [this.id])){
+                            buyBuyable([this.layer], [this.id])
+                        }
+                    } else {
+                        if (player.buyableMaxPurchaseable(costTypegi24, getBuyableAmount('gi', 101), costBasegi24, costExpgi24, costMultgi24, costLimitgi24).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi24, getBuyableAmount('gi', 101), costBasegi24, costExpgi24, costMultgi24, costLimitgi24))
+                            if (getBuyableAmount('gi', 101).lte(1e100)) {addBuyables('gi', 101, player.buyablePrice(costTypegi24, player.buyableMaxPurchaseable(costTypegi24, getBuyableAmount('gi', 101), costBasegi24, costExpgi24, costMultgi24, costLimitgi24), costBasegi24, costExpgi24, costMultgi24, costLimitgi24, false).times(-1))}
+                        }
+                    }
+                }
+            },
+        },
+        101: {
+            unlocked() {return false},
+            cost(x) { 
+                return Decimal.dInf
+            },
+            effect(x){
+                eff = new Decimal(x).root(20).max(1)
+                return eff
+            },
+            title() { 
+                return "guitar loops" 
+            },
+            display() {
+                return 
+            },
+            canAfford() { return false},
+            buy() {
+            },
+            buyMax() {
+            },
+        },
     },
     upgrades: {        
         11: {
@@ -3331,7 +3595,7 @@ addLayer("cup", {
         return multcup
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        expcup = new Decimal(0.8)
+        expcup = new Decimal(1)
         exp2cup = new Decimal(0.4)
         return expcup
 
@@ -3354,7 +3618,7 @@ addLayer("cup", {
     prestigeButtonText() {
         textcup = "you cannot reset this layer"
         textcup += "<br> you have "+format(getResetGain('cup'))+" total copper projections"
-        textcup += "<br> next at "+format(getNextAt('cup'))+" copper products"
+        textcup += "<br> next at "+format(getNextAt('cup'))+" copper plates"
     return textcup
     },
     row: 4, // Row the layer is in on the tree (0 is the first row)
@@ -3386,14 +3650,16 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return getBuyableAmount('cu', 101).max(10).log10().pow(2)
+                eff = getBuyableAmount('cu', 101).max(10).log10().pow(2)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return true}
         },
         12: {
             title: "copper projection upgrade 12",
-            description: "multiply copper point gain by log(copper points )^3",
+            description: "multiply copper point gain by log(copper points )^4",
             cost() {
                 return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
@@ -3402,7 +3668,7 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return player.cu.points.max(10).log10().pow(3)
+                return player.cu.points.max(10).log10().pow(4)
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 11)}
@@ -3418,7 +3684,9 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return buyableEffect('cu', 101).pow(0.3)
+                eff = buyableEffect('cu', 101).pow(0.3)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 12)}
@@ -3434,7 +3702,9 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return new Decimal(challengeCompletions('gi', 11)).max(1).pow(4)
+                eff = new Decimal(challengeCompletions('gi', 11)).max(1).pow(4)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
             },
             effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 13)}
@@ -3450,7 +3720,9 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return new Decimal(1.2)
+                eff = new Decimal(1.2)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 11)}
@@ -3466,7 +3738,9 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return new Decimal(1.25)
+                eff = new Decimal(1.25)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 21)&&hasUpgrade('cup', 12)}
@@ -3482,10 +3756,64 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                return new Decimal(1.3)
+                eff = new Decimal(1.3)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return hasUpgrade('cup', 22)&&hasUpgrade('cup', 13)}
+        },
+        31: {
+            title: "copper projection upgrade 31",
+            description: "times copper plates passive effect softcap start by x4",
+            cost() {
+                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+            },
+            canAfford() {
+                return (true)&&player.cup.points.gte(this.cost())
+            },
+            pay() {},
+            effect() {
+                eff = new Decimal(4)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasUpgrade('cup', 21)}
+        },
+        32: {
+            title: "copper projection upgrade 32",
+            description: "raise copper buyable softcap start to ^10",
+            cost() {
+                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+            },
+            canAfford() {
+                return (true)&&player.cup.points.gte(this.cost())
+            },
+            pay() {},
+            effect() {
+                eff = new Decimal(10)
+                if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
+                return eff
+            },
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasUpgrade('cup', 31)&&hasUpgrade('cup', 22)}
+        },
+        41: {
+            title: "copper projection upgrade 41",
+            description: "unlock copper mirror buyables and raise above buyables to log(copper projections)/10",
+            cost() {
+                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+            },
+            canAfford() {
+                return (true)&&player.cup.points.gte(this.cost())
+            },
+            pay() {},
+            effect() {
+                return player.cup.points.max(10).log10()
+            },
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return hasUpgrade('cup', 32)}
         },
     }
 })
@@ -3549,7 +3877,7 @@ addLayer("pr", {
         layerDataReset('si')
         layerDataReset('me')
         layerDataReset('ca')
-
+        layerDataReset('p')
     },
     milestones: {
         4: {
@@ -3558,7 +3886,7 @@ addLayer("pr", {
             unlocked() {return true},
         },
         10: {
-            effectDescription: "never reset prestige points",
+            effectDescription: "",
             done() { return player.pr.total.gte(1) },
             unlocked() {return true},
         },
@@ -3580,6 +3908,9 @@ addLayer("pr", {
                 textpr += "<br> You have "+format(getBuyableAmount('pr', 102))+" proverb/copper points ("+format(buyableEffect('pr', 104))+"/s), multiplying copper subresources and copper points gain by "+format(buyableEffect('pr', 102))+", multiplying guitar points gain and copper coin effect softcap start by "+format(buyableEffect('pr', 112))+", and dividing proverb/message points effective count by "+format(buyableEffect('pr', 122))
                 if (buyableEffect('pr', 98).gt(0)) {
                     textpr += "<br> You have "+format(getBuyableAmount('pr', 105))+" proverb/shiny points ("+format(buyableEffect('pr', 98))+"/s), raising point gain exponent to "+format(buyableEffect('pr', 105), 4)
+                    if (getBuyableAmount('gi', 21).gte(1)) {
+                        textpr += " and adding "+format(buyableEffect('pr', 115))+" to the guitar buyable 21 effect"
+                    }
                 }
                 textpr += "<br><br> Your proverb/message subbuyables are making proverb/copper subbuyables cost scale +"+format(buyableEffect('pr', 131))+" faster"
                 textpr += "<br> Your proverb/copper subbuyables are making proverb/message subbuyables cost scale +"+format(buyableEffect('pr', 132))+" faster"
@@ -3812,7 +4143,7 @@ addLayer("pr", {
                 costBasepr22 = new Decimal(1.4)
                 costMultpr22 = new Decimal(0.9293071397599867)
                 costExppr22 = new Decimal(0.8)
-                costLimitpr22 = new Decimal('ee10')
+                costLimitpr22 = new Decimal('e10')
                 costStackpr22 = new Decimal(x).add(buyableEffect('pr', 132))
                 return player.buyablePrice(costTypepr22, costStackpr22, costBasepr22, costExppr22 ,costMultpr22, costLimitpr22 , false)
             },
@@ -3855,7 +4186,7 @@ addLayer("pr", {
                 costBasepr23 = new Decimal(1.4)
                 costMultpr23 = new Decimal(0.9293071397599867)
                 costExppr23 = new Decimal(0.8)
-                costLimitpr23 = new Decimal('ee10')
+                costLimitpr23 = new Decimal('e10')
                 costStackpr23 = new Decimal(x).add(buyableEffect('pr', 131))
                 return player.buyablePrice(costTypepr23, costStackpr23, costBasepr23, costExppr23 ,costMultpr23, costLimitpr23 , false)
             },
@@ -4327,7 +4658,7 @@ addLayer("pr", {
                 costBasepr52 = new Decimal(100)
                 costMultpr52 = new Decimal(27000000)
                 costExppr52 = new Decimal(1.5)
-                costLimitpr52 = new Decimal('e50')
+                costLimitpr52 = new Decimal('e1000')
                 costStackpr52 = new Decimal(x)
                 return player.buyablePrice(costTypepr52, costStackpr52, costBasepr52, costExppr52 ,costMultpr52, costLimitpr52 , false)
             },
@@ -4393,9 +4724,9 @@ addLayer("pr", {
             cost(x) { 
                 costTypepr54 = "large"
                 costBasepr54 = new Decimal(10)
-                costMultpr54 = new Decimal(500)
+                costMultpr54 = new Decimal(5000)
                 costExppr54 = new Decimal(1.5)
-                costLimitpr54 = new Decimal('e5000')
+                costLimitpr54 = new Decimal('1e50000')
                 costStackpr54 = new Decimal(x)
                 return player.buyablePrice(costTypepr54, costStackpr54, costBasepr54, costExppr54 ,costMultpr54, costLimitpr54 , false)
             },
@@ -4665,6 +4996,30 @@ addLayer("pr", {
             },
             title() { 
                 return "proverb/copper 2nd effect" 
+            },
+            display() {
+                return 
+            },
+            canAfford() { return false},
+            buy() {
+            },
+            buyMax() {
+            },
+        },
+        115: {
+            unlocked() {return false},
+            cost(x) { 
+                return Decimal.dInf
+            },
+            effect(x){
+                timeRoot = buyableEffect('pr', 105).pow(10)
+                newTimeMultiplier = costBasegi21.div(effBasegi21).root(timeRoot)
+                newEffectgi21 = costBasegi21.div(newTimeMultiplier)
+                thisEffect = newEffectgi21.sub(effBasegi21)
+                return thisEffect
+            },
+            title() { 
+                return "proverb/shiny 2nd effect" 
             },
             display() {
                 return 

@@ -295,7 +295,7 @@ function loadVue() {
 						if(this.time >= 5)
 							buyBuyable(this.layer, this.data)
 						this.time = this.time+1
-					}).bind(this), 100)}
+					}).bind(this), 50)}
 			},
 			stop() {
 				clearInterval(this.interval)
@@ -356,7 +356,7 @@ function loadVue() {
 							run(c.onHold, c)
 						}	
 						this.time = this.time+1
-					}).bind(this), 100)}
+					}).bind(this), 50)}
 			},
 			stop() {
 				clearInterval(this.interval)
@@ -417,7 +417,7 @@ function loadVue() {
 						if(this.time >= 5 && gridRun(this.layer, 'getCanClick', player[this.layer].grid[this.data], this.data)) {
 							gridRun(this.layer, 'onHold', player[this.layer].grid[this.data], this.data)						}	
 						this.time = this.time+1
-					}).bind(this), 100)}
+					}).bind(this), 50)}
 			},
 			stop() {
 				clearInterval(this.interval)

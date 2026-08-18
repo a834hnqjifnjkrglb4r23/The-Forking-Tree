@@ -101,7 +101,7 @@ function getPointGen() {
 function addedPlayerData() { return {
 	buyablePrice(type, amt, base, exp = Decimal.dOne, mult = Decimal.dOne, limit = Decimal.dInf, floorprice = false) {
 		if (type == "large") { //large = 10^(mult*base^(x+1)^pow)
-			if (limit.lte('ee10')) {limit = new Decimal('ee10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
+			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (Decimal.dTen.pow(base.pow(amt.add(1).pow(exp))).gt(limit)) {
 				limitamt = limit.log10().div(mult).log10().div(base.log10()).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
@@ -114,7 +114,7 @@ function addedPlayerData() { return {
 			}
 		}
 		if (type == "normal") { //normal = mult*base^(x+1)^pow
-			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to double exponential : linear
+			if (limit.lte('10')) {limit = new Decimal('10')} //limit is softcap, in currency at which scaling change to double exponential : linear
 			if (base.pow(amt.add(1).pow(exp)).gt(limit)) {
 				limitamt = limit.div(mult).log10().div(base.log10()).pow(exp.pow(-1)).sub(1)
 				limitamtplus1 = limitamt.add(1)
@@ -127,7 +127,7 @@ function addedPlayerData() { return {
 			}
 		}
 		if (type == "small") { //small = base*(x+1)^pow, mult is useless
-			if (limit.lte('10')) {limit = new Decimal('10')} //limit is softcap, in currency at which scaling change to exponential : linear
+			if (limit.lte('1')) {limit = new Decimal('1')} //limit is softcap, in currency at which scaling change to exponential : linear
 			if (base.times(amt.add(1).pow(exp)).gt(limit)) {
 				limitamt = limit.div(base).root(exp).sub(1)
 				limitamtplus1 = limitamt.add(1)
@@ -153,7 +153,7 @@ function addedPlayerData() { return {
 		return priceQuantity
 
 	},
-	buyableMaxPurchaseable(type, currency, base, exp = Decimal.dOne, mult = Decimal.dOne, limit = Decimal.dInf) {
+	buyableMaxPurchaseable(type, currency, base, exp = Decimal.dOne, mult = Decimal.dOne, limit = Decimal.dInf, floorQuantity = true) {
 		if (type == "large") {
 			if (limit.lte('e10')) {limit = new Decimal('e10')} //limit is softcap, in currency at which scaling change to triple exponential : linear
 			if (currency.gt(limit)) {
@@ -162,9 +162,9 @@ function addedPlayerData() { return {
 				limitpricetriplelog = base.pow(limitamt.add(1).pow(exp)).times(mult).pow10().log10().log10().log10()
 				limitplus1pricetriplelog = base.pow(limitamtplus1.add(1).pow(exp)).times(mult).pow10().log10().log10().log10()
 				newpricescalingtriplelog = limitplus1pricetriplelog.sub(limitpricetriplelog)
-				return currency.log10().log10().log10().sub(limitpricetriplelog).div(newpricescalingtriplelog).add(limitamtplus1).floor()
+				quantity = currency.log10().log10().log10().sub(limitpricetriplelog).div(newpricescalingtriplelog).add(limitamtplus1)
 			}
-			else return currency.max(10).log10().div(mult).max(1).log10().div(base.log10()).root(exp).floor()
+			else quantity = currency.max(10).log10().div(mult).max(1).log10().div(base.log10()).root(exp)
 		}
 		if (type == "normal") {
 			if (limit.lte('10')) {limit = new Decimal('10')}
@@ -174,9 +174,9 @@ function addedPlayerData() { return {
 				limitpriceloglog = base.pow(limitamt.add(1).pow(exp)).times(mult).log10().log10()
 				limitplus1priceloglog = base.pow(limitamtplus1.add(1).pow(exp)).times(mult).log10().log10()
 				newpricescalingloglog = limitplus1priceloglog.sub(limitpriceloglog)
-				return currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamtplus1).floor()
+				quantity = currency.log10().log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamtplus1)
 			} else {
-				return currency.div(mult).max(1).log10().div(base.log10()).root(exp).floor()
+				quantity = currency.div(mult).max(1).log10().div(base.log10()).root(exp)
 			}
 		}
 		if (type == "small") {
@@ -187,11 +187,15 @@ function addedPlayerData() { return {
 				limitpricelog = base.times(limitamt.add(1).pow(exp)).log10()
 				limitplus1pricelog = base.times(limitamtplus1.add(1).pow(exp)).log10()
 				newpricescalinglog = limitplus1pricelog.sub(limitpricelog)	
-				return currency.log10().sub(limitpricelog).div(newpricescalinglog).add(limitamtplus1).floor()			
+				quantity = currency.log10().sub(limitpricelog).div(newpricescalinglog).add(limitamtplus1).floor()			
 			} else {
-				return currency.max(0).div(base).root(exp).floor()
+				quantity = currency.max(0).div(base).root(exp).floor()
 			}
 		}
+		if (floorQuantity) {
+			quantity = quantity.floor()
+		}
+		return quantity
 	},
 	buyablePriceNew(type, amt, baseLog, exp = Decimal.dOne, multLog = Decimal.dZero, limitLog = Decimal.dInf, floorprice = false) {
 		if (type == "normal") {
@@ -212,7 +216,7 @@ function addedPlayerData() { return {
 		}
 		return priceQuantity
 	},
-	buyableMaxPurchaseableNew(type, currency, baseLog, exp = Decimal.dOne, multLog = Decimal.dZero, limitLog = Decimal.dInf, floorprice = false) {
+	buyableMaxPurchaseableNew(type, currency, baseLog, exp = Decimal.dOne, multLog = Decimal.dZero, limitLog = Decimal.dInf, floorQuantity = true) {
 		if (currency.lte(multLog.pow10())) {return Decimal.dZero} else {currencyLog = currency.log10()}
 		if (type == "normal") {
 			if (limitLog.lte('1')) {limitLog = new Decimal('1')}
@@ -221,11 +225,15 @@ function addedPlayerData() { return {
 				limitamtplus1 = limitamt.add(1)
 				limitpriceloglog = limitLog.log10()
 				newpricescalingloglog = log1p(limitamt.pow(-1)).times(2.302585092994045684017).times(exp) // ln 10
-				return currencyLog.log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamtplus1).floor()
+				quantity = currencyLog.log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamtplus1)
 			} else {
-				return currencyLog.sub(multLog).div(baseLog).root(exp).sub(1).floor()
+				quantity = currencyLog.sub(multLog).div(baseLog).root(exp).sub(1)
 			} 
 		}
+		if (floorQuantity) {
+			quantity = quantity.floor()
+		}
+		return quantity
 	}
 }}
 
