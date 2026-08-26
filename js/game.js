@@ -86,8 +86,9 @@ function getPointGen() {
 	if (hasUpgrade('si', 21)) {gain = gain.pow(upgradeEffect('si', 21))}
 	gain = gain.pow(buyableEffect('cu', 102))
 	if (hasUpgrade('gi', 32)) {gain = gain.pow(upgradeEffect('gi', 32))}
+	gain = gain.times(buyableEffect('gi', 25))
 	gain = gain.pow(buyableEffect('pr', 12))
-
+	if (hasUpgrade('pr', 31)) {gain = gain.pow(upgradeEffect('pr', 31))}
 
 	if (hasUpgrade('pr', 14)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('pr', 14)).pow10()}
 	if (hasUpgrade('pr', 24)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('pr', 24)).pow10()}

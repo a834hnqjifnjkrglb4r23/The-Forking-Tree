@@ -35,7 +35,6 @@ addLayer("p", {
         if (hasUpgrade('ha', 23)) {expp = expp.times(upgradeEffect('ha', 23))}
         if (hasUpgrade('si', 23)) {expp = expp.times(upgradeEffect('si', 23))}
         if (hasUpgrade('pr', 32)) {expp = expp.times(upgradeEffect('pr', 32))}
-        expp = expp.times(buyableEffect('gi', 25))
         exp2p = new Decimal(0.96)
         if (inChallenge('pr', 11)) {exp2p = exp2p.times(0.5)}
         exp3p = new Decimal(0.96)
@@ -1037,6 +1036,7 @@ addLayer("me", {
         expme = expme.times(buyableEffect('si', 13))
         if (hasUpgrade('si', 24)) {expme = expme.times(upgradeEffect('si', 24))}
         if (hasUpgrade('gi', 52)) {expme = expme.times(upgradeEffect('gi', 52))}
+        if (hasUpgrade('pr', 33)) {expme = expme.times(upgradeEffect('pr', 33))}
         expme = expme.times(buyableEffect('pr', 111))
         exp2me = new Decimal(0.5)
         if (inChallenge('pr', 11)) {exp2me = exp2me.times(0.5)}
@@ -3697,7 +3697,6 @@ addLayer("gi", {
             },
             effect(x){
                 effBasegi21 = new Decimal(1.5)
-                if (hasUpgrade('pr', 31)) {effBasegi21 = effBasegi21.add(upgradeEffect('pr', 31))}
                 if (hasMilestone('gi', 2)) {effStackgi21 = this.cost().continuum} else {effStackgi21 = new Decimal(x)}
                 return effBasegi21.pow(effStackgi21)
             },
@@ -3788,7 +3787,7 @@ addLayer("gi", {
                 return {cost: player.buyablePrice(costTypegi23, costStackgi23, costBasegi23, costExpgi23 ,costMultgi23, costLimitgi23 , false), continuum: player.buyableMaxPurchaseable(costTypegi23, getBuyableAmount('gi', 101), costBasegi23, costExpgi23, costMultgi23, costLimitgi23, false)}
             },
             effect(x){
-                effBasegi23 = new Decimal(1e3)
+                effBasegi23 = new Decimal(1e4)
                 if (hasUpgrade('gi', 54)) {effBasegi23 = effBasegi23.pow(upgradeEffect('gi', 54))}
                 if (hasUpgrade('gi', 51)) {effBasegi23 = effBasegi23.pow(upgradeEffect('gi', 51))}
                 if (hasMilestone('gi', 2)) {effStackgi23 = this.cost().continuum} else {effStackgi23 = new Decimal(x)}
@@ -3888,7 +3887,7 @@ addLayer("gi", {
                 return "guitar buyable 25" 
             },
             display() {
-                return "multiply prestige gain exponent by "+format(effBasegi25)+" <br> Cost: "+format(this.cost().cost)+" guitar loops <br> Effect: "+format(this.effect())
+                return "multiply point gain exponent by "+format(effBasegi25)+" <br> Cost: "+format(this.cost().cost)+" guitar loops <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -4224,7 +4223,7 @@ addLayer("gi", {
             rewardEffect() {
                 return new Decimal(10**(Math.log10(challengeCompletions(this.layer, this.id))**2)).floor()
             },
-            completionLimit: 1e50,
+            completionLimit: 1e100,
         }
     }
 })
@@ -4347,7 +4346,7 @@ addLayer("cup", {
         },
         14: {
             title: "copper projection upgrade 14",
-            description: "multiply copper point gain by guitar challenge effect",
+            description: "multiply copper point gain by guitar challenge effect, softcapped at 1e50",
             cost() {
                 return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
@@ -4356,8 +4355,8 @@ addLayer("cup", {
             },
             pay() {},
             effect() {
-                eff = new Decimal(challengeCompletions('gi', 11)).max(1)
-                eff = eff.log10().pow(2).pow10()
+                challgipr = new Decimal(challengeCompletions('gi', 11)).max(1)
+                if (challgipr.lte(1e50)) {eff = challgipr.log10().pow(2).pow10()} else {eff = challgipr.pow(50)}
                 if (hasUpgrade('cup', 41)) {eff = eff.pow(upgradeEffect('cup', 41))}
                 return eff
             },
@@ -4496,8 +4495,8 @@ addLayer("pr", {
         return multpr
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
-        exppr = new Decimal(0.5)
-        exp2pr = new Decimal(0.5)
+        exppr = new Decimal(0.8)
+        exp2pr = new Decimal(0.6)
         return expp
 
     },
@@ -5816,8 +5815,8 @@ addLayer("pr", {
                 boosteffneg = getBuyableAmount('pr', 101).max(1).pow(0.5)
 
                 challprpr = new Decimal(challengeCompletions('pr', 11))
-                if (challprpr.gte(10)) {challprpr = challprpr.log10().times(10)}
-                challpr11eff = challprpr.add(10).div(10)
+                if (challprpr.gte(100)) {challpr11eff = challprpr.log10()} else {challpr11eff = challprpr.times(0.01).add(1)}
+                
 
                 boosteffneg = boosteffneg.root(challpr11eff)
                 return boosteffneg
@@ -5843,8 +5842,7 @@ addLayer("pr", {
                 boosteffneg = getBuyableAmount('pr', 102).max(1).pow(0.5)
 
                 challprpr = new Decimal(challengeCompletions('pr', 11))
-                if (challprpr.gte(10)) {challprpr = challprpr.log10().times(10)}
-                challpr11eff = challprpr.add(10).div(10)
+                if (challprpr.gte(100)) {challpr11eff = challprpr.log10()} else {challpr11eff = challprpr.times(0.01).add(1)}
 
                 boosteffneg = boosteffneg.root(challpr11eff)
                 return boosteffneg
@@ -6087,21 +6085,21 @@ addLayer("pr", {
         },
         31: {
             title: "proverb upgrade 31",
-            description: "add +0.15 to guitar buyable 21 effect",
+            description:  "raise point gain to ^(proverb points^0.25)",
             cost: new Decimal(1000),
             effect() {
-                eff = new Decimal(0.15)
+                eff = player.pr.points.pow(0.25).max(1)
                 return eff
             },
-            effectDisplay() {return "+"+format(upgradeEffect(this.layer, this.id))},
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return getBuyableAmount('pr', 53).gte(1)}
         },
         32: {
             title: "proverb upgrade 32",
-            description: "raise prestige point gain to ^(proverb points^0.2)",
+            description: "raise prestige point gain to ^(proverb points^0.25)",
             cost: new Decimal(1e5),
             effect() {
-                eff = player.pr.points.pow(0.2).max(1)
+                eff = player.pr.points.pow(0.25).max(1)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -6109,14 +6107,14 @@ addLayer("pr", {
         },
         33: {
             title: "proverb upgrade 33",
-            description: "raise copper point gain to ^(proverb points^0.05)",
+            description: "raise copper and message point gain to ^(proverb points^0.1)",
             cost: new Decimal(1e7),
             effect() {
-                eff = player.pr.points.pow(0.05).max(1)
+                eff = player.pr.points.pow(0.1).max(1)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return getBuyableAmount('pr', 53).gte(2)}
+            unlocked() {return getBuyableAmount('pr', 53).gte(3)}
         },
        34: {
             title: "proverb upgrade 34",
@@ -6127,7 +6125,7 @@ addLayer("pr", {
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
-            unlocked() {return getBuyableAmount('pr', 53).gte(2)}
+            unlocked() {return getBuyableAmount('pr', 53).gte(4)}
         },
     },
     challenges: {
@@ -6150,8 +6148,8 @@ addLayer("pr", {
             },
             rewardEffect() {
                 challprpr = new Decimal(challengeCompletions(this.layer, this.id))
-                if (challprpr.gte(10)) {challprpr = challprpr.log10().times(10)}
-                return challprpr.add(10).div(10)
+                if (challprpr.gte(100)) {return challprpr.log10()}
+                return challprpr.times(0.01).add(1)
             },
             rewardDescription() { 
                 textprchall11r = formatWhole(challengeCompletions(this.layer, this.id))+"/"+formatWhole(this.completionLimit)+" completions, "
@@ -6164,7 +6162,7 @@ addLayer("pr", {
             },
             onEnter() {
             },
-            completionLimit: 1e10,
+            completionLimit: 1e20,
         }
     }
 })
