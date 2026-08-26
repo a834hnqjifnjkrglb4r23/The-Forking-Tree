@@ -37,6 +37,7 @@ addLayer("p", {
         if (hasUpgrade('pr', 32)) {expp = expp.times(upgradeEffect('pr', 32))}
         exp2p = new Decimal(0.96)
         if (inChallenge('pr', 11)) {exp2p = exp2p.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2p = exp2p.times(0.1)}
         exp3p = new Decimal(0.96)
         exp4p = new Decimal(0.96)
         return expp
@@ -75,7 +76,7 @@ addLayer("p", {
         }
     },
     doReset(resettingLayer){
-        if ((layers[resettingLayer].row > 0.5) && (!hasMilestone('pr', 10))) {
+        if ((layers[resettingLayer].row > 0.5)) {
             layerDataReset(this.layer)
             setBuyableAmount('p', 11, Decimal.dOne)
         }
@@ -647,7 +648,6 @@ addLayer("ca", {
 	    if (hasUpgrade('ca', 24)) {multca = multca.times(upgradeEffect('ca', 24))}
         multca = multca.times(buyableEffect('cu', 31))
         multca = multca.times(buyableEffect('cu', 32))
-        multca = multca.times(buyableEffect('cu', 84))
         return multca
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -658,6 +658,7 @@ addLayer("ca", {
         if (hasUpgrade('si', 22)) {expca = expca.times(upgradeEffect('si', 22))}
         exp2ca = new Decimal(0.9)
         if (inChallenge('pr', 11)) {exp2ca = exp2ca.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2ca = exp2ca.times(0.1)}
         return expca
 
     },
@@ -1040,6 +1041,7 @@ addLayer("me", {
         expme = expme.times(buyableEffect('pr', 111))
         exp2me = new Decimal(0.5)
         if (inChallenge('pr', 11)) {exp2me = exp2me.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2me = exp2me.times(0.1)}
         return expme
 
     },
@@ -1303,6 +1305,7 @@ addLayer("mec", {
         expmec = expmec.times(buyableEffect('pr', 111))
         exp2mec = new Decimal(0.5)
         if (inChallenge('pr', 11)) {exp2mec = exp2mec.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2mec = exp2mec.times(0.3)}
         return expmec
 
     },
@@ -1512,9 +1515,6 @@ addLayer("ha", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         multha = new Decimal(1e-3)
         multha = multha.times(buyableEffect('cu', 101))
-        multha = multha.times(buyableEffect('cu', 62))
-        multha = multha.times(buyableEffect('cu', 72))
-        multha = multha.times(buyableEffect('cu', 82))
         if (hasUpgrade('gi', 21)) {multha = multha.times(upgradeEffect('gi', 21))}
         return multha
     },
@@ -1528,6 +1528,7 @@ addLayer("ha", {
         if (hasUpgrade('pr', 23)) {exp2ha = exp2ha.times(upgradeEffect('pr', 23))}
         if (inChallenge('gi', 11)) {exp2ha = exp2ha.times(0.3)}
         if (inChallenge('pr', 11)) {exp2ha = exp2ha.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2ha = exp2ha.times(0.3)}
         exp3ha = new Decimal(0.96)
         return expha
     },
@@ -1851,9 +1852,7 @@ addLayer("si", {
     gainMult() { // Calculate the multiplier for main currency from bonuses
         multsi = new Decimal(1e-3)
         multsi = multsi.times(buyableEffect('cu', 101))
-        multsi = multsi.times(buyableEffect('cu', 62))
-        multsi = multsi.times(buyableEffect('cu', 72))
-        multsi = multsi.times(buyableEffect('cu', 82))
+
         if (hasUpgrade('gi', 21)) {multsi = multsi.times(upgradeEffect('gi', 21))}
         return multsi
     },
@@ -1867,6 +1866,7 @@ addLayer("si", {
         if (hasUpgrade('pr', 23)) {exp2si = exp2si.times(upgradeEffect('pr', 23))}
         if (inChallenge('gi', 11)) {exp2si = exp2si.times(0.3)}
         if (inChallenge('pr', 11)) {exp2si = exp2si.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2si = exp2si.times(0.3)}
         exp3si = new Decimal(0.96)
         return expsi
 
@@ -2209,6 +2209,9 @@ addLayer("cu", {
         multcu = multcu.times(buyableEffect('pr', 102))
         multcu = multcu.times(buyableEffect('gi', 22))
         multcu = multcu.times(buyableEffect('cu', 51))
+        multcu = multcu.times(buyableEffect('cu', 61))
+        multcu = multcu.times(buyableEffect('cu', 71))
+        multcu = multcu.times(buyableEffect('cu', 81))
         return multcu
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2217,6 +2220,7 @@ addLayer("cu", {
         if (hasUpgrade('pr', 33)) {expcu = expcu.times(upgradeEffect('pr', 33))}
         exp2cu = new Decimal(0.6)
         if (inChallenge('pr', 11)) {exp2cu = exp2cu.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2cu = exp2cu.times(0.3)}
         return expcu
 
     },
@@ -2288,6 +2292,16 @@ addLayer("cu", {
                 "prestige-button", "resource-display",
                 ["blank", "5px"], // Height
                  "challenges", "blank", "buyables"],
+        },
+        "guitar": {
+            embedLayer: "gi",
+            shouldNotify: true,
+            unlocked() {return (getBuyableAmount('cu', 102).gte(1e5)||hasMilestone('gi', 10))},
+            content:
+                ["main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "upgrades", "challenges", "buyables"],
         },
     },
     milestones: {
@@ -2854,15 +2868,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu51 = "large"
-                costBasecu51 = new Decimal(6)
-                costMultcu51 = new Decimal(1)
+                costBasecu51 = new Decimal(1.1)
+                costMultcu51 = new Decimal(9.09090909090909)
                 costExpcu51 = new Decimal(1.3)
                 costLimitcu51 = new Decimal('e1e8')
                 costStackcu51 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu51, costStackcu51, costBasecu51, costExpcu51 ,costMultcu51, costLimitcu51 , false), continuum: player.buyableMaxPurchaseable(costTypecu51, getBuyableAmount('cu', 103), costBasecu51, costExpcu51, costMultcu51, costLimitcu51, false)}
             },
             effect(x){
-                effBasecu51 = player.si.points.max(player.ha.points).max(10).log10()
+                effBasecu51 = player.me.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu51 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu51 = this.cost().continuum} else {effStackcu51 = new Decimal(x)}}
                 return effBasecu51.pow(effStackcu51)
             },
@@ -2873,7 +2887,7 @@ addLayer("cu", {
                 return "copper mirror buyable 51" 
             },
             display() {
-                return "multiply copper point gain by log10(silence/harvest point), currently "+format(effBasecu51)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper point gain by log10(message point), currently "+format(effBasecu51)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -2901,15 +2915,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu61 = "large"
-                costBasecu61 = new Decimal(6)
-                costMultcu61 = new Decimal(1)
+                costBasecu61 = new Decimal(1.1)
+                costMultcu61 = new Decimal(9.09090909090909)
                 costExpcu61 = new Decimal(1.3)
                 costLimitcu61 = new Decimal('e1e8')
                 costStackcu61 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu61, costStackcu61, costBasecu61, costExpcu61 ,costMultcu61, costLimitcu61 , false), continuum: player.buyableMaxPurchaseable(costTypecu61, getBuyableAmount('cu', 103), costBasecu61, costExpcu61, costMultcu61, costLimitcu61, false)}
             },
             effect(x){
-                effBasecu61 = player.me.points.max(10).log10()
+                effBasecu61 = player.ca.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu61 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu61 = this.cost().continuum} else {effStackcu61 = new Decimal(x)}}
                 return effBasecu61.pow(effStackcu61)
             },
@@ -2920,7 +2934,7 @@ addLayer("cu", {
                 return "copper mirror buyable 61" 
             },
             display() {
-                return "multiply copper plates gain by log10(message points), currently "+format(effBasecu61)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper points gain by log10(cable points), currently "+format(effBasecu61)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -2948,15 +2962,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu62 = "large"
-                costBasecu62 = new Decimal(5)
-                costMultcu62 = new Decimal(1)
+                costBasecu62 = new Decimal(1.2)
+                costMultcu62 = new Decimal(83.333333333333333)
                 costExpcu62 = new Decimal(1.3)
                 costLimitcu62 = new Decimal('e1e8')
                 costStackcu62 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu62, costStackcu62, costBasecu62, costExpcu62 ,costMultcu62, costLimitcu62 , false), continuum: player.buyableMaxPurchaseable(costTypecu62, getBuyableAmount('cu', 103), costBasecu62, costExpcu62, costMultcu62, costLimitcu62, false)}
             },
             effect(x){
-                effBasecu62 = player.me.points.max(10).log10()
+                effBasecu62 = player.ca.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu62 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu62 = this.cost().continuum} else {effStackcu62 = new Decimal(x)}}
                 return effBasecu62.pow(effStackcu62)
             },
@@ -2967,7 +2981,7 @@ addLayer("cu", {
                 return "copper mirror buyable 62" 
             },
             display() {
-                return "multiply silence/harvest gain by log10(message points), currently "+format(effBasecu62)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper plates gain by log10(cable points), currently "+format(effBasecu62)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -2995,15 +3009,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu71 = "large"
-                costBasecu71 = new Decimal(6)
-                costMultcu71 = new Decimal(1)
+                costBasecu71 = new Decimal(1.1)
+                costMultcu71 = new Decimal(9.09090909090909)
                 costExpcu71 = new Decimal(1.3)
                 costLimitcu71 = new Decimal('e1e8')
                 costStackcu71 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu71, costStackcu71, costBasecu71, costExpcu71 ,costMultcu71, costLimitcu71 , false), continuum: player.buyableMaxPurchaseable(costTypecu71, getBuyableAmount('cu', 103), costBasecu71, costExpcu71, costMultcu71, costLimitcu71, false)}
             },
             effect(x){
-                effBasecu71 = player.ca.points.max(10).log10()
+                effBasecu71 = player.p.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu71 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu71 = this.cost().continuum} else {effStackcu71 = new Decimal(x)}}
                 return effBasecu71.pow(effStackcu71)
             },
@@ -3014,7 +3028,7 @@ addLayer("cu", {
                 return "copper mirror buyable 71" 
             },
             display() {
-                return "multiply copper wires gain by log10(message points), currently "+format(effBasecu71)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper points gain by log10(prestige points), currently "+format(effBasecu71)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3042,15 +3056,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu72 = "large"
-                costBasecu72 = new Decimal(5)
-                costMultcu72 = new Decimal(1)
+                costBasecu72 = new Decimal(1.2)
+                costMultcu72 = new Decimal(83.3333333333333333)
                 costExpcu72 = new Decimal(1.3)
                 costLimitcu72 = new Decimal('e1e8')
                 costStackcu72 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu72, costStackcu72, costBasecu72, costExpcu72 ,costMultcu72, costLimitcu72 , false), continuum: player.buyableMaxPurchaseable(costTypecu72, getBuyableAmount('cu', 103), costBasecu72, costExpcu72, costMultcu72, costLimitcu72, false)}
             },
             effect(x){
-                effBasecu72 = player.ca.points.max(10).log10()
+                effBasecu72 = player.p.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu72 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu72 = this.cost().continuum} else {effStackcu72 = new Decimal(x)}}
                 return effBasecu72.pow(effStackcu72)
             },
@@ -3061,7 +3075,7 @@ addLayer("cu", {
                 return "copper mirror buyable 72" 
             },
             display() {
-                return "multiply silence/harvest gain by log10(cable points), currently "+format(effBasecu72)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper wire gain by log10(prestige points), currently "+format(effBasecu72)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3089,15 +3103,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu73 = "large"
-                costBasecu73 = new Decimal(4)
-                costMultcu73 = new Decimal(1)
+                costBasecu73 = new Decimal(1.3)
+                costMultcu73 = new Decimal(769.2307692307692)
                 costExpcu73 = new Decimal(1.3)
                 costLimitcu73 = new Decimal('e1e8')
                 costStackcu73 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu73, costStackcu73, costBasecu73, costExpcu73 ,costMultcu73, costLimitcu73 , false), continuum: player.buyableMaxPurchaseable(costTypecu73, getBuyableAmount('cu', 103), costBasecu73, costExpcu73, costMultcu73, costLimitcu73, false)}
             },
             effect(x){
-                effBasecu73 = player.ca.points.max(10).log10()
+                effBasecu73 = player.p.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu73 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu73 = this.cost().continuum} else {effStackcu73 = new Decimal(x)}}
                 return effBasecu73.pow(effStackcu73)
             },
@@ -3108,7 +3122,7 @@ addLayer("cu", {
                 return "copper mirror buyable 73" 
             },
             display() {
-                return "multiply message gain by log10(cable points), currently "+format(effBasecu73)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply guitar points gain by log10(prestige points), currently "+format(effBasecu73)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3136,15 +3150,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu81 = "large"
-                costBasecu81 = new Decimal(6)
-                costMultcu81 = new Decimal(1)
+                costBasecu81 = new Decimal(1.1)
+                costMultcu81 = new Decimal(9.09090909090909)
                 costExpcu81 = new Decimal(1.3)
                 costLimitcu81 = new Decimal('e1e8')
                 costStackcu81 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu81, costStackcu81, costBasecu81, costExpcu81 ,costMultcu81, costLimitcu81 , false), continuum: player.buyableMaxPurchaseable(costTypecu81, getBuyableAmount('cu', 103), costBasecu81, costExpcu81, costMultcu81, costLimitcu81, false)}
             },
             effect(x){
-                effBasecu81 = player.p.points.max(10).log10()
+                effBasecu81 = player.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu81 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu81 = this.cost().continuum} else {effStackcu81 = new Decimal(x)}}
                 return effBasecu81.pow(effStackcu81)
             },
@@ -3155,7 +3169,7 @@ addLayer("cu", {
                 return "copper mirror buyable 81" 
             },
             display() {
-                return "multiply copper coin gain by log10(prestige points), currently "+format(effBasecu81)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper points gain by log10( points), currently "+format(effBasecu81)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3183,15 +3197,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu82 = "large"
-                costBasecu82 = new Decimal(5)
-                costMultcu82 = new Decimal(1)
+                costBasecu82 = new Decimal(1.2)
+                costMultcu82 = new Decimal(83.3333333333333333)
                 costExpcu82 = new Decimal(1.3)
                 costLimitcu82 = new Decimal('e1e8')
                 costStackcu82 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu82, costStackcu82, costBasecu82, costExpcu82 ,costMultcu82, costLimitcu82 , false), continuum: player.buyableMaxPurchaseable(costTypecu82, getBuyableAmount('cu', 103), costBasecu82, costExpcu82, costMultcu82, costLimitcu82, false)}
             },
             effect(x){
-                effBasecu82 = player.p.points.max(10).log10()
+                effBasecu82 = player.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu82 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu82 = this.cost().continuum} else {effStackcu82 = new Decimal(x)}}
                 return effBasecu82.pow(effStackcu82)
             },
@@ -3202,7 +3216,7 @@ addLayer("cu", {
                 return "copper mirror buyable 82" 
             },
             display() {
-                return "multiply silence/harvest gain by log10(prestige points), currently "+format(effBasecu82)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply copper coin gain by log10(points), currently "+format(effBasecu82)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3230,15 +3244,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu83 = "large"
-                costBasecu83 = new Decimal(4)
-                costMultcu83 = new Decimal(1)
+                costBasecu83 = new Decimal(1.3)
+                costMultcu83 = new Decimal(769.2307692307692)
                 costExpcu83 = new Decimal(1.3)
                 costLimitcu83 = new Decimal('e1e8')
                 costStackcu83 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu83, costStackcu83, costBasecu83, costExpcu83 ,costMultcu83, costLimitcu83 , false), continuum: player.buyableMaxPurchaseable(costTypecu83, getBuyableAmount('cu', 103), costBasecu83, costExpcu83, costMultcu83, costLimitcu83, false)}
             },
             effect(x){
-                effBasecu83 = player.p.points.max(10).log10()
+                effBasecu83 = player.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu83 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu83 = this.cost().continuum} else {effStackcu83 = new Decimal(x)}}
                 return effBasecu83.pow(effStackcu83)
             },
@@ -3249,7 +3263,7 @@ addLayer("cu", {
                 return "copper mirror buyable 83" 
             },
             display() {
-                return "multiply message gain by log10(prestige points), currently "+format(effBasecu83)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply guitar gain by log10(points), currently "+format(effBasecu83)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3277,15 +3291,15 @@ addLayer("cu", {
             unlocked() {return hasUpgrade('cup', 41)},
             cost(x) { 
                 costTypecu84 = "large"
-                costBasecu84 = new Decimal(3)
-                costMultcu84 = new Decimal(1)
+                costBasecu84 = new Decimal(10)
+                costMultcu84 = new Decimal(1000)
                 costExpcu84 = new Decimal(1.3)
                 costLimitcu84 = new Decimal('e1e8')
                 costStackcu84 = new Decimal(x)
                 return {cost: player.buyablePrice(costTypecu84, costStackcu84, costBasecu84, costExpcu84 ,costMultcu84, costLimitcu84 , false), continuum: player.buyableMaxPurchaseable(costTypecu84, getBuyableAmount('cu', 103), costBasecu84, costExpcu84, costMultcu84, costLimitcu84, false)}
             },
             effect(x){
-                effBasecu84 = player.p.points.max(10).log10()
+                effBasecu84 = player.points.max(10).log10()
                 if (inChallenge('gi', 11)) {effStackcu84 = new Decimal(1)} else {if (hasMilestone('cu', 3)) {effStackcu84 = this.cost().continuum} else {effStackcu84 = new Decimal(x)}}
                 return effBasecu84.pow(effStackcu84)
             },
@@ -3296,7 +3310,7 @@ addLayer("cu", {
                 return "copper mirror buyable 84" 
             },
             display() {
-                return "multiply cable gain by log10(prestige points), currently "+format(effBasecu84)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
+                return "multiply guitar loop gain by log10(points), currently "+format(effBasecu84)+" <br> Cost: "+format(this.cost().cost)+" copper coins <br> Effect: "+format(this.effect())
             },
             style() {const size1 = {width: "160px", height: "160px"}
                 return size1},
@@ -3422,7 +3436,7 @@ addLayer("cu", {
                 generateeff = generateeff.times(buyableEffect('cu', 104))
                 generateeff = generateeff.times(buyableEffect('pr', 102))
                 generateeff = generateeff.times(buyableEffect('gi', 101))
-                generateeff = generateeff.times(buyableEffect('cu', 71))
+                generateeff = generateeff.times(buyableEffect('cu', 72))
                 if (hasUpgrade('gi', 61)) {generateeff = generateeff.times(upgradeEffect('gi', 61))}
                 return generateeff
             },
@@ -3451,7 +3465,7 @@ addLayer("cu", {
                 generateeff = generateeff.times(buyableEffect('cu', 104))
                 generateeff = generateeff.times(buyableEffect('pr', 102))
                 generateeff = generateeff.times(buyableEffect('gi', 101))
-                generateeff = generateeff.times(buyableEffect('cu', 81))
+                generateeff = generateeff.times(buyableEffect('cu', 82))
                 if (hasUpgrade('gi', 61)) {generateeff = generateeff.times(upgradeEffect('gi', 61))}
                 if (hasUpgrade('gi', 62)) {generateeff = generateeff.times(upgradeEffect('gi', 62))}
                 return generateeff
@@ -3480,7 +3494,7 @@ addLayer("cu", {
                 generateeff = generateeff.times(buyableEffect('cu', 104))
                 generateeff = generateeff.times(buyableEffect('pr', 102))
                 generateeff = generateeff.times(buyableEffect('gi', 101))
-                generateeff = generateeff.times(buyableEffect('cu', 61))
+                generateeff = generateeff.times(buyableEffect('cu', 62))
                 if (hasUpgrade('gi', 61)) {generateeff = generateeff.times(upgradeEffect('gi', 61))}
                 return generateeff
             },
@@ -3543,6 +3557,8 @@ addLayer("gi", {
         multgi = new Decimal(1e-6)
         multgi = multgi.times(buyableEffect('pr', 112))
         multgi = multgi.times(buyableEffect('gi', 23))
+        multgi = multgi.times(buyableEffect('cu', 73))
+        multgi = multgi.times(buyableEffect('cu', 83))
         return multgi
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -3550,6 +3566,7 @@ addLayer("gi", {
         if (hasUpgrade('gi', 64)) {expgi = expgi.times(upgradeEffect('gi', 64))}
         exp2gi = new Decimal(0.6)
         if (inChallenge('pr', 11)) {exp2gi = exp2gi.times(0.5)}
+        if (inChallenge('pr', 12)) {exp2gi = exp2gi.times(0.3)}
         return expgi
 
     },
@@ -3574,7 +3591,7 @@ addLayer("gi", {
             }
         },
     ],
-    layerShown(){return (getBuyableAmount('cu', 102).gte(1e5)||hasMilestone('gi', 10))},
+    layerShown(){return false},
     onPrestige(gain) {
         for (i = 11; i < 15; i++) {
             setBuyableAmount('cu', i, Decimal.dZero)
@@ -3594,7 +3611,7 @@ addLayer("gi", {
     },
     automate() {
         if (hasMilestone('pr', 10)) {
-            for (let i1 = 1; i1 < 5; i1++) {
+            for (let i1 = 1; i1 < 7; i1++) {
                 for (let i2 = 1; i2 < 5; i2++) {
                     if (!hasUpgrade('gi', i1*10+i2)) {buyUpgrade('gi', i1*10+i2)}
                 }
@@ -3656,6 +3673,7 @@ addLayer("gi", {
                 if (hasMilestone('gi',2)) {effStackgi11 = this.cost().continuum} else {effStackgi11 = new Decimal(x)}
                 eff = effBasegi11.times(effStackgi11)
                 eff = eff.times(buyableEffect('pr', 62))
+                eff = eff.times(buyableEffect('cu', 84))
                 return eff
             },
             title() { 
@@ -5579,6 +5597,8 @@ addLayer("pr", {
                 eff = player.pr.points.sub(2).max(0)
                 eff = eff.times(buyableEffect('pr', 61))
                 eff = eff.times(buyableEffect('pr', 64))
+
+                eff = eff.times(Math.max(challengeCompletions('pr', 12), 1))
                 return eff
             },
             title() { 
@@ -5684,6 +5704,8 @@ addLayer("pr", {
                 eff = eff.times(buyableEffect('pr', 44))
                 eff = eff.times(buyableEffect('pr', 61))
                 eff = eff.times(buyableEffect('pr', 64))
+
+                eff = eff.times(Math.max(challengeCompletions('pr', 12), 1))
                 return eff
             },
             title() { 
@@ -5713,6 +5735,8 @@ addLayer("pr", {
                 eff = eff.times(buyableEffect('pr', 44))
                 eff = eff.times(buyableEffect('pr', 61))
                 eff = eff.times(buyableEffect('pr', 64))
+
+                eff = eff.times(Math.max(challengeCompletions('pr', 12), 1))
                 return eff
             },
             title() { 
@@ -6163,6 +6187,40 @@ addLayer("pr", {
             onEnter() {
             },
             completionLimit: 1e20,
+        },
+        12: {
+            unlocked() { return hasUpgrade('pr', 24)},
+            name: "proverb subpoint gain multiplier challenge",
+            challengeDescription: "Resettable layer points nerfed 10^x -> 10^(x^0.3). Points and resettable points lower than message are 0.1 instead.",
+            canComplete() {
+                goalprp = new Decimal(challengeCompletions(this.layer, this.id)).floor().add(1)
+
+                challprp = player.points.max(10).log10().times(multpr).pow(exppr)
+                if (challprp.gte(10)) {challprp = challprp.log10().pow(exp2pr).pow10()}
+
+                return challprp.floor().sub(challengeCompletions(this.layer, this.id)).floor().max(0) * 1
+            },
+            goalDescription() { 
+                textprchall12g = "Get "+format(goalprp)+" effective proverb points on reset. "
+                if (inChallenge(this.layer, this.id)) {textprchall12g += " Currently "+formatWhole(challprp.floor())+" effective proverb points "}
+                return textprchall12g
+            },
+            rewardEffect() {
+                challprpr = new Decimal(challengeCompletions(this.layer, this.id))
+                return challprpr
+            },
+            rewardDescription() { 
+                textprchall12r = formatWhole(challengeCompletions(this.layer, this.id))+"/"+formatWhole(this.completionLimit)+" completions, "
+                // if (maxedChallenge(this.layer, this.id)) {
+                //     textprchall12r += " fully allowing proverb/harvest and proverb/copper points to coexist"
+                // } else {
+                    textprchall12r += " multiplying all proverb subpoint gain by x"+format(this.rewardEffect())
+                // }
+                return textprchall12r
+            },
+            onEnter() {
+            },
+            completionLimit: 1e10,
         }
     }
 })

@@ -96,6 +96,9 @@ function getPointGen() {
 	if (gain.gte(10)) {gain = gain.log10().pow(buyableEffect('pr', 105)).pow10()}
 
 	if (inChallenge('pr', 11)&&gain.gte(10)) {gain = gain.log10().pow(0.5).pow10()}
+	if (inChallenge('pr', 12)&&gain.gte(10)) {gain = gain.log10().pow(0.1).pow10()}
+
+
 	return gain
 }
 
