@@ -2358,16 +2358,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu11 = "normal"
-                costBasecu11 = new Decimal(2)
-                if (hasUpgrade('gi', 14)) {costBasecu11 = costBasecu11.root(upgradeEffect('gi', 14))}
-                costBasecu11 = costBasecu11.root(buyableEffect('pr', 24))
-                costMultcu11 = new Decimal(0.5)
+                costBaseLogcu11 = new Decimal(0.3010299956639812)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu11 = costBaseLogcu11.div(upgradeEffect('gi', 14))}
+                costBaseLogcu11 = costBaseLogcu11.div(buyableEffect('pr', 24))
+                costMultLogcu11 = new Decimal(-0.3010299956639812)
                 costExpcu11 = new Decimal(1.1)
-                costLimitcu11 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu11 = costLimitcu11.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu11 = costLimitcu11.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu11 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu11 = costLimitLogcu11.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu11 = costLimitLogcu11.times(upgradeEffect('gi', 63))}
                 costStackcu11 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu11, costStackcu11, costBasecu11, costExpcu11 ,costMultcu11, costLimitcu11 , false), continuum: player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11)}
+                return {cost: player.buyablePriceNew(costTypecu11, costStackcu11, costBaseLogcu11, costExpcu11 ,costMultLogcu11, costLimitLogcu11 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu11, getBuyableAmount('cu', 103), costBaseLogcu11, costExpcu11, costMultLogcu11, costLimitLogcu11)}
             },
             effect(x){
                 effBasecu11 = getBuyableAmount('cu', 103).max(1).pow(buyableEffect('cu', 103))
@@ -2397,9 +2397,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu11, player.buyableMaxPurchaseable(costTypecu11, getBuyableAmount('cu', 103), costBasecu11, costExpcu11, costMultcu11, costLimitcu11), costBasecu11, costExpcu11, costMultcu11, costLimitcu11, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu11, getBuyableAmount('cu', 103), costBaseLogcu11, costExpcu11, costMultLogcu11, costLimitLogcu11).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu11, getBuyableAmount('cu', 103), costBaseLogcu11, costExpcu11, costMultLogcu11, costLimitLogcu11))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu11, player.buyableMaxPurchaseableNew(costTypecu11, getBuyableAmount('cu', 103), costBaseLogcu11, costExpcu11, costMultLogcu11, costLimitcu11), costBaseLogcu11, costExpcu11, costMultLogcu11, costLimitLogcu11, false).times(-1))}
                         }
                     }
                 }
@@ -2409,16 +2409,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu12 = "normal"
-                costBasecu12 = new Decimal(3)
-                if (hasUpgrade('gi', 14)) {costBasecu12 = costBasecu12.root(upgradeEffect('gi', 14))}
-                costBasecu12 = costBasecu12.root(buyableEffect('pr', 24))
-                costMultcu12 = new Decimal(10)
+                costBaseLogcu12 = new Decimal(0.47712125471966244)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu12 = costBaseLogcu12.div(upgradeEffect('gi', 14))}
+                costBaseLogcu12 = costBaseLogcu12.div(buyableEffect('pr', 24))
+                costMultLogcu12 = new Decimal(1)
                 costExpcu12 = new Decimal(1.1)
-                costLimitcu12 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu12 = costLimitcu12.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu12 = costLimitcu12.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu12 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu12 = costLimitLogcu12.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu12 = costLimitLogcu12.times(upgradeEffect('gi', 63))}
                 costStackcu12 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu12, costStackcu12, costBasecu12, costExpcu12 ,costMultcu12, costLimitcu12 , false), continuum: player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12)}
+                return {cost: player.buyablePriceNew(costTypecu12, costStackcu12, costBaseLogcu12, costExpcu12 ,costMultLogcu12, costLimitLogcu12 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu12, getBuyableAmount('cu', 103), costBaseLogcu12, costExpcu12, costMultLogcu12, costLimitLogcu12)}
             },
             effect(x){
                 effBasecu12 = player.points.max(2).log(2).pow(buyableEffect('cu', 103))
@@ -2448,9 +2448,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu12, player.buyableMaxPurchaseable(costTypecu12, getBuyableAmount('cu', 103), costBasecu12, costExpcu12, costMultcu12, costLimitcu12), costBasecu12, costExpcu12, costMultcu12, costLimitcu12, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu12, getBuyableAmount('cu', 103), costBaseLogcu12, costExpcu12, costMultLogcu12, costLimitLogcu12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu12, getBuyableAmount('cu', 103), costBaseLogcu12, costExpcu12, costMultLogcu12, costLimitLogcu12))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu12, player.buyableMaxPurchaseableNew(costTypecu12, getBuyableAmount('cu', 103), costBaseLogcu12, costExpcu12, costMultLogcu12, costLimitLogcu12), costBaseLogcu12, costExpcu12, costMultLogcu12, costLimitLogcu12, false).times(-1))}
                         }
                     }
                 }
@@ -2460,16 +2460,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu13 = "normal"
-                costBasecu13 = new Decimal(4)
-                if (hasUpgrade('gi', 14)) {costBasecu13 = costBasecu13.root(upgradeEffect('gi', 14))}
-                costBasecu13 = costBasecu13.root(buyableEffect('pr', 24))
-                costMultcu13 = new Decimal(100)
+                costBaseLogcu13 = new Decimal(0.6020599913279624)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu13 = costBaseLogcu13.div(upgradeEffect('gi', 14))}
+                costBaseLogcu13 = costBaseLogcu13.div(buyableEffect('pr', 24))
+                costMultLogcu13 = new Decimal(2)
                 costExpcu13 = new Decimal(1.1)
-                costLimitcu13 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu13 = costLimitcu13.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu13 = costLimitcu13.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu13 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu13 = costLimitLogcu13.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu13 = costLimitLogcu13.times(upgradeEffect('gi', 63))}
                 costStackcu13 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu13, costStackcu13, costBasecu13, costExpcu13 ,costMultcu13, costLimitcu13 , false), continuum: player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13)}
+                return {cost: player.buyablePriceNew(costTypecu13, costStackcu13, costBaseLogcu13, costExpcu13 ,costMultLogcu13, costLimitLogcu13 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu13, getBuyableAmount('cu', 103), costBaseLogcu13, costExpcu13, costMultLogcu13, costLimitLogcu13)}
             },
             effect(x){
                 effBasecu13 = player.p.points.max(2).log(2).pow(buyableEffect('cu', 103))
@@ -2499,9 +2499,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu13, player.buyableMaxPurchaseable(costTypecu13, getBuyableAmount('cu', 103), costBasecu13, costExpcu13, costMultcu13, costLimitcu13), costBasecu13, costExpcu13, costMultcu13, costLimitcu13, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu13, getBuyableAmount('cu', 103), costBaseLogcu13, costExpcu13, costMultLogcu13, costLimitLogcu13).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu13, getBuyableAmount('cu', 103), costBaseLogcu13, costExpcu13, costMultLogcu13, costLimitLogcu13))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu13, player.buyableMaxPurchaseableNew(costTypecu13, getBuyableAmount('cu', 103), costBaseLogcu13, costExpcu13, costMultLogcu13, costLimitLogcu13), costBaseLogcu13, costExpcu13, costMultLogcu13, costLimitLogcu13, false).times(-1))}
                         }
                     }
                 }
@@ -2511,16 +2511,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu14 = "normal"
-                costBasecu14 = new Decimal(5)
-                if (hasUpgrade('gi', 14)) {costBasecu14 = costBasecu14.root(upgradeEffect('gi', 14))}
-                costBasecu14 = costBasecu14.root(buyableEffect('pr', 24))
-                costMultcu14 = new Decimal(1000)
+                costBaseLogcu14 = new Decimal(0.6989700043360189)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu14 = costBaseLogcu14.div(upgradeEffect('gi', 14))}
+                costBaseLogcu14 = costBaseLogcu14.div(buyableEffect('pr', 24))
+                costMultLogcu14 = new Decimal(3)
                 costExpcu14 = new Decimal(1.1)
-                costLimitcu14 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu14 = costLimitcu14.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu14 = costLimitcu14.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu14 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu14 = costLimitLogcu14.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu14 = costLimitLogcu14.times(upgradeEffect('gi', 63))}
                 costStackcu14 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu14, costStackcu14, costBasecu14, costExpcu14 ,costMultcu14, costLimitcu14 , false), continuum: player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14)}
+                return {cost: player.buyablePriceNew(costTypecu14, costStackcu14, costBaseLogcu14, costExpcu14 ,costMultLogcu14, costLimitLogcu14 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu14, getBuyableAmount('cu', 103), costBaseLogcu14, costExpcu14, costMultLogcu14, costLimitLogcu14)}
             },
             effect(x){
                 effBasecu14 = player.ca.points.max(2).log(2).pow(buyableEffect('cu', 103))
@@ -2550,9 +2550,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu14, player.buyableMaxPurchaseable(costTypecu14, getBuyableAmount('cu', 103), costBasecu14, costExpcu14, costMultcu14, costLimitcu14), costBasecu14, costExpcu14, costMultcu14, costLimitcu14, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu14, getBuyableAmount('cu', 103), costBaseLogcu14, costExpcu14, costMultLogcu14, costLimitLogcu14).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu14, getBuyableAmount('cu', 103), costBaseLogcu14, costExpcu14, costMultLogcu14, costLimitLogcu14))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu14, player.buyableMaxPurchaseableNew(costTypecu14, getBuyableAmount('cu', 103), costBaseLogcu14, costExpcu14, costMultLogcu14, costLimitLogcu14), costBaseLogcu14, costExpcu14, costMultLogcu14, costLimitLogcu14, false).times(-1))}
                         }
                     }
                 }
@@ -2562,16 +2562,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu21 = "normal"
-                costBasecu21 = new Decimal(2)
-                if (hasUpgrade('gi', 14)) {costBasecu21 = costBasecu21.root(upgradeEffect('gi', 14))}
-                costBasecu21 = costBasecu21.root(buyableEffect('pr', 24))
-                costMultcu21 = new Decimal(5)
+                costBaseLogcu21 = new Decimal(0.3010299956639812)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu21 = costBaseLogcu21.div(upgradeEffect('gi', 14))}
+                costBaseLogcu21 = costBaseLogcu21.div(buyableEffect('pr', 24))
+                costMultLogcu21 = new Decimal(0.6989700043360189)
                 costExpcu21 = new Decimal(1.1)
-                costLimitcu21 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu21 = costLimitcu21.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu21 = costLimitcu21.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu21 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu21 = costLimitLogcu21.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu21 = costLimitLogcu21.times(upgradeEffect('gi', 63))}
                 costStackcu21 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu21, costStackcu21, costBasecu21, costExpcu21 ,costMultcu21, costLimitcu21 , false), continuum: player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21)}
+                return {cost: player.buyablePriceNew(costTypecu21, costStackcu21, costBaseLogcu21, costExpcu21 ,costMultLogcu21, costLimitLogcu21 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu21, getBuyableAmount('cu', 103), costBaseLogcu21, costExpcu21, costMultLogcu21, costLimitLogcu21)}
             },
             effect(x){
                 effBasecu21 = getBuyableAmount('cu', 102).max(1).pow(buyableEffect('cu', 103))
@@ -2601,9 +2601,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu21, player.buyableMaxPurchaseable(costTypecu21, getBuyableAmount('cu', 103), costBasecu21, costExpcu21, costMultcu21, costLimitcu21), costBasecu21, costExpcu21, costMultcu21, costLimitcu21, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu21, getBuyableAmount('cu', 103), costBaseLogcu21, costExpcu21, costMultLogcu21, costLimitLogcu21).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu21, getBuyableAmount('cu', 103), costBaseLogcu21, costExpcu21, costMultLogcu21, costLimitLogcu21))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu21, player.buyableMaxPurchaseableNew(costTypecu21, getBuyableAmount('cu', 103), costBaseLogcu21, costExpcu21, costMultLogcu21, costLimitLogcu21), costBaseLogcu21, costExpcu21, costMultLogcu21, costLimitLogcu21, false).times(-1))}
                         }
                     }
                 }
@@ -2613,16 +2613,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu22 = "normal"
-                costBasecu22 = new Decimal(6)
-                if (hasUpgrade('gi', 14)) {costBasecu22 = costBasecu22.root(upgradeEffect('gi', 14))}
-                costBasecu22 = costBasecu22.root(buyableEffect('pr', 24))
-                costMultcu22 = new Decimal(100)
+                costBaseLogcu22 = new Decimal(0.7781512503836436)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu22 = costBaseLogcu22.div(upgradeEffect('gi', 14))}
+                costBaseLogcu22 = costBaseLogcu22.div(buyableEffect('pr', 24))
+                costMultLogcu22 = new Decimal(2)
                 costExpcu22 = new Decimal(1.1)
-                costLimitcu22 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu22 = costLimitcu22.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu22 = costLimitcu22.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu22 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu22 = costLimitLogcu22.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu22 = costLimitLogcu22.times(upgradeEffect('gi', 63))}
                 costStackcu22 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu22, costStackcu22, costBasecu22, costExpcu22 ,costMultcu22, costLimitcu22 , false), continuum: player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22)}
+                return {cost: player.buyablePriceNew(costTypecu22, costStackcu22, costBaseLogcu22, costExpcu22 ,costMultLogcu22, costLimitLogcu22 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu22, getBuyableAmount('cu', 103), costBaseLogcu22, costExpcu22, costMultLogcu22, costLimitLogcu22)}
             },
             effect(x){
                 effBasecu22 = player.p.points.max(2).log(2).pow(buyableEffect('cu', 103))
@@ -2652,9 +2652,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu22, player.buyableMaxPurchaseable(costTypecu22, getBuyableAmount('cu', 103), costBasecu22, costExpcu22, costMultcu22, costLimitcu22), costBasecu22, costExpcu22, costMultcu22, costLimitcu22, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu22, getBuyableAmount('cu', 103), costBaseLogcu22, costExpcu22, costMultLogcu22, costLimitLogcu22).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu22, getBuyableAmount('cu', 103), costBaseLogcu22, costExpcu22, costMultLogcu22, costLimitLogcu22))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu22, player.buyableMaxPurchaseableNew(costTypecu22, getBuyableAmount('cu', 103), costBaseLogcu22, costExpcu22, costMultLogcu22, costLimitLogcu22), costBaseLogcu22, costExpcu22, costMultLogcu22, costLimitLogcu22, false).times(-1))}
                         }
                     }
                 }
@@ -2664,16 +2664,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu23 = "normal"
-                costBasecu23 = new Decimal(7)
-                if (hasUpgrade('gi', 14)) {costBasecu23 = costBasecu23.root(upgradeEffect('gi', 14))}
-                costBasecu23 = costBasecu23.root(buyableEffect('pr', 24))
-                costMultcu23 = new Decimal(1000)
+                costBaseLogcu23 = new Decimal(0.8450980400142568)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu23 = costBaseLogcu23.div(upgradeEffect('gi', 14))}
+                costBaseLogcu23 = costBaseLogcu23.div(buyableEffect('pr', 24))
+                costMultLogcu23 = new Decimal(3)
                 costExpcu23 = new Decimal(1.1)
-                costLimitcu23 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu23 = costLimitcu23.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu23 = costLimitcu23.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu23 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu23 = costLimitLogcu23.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu23 = costLimitLogcu23.times(upgradeEffect('gi', 63))}
                 costStackcu23 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu23, costStackcu23, costBasecu23, costExpcu23 ,costMultcu23, costLimitcu23 , false), continuum: player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23)}
+                return {cost: player.buyablePriceNew(costTypecu23, costStackcu23, costBaseLogcu23, costExpcu23 ,costMultLogcu23, costLimitLogcu23 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu23, getBuyableAmount('cu', 103), costBaseLogcu23, costExpcu23, costMultLogcu23, costLimitLogcu23)}
             },
             effect(x){
                 effBasecu23 = player.ca.points.max(2).log(2).pow(buyableEffect('cu', 103))
@@ -2703,9 +2703,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu23, player.buyableMaxPurchaseable(costTypecu23, getBuyableAmount('cu', 103), costBasecu23, costExpcu23, costMultcu23, costLimitcu23), costBasecu23, costExpcu23, costMultcu23, costLimitcu23, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu23, getBuyableAmount('cu', 103), costBaseLogcu23, costExpcu23, costMultLogcu23, costLimitLogcu23).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu23, getBuyableAmount('cu', 103), costBaseLogcu23, costExpcu23, costMultLogcu23, costLimitLogcu23))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu23, player.buyableMaxPurchaseableNew(costTypecu23, getBuyableAmount('cu', 103), costBaseLogcu23, costExpcu23, costMultLogcu23, costLimitLogcu23), costBaseLogcu23, costExpcu23, costMultLogcu23, costLimitLogcu23, false).times(-1))}
                         }
                     }
                 }
@@ -2715,16 +2715,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu31 = "normal"
-                costBasecu31 = new Decimal(2)
-                if (hasUpgrade('gi', 14)) {costBasecu31 = costBasecu31.root(upgradeEffect('gi', 14))}
-                costBasecu31 = costBasecu31.root(buyableEffect('pr', 24))
-                costMultcu31 = new Decimal(50)
+                costBaseLogcu31 = new Decimal(0.3010299956639812)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu31 = costBaseLogcu31.div(upgradeEffect('gi', 14))}
+                costBaseLogcu31 = costBaseLogcu31.div(buyableEffect('pr', 24))
+                costMultLogcu31 = new Decimal(1.6989700043360187)
                 costExpcu31 = new Decimal(1.1)
-                costLimitcu31 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu31 = costLimitcu31.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu31 = costLimitcu31.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu31 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu31 = costLimitLogcu31.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu31 = costLimitLogcu31.times(upgradeEffect('gi', 63))}
                 costStackcu31 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu31, costStackcu31, costBasecu31, costExpcu31 ,costMultcu31, costLimitcu31 , false), continuum: player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31)}
+                return {cost: player.buyablePriceNew(costTypecu31, costStackcu31, costBaseLogcu31, costExpcu31 ,costMultLogcu31, costLimitLogcu31 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu31, getBuyableAmount('cu', 103), costBaseLogcu31, costExpcu31, costMultLogcu31, costLimitLogcu31)}
             },
             effect(x){
                 effBasecu31 = getBuyableAmount('cu', 101).max(1).pow(buyableEffect('cu', 103))
@@ -2754,9 +2754,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu31, player.buyableMaxPurchaseable(costTypecu31, getBuyableAmount('cu', 103), costBasecu31, costExpcu31, costMultcu31, costLimitcu31), costBasecu31, costExpcu31, costMultcu31, costLimitcu31, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu31, getBuyableAmount('cu', 103), costBaseLogcu31, costExpcu31, costMultLogcu31, costLimitLogcu31).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu31, getBuyableAmount('cu', 103), costBaseLogcu31, costExpcu31, costMultLogcu31, costLimitLogcu31))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu31, player.buyableMaxPurchaseableNew(costTypecu31, getBuyableAmount('cu', 103), costBaseLogcu31, costExpcu31, costMultLogcu31, costLimitLogcu31), costBaseLogcu31, costExpcu31, costMultLogcu31, costLimitLogcu31, false).times(-1))}
                         }
                     }
                 }
@@ -2766,16 +2766,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu32 = "normal"
-                costBasecu32 = new Decimal(8)
-                if (hasUpgrade('gi', 14)) {costBasecu32 = costBasecu32.root(upgradeEffect('gi', 14))}
-                costBasecu32 = costBasecu32.root(buyableEffect('pr', 24))
-                costMultcu32 = new Decimal(1000)
+                costBaseLogcu32 = new Decimal(0.9030899869919435)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu32 = costBaseLogcu32.div(upgradeEffect('gi', 14))}
+                costBaseLogcu32 = costBaseLogcu32.div(buyableEffect('pr', 24))
+                costMultLogcu32 = new Decimal(3)
                 costExpcu32 = new Decimal(1.1)
-                costLimitcu32 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu32 = costLimitcu32.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu32 = costLimitcu32.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu32 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu32 = costLimitLogcu32.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu32 = costLimitLogcu32.times(upgradeEffect('gi', 63))}
                 costStackcu32 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu32, costStackcu32, costBasecu32, costExpcu32 ,costMultcu32, costLimitcu32 , false), continuum: player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32)}
+                return {cost: player.buyablePriceNew(costTypecu32, costStackcu32, costBaseLogcu32, costExpcu32 ,costMultLogcu32, costLimitLogcu32 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu32, getBuyableAmount('cu', 103), costBaseLogcu32, costExpcu32, costMultLogcu32, costLimitLogcu32)}
             },
             effect(x){
                 effBasecu32 = player.ca.points.max(2).log(2).pow(buyableEffect('cu', 103))
@@ -2805,9 +2805,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu32, player.buyableMaxPurchaseable(costTypecu32, getBuyableAmount('cu', 103), costBasecu32, costExpcu32, costMultcu32, costLimitcu32), costBasecu32, costExpcu32, costMultcu32, costLimitcu32, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu32, getBuyableAmount('cu', 103), costBaseLogcu32, costExpcu32, costMultLogcu32, costLimitLogcu32).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu32, getBuyableAmount('cu', 103), costBaseLogcu32, costExpcu32, costMultLogcu32, costLimitLogcu32))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu32, player.buyableMaxPurchaseableNew(costTypecu32, getBuyableAmount('cu', 103), costBaseLogcu32, costExpcu32, costMultLogcu32, costLimitLogcu32), costBaseLogcu32, costExpcu32, costMultLogcu32, costLimitLogcu32, false).times(-1))}
                         }
                     }
                 }
@@ -2817,16 +2817,16 @@ addLayer("cu", {
             unlocked() {return true},
             cost(x) { 
                 costTypecu41 = "normal"
-                costBasecu41 = new Decimal(10)
-                if (hasUpgrade('gi', 14)) {costBasecu41 = costBasecu41.root(upgradeEffect('gi', 14))}
-                costBasecu41 = costBasecu41.root(buyableEffect('pr', 24))
-                costMultcu41 = new Decimal(1e4)
+                costBaseLogcu41 = new Decimal(1)
+                if (hasUpgrade('gi', 14)) {costBaseLogcu41 = costBaseLogcu41.div(upgradeEffect('gi', 14))}
+                costBaseLogcu41 = costBaseLogcu41.div(buyableEffect('pr', 24))
+                costMultLogcu41 = new Decimal(4)
                 costExpcu41 = new Decimal(1.3)
-                costLimitcu41 = new Decimal('e10')
-                if (hasUpgrade('cup', 32)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('cup', 32))}
-                if (hasUpgrade('gi', 63)) {costLimitcu41 = costLimitcu41.pow(upgradeEffect('gi', 63))}
+                costLimitLogcu41 = new Decimal('10')
+                if (hasUpgrade('cup', 32)) {costLimitLogcu41 = costLimitLogcu41.times(upgradeEffect('cup', 32))}
+                if (hasUpgrade('gi', 63)) {costLimitLogcu41 = costLimitLogcu41.times(upgradeEffect('gi', 63))}
                 costStackcu41 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypecu41, costStackcu41, costBasecu41, costExpcu41 ,costMultcu41, costLimitcu41 , false), continuum: player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41, false)}
+                return {cost: player.buyablePriceNew(costTypecu41, costStackcu41, costBaseLogcu41, costExpcu41 ,costMultLogcu41, costLimitLogcu41 , false), continuum: player.buyableMaxPurchaseableNew(costTypecu41, getBuyableAmount('cu', 103), costBaseLogcu41, costExpcu41, costMultLogcu41, costLimitLogcu41, false)}
             },
             effect(x){
                 effBasecu41 = player.cu.points.max(1).pow(buyableEffect('cu', 103))
@@ -2856,9 +2856,9 @@ addLayer("cu", {
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41))
-                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePrice(costTypecu41, player.buyableMaxPurchaseable(costTypecu41, getBuyableAmount('cu', 103), costBasecu41, costExpcu41, costMultcu41, costLimitcu41), costBasecu41, costExpcu41, costMultcu41, costLimitcu41, false).times(-1))}
+                        if (player.buyableMaxPurchaseableNew(costTypecu41, getBuyableAmount('cu', 103), costBaseLogcu41, costExpcu41, costMultLogcu41, costLimitLogcu41).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseableNew(costTypecu41, getBuyableAmount('cu', 103), costBaseLogcu41, costExpcu41, costMultLogcu41, costLimitLogcu41))
+                            if (getBuyableAmount('cu', 103).lte(1e100)) {addBuyables('cu', 103, player.buyablePriceNew(costTypecu41, player.buyableMaxPurchaseableNew(costTypecu41, getBuyableAmount('cu', 103), costBaseLogcu41, costExpcu41, costMultLogcu41, costLimitLogcu41), costBaseLogcu41, costExpcu41, costMultLogcu41, costLimitLogcu41, false).times(-1))}
                         }
                     }
                 }
@@ -3341,8 +3341,7 @@ addLayer("cu", {
             },
             effect(x){
 
-                boosteff = new Decimal(x).pow(0.5).max(1)
-                if (boosteff.gte(2)) {boosteff = boosteff.div(2).pow(0.5).times(2)}
+                boosteff = new Decimal(x).times(1.4).pow(0.25).max(1)
                 boosteffsoftcapstart1 = new Decimal(100)
                 if (hasUpgrade('cup', 31)) {boosteffsoftcapstart1 = boosteffsoftcapstart1.times(upgradeEffect('cup', 31))}
                 if (boosteff.gte(boosteffsoftcapstart1)) {boosteff = boosteff.log10().div(boosteffsoftcapstart1.log10()).pow(0.8).times(boosteffsoftcapstart1.log10()).pow10()}
@@ -3373,8 +3372,7 @@ addLayer("cu", {
             effect(x){
 
                 boosteff = new Decimal(x).add(256).log(4).log(4).pow(0.8)
-                boosteff = boosteff.times(10).log10().pow(0.96).pow10().div(10)
-                if (boosteff.gte(2)) {boosteff = boosteff.div(2).pow(0.8).times(2)}
+
 
                 if (hasUpgrade('gi', 23)) {boosteff = boosteff.pow(upgradeEffect('gi', 23))}
                 if (hasUpgrade('cup', 22)) {boosteff = boosteff.pow(upgradeEffect('cup', 22))}
@@ -3659,19 +3657,11 @@ addLayer("gi", {
         11: {
             unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
             cost(x) { 
-                costTypegi11 = "normal"
-                costBasegi11 = new Decimal(1e12)
-                costMultgi11 = new Decimal(1)
-                costExpgi11 = new Decimal(1.2)
-                costLimitgi11 = new Decimal('e40000')
-                costStackgi11 = new Decimal(x)
-                return {cost: player.buyablePrice(costTypegi11, costStackgi11, costBasegi11, costExpgi11 ,costMultgi11, costLimitgi11 , true), continuum: player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11, false)}
+                return new Decimal(1e12)
             },
             effect(x){
-                effBasegi11 = new Decimal(1)
-                effBasegi11 = effBasegi11.times(buyableEffect('gi', 21))
-                if (hasMilestone('gi',2)) {effStackgi11 = this.cost().continuum} else {effStackgi11 = new Decimal(x)}
-                eff = effBasegi11.times(effStackgi11)
+                if (hasMilestone('gi', 2)) {eff = new Decimal(player.gi.points.gte(this.cost())*1)} else {eff = new Decimal(x)}
+                eff = eff.times(buyableEffect('gi', 21))
                 eff = eff.times(buyableEffect('pr', 62))
                 eff = eff.times(buyableEffect('cu', 84))
                 return eff
@@ -3680,7 +3670,40 @@ addLayer("gi", {
                 return "guitar buyable 11" 
             },
             display() {
-                return "generate "+format(effBasegi11)+" guitar loops per second <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
+                return "generate "+format(eff)+" guitar loops per second <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
+            },
+            purchaseLimit: Decimal.dOne,
+            canAfford() { return player.gi.points.gte(this.cost())&&(!hasMilestone('gi', 2))},
+            buy() {
+                player.gi.points = player.gi.points.sub(this.cost()) // cginge to  free req
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {
+                this.buy()
+            },
+        },
+        12: {
+            unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
+            cost(x) { 
+                costTypegi12 = "large"
+                costBasegi12 = new Decimal(1.03)
+                costMultgi12 = new Decimal(34.95145631067961)
+                costExpgi12 = new Decimal(3)
+                costLimitgi12 = new Decimal('e1000')
+                costStackgi12 = new Decimal(x)
+                return {cost: player.buyablePrice(costTypegi12, costStackgi12, costBasegi12, costExpgi12 ,costMultgi12, costLimitgi12 , true), continuum: player.buyableMaxPurchaseable(costTypegi12, player.gi.points, costBasegi12, costExpgi12, costMultgi12, costLimitgi12, false)}
+            },
+            effect(x){
+                effBasegi12 = new Decimal(1.2)
+                if (hasMilestone('gi',2)) {effStackgi12 = this.cost().continuum} else {effStackgi12 = new Decimal(x)}
+                eff = effBasegi12.pow(effStackgi12)
+                return eff
+            },
+            title() { 
+                return "guitar buyable 12" 
+            },
+            display() {
+                return "raise guitar buyable 22-23 effect to "+format(effBasegi12)+"<br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
             canAfford() { return player.gi.points.gte(this.cost().cost)&&(!hasMilestone('gi', 2))},
             buy() {
@@ -3689,14 +3712,14 @@ addLayer("gi", {
             },
             buyMax() {
                 if (hasMilestone('gi', 2)) {} else {
-                    if ((costTypegi11 == "asymptote")||player.gi.points.lte(1e10)) {
+                    if ((costTypegi12 == "asymptote")||player.gi.points.lte(1e10)) {
                         while (canBuyBuyable([this.layer], [this.id])){
                             buyBuyable([this.layer], [this.id])
                         }
                     } else {
-                        if (player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11).lte(getBuyableAmount(this.layer, this.id))) {} else {
-                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11).min(this.purchaseLimit()))
-                            if (player.gi.points.lt('e100')&&!hasMilestone('cu', 0)) {player.gi.points = player.gi.points.sub(player.buyablePrice(costTypegi11, player.buyableMaxPurchaseable(costTypegi11, player.gi.points, costBasegi11, costExpgi11, costMultgi11, costLimitgi11), costBasegi11, costExpgi11, costMultgi11, costLimitgi11, true))}
+                        if (player.buyableMaxPurchaseable(costTypegi12, player.gi.points, costBasegi12, costExpgi12, costMultgi12, costLimitgi12).lte(getBuyableAmount(this.layer, this.id))) {} else {
+                            setBuyableAmount(this.layer, this.id, player.buyableMaxPurchaseable(costTypegi12, player.gi.points, costBasegi12, costExpgi12, costMultgi12, costLimitgi12).min(this.purchaseLimit()))
+                            if (player.gi.points.lt('e100')&&!hasMilestone('cu', 0)) {player.gi.points = player.gi.points.sub(player.buyablePrice(costTypegi12, player.buyableMaxPurchaseable(costTypegi12, player.gi.points, costBasegi12, costExpgi12, costMultgi12, costLimitgi12), costBasegi12, costExpgi12, costMultgi12, costLimitgi12, true))}
                         }
                     }
                 }
@@ -3760,7 +3783,7 @@ addLayer("gi", {
             },
             effect(x){
                 effBasegi22 = new Decimal(1e20)
-                if (hasUpgrade('gi', 54)) {effBasegi22 = effBasegi22.pow(upgradeEffect('gi', 54))}
+                effBasegi22 = effBasegi22.pow(buyableEffect('gi', 12))
                 if (hasUpgrade('gi', 51)) {effBasegi22 = effBasegi22.pow(upgradeEffect('gi', 51))}
                 if (hasMilestone('gi', 2)) {effStackgi22 = this.cost().continuum} else {effStackgi22 = new Decimal(x)}
                 return effBasegi22.pow(effStackgi22)
@@ -3806,7 +3829,7 @@ addLayer("gi", {
             },
             effect(x){
                 effBasegi23 = new Decimal(1e4)
-                if (hasUpgrade('gi', 54)) {effBasegi23 = effBasegi23.pow(upgradeEffect('gi', 54))}
+                effBasegi23 = effBasegi23.pow(buyableEffect('gi', 12))
                 if (hasUpgrade('gi', 51)) {effBasegi23 = effBasegi23.pow(upgradeEffect('gi', 51))}
                 if (hasMilestone('gi', 2)) {effStackgi23 = this.cost().continuum} else {effStackgi23 = new Decimal(x)}
                 return effBasegi23.pow(effStackgi23)
@@ -3939,6 +3962,7 @@ addLayer("gi", {
                 else {eff = new Decimal(x).pow(4)}
 
                 if (hasUpgrade('gi', 52)) {eff = eff.pow(upgradeEffect('gi', 52))}
+                if (hasUpgrade('gi', 54)) {eff = eff.pow(upgradeEffect('gi', 54))}
                 return eff
             },
             title() { 
@@ -4148,10 +4172,10 @@ addLayer("gi", {
         },
         54: {
             title: "guitar upgrade 54",
-            description: "raise guitar buyable 22-23 effect by log2(guitar buyable 11 count)^0.5",
+            description: "raise guitar loop passive effect to ^1.25",
             cost: new Decimal(1e35),
             effect() {
-                return effStackgi11.max(2).log(2).root(2)
+                return new Decimal(1.25)
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
             unlocked() {return player.gi.total.gte(1e15)&&hasUpgrade('gi', 44)}
@@ -5355,9 +5379,9 @@ addLayer("pr", {
         53: {
             unlocked() {return true},
             cost(x) { 
-                costTypepr53 = "large"
-                costBasepr53 = new Decimal(2)
-                costMultpr53 = new Decimal(25)
+                costTypepr53 = "normal"
+                costBasepr53 = new Decimal(1e50)
+                costMultpr53 = new Decimal(1)
                 costExppr53 = new Decimal(1)
                 costLimitpr53 = new Decimal('ee10')
                 costStackpr53 = new Decimal(x)
@@ -5393,8 +5417,8 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 53).gte(4)},
             cost(x) { 
                 costTypepr54 = "large"
-                costBasepr54 = new Decimal(10)
-                costMultpr54 = new Decimal(100)
+                costBasepr54 = new Decimal(2)
+                costMultpr54 = new Decimal(40)
                 costExppr54 = new Decimal(1.5)
                 costLimitpr54 = new Decimal('e1e6')
                 costStackpr54 = new Decimal(x)
@@ -6120,10 +6144,10 @@ addLayer("pr", {
         },
         32: {
             title: "proverb upgrade 32",
-            description: "raise prestige point gain to ^(proverb points^0.25)",
+            description: "raise prestige point gain to ^(proverb points^0.75)",
             cost: new Decimal(1e5),
             effect() {
-                eff = player.pr.points.pow(0.25).max(1)
+                eff = player.pr.points.pow(0.75).max(1)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -6131,10 +6155,10 @@ addLayer("pr", {
         },
         33: {
             title: "proverb upgrade 33",
-            description: "raise copper and message point gain to ^(proverb points^0.1)",
+            description: "raise copper and message point gain to ^(log10(proverb points))",
             cost: new Decimal(1e7),
             effect() {
-                eff = player.pr.points.pow(0.1).max(1)
+                eff = player.pr.points.log10().max(1)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -6142,10 +6166,10 @@ addLayer("pr", {
         },
        34: {
             title: "proverb upgrade 34",
-            description: "raise point gain exponent to ^1.01",
-            cost: new Decimal(1e7),
+            description: "raise point gain exponent to ^1.02",
+            cost: new Decimal(1e10),
             effect() {
-                eff = new Decimal(1.01)
+                eff = new Decimal(1.02)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},

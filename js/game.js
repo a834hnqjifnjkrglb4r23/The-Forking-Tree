@@ -230,7 +230,7 @@ function addedPlayerData() { return {
 				limitamtplus1 = limitamt.add(1)
 				limitpriceloglog = limitLog.log10()
 				newpricescalingloglog = log1p(limitamt.pow(-1)).times(2.302585092994045684017).times(exp) // ln 10
-				quantity = currencyLog.log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamtplus1)
+				quantity = currencyLog.log10().sub(limitpriceloglog).div(newpricescalingloglog).add(limitamt)
 			} else {
 				quantity = currencyLog.sub(multLog).div(baseLog).root(exp).sub(1)
 			} 
