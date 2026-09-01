@@ -3643,7 +3643,7 @@ addLayer("gi", {
         },
         2: {
             requirementDescription: "1e100 total guitar points",
-            effectDescription: "automate guitar loops",
+            effectDescription: "automate guitar loops and copper projection upgrades",
             done() { return player.gi.total.gte(1e100) },
             unlocked() {return player.gi.total.gte(1e100)},
         },
@@ -4325,7 +4325,15 @@ addLayer("cup", {
     update(diff) {
         addPoints('cup', getResetGain('cup').sub(player.cup.total))
     },
-
+    automate() {
+        if (hasMilestone('gi', 2)) {
+            for (i1 = 1; i1 < 5; i1++) {
+                for (i2 = 1; i2 < 6-i1; i2++) {
+                    if (!hasUpgrade('cup', i1*10+i2)) {buyUpgrade('cup', i1*10+i2)}
+                }
+            }
+        }
+    },
     challenges: {
     },
     milestones: {
@@ -5418,7 +5426,7 @@ addLayer("pr", {
             cost(x) { 
                 costTypepr54 = "large"
                 costBasepr54 = new Decimal(2)
-                costMultpr54 = new Decimal(40)
+                costMultpr54 = new Decimal(200)
                 costExppr54 = new Decimal(1.5)
                 costLimitpr54 = new Decimal('e1e6')
                 costStackpr54 = new Decimal(x)
@@ -6155,10 +6163,10 @@ addLayer("pr", {
         },
         33: {
             title: "proverb upgrade 33",
-            description: "raise copper and message point gain to ^(log10(proverb points))",
+            description: "raise copper and message point gain to ^(log10(proverb points)^0.8)",
             cost: new Decimal(1e7),
             effect() {
-                eff = player.pr.points.log10().max(1)
+                eff = player.pr.points.max(10).log10().pow(0.8)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
@@ -6166,10 +6174,10 @@ addLayer("pr", {
         },
        34: {
             title: "proverb upgrade 34",
-            description: "raise point gain exponent to ^1.02",
+            description: "raise point gain exponent to ^1.1",
             cost: new Decimal(1e10),
             effect() {
-                eff = new Decimal(1.02)
+                eff = new Decimal(1.1)
                 return eff
             },
             effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
