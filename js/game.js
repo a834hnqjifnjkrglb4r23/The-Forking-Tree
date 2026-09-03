@@ -67,10 +67,6 @@ function getPointGen() {
 	if (hasUpgrade('ca', 22)) {gain = gain.times(upgradeEffect('ca', 22))}
 	if (hasUpgrade('ca', 24)) {gain = gain.times(upgradeEffect('ca', 24))}
 	if (hasUpgrade('ca', 34)) {gain = gain.times(upgradeEffect('ca', 34))}
-	if (hasMilestone('me', 10)) {gain = gain.times(1000)}
-	if (hasMilestone('ha', 10)) {gain = gain.times(1000)}
-	if (hasMilestone('si', 10)) {gain = gain.times(1000)}
-	if (hasMilestone('cu', 10)) {gain = gain.times(1e6)}
 
 
 	if (hasUpgrade('p', 41)) {gain = gain.pow(upgradeEffect('p', 41))}
@@ -94,6 +90,13 @@ function getPointGen() {
 	if (hasUpgrade('pr', 24)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('pr', 24)).pow10()}
 	if (hasUpgrade('pr', 34)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('pr', 34)).pow10()}
 	if (gain.gte(10)) {gain = gain.log10().pow(buyableEffect('pr', 105)).pow10()}
+	if (hasUpgrade('bap', 11)&&gain.gte(10)) {gain = gain.log10().pow(upgradeEffect('bap', 11)).pow10()}
+
+
+	if (hasMilestone('me', 10)) {gain = gain.max(1000)}
+	if (hasMilestone('ha', 10)) {gain = gain.max(1e6)}
+	if (hasMilestone('si', 10)) {gain = gain.max(1e6)}
+	if (hasMilestone('cu', 10)) {gain = gain.max(1e12)}
 
 	if (inChallenge('pr', 11)&&gain.gte(10)) {gain = gain.log10().pow(0.5).pow10()}
 	if (inChallenge('pr', 12)&&gain.gte(10)) {gain = gain.log10().pow(0.1).pow10()}

@@ -100,7 +100,7 @@ addLayer("p", {
             requirementDescription: "100 total prestige points",
             effectDescription: "automates prestige buyables",
             done() { return player.p.total.gte(100)||hasMilestone('ca', 10) },
-            unlocked() {return player.p.total.gte(100)||hasMilestone('ca', 10)},
+            unlocked() {return player.p.total.gte(100)||hasMilestone('ca', 10)||hasUpgrade('bap', 41)},
             toggles: [["p", "autoBuyBuyable"]]
         },
         10: {
@@ -124,9 +124,12 @@ addLayer("p", {
                 if (hasUpgrade('p', 43)) {costBaseLogp11 = costBaseLogp11.sub(upgradeEffect('p', 43).log10())}
                 if (hasUpgrade('ca', 31)) {costBaseLogp11 = costBaseLogp11.sub(upgradeEffect('ca', 31).log10())}
                 if (hasUpgrade('ca', 33)) {costBaseLogp11 = costBaseLogp11.sub(upgradeEffect('ca', 33).log10())}
+
+                if (hasUpgrade('bap', 31)) {costBaseLogp11 = costBaseLogp11.div(upgradeEffect('bap', 31))}
                 costBaseLogp11 = costBaseLogp11.div(buyableEffect('ha', 12)).div(buyableEffect('pr', 21))
                 costMultLogp11 = new Decimal(0.3010299956639812) // 2
                 costMultLogp11 = costMultLogp11.sub(buyableEffect('ca', 11).log10())
+                if (hasUpgrade('bap', 21)) {costMultLogp11 = costMultLogp11.sub(upgradeEffect('bap', 21).log10())}
                 costExpp11 = new Decimal(1)
                 costLimitLogp11 = new Decimal('1000')
                 costLimitLogp11 = costLimitLogp11.times(buyableEffect('ha', 13))
@@ -176,9 +179,12 @@ addLayer("p", {
                 if (hasUpgrade('p', 43)) {costBaseLogp12 = costBaseLogp12.sub(upgradeEffect('p', 43).log10())}
                 if (hasUpgrade('ca', 31)) {costBaseLogp12 = costBaseLogp12.sub(upgradeEffect('ca', 31).log10())}
                 if (hasUpgrade('ca', 33)) {costBaseLogp12 = costBaseLogp12.sub(upgradeEffect('ca', 33).log10())}
+
+                if (hasUpgrade('bap', 31)) {costBaseLogp12 = costBaseLogp12.div(upgradeEffect('bap', 31))}
                 costBaseLogp12 = costBaseLogp12.div(buyableEffect('ha', 12)).div(buyableEffect('pr', 21))
                 costMultLogp12 = new Decimal(0.5642714304385625) // 3.6666666666
                 costMultLogp12 = costMultLogp12.sub(buyableEffect('ca', 11).log10())
+                if (hasUpgrade('bap', 21)) {costMultLogp12 = costMultLogp12.sub(upgradeEffect('bap', 21).log10())}
                 costExpp12 = new Decimal(1)
                 costLimitLogp12 = new Decimal('1000')
                 costLimitLogp12 = costLimitLogp12.times(buyableEffect('ha', 13))
@@ -228,9 +234,12 @@ addLayer("p", {
                 if (hasUpgrade('p', 43)) {costBaseLogp13 = costBaseLogp13.sub(upgradeEffect('p', 43).log10())}
                 if (hasUpgrade('ca', 31)) {costBaseLogp13 = costBaseLogp13.sub(upgradeEffect('ca', 31).log10())}
                 if (hasUpgrade('ca', 33)) {costBaseLogp13 = costBaseLogp13.sub(upgradeEffect('ca', 33).log10())}
+
+                if (hasUpgrade('bap', 31)) {costBaseLogp13 = costBaseLogp13.div(upgradeEffect('bap', 31))}
                 costBaseLogp13 = costBaseLogp13.div(buyableEffect('ha', 12)).div(buyableEffect('pr', 21))
                 costMultLogp13 = new Decimal(0.7781512503836436) // 6
                 costMultLogp13 = costMultLogp13.sub(buyableEffect('ca', 11).log10())
+                if (hasUpgrade('bap', 21)) {costMultLogp13 = costMultLogp13.sub(upgradeEffect('bap', 21).log10())}
                 costExpp13 = new Decimal(1)
                 costLimitLogp13 = new Decimal('1000')
                 costLimitLogp13 = costLimitLogp13.times(buyableEffect('ha', 13))
@@ -718,8 +727,8 @@ addLayer("ca", {
         1: {
             requirementDescription: "100 total cable points",
             effectDescription: "automate prestige upgrades",
-            done() { return player.ca.total.gte(100)||hasMilestone('me', 10) },
-            unlocked() {return player.ca.total.gte(100)||hasMilestone('me', 10)},
+            done() { return player.ca.total.gte(100)||hasMilestone('me', 10)||hasUpgrade('bap', 41) },
+            unlocked() {return player.ca.total.gte(100)||hasMilestone('me', 10)||hasUpgrade('bap', 41) },
         },
         2: {
             requirementDescription: "1e6 total cable points",
@@ -1037,7 +1046,7 @@ addLayer("me", {
         expme = expme.times(buyableEffect('si', 13))
         if (hasUpgrade('si', 24)) {expme = expme.times(upgradeEffect('si', 24))}
         if (hasUpgrade('gi', 52)) {expme = expme.times(upgradeEffect('gi', 52))}
-        if (hasUpgrade('pr', 33)) {expme = expme.times(upgradeEffect('pr', 33))}
+
         expme = expme.times(buyableEffect('pr', 111))
         exp2me = new Decimal(0.5)
         if (inChallenge('pr', 11)) {exp2me = exp2me.times(0.5)}
@@ -1092,7 +1101,8 @@ addLayer("me", {
             addPoints('me', getResetGain('me').max(0).times(diff))
         }
         if (hasMilestone('ha', 2)||hasMilestone('si', 2)||hasMilestone('cu', 10)) {
-            addPoints('mec', getResetGain('me').max(0).pow(0.5).times(diff))
+            if (hasUpgrade('bap', 32)) {gainmecnerf = new Decimal(1)} else {gainmecnerf = new Decimal(0.5)}
+            addPoints('mec', getResetGain('me').max(0).pow(gainmecnerf).times(diff))
         }
     },
     tabFormat: {
@@ -1137,7 +1147,7 @@ addLayer("me", {
         },
         10: {
             done() { return player.me.total.gte(1)||hasMilestone('ha', 10)||hasMilestone('si', 10)||hasMilestone('cu', 10) },
-            effectDescription: "multiply point gain by 1,000",
+            effectDescription: "point gain never falls below 1,000",
             unlocked() {return true},
         },
     },
@@ -1191,12 +1201,13 @@ addLayer("me", {
         11: {
             title: "message upgrade 11",
             description: "raise prestige upgrade 11 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(1),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(1)}} ,
             effect() {
                 eff = player.me.points.add(2).log(2)
                 if (hasUpgrade('gi', 41)) {eff = eff.times(upgradeEffect('gi', 41))}
                 if (hasUpgrade('gi', 42)) {eff = eff.times(upgradeEffect('gi', 42))}
                 eff = eff.pow(buyableEffect('pr', 63))
+                if (hasUpgrade('pr', 33)) {eff = eff.pow(upgradeEffect('pr', 33))}
                 softcapStartme = new Decimal(5)
                 if (hasUpgrade('si', 14)) {softcapStartme = softcapStartme.times(upgradeEffect('si', 14))}
                 softcapStartme = softcapStartme.times(buyableEffect('pr', 101))
@@ -1211,7 +1222,7 @@ addLayer("me", {
         12: {
             title: "message upgrade 12",
             description: "raise prestige upgrade 12 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(2),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(2)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1221,7 +1232,7 @@ addLayer("me", {
         13: {
             title: "message upgrade 13",
             description: "raise prestige upgrade 13 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(3),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(3)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1231,7 +1242,7 @@ addLayer("me", {
         14: {
             title: "message upgrade 14",
             description: "raise prestige upgrade 14 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(4),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(4)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1241,7 +1252,7 @@ addLayer("me", {
         21: {
             title: "message upgrade 21",
             description: "raise prestige upgrade 21 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(5),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(5)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1251,7 +1262,7 @@ addLayer("me", {
         22: {
             title: "message upgrade 22",
             description: "raise prestige upgrade 22 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(6),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(6)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1261,7 +1272,7 @@ addLayer("me", {
         23: {
             title: "message upgrade 23",
             description: "raise prestige upgrade 23 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(7),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(7)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1271,7 +1282,7 @@ addLayer("me", {
         24: {
             title: "message upgrade 24",
             description: "raise prestige upgrade 24 effect to log2(message points +2), softcapped at ^5",
-            cost: new Decimal(8),
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(8)}} ,
             effect() {
                 return upgradeEffect('me', 11)
             },
@@ -1321,11 +1332,11 @@ addLayer("mec", {
         return nextmec.root(expmec).div(multmec)
     },
     canReset() {
-        return inChallenge('mec', 11)
+        return inChallenge('mec', 11)||hasUpgrade('bap', 32)
     },
     prestigeNotify() {return true},
     prestigeButtonText() {
-        if (inChallenge('mec', 11)) {
+        if (inChallenge('mec', 11)||hasUpgrade('bap', 32)) {
             return "Reset for "+formatWhole(getResetGain('mec'))+" message decabled points. Next at "+format(getNextAt('mec'))+" cable points" 
         } else{
             return "Must be in message decabled challenge to reset for message decabled points"
@@ -1407,8 +1418,8 @@ addLayer("mec", {
     upgrades: {
         11: {
             title: "message decabled upgrade 11",
-            description: "raise prestige upgrade 11 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(1),
+            description: "raise cable upgrade 11 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(1)}} ,
             effect() {
                 eff = player.mec.points.add(2).log(2)
                 if (hasUpgrade('gi', 41)) {eff = eff.times(upgradeEffect('gi', 41))}
@@ -1427,8 +1438,8 @@ addLayer("mec", {
         },
         12: {
             title: "message decabled upgrade 12",
-            description: "raise prestige upgrade 12 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(2),
+            description: "raise cable upgrade 12 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(2)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1437,8 +1448,8 @@ addLayer("mec", {
         },
         13: {
             title: "message decabled upgrade 13",
-            description: "raise prestige upgrade 13 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(3),
+            description: "raise cable upgrade 13 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(3)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1447,8 +1458,8 @@ addLayer("mec", {
         },
         14: {
             title: "message decabled upgrade 14",
-            description: "raise prestige upgrade 14 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(4),
+            description: "raise cable upgrade 14 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(4)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1457,8 +1468,8 @@ addLayer("mec", {
         },
         21: {
             title: "message decabled upgrade 21",
-            description: "raise prestige upgrade 21 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(5),
+            description: "raise cable upgrade 21 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(5)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1467,8 +1478,8 @@ addLayer("mec", {
         },
         22: {
             title: "message decabled upgrade 22",
-            description: "raise prestige upgrade 22 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(6),
+            description: "raise cable upgrade 22 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(6)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1477,8 +1488,8 @@ addLayer("mec", {
         },
         23: {
             title: "message decabled upgrade 23",
-            description: "raise prestige upgrade 23 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(7),
+            description: "raise cable upgrade 23 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(7)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1487,8 +1498,8 @@ addLayer("mec", {
         },
         24: {
             title: "message decabled upgrade 24",
-            description: "raise prestige upgrade 24 effect to log2(message decabled points +2), softcapped at ^5",
-            cost: new Decimal(8),
+            description: "raise cable upgrade 24 effect to log2(message decabled points +2), softcapped at ^5",
+            cost() {if (hasUpgrade('bap', 21)) {return Decimal.dZero} else {return new Decimal(8)}} ,
             effect() {
                 return upgradeEffect('mec', 11)
             },
@@ -1582,18 +1593,18 @@ addLayer("ha", {
         1: {
             requirementDescription: "1,000 total harvest points",
             effectDescription: "automatically gain message points on reset and automate message buyables",
-            done() { return player.ha.total.gte(1e3)||hasMilestone('pr', 10) },
-            unlocked() {return player.ha.total.gte(1e3)||hasMilestone('pr', 10)},
+            done() { return player.ha.total.gte(1e3)||hasMilestone('pr', 10)||hasUpgrade('bap', 42) },
+            unlocked() {return player.ha.total.gte(1e3)||hasMilestone('pr', 10)||hasUpgrade('bap', 42) },
         },
         2: {
             requirementDescription: "100,000 total harvest points",
             effectDescription: "automatically gain message decabled points as if you can get ^0.5 of message points in challenge on reset",
-            done() { return player.ha.total.gte(1e5)||hasMilestone('pr', 10) },
-            unlocked() {return player.ha.total.gte(1e5)||hasMilestone('pr', 10)},
+            done() { return player.ha.total.gte(1e5)||hasMilestone('pr', 10)||hasUpgrade('bap', 42) },
+            unlocked() {return player.ha.total.gte(1e5)||hasMilestone('pr', 10)||hasUpgrade('bap', 42) },
         },
         10: {
             done() { return player.ha.total.gte(1)&&!hasMilestone('si', 10)  },
-            effectDescription: "multiply point gain by 1,000",
+            effectDescription: "point gain never falls below 1,000,000",
             unlocked() {return true},
         },
     },
@@ -1611,7 +1622,7 @@ addLayer("ha", {
             },
             effect(x){
                 effBaseha11 = new Decimal(0.05)
-                if (hasMilestone('cu',0)) {effStackha11 = this.cost().continuum} else {effStackha11 = new Decimal(x)}
+                if (hasUpgrade('bap', 23)) {effStackha11 = this.purchaseLimit()} else if (hasMilestone('cu',0)) {effStackha11 = this.cost().continuum} else {effStackha11 = new Decimal(x)}
                 return effBaseha11.times(effStackha11)
             },
             title() { 
@@ -1656,7 +1667,7 @@ addLayer("ha", {
             },
             effect(x){
                 effBaseha12 = new Decimal(1.05)
-                if (hasMilestone('cu',0)) {effStackha12 = this.cost().continuum} else {effStackha12 = new Decimal(x)}
+                if (hasUpgrade('bap', 23)) {effStackha12 = this.purchaseLimit()} else if (hasMilestone('cu',0)) {effStackha12 = this.cost().continuum} else {effStackha12 = new Decimal(x)}
                 return effBaseha12.pow(effStackha12)
             },
             title() { 
@@ -1701,7 +1712,7 @@ addLayer("ha", {
             },
             effect(x){
                 effBaseha13 = new Decimal(2)
-                if (hasMilestone('cu',0)) {effStackha13 = this.cost().continuum} else {effStackha13 = new Decimal(x)}
+                if (hasUpgrade('bap', 23)) {effStackha13 = this.purchaseLimit()} else if (hasMilestone('cu',0)) {effStackha13 = this.cost().continuum} else {effStackha13 = new Decimal(x)}
                 return effBaseha13.pow(effStackha13)
             },
             purchaseLimit() {
@@ -1713,7 +1724,7 @@ addLayer("ha", {
             display() {
                 return "raise prestige buyable 1x softcap start by "+format(effBaseha13)+" <br> Cost: "+format(this.cost().cost)+" <br> Effect: "+format(this.effect())
             },
-            canAfford() { return player.ha.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))},
+            canAfford() { return player.ha.points.gte(this.cost().cost)&&(!hasMilestone('cu', 0))&&(!hasUpgrade('bap', 23))},
             buy() {
                 if (!hasMilestone('cu', 0)){player.ha.points = player.ha.points.sub(this.cost())} // change to  free req
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
@@ -1939,7 +1950,7 @@ addLayer("si", {
         },
         10: {
             done() { return (player.si.total.gte(1)&&!hasMilestone('ha', 10)) },
-            effectDescription: "multiply point gain by 1,000",
+            effectDescription: "point gain never falls below 1,000,000",
             unlocked() {return true},
         },
     },
@@ -1957,7 +1968,7 @@ addLayer("si", {
             },
             effect(x){
                 effBasesi11 = new Decimal(1.05)
-                if (hasMilestone('cu',0)) {effStacksi11 = this.cost().continuum} else {effStacksi11 = new Decimal(x)}
+                if (hasUpgrade('bap', 23)) {effStacksi11 = this.purchaseLimit()} else if (hasMilestone('cu',0)) {effStacksi11 = this.cost().continuum} else {effStacksi11 = new Decimal(x)}
                 return effBasesi11.pow(effStacksi11)
             },
             title() { 
@@ -2003,7 +2014,7 @@ addLayer("si", {
             },
             effect(x){
                 effBasesi12 = new Decimal(1.25)
-                if (hasMilestone('cu',0)) {effStacksi12 = this.cost().continuum} else {effStacksi12 = new Decimal(x)}
+                if (hasUpgrade('bap', 23)) {effStacksi12 = this.purchaseLimit()} else if (hasMilestone('cu',0)) {effStacksi12 = this.cost().continuum} else {effStacksi12 = new Decimal(x)}
                 return effBasesi12.pow(effStacksi12)
             },
             title() { 
@@ -2048,7 +2059,7 @@ addLayer("si", {
             },
             effect(x){
                 effBasesi13 = new Decimal(1.5)
-                if (hasMilestone('cu',0)) {effStacksi13 = this.cost().continuum} else {effStacksi13 = new Decimal(x)}
+                if (hasUpgrade('bap', 23)) {effStacksi13 = this.purchaseLimit()} else if (hasMilestone('cu',0)) {effStacksi13 = this.cost().continuum} else {effStacksi13 = new Decimal(x)}
                 return effBasesi13.pow(effStacksi13)
             },
             purchaseLimit() {
@@ -2266,7 +2277,8 @@ addLayer("cu", {
     doReset(resettingLayer){
         if (layers[resettingLayer].row > 4.5) {
             layerDataReset(this.layer)
-            if (hasMilestone('pr', 10)) {setBuyableAmount('cu', 103, Decimal.dOne)}
+            if (hasMilestone('pr', 10)||hasMilestone('ba', 10)) {setBuyableAmount('cu', 103, Decimal.dOne)}
+            
         }
     },
     automate() {
@@ -2314,8 +2326,8 @@ addLayer("cu", {
         1: {
             requirementDescription: "10,000 total copper points",
             effectDescription: "automate copper buyables",
-            done() { return player.cu.total.gte(10000)||hasMilestone('pr', 10) },
-            unlocked() {return player.cu.total.gte(10000)||hasMilestone('pr', 10)},
+            done() { return player.cu.total.gte(10000)||hasMilestone('pr', 10)||hasUpgrade('bap', 43) },
+            unlocked() {return player.cu.total.gte(10000)||hasMilestone('pr', 10)||hasUpgrade('bap', 43)},
         },
         2: {
             requirementDescription: "1,000,000 total copper points",
@@ -2326,12 +2338,12 @@ addLayer("cu", {
         3: {
             requirementDescription: "1e10,000 total copper points",
             effectDescription: "automate copper mirror buyables",
-            done() { return player.cu.total.gte('e1e4') },
-            unlocked() {return player.cu.total.gte('e1e4')},
+            done() { return player.cu.total.gte('e1e4')||hasUpgrade('bap', 43) },
+            unlocked() {return player.cu.total.gte('e1e4')||hasUpgrade('bap', 43)},
         },
         10: {
             done() { return player.cu.total.gte(1)||hasMilestone('pr', 10) },
-            effectDescription: "multiply point gain by 1,000,000",
+            effectDescription: "point gain never falls below 1e12",
             unlocked() {return true},
         },
     },
@@ -3615,6 +3627,9 @@ addLayer("gi", {
                 }
             }
         }
+        if (hasUpgrade('bap', 24)) {
+            player.gi.challenges[11] = 1e100
+        }
     },
     update(diff) {
         if (hasMilestone('gi', 0)) {
@@ -3638,14 +3653,20 @@ addLayer("gi", {
         0: {
             requirementDescription: "10,000 total guitar points",
             effectDescription: "automatically gain guitar points on reset",
-            done() { return player.gi.total.gte(1e4)||hasMilestone('pr', 10) },
-            unlocked() {return player.gi.total.gte(1e4)||hasMilestone('pr', 10)},
+            done() { return player.gi.total.gte(1e4)||hasMilestone('pr', 10)||hasUpgrade('bap', 44) },
+            unlocked() {return player.gi.total.gte(1e4)||hasMilestone('pr', 10)||hasUpgrade('bap', 44)},
+        },
+        1: {
+            requirementDescription: "1e100 total guitar points",
+            effectDescription: "automate copper projection upgrades",
+            done() { return player.gi.total.gte(1e100)||hasUpgrade('bap', 33) },
+            unlocked() {return player.gi.total.gte(1e100)||hasUpgrade('bap', 33)},
         },
         2: {
             requirementDescription: "1e100 total guitar points",
-            effectDescription: "automate guitar loops and copper projection upgrades",
-            done() { return player.gi.total.gte(1e100) },
-            unlocked() {return player.gi.total.gte(1e100)},
+            effectDescription: "automate guitar loops",
+            done() { return player.gi.total.gte(1e100)||hasUpgrade('bap', 44) },
+            unlocked() {return player.gi.total.gte(1e100)||hasUpgrade('bap', 44)},
         },
         10: {
             done() { return player.gi.total.gte(1)||hasMilestone('pr', 10) },
@@ -3657,7 +3678,8 @@ addLayer("gi", {
         11: {
             unlocked() {return player.gi.total.gte(1e10)||getBuyableAmount(this.layer, this.id).gte(1)},
             cost(x) { 
-                return new Decimal(1e12)
+                if (hasUpgrade('bap', 34)) {costt = Decimal.dOne} else {costt = new Decimal(1e12)}
+                return costt
             },
             effect(x){
                 if (hasMilestone('gi', 2)) {eff = new Decimal(player.gi.points.gte(this.cost())*1)} else {eff = new Decimal(x)}
@@ -4326,7 +4348,7 @@ addLayer("cup", {
         addPoints('cup', getResetGain('cup').sub(player.cup.total))
     },
     automate() {
-        if (hasMilestone('gi', 2)) {
+        if (hasMilestone('gi', 1)) {
             for (i1 = 1; i1 < 5; i1++) {
                 for (i2 = 1; i2 < 6-i1; i2++) {
                     if (!hasUpgrade('cup', i1*10+i2)) {buyUpgrade('cup', i1*10+i2)}
@@ -4346,7 +4368,7 @@ addLayer("cup", {
             title: "copper projection upgrade 11",
             description: "multiply copper point gain by log(copper plates)^2",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4364,7 +4386,7 @@ addLayer("cup", {
             title: "copper projection upgrade 12",
             description: "multiply copper point gain by log(copper points )^25",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4380,7 +4402,7 @@ addLayer("cup", {
             title: "copper projection upgrade 13",
             description: "multiply copper point gain by copper plates effect ^5",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4398,7 +4420,7 @@ addLayer("cup", {
             title: "copper projection upgrade 14",
             description: "multiply copper point gain by guitar challenge effect, softcapped at 1e50",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4417,7 +4439,7 @@ addLayer("cup", {
             title: "copper projection upgrade 21",
             description: "raise copper coin passive effect to ^1.3",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4435,7 +4457,7 @@ addLayer("cup", {
             title: "copper projection upgrade 22",
             description: "raise copper wires passive effect to ^1.4",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4453,7 +4475,7 @@ addLayer("cup", {
             title: "copper projection upgrade 23",
             description: "raise copper plates passive effect to ^1.5",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4471,7 +4493,7 @@ addLayer("cup", {
             title: "copper projection upgrade 31",
             description: "times copper plates passive effect softcap start by x4",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4489,7 +4511,7 @@ addLayer("cup", {
             title: "copper projection upgrade 32",
             description: "raise copper buyable softcap start to ^10",
             cost() {
-                return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(1+hasUpgrade('cup', 11)+hasUpgrade('cup', 12)+hasUpgrade('cup', 13)+hasUpgrade('cup', 14)+hasUpgrade('cup', 21)+hasUpgrade('cup', 22)+hasUpgrade('cup', 23)+hasUpgrade('cup', 24)+hasUpgrade('cup', 31)+hasUpgrade('cup', 32)+hasUpgrade('cup', 33)+hasUpgrade('cup', 34)+hasUpgrade('cup', 41)+hasUpgrade('cup', 42)+hasUpgrade('cup', 43)+hasUpgrade('cup', 44))
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4507,7 +4529,7 @@ addLayer("cup", {
             title: "copper projection upgrade 41",
             description: "unlock copper mirror buyables and raise above buyables to log(copper projections)/10",
             cost() {
-                return new Decimal(10)
+                if (hasUpgrade('bap', 33)) {return Decimal.dZero} else return new Decimal(10)
             },
             canAfford() {
                 return (true)&&player.cup.points.gte(this.cost())
@@ -4571,8 +4593,16 @@ addLayer("pr", {
 
 
     automate() {
-
+        if (hasUpgrade('bap', 25)) {
+            setBuyableAmount('pr', 51, new Decimal(4)) //purchaselimit
+            setBuyableAmount('pr', 53, new Decimal(4)) //purchaselimit
+        }
+        if (hasUpgrade('bap', 35)) {
+            player.pr.challenges[11] = 1e20
+            player.pr.challenges[12] = 1e10
+        }
     },
+
     doReset(resettingLayer){
         if (layers[resettingLayer].row > 5.5)  {
             layerDataReset(this.layer)
@@ -4603,6 +4633,7 @@ addLayer("pr", {
 
 
         addBuyables('pr', 105, buyableEffect('pr', 98).times(diff))
+        if (hasUpgrade('bap', 45)) {addPoints('pr', getResetGain('pr'))}
     },
     infoboxes: {
         C: {
@@ -5868,6 +5899,7 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
+                if (hasUpgrade('bap', 35)) {return Decimal.dOne}
                 boosteffneg = getBuyableAmount('pr', 101).max(1).pow(0.5)
 
                 challprpr = new Decimal(challengeCompletions('pr', 11))
@@ -5895,6 +5927,7 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
+                if (hasUpgrade('bap', 35)) {return Decimal.dOne}
                 boosteffneg = getBuyableAmount('pr', 102).max(1).pow(0.5)
 
                 challprpr = new Decimal(challengeCompletions('pr', 11))
@@ -5921,6 +5954,7 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
+                if (hasUpgrade('bap', 35)) {return Decimal.dZero}
                 eff = Decimal.dZero
                 for (i1 = 1; i1 < 5; i1++) {
                     for (i2 = 1; i2 < 3; i2++) {
@@ -5955,6 +5989,7 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
+                if (hasUpgrade('bap', 35)) {return Decimal.dZero}
                 eff = Decimal.dZero
                 for (i3 = 1; i3 < 5; i3++) {
                     for (i4 = 3; i4 < 5; i4++) {
@@ -5989,6 +6024,7 @@ addLayer("pr", {
                 return Decimal.dInf
             },
             effect(x){
+                if (hasUpgrade('bap', 35)) {return Decimal.dZero}
                 eff = Decimal.dZero
                 for (i7 = 1; i7 < 5; i7++) {
                     for (i8 = 1; i8 < 5; i8++) {
@@ -6107,7 +6143,7 @@ addLayer("pr", {
             unlocked() {return getBuyableAmount('pr', 51).gte(2)}
         },
         22: {
-            title: "proverb upgrade 21",
+            title: "proverb upgrade 22",
             description: "all positive proverb subpoints effects are ^1.2",
             cost: new Decimal(20),
             effect() {
@@ -6163,7 +6199,7 @@ addLayer("pr", {
         },
         33: {
             title: "proverb upgrade 33",
-            description: "raise copper and message point gain to ^(log10(proverb points)^0.8)",
+            description: "raise copper and message upgrade effect before softcap to ^(log10(proverb points)^0.8)",
             cost: new Decimal(1e7),
             effect() {
                 eff = player.pr.points.max(10).log10().pow(0.8)
@@ -6254,5 +6290,351 @@ addLayer("pr", {
             },
             completionLimit: 1e10,
         }
+    }
+})
+
+addLayer("ba", {
+    name: "banner", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "BA", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#fff891",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "banner points", // Name of prestige currency
+    baseResource: "points", // Name of resource prestige is based on
+    baseAmount() {return player.points}, // Get the current amount of baseResource
+    type: "custom", // normal: cost to bain currency depends on amount bained. static: cost depends on how much you already have
+    gainMult() { // Calculate the multiplier for main currency from bonuses
+        multba = new Decimal(0.004)
+        return multba
+    },
+    gainExp() { // Calculate the exponent on main currency from bonuses
+        expba = new Decimal(2)
+        exp2ba = new Decimal(1)
+        return expp
+
+    },
+    getResetGain() {
+        bap = player.points.max(10).log10().log10().times(multba).pow(expba)
+        if (bap.gte(10)) {bap = bap.log10().pow(exp2ba).pow10()}
+
+        if (bap.eq(Decimal.dNaN)) {bap = new Decimal(0)} 
+        return bap.floor().max(0)
+    },
+    getNextAt() {
+        nextba = getResetGain('ba').add(1)
+        if (nextba.gte(10)) {nextba = nextba.log10().root(exp2ba).pow10()}
+        return nextba.root(expba).div(multba).pow10().pow10()
+    },
+    canReset() {return getResetGain('ba').gte(1)},
+    prestigeNotify() {return true},
+    prestigeButtonText() {return "Reset for "+formatWhole(getResetGain('ba'))+" banner points. Next at "+format(getNextAt('ba'))+" points" },
+    row: 6, // Row the layer is in on the tree (0 is the first row)
+    tabFormat: {
+        "main": {
+            shouldNotify: true,
+            content:
+                [["infobox", "A"],
+                "main-display",
+                "prestige-button", "resource-display",
+                ["blank", "5px"], // Height
+                 "milestones", "buyables", "upgrades"],
+        },
+        "banner perks": {
+            embedLayer: "bap",
+            shouldNotify: true,
+            unlocked() {return true},
+            content:
+                ["main-display",
+                "resource-display", 
+                ["blank", "5px"], // Height
+                 "buyables", "blank", "upgrades"],
+        },
+    },
+    layerShown(){return player.points.gte('e1e250')||hasMilestone('ba', 10)},
+
+
+    automate() {
+
+    },
+
+    milestones: {
+        10: {
+            effectDescription: "",
+            done() { return player.ba.total.gte(1) },
+            unlocked() {return true},
+        },
+    },
+    update(diff) {
+
+    },
+    infoboxes: {
+
+    },
+    buyables: {
+    },
+    upgrades: {
+    },
+    challenges: {
+    }
+})
+
+addLayer("bap", {
+    name: "banner perk", // This is optional, only used in a few places, If absent it just uses the layer id.
+    symbol: "bap", // This appears on the layer's node. Default is the id with the first letter capitalized
+    position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
+    startData() { return {
+        unlocked: true,
+		points: new Decimal(0),
+    }},
+    color: "#fff891",
+    requires: new Decimal(0), // Can be a function that takes requirement increases into account
+    resource: "banner perk points", // Name of prestige currency
+    baseResource: "none", // Name of resource prestige is bapsed on
+    type: "none", // normal: cost to bapin currency depends on amount bapined. static: cost depends on how much you already have
+    canReset() {return false},
+    prestigeNotify() {return true},
+    row: 6, // Row the layer is in on the tree (0 is the first row)
+
+    layerShown(){return false},
+
+
+    automate() {
+
+    },
+
+
+    update(diff) {
+
+    },
+    infoboxes: {
+
+    },
+    buyables: {
+        11: {
+            unlocked() {return true},
+            cost(x) { 
+                return new Decimal(1)
+            },
+            effect(x){
+                eff = new Decimal(10)
+                return eff
+            },
+            title() { 
+                return "banner perk buyable 11" 
+            },
+            display() {
+                return "grant "+format(eff)+" banner perk points <br> Cost: "+format(this.cost())+" <br> Effect: "+format(this.effect())
+            },
+            canAfford() { return player.ba.points.gte(this.cost())},
+            buy() {
+                player.ba.points = player.ba.points.sub(this.cost())
+                addPoints('bap', this.effect())
+                addBuyables(this.layer, this.id, 1)
+            },
+            buyMax() {
+                addPoints('bap', player.ba.points.times(this.effect()))
+                addBuyables(this.layer, this.id, player.ba.points)
+                player.ba.points = Decimal.dZero
+            },
+        },
+    },
+    upgrades: {
+        11: {
+            title: "banner perk upgrade 11",
+            description: "raise point gain exponent to ^1.5",
+            cost: new Decimal(2),
+            effect() {
+                eff = new Decimal(1.5)
+                return eff
+            },
+            effectDisplay() {return "^"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        21: {
+            title: "banner perk upgrade 21",
+            description: "divide prestige buyable 11-13 price by 100",
+            cost: new Decimal(2),
+            canAfford() {return hasUpgrade('bap', 11)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(100)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        22: {
+            title: "banner perk upgrade 22",
+            description: "message upgrades do not cost message points",
+            cost: new Decimal(2),
+            canAfford() {return hasUpgrade('bap', 11)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        23: {
+            title: "banner perk upgrade 23",
+            description: "harvest/silence buyables are always maxed",
+            cost: new Decimal(2),
+            canAfford() {return hasUpgrade('bap', 11)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        24: {
+            title: "banner perk upgrade 24",
+            description: "harvest/silence coexistence challenge is always maxed",
+            cost: new Decimal(2),
+            canAfford() {return hasUpgrade('bap', 11)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        25: {
+            title: "banner perk upgrade 25",
+            description: "proverb buyable 51 and 53 is always maxed",
+            cost: new Decimal(10),
+            canAfford() {return hasUpgrade('bap', 11)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        31: {
+            title: "banner perk upgrade 31",
+            description: "root prestige buyable 11-13 price scaling by 10",
+            cost: new Decimal(5),
+            canAfford() {return hasUpgrade('bap', 21)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(10)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        32: {
+            title: "banner perk upgrade 32",
+            description: "gain message decabled points without entering the challenge",
+            cost: new Decimal(5),
+            canAfford() {return hasUpgrade('bap', 22)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        33: {
+            title: "banner perk upgrade 33",
+            description: "copper projection upgrades are free",
+            cost: new Decimal(5),
+            canAfford() {return hasUpgrade('bap', 23)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        34: {
+            title: "banner perk upgrade 34",
+            description: "guitar buyable 11 costs 1 ",
+            cost: new Decimal(5),
+            canAfford() {return hasUpgrade('bap', 24)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        35: {
+            title: "banner perk upgrade 35",
+            description: "proverb sub- conerf scaling is always 0, and challenges are always maxed",
+            cost: new Decimal(30),
+            canAfford() {return hasUpgrade('bap', 25)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        41: {
+            title: "banner perk upgrade 41",
+            description: "always automate prestige buyables and prestige point gain",
+            cost: new Decimal(10),
+            canAfford() {return hasUpgrade('bap', 31)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        42: {
+            title: "banner perk upgrade 42",
+            description: "always automate message buyables and message point gain",
+            cost: new Decimal(10),
+            canAfford() {return hasUpgrade('bap', 32)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        43: {
+            title: "banner perk upgrade 43",
+            description: "always automate copper buyables and copper points",
+            cost: new Decimal(10),
+            canAfford() {return hasUpgrade('bap', 33)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        44: {
+            title: "banner perk upgrade 44",
+            description: "always automate guitar buyables and guitar points",
+            cost: new Decimal(10),
+            canAfford() {return hasUpgrade('bap', 34)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+        45: {
+            title: "banner perk upgrade 45",
+            description: "always automate progress buyables and progress points",
+            cost: new Decimal(100),
+            canAfford() {return hasUpgrade('bap', 35)&&player.bap.points.gte(this.cost)},
+            effect() {
+                eff = new Decimal(1)
+                return eff
+            },
+            effectDisplay() {return "x"+format(upgradeEffect(this.layer, this.id))},
+            unlocked() {return true}
+        },
+    },
+    challenges: {
     }
 })
